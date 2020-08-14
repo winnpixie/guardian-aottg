@@ -1,0 +1,9 @@
+AoTTG/
+
+# Visual Studio
+.vs/
+bin/
+obj/
+lib/
+*.sln
+*.pdb

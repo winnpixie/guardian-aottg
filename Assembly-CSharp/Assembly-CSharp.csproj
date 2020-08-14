@@ -1,0 +1,546 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{70BFC723-A52A-41CE-90C5-C60ECE48A6DF}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <LangVersion>8.0</LangVersion>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <Optimize>true</Optimize>
+    <OutputPath>..\AoTTG\Guardian_Data\Managed\</OutputPath>
+    <ErrorReport>none</ErrorReport>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <Optimize>true</Optimize>
+    <OutputPath>..\AoTTG\Guardian_Data\Managed\</OutputPath>
+    <ErrorReport>none</ErrorReport>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\AoTTG\Guardian_Data\Managed\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\AoTTG\Guardian_Data\Managed\System.dll</HintPath>
+    </Reference>
+    <Reference Include="Photon3Unity3D">
+      <HintPath>..\AoTTG\Guardian_Data\Managed\Photon3Unity3D.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\AoTTG\Guardian_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\AoTTG\Guardian_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-UnityScript-firstpass">
+      <HintPath>..\AoTTG\Guardian_Data\Managed\Assembly-UnityScript-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\AoTTG\Guardian_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>..\AoTTG\Guardian_Data\Managed\System.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbnormalType.cs" />
+    <Compile Include="ActiveAnimation.cs" />
+    <Compile Include="ActorProperties.cs" />
+    <Compile Include="Affector.cs" />
+    <Compile Include="AHSSShotGunCollider.cs" />
+    <Compile Include="AnimatedAlpha.cs" />
+    <Compile Include="AnimatedColor.cs" />
+    <Compile Include="AnimationOrTween\Direction.cs" />
+    <Compile Include="AnimationOrTween\DisableCondition.cs" />
+    <Compile Include="AnimationOrTween\EnableCondition.cs" />
+    <Compile Include="AnimationOrTween\Trigger.cs" />
+    <Compile Include="AttractionForceAffector.cs" />
+    <Compile Include="AuthenticationValues.cs" />
+    <Compile Include="BetterList.cs" />
+    <Compile Include="BillboardScript.cs" />
+    <Compile Include="BloodSplatterScript.cs" />
+    <Compile Include="BMFont.cs" />
+    <Compile Include="BMGlyph.cs" />
+    <Compile Include="BMSymbol.cs" />
+    <Compile Include="BodyPushBox.cs" />
+    <Compile Include="BODY_PARTS.cs" />
+    <Compile Include="Bomb.cs" />
+    <Compile Include="BombExplode.cs" />
+    <Compile Include="BottomType.cs" />
+    <Compile Include="BtnSSNext.cs" />
+    <Compile Include="BtnSSPrev.cs" />
+    <Compile Include="BTN_BackToMain.cs" />
+    <Compile Include="BTN_ChangePassword.cs" />
+    <Compile Include="BTN_choose_human.cs" />
+    <Compile Include="BTN_choose_titan.cs" />
+    <Compile Include="BTN_Connect_To_Server_On_List.cs" />
+    <Compile Include="Btn_CreateLanGame.cs" />
+    <Compile Include="BTN_Create_Game.cs" />
+    <Compile Include="BTN_Enter_PWD.cs" />
+    <Compile Include="BTN_FORGET_PASSWORD.cs" />
+    <Compile Include="BTN_Join_LAN.cs" />
+    <Compile Include="BTN_LEADERBOARD.cs" />
+    <Compile Include="BTN_LEADERBOARD_QUIT.cs" />
+    <Compile Include="BTN_leave_lobby.cs" />
+    <Compile Include="BTN_LOAD_CC.cs" />
+    <Compile Include="BTN_LOGIN.cs" />
+    <Compile Include="BTN_PAUSE_MENU_CONTINUE.cs" />
+    <Compile Include="BTN_PAUSE_MENU_QUIT.cs" />
+    <Compile Include="BTN_QUICKMATCH.cs" />
+    <Compile Include="BTN_RefreshList.cs" />
+    <Compile Include="BTN_REGISTER.cs" />
+    <Compile Include="BTN_RESULT_TO_MAIN.cs" />
+    <Compile Include="BTN_rotate_character.cs" />
+    <Compile Include="BTN_SAVE_CC.cs" />
+    <Compile Include="BTN_save_snapshot.cs" />
+    <Compile Include="BTN_ServerUS.cs" />
+    <Compile Include="BTN_Server_ASIA.cs" />
+    <Compile Include="BTN_Server_EU.cs" />
+    <Compile Include="BTN_Server_JPN.cs" />
+    <Compile Include="BTN_Server_List_PgDn.cs" />
+    <Compile Include="BTN_Server_List_PgUp.cs" />
+    <Compile Include="BTN_SetDefault.cs" />
+    <Compile Include="BTN_SET_GUILD_NAME.cs" />
+    <Compile Include="BTN_SIGNOUT.cs" />
+    <Compile Include="BTN_SSR_Down.cs" />
+    <Compile Include="BTN_SSR_up.cs" />
+    <Compile Include="BTN_START_MULTI_SERVER.cs" />
+    <Compile Include="BTN_START_SINGLE_GAMEPLAY.cs" />
+    <Compile Include="BTN_ToCredit.cs" />
+    <Compile Include="BTN_ToJoin.cs" />
+    <Compile Include="BTN_ToLAN.cs" />
+    <Compile Include="BTN_ToOption.cs" />
+    <Compile Include="BTN_toPublicServer.cs" />
+    <Compile Include="BTN_ToServer.cs" />
+    <Compile Include="BTN_toSingleSet.cs" />
+    <Compile Include="Btn_TO_CC.cs" />
+    <Compile Include="BTN_TO_LOGIN.cs" />
+    <Compile Include="Btn_to_Main_from_CC.cs" />
+    <Compile Include="BTN_TO_REGISTER.cs" />
+    <Compile Include="BTN_To_SSR.cs" />
+    <Compile Include="BUFF.cs" />
+    <Compile Include="Bullet.cs" />
+    <Compile Include="ButtonImageFitText.cs" />
+    <Compile Include="ButtonTextEffect.cs" />
+    <Compile Include="ByteReader.cs" />
+    <Compile Include="CameraFacingBillboard.cs" />
+    <Compile Include="CameraForLeftEye.cs" />
+    <Compile Include="CameraShake.cs" />
+    <Compile Include="CAMERA_TYPE.cs" />
+    <Compile Include="Cannon.cs" />
+    <Compile Include="CannonBall.cs" />
+    <Compile Include="CannonPropRegion.cs" />
+    <Compile Include="CannonValues.cs" />
+    <Compile Include="CatchDestroy.cs" />
+    <Compile Include="CB_cameraTilt.cs" />
+    <Compile Include="CB_invertMouseY.cs" />
+    <Compile Include="ChangeQuality.cs" />
+    <Compile Include="CharacterCreateAnimationControl.cs" />
+    <Compile Include="CharacterCreationComponent.cs" />
+    <Compile Include="CharacterMaterials.cs" />
+    <Compile Include="CharacterStatComponent.cs" />
+    <Compile Include="CheckBoxCamera.cs" />
+    <Compile Include="CheckBoxCostume.cs" />
+    <Compile Include="CheckBoxEnableSS.cs" />
+    <Compile Include="CheckBoxShowSSInGame.cs" />
+    <Compile Include="CheckHitGround.cs" />
+    <Compile Include="CheckPointState.cs" />
+    <Compile Include="ClothFactory.cs" />
+    <Compile Include="CloudRegionCode.cs" />
+    <Compile Include="CLZF2.cs" />
+    <Compile Include="ColorAffector.cs" />
+    <Compile Include="ColorSet.cs" />
+    <Compile Include="COLOR_GRADUAL_TYPE.cs" />
+    <Compile Include="COLOSSAL_TITAN.cs" />
+    <Compile Include="CompressString\StringCompressor.cs" />
+    <Compile Include="ConnectionState.cs" />
+    <Compile Include="CostumeConverter.cs" />
+    <Compile Include="CostumeHair.cs" />
+    <Compile Include="CreatePart.cs" />
+    <Compile Include="CreateStat.cs" />
+    <Compile Include="CubeCollector.cs" />
+    <Compile Include="CustomAuthenticationType.cs" />
+    <Compile Include="CustomCharacterManager.cs" />
+    <Compile Include="CustomTypes.cs" />
+    <Compile Include="custom_inputs.cs" />
+    <Compile Include="DayLight.cs" />
+    <Compile Include="DaylightChange.cs" />
+    <Compile Include="DisconnectCause.cs" />
+    <Compile Include="Guardian\AntiAbuse\ErenPatches.cs" />
+    <Compile Include="Guardian\AntiAbuse\HookPatches.cs" />
+    <Compile Include="Guardian\AntiAbuse\ColossalPatches.cs" />
+    <Compile Include="Guardian\AntiAbuse\FGMPatches.cs" />
+    <Compile Include="Guardian\AntiAbuse\AnniePatches.cs" />
+    <Compile Include="Guardian\AntiAbuse\HeroPatches.cs" />
+    <Compile Include="Guardian\AntiAbuse\HorsePatches.cs" />
+    <Compile Include="Guardian\AntiAbuse\NetworkPatches.cs" />
+    <Compile Include="Guardian\AntiAbuse\TitanPatches.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandTranslate.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\Debug\CommandNoClip.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandDifficulty.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandDownloadMap.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandKill.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandMute.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandRejoin.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandSay.cs" />
+    <Compile Include="DIVISION.cs" />
+    <Compile Include="EanAnimation.cs" />
+    <Compile Include="EanFile.cs" />
+    <Compile Include="EanFrame.cs" />
+    <Compile Include="EffectController.cs" />
+    <Compile Include="EffectLayer.cs" />
+    <Compile Include="EffectNode.cs" />
+    <Compile Include="Emitter.cs" />
+    <Compile Include="EMITTYPE.cs" />
+    <Compile Include="EnemyCheckCollider.cs" />
+    <Compile Include="EnemyfxIDcontainer.cs" />
+    <Compile Include="ErrorCode.cs" />
+    <Compile Include="EventCode.cs" />
+    <Compile Include="ExitGames.Client.DemoParticle\TimeKeeper.cs" />
+    <Compile Include="ExitGames.Client.Photon\SocketUdp.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="FEMALE_TITAN.cs" />
+    <Compile Include="FengColor.cs" />
+    <Compile Include="FengCustomInputs.cs" />
+    <Compile Include="FengGameManagerMKII.cs" />
+    <Compile Include="FengMath.cs" />
+    <Compile Include="FlareMovement.cs" />
+    <Compile Include="FriendInfo.cs" />
+    <Compile Include="GAMEMODE.cs" />
+    <Compile Include="GameObjectExtensions.cs" />
+    <Compile Include="GameProperties.cs" />
+    <Compile Include="GAMETYPE.cs" />
+    <Compile Include="GROUP.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandScatterTitans.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandSetTitans.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandUnmute.cs" />
+    <Compile Include="Guardian\Discord\Discord.cs" />
+    <Compile Include="Guardian\Discord\DiscordRpc.cs" />
+    <Compile Include="Guardian\Features\Commands\Command.cs" />
+    <Compile Include="Guardian\Features\Commands\CommandManager.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandClear.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandSetGuild.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandHelp.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandIgnore.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandSetName.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandReloadConfig.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandRevive.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandTeleport.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandTime.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandUnignore.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandWhois.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\Debug\CommandLogProperties.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\Debug\CommandRPC.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandAso.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandBan.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandBanlist.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandIgnoreList.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandKick.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandPM.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandResetKD.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandRestart.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandRoom.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandRules.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandSpectate.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandTeam.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\RC\CommandUnban.cs" />
+    <Compile Include="Guardian\Features\Feature.cs" />
+    <Compile Include="Guardian\Features\FeatureManager.cs" />
+    <Compile Include="Guardian\Features\Properties\Property.cs" />
+    <Compile Include="Guardian\Features\Properties\PropertyManager.cs" />
+    <Compile Include="Guardian\Mod.cs" />
+    <Compile Include="Guardian\ModUI.cs" />
+    <Compile Include="Guardian\Utilities\Logger.cs" />
+    <Compile Include="Guardian\Networking\PhotonApplication.cs" />
+    <Compile Include="Guardian\Networking\PhotonConnection.cs" />
+    <Compile Include="Guardian\Networking\NetworkHelper.cs" />
+    <Compile Include="Guardian\Utilities\GameHelper.cs" />
+    <Compile Include="Guardian\Utilities\GExtensions.cs" />
+    <Compile Include="Guardian\Utilities\MathHelper.cs" />
+    <Compile Include="Guardian\Utilities\ModDetector.cs" />
+    <Compile Include="Guardian\Utilities\ModifiedStats.cs" />
+    <Compile Include="HERO.cs" />
+    <Compile Include="HeroCostume.cs" />
+    <Compile Include="HeroStat.cs" />
+    <Compile Include="HERO_DEAD_BODY_SETUP.cs" />
+    <Compile Include="HERO_ON_MENU.cs" />
+    <Compile Include="HERO_SETUP.cs" />
+    <Compile Include="HERO_STATE.cs" />
+    <Compile Include="HintType.cs" />
+    <Compile Include="HitBox.cs" />
+    <Compile Include="Horse.cs" />
+    <Compile Include="IComparerPVPchkPtID.cs" />
+    <Compile Include="IComparerRacingResult.cs" />
+    <Compile Include="IgnoreTimeScale.cs" />
+    <Compile Include="InputCode.cs" />
+    <Compile Include="InputCodeRC.cs" />
+    <Compile Include="InputManagerRC.cs" />
+    <Compile Include="InputToEvent.cs" />
+    <Compile Include="InRoomChat.cs" />
+    <Compile Include="InstantiateTracker.cs" />
+    <Compile Include="InvAttachmentPoint.cs" />
+    <Compile Include="InvBaseItem.cs" />
+    <Compile Include="InvDatabase.cs" />
+    <Compile Include="InvEquipment.cs" />
+    <Compile Include="InvGameItem.cs" />
+    <Compile Include="InvStat.cs" />
+    <Compile Include="IN_GAME_MAIN_CAMERA.cs" />
+    <Compile Include="IPunObservable.cs" />
+    <Compile Include="iTween.cs" />
+    <Compile Include="JetAffector.cs" />
+    <Compile Include="JoinType.cs" />
+    <Compile Include="KillInfoComponent.cs" />
+    <Compile Include="Language.cs" />
+    <Compile Include="LanguageChangeListener.cs" />
+    <Compile Include="LevelBottom.cs" />
+    <Compile Include="LevelInfo.cs" />
+    <Compile Include="LevelTeleport.cs" />
+    <Compile Include="LevelTriggerCheckPoint.cs" />
+    <Compile Include="LevelTriggerGas.cs" />
+    <Compile Include="LevelTriggerHint.cs" />
+    <Compile Include="LevelTriggerRacingEnd.cs" />
+    <Compile Include="LinearForceAffector.cs" />
+    <Compile Include="LoadbalancingPeer.cs" />
+    <Compile Include="LobbyType.cs" />
+    <Compile Include="Localization.cs" />
+    <Compile Include="LoginFengKAI.cs" />
+    <Compile Include="MapNameChange.cs" />
+    <Compile Include="MatchmakingMode.cs" />
+    <Compile Include="MaxCamera.cs" />
+    <Compile Include="Minimap.cs" />
+    <Compile Include="NetworkingPeer.cs" />
+    <Compile Include="NGUIMath.cs" />
+    <Compile Include="NGUITools.cs" />
+    <Compile Include="OnSerializeRigidBody.cs" />
+    <Compile Include="OnSerializeTransform.cs" />
+    <Compile Include="OperationCode.cs" />
+    <Compile Include="ORIPOINT.cs" />
+    <Compile Include="PanelCredits.cs" />
+    <Compile Include="PanelEnterGame.cs" />
+    <Compile Include="PanelGroupManager.cs" />
+    <Compile Include="PanelJoinPrivate.cs" />
+    <Compile Include="PanelLoginGroupManager.cs" />
+    <Compile Include="PanelMain.cs" />
+    <Compile Include="PanelMultiJoin.cs" />
+    <Compile Include="PanelMultiJoinPWD.cs" />
+    <Compile Include="PanelMultiSet.cs" />
+    <Compile Include="PanelMultiStart.cs" />
+    <Compile Include="PanelMultiWait.cs" />
+    <Compile Include="PanelOption.cs" />
+    <Compile Include="PanelResult.cs" />
+    <Compile Include="PanelServerList.cs" />
+    <Compile Include="PanelSingleSet.cs" />
+    <Compile Include="PanWithMouse.cs" />
+    <Compile Include="ParameterCode.cs" />
+    <Compile Include="ParentFollow.cs" />
+    <Compile Include="PeerState.cs" />
+    <Compile Include="PhotonHandler.cs" />
+    <Compile Include="PhotonLogLevel.cs" />
+    <Compile Include="PhotonMessageInfo.cs" />
+    <Compile Include="PhotonNetwork.cs" />
+    <Compile Include="PhotonNetworkingMessage.cs" />
+    <Compile Include="PhotonPingManager.cs" />
+    <Compile Include="PhotonPlayer.cs" />
+    <Compile Include="PhotonPlayerProperty.cs" />
+    <Compile Include="PhotonStream.cs" />
+    <Compile Include="PhotonTargets.cs" />
+    <Compile Include="PhotonView.cs" />
+    <Compile Include="Photon\MonoBehaviour.cs" />
+    <Compile Include="PlanetMouseOrbit.cs" />
+    <Compile Include="PlayerInfoPHOTON.cs" />
+    <Compile Include="PopListCamera.cs" />
+    <Compile Include="PopuplistCharacterSelection.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PunEvent.cs" />
+    <Compile Include="PVPcheckPoint.cs" />
+    <Compile Include="PVPchkPtPreset.cs" />
+    <Compile Include="RacingCheckpointTrigger.cs" />
+    <Compile Include="RacingKillTrigger.cs" />
+    <Compile Include="RacingResult.cs" />
+    <Compile Include="RaiseEventOptions.cs" />
+    <Compile Include="RandomHouse.cs" />
+    <Compile Include="RCAction.cs" />
+    <Compile Include="RCActionHelper.cs" />
+    <Compile Include="RCCondition.cs" />
+    <Compile Include="RCEvent.cs" />
+    <Compile Include="RCextensions.cs" />
+    <Compile Include="RCGeneralEffect.cs" />
+    <Compile Include="RCGlobals.cs" />
+    <Compile Include="RCParameters.cs" />
+    <Compile Include="RCRegion.cs" />
+    <Compile Include="RCRegionLabel.cs" />
+    <Compile Include="RCSettings.cs" />
+    <Compile Include="RCStatic.cs" />
+    <Compile Include="Region.cs" />
+    <Compile Include="RegionTrigger.cs" />
+    <Compile Include="RespawnMode.cs" />
+    <Compile Include="RibbonTrail.cs" />
+    <Compile Include="RockScript.cs" />
+    <Compile Include="RockThrow.cs" />
+    <Compile Include="Room.cs" />
+    <Compile Include="RoomInfo.cs" />
+    <Compile Include="RoomOptions.cs" />
+    <Compile Include="RotateAffector.cs" />
+    <Compile Include="RSTYPE.cs" />
+    <Compile Include="ScaleAffector.cs" />
+    <Compile Include="SelfDestroy.cs" />
+    <Compile Include="ServerConnection.cs" />
+    <Compile Include="ServerSettings.cs" />
+    <Compile Include="SettingReciveInput.cs" />
+    <Compile Include="SEX.cs" />
+    <Compile Include="SimpleAES.cs" />
+    <Compile Include="SliderCameraDist.cs" />
+    <Compile Include="SliderMouseSensitivity.cs" />
+    <Compile Include="SmoothSyncMovement.cs" />
+    <Compile Include="SnapShotReview.cs" />
+    <Compile Include="SnapShotSaves.cs" />
+    <Compile Include="SpectatorMovement.cs" />
+    <Compile Include="SpringPanel.cs" />
+    <Compile Include="SpringPosition.cs" />
+    <Compile Include="Sprite.cs" />
+    <Compile Include="STEREO_3D_TYPE.cs" />
+    <Compile Include="STransform.cs" />
+    <Compile Include="StyledComboBox.cs" />
+    <Compile Include="StyledComboBoxPrefab.cs" />
+    <Compile Include="StyledItem.cs" />
+    <Compile Include="StyledItemButtonImageText.cs" />
+    <Compile Include="StylishComponent.cs" />
+    <Compile Include="STYPE.cs" />
+    <Compile Include="supplyCheck.cs" />
+    <Compile Include="TITAN.cs" />
+    <Compile Include="TitanSpawner.cs" />
+    <Compile Include="TitanState.cs" />
+    <Compile Include="TitanTrigger.cs" />
+    <Compile Include="titanTypes.cs" />
+    <Compile Include="TITAN_CONTROLLER.cs" />
+    <Compile Include="TITAN_EREN.cs" />
+    <Compile Include="TITAN_SETUP.cs" />
+    <Compile Include="TriggerColliderWeapon.cs" />
+    <Compile Include="TweenAlpha.cs" />
+    <Compile Include="TweenColor.cs" />
+    <Compile Include="TweenFOV.cs" />
+    <Compile Include="TweenOrthoSize.cs" />
+    <Compile Include="TweenPosition.cs" />
+    <Compile Include="TweenRotation.cs" />
+    <Compile Include="TweenScale.cs" />
+    <Compile Include="TweenTransform.cs" />
+    <Compile Include="TweenVolume.cs" />
+    <Compile Include="TypedLobby.cs" />
+    <Compile Include="UIadjustment.cs" />
+    <Compile Include="UIAnchor.cs" />
+    <Compile Include="UIAtlas.cs" />
+    <Compile Include="UIButton.cs" />
+    <Compile Include="UIButtonActivate.cs" />
+    <Compile Include="UIButtonColor.cs" />
+    <Compile Include="UIButtonKeyBinding.cs" />
+    <Compile Include="UIButtonKeys.cs" />
+    <Compile Include="UIButtonMessage.cs" />
+    <Compile Include="UIButtonOffset.cs" />
+    <Compile Include="UIButtonPlayAnimation.cs" />
+    <Compile Include="UIButtonRotation.cs" />
+    <Compile Include="UIButtonScale.cs" />
+    <Compile Include="UIButtonSound.cs" />
+    <Compile Include="UIButtonTween.cs" />
+    <Compile Include="UICamera.cs" />
+    <Compile Include="UICenterOnChild.cs" />
+    <Compile Include="UICheckbox.cs" />
+    <Compile Include="UICheckboxControlledComponent.cs" />
+    <Compile Include="UICheckboxControlledObject.cs" />
+    <Compile Include="UICursor.cs" />
+    <Compile Include="UIDragCamera.cs" />
+    <Compile Include="UIDraggableCamera.cs" />
+    <Compile Include="UIDraggablePanel.cs" />
+    <Compile Include="UIDragObject.cs" />
+    <Compile Include="UIDragPanelContents.cs" />
+    <Compile Include="UIDrawCall.cs" />
+    <Compile Include="UIEquipmentSlot.cs" />
+    <Compile Include="UIEventListener.cs" />
+    <Compile Include="UIFilledSprite.cs" />
+    <Compile Include="UIFont.cs" />
+    <Compile Include="UIForwardEvents.cs" />
+    <Compile Include="UIGeometry.cs" />
+    <Compile Include="UIGrid.cs" />
+    <Compile Include="UIImageButton.cs" />
+    <Compile Include="UIInput.cs" />
+    <Compile Include="UIInputSaved.cs" />
+    <Compile Include="UIInputValidator.cs" />
+    <Compile Include="UIItemSlot.cs" />
+    <Compile Include="UIItemStorage.cs" />
+    <Compile Include="UILabel.cs" />
+    <Compile Include="UILocalize.cs" />
+    <Compile Include="UIMainReferences.cs" />
+    <Compile Include="UIOrthoCamera.cs" />
+    <Compile Include="UIPanel.cs" />
+    <Compile Include="UIPopupList.cs" />
+    <Compile Include="UIReferArray.cs" />
+    <Compile Include="UIRoot.cs" />
+    <Compile Include="UISavedOption.cs" />
+    <Compile Include="UIScrollBar.cs" />
+    <Compile Include="UISlicedSprite.cs" />
+    <Compile Include="UISlider.cs" />
+    <Compile Include="UISliderColors.cs" />
+    <Compile Include="UISoundVolume.cs" />
+    <Compile Include="UISprite.cs" />
+    <Compile Include="UISpriteAnimation.cs" />
+    <Compile Include="UIStorageSlot.cs" />
+    <Compile Include="UIStretch.cs" />
+    <Compile Include="UITable.cs" />
+    <Compile Include="UITextList.cs" />
+    <Compile Include="UITexture.cs" />
+    <Compile Include="UITiledSprite.cs" />
+    <Compile Include="UITooltip.cs" />
+    <Compile Include="UITweener.cs" />
+    <Compile Include="UIViewport.cs" />
+    <Compile Include="UIWidget.cs" />
+    <Compile Include="UNIFORM_TYPE.cs" />
+    <Compile Include="UpdateManager.cs" />
+    <Compile Include="UVAffector.cs" />
+    <Compile Include="UVAnimation.cs" />
+    <Compile Include="VertexPool.cs" />
+    <Compile Include="ViewSynchronization.cs" />
+    <Compile Include="VoiceChat\MicEF.cs" />
+    <Compile Include="VoiceChat\MicGUI.cs" />
+    <Compile Include="VoiceChat\MicPlayer.cs" />
+    <Compile Include="VortexAffector.cs" />
+    <Compile Include="WebRpcResponse.cs" />
+    <Compile Include="WindowAutoYaw.cs" />
+    <Compile Include="WindowDragTilt.cs" />
+    <Compile Include="Xffect.cs" />
+    <Compile Include="XffectCache.cs" />
+    <Compile Include="Xft\Spline.cs" />
+    <Compile Include="Xft\SplineControlPoint.cs" />
+    <Compile Include="Xft\VertexPool.cs" />
+    <Compile Include="Xft\XWeaponTrail.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
