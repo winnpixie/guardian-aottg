@@ -1433,7 +1433,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             }
         }
-        if (sender != null)
+        if (sender != null && photonView != null)
         {
             if (!isKnown)
             {

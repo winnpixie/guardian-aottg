@@ -12,3 +12,6 @@ This mod has everything RiceCake's mod (RC mod) has, and more.
     - Chat customization (bold, italic, color, etc)
     - Player customization (infinite AHSS shots, blades, and gas)
     - Rooms that will never run out of time, even if you go AFK. (toggleable, MC-only)
+
+## Commands
+To view the full list of commands, use ``/help`` in game!
