@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "08252020-1";
+        public static string Build = "08252020-2";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -85,7 +85,7 @@ namespace Guardian
 
         public static IEnumerator CheckForUpdate()
         {
-            using (WWW www = new WWW("https://raw.githubusercontent.com/alerithe/guardian/master/BUILD.TXT"))
+            using (WWW www = new WWW("https://raw.githubusercontent.com/alerithe/guardian/master/BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()))
             {
                 yield return www;
 
