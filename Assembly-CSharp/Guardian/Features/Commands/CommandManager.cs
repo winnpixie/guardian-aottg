@@ -71,7 +71,7 @@ namespace Guardian.Features.Commands
             {
                 if (!command.masterClient || PhotonNetwork.isMasterClient)
                 {
-                    command.Execute(irc, args.Length > 1 ? args.GetRange(1, args.Length) : new string[0]);
+                    command.Execute(irc, args.Length > 1 ? args.CopyOfRange(1, args.Length) : new string[0]);
                 }
                 else
                 {

@@ -7,7 +7,7 @@ public class BTN_QUICKMATCH : MonoBehaviour
     public void OnClick()
     {
         PhotonNetwork.Disconnect();
-        PhotonNetwork.ConnectToMaster(NetworkHelper.GetBestRegion(), NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.version);
+        PhotonNetwork.ConnectToMaster(NetworkHelper.GetBestRegion(), NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
         FengGameManagerMKII.OnPrivateServer = false;
 
         // TODO: Change functionality since this proves itself to be useless for true randomness

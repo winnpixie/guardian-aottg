@@ -222,6 +222,7 @@ public class HERO : Photon.MonoBehaviour
     public float skillCDLastCannon;
     public float CameraMultiplier;
     public bool isPhotonCamera;
+    public GameObject myFlashlight;
 
     public bool isGrabbed => state == HERO_STATE.Grab;
 
@@ -2042,16 +2043,11 @@ public class HERO : Photon.MonoBehaviour
         {
             Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.green, trackOrientation: false, depthAboveAll: true);
         }
+
         if (IN_GAME_MAIN_CAMERA.Gametype != 0 && !base.photonView.isMine)
         {
             base.gameObject.layer = LayerMask.NameToLayer("NetworkObject");
-            if (IN_GAME_MAIN_CAMERA.DayLight == DayLight.Night)
-            {
-                GameObject gameObject2 = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("flashlight"));
-                gameObject2.transform.parent = baseTransform;
-                gameObject2.transform.position = baseTransform.position + Vector3.up;
-                gameObject2.transform.rotation = Quaternion.Euler(353f, 0f, 0f);
-            }
+
             setup.init();
             setup.myCostume = new HeroCostume();
             setup.myCostume = CostumeConverter.PhotonDataToHeroCostume2(base.photonView.owner);
@@ -2072,6 +2068,28 @@ public class HERO : Photon.MonoBehaviour
             hasspawn = true;
             StartCoroutine(ReloadSky());
         }
+
+        // TODO: Flashlight Fix?
+        if (IN_GAME_MAIN_CAMERA.DayLight == DayLight.Night)
+        {
+            myFlashlight = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("flashlight"));
+
+            if (base.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+            {
+                myFlashlight.GetComponent<Light>().renderMode = LightRenderMode.ForcePixel;
+                myFlashlight.transform.parent = currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform;
+                myFlashlight.transform.position = IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE ?
+                    currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform.position
+                    : (currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform.position + (Vector3.down * 5));
+            }
+            else
+            {
+                myFlashlight.transform.parent = baseTransform;
+                myFlashlight.transform.position = baseTransform.position + Vector3.up;
+            }
+            myFlashlight.transform.rotation = Quaternion.Euler(353f, 0f, 0f);
+        }
+
         bombImmune = false;
         if (RCSettings.BombMode == 1)
         {
@@ -2959,6 +2977,10 @@ public class HERO : Photon.MonoBehaviour
 
     private void OnDestroy()
     {
+        if (myFlashlight != null)
+        {
+            UnityEngine.Object.Destroy(myFlashlight);
+        }
         if (myNetWorkName != null)
         {
             UnityEngine.Object.Destroy(myNetWorkName);

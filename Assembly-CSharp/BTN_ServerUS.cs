@@ -5,7 +5,7 @@ public class BTN_ServerUS : MonoBehaviour
     private void OnClick()
     {
         PhotonNetwork.Disconnect();
-        PhotonNetwork.ConnectToMaster("app-us.exitgamescloud.com", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.version);
+        PhotonNetwork.ConnectToMaster("app-us.exitgamescloud.com", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
         FengGameManagerMKII.OnPrivateServer = false;
     }
 }

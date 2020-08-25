@@ -116,10 +116,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 base.gameObject.GetComponent<Skybox>().material = skyBoxDAWN;
                 break;
             case DayLight.Night:
+                /* TODO: Flashlight is now handled in HERO#Start()
                 GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("flashlight"));
                 gameObject.transform.parent = base.transform;
                 gameObject.transform.position = base.transform.position;
-                gameObject.transform.rotation = Quaternion.Euler(353f, 0f, 0f);
+                gameObject.transform.rotation = Quaternion.Euler(353f, 0f, 0f);*/
                 RenderSettings.ambientLight = FengColor.AmbientNight;
                 GameObject.Find("mainLight").GetComponent<Light>().color = FengColor.Night;
                 base.gameObject.GetComponent<Skybox>().material = skyBoxNIGHT;

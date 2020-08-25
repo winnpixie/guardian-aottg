@@ -53,7 +53,7 @@ public class LoginFengKAI : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("userid", name);
         form.AddField("password", password);
-        form.AddField("version", UIMainReferences.version);
+        form.AddField("version", UIMainReferences.Version);
         WWW w = new WWW(CheckUserURL, form);
         yield return w;
         ClearCookies();

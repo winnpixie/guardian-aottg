@@ -11,7 +11,7 @@
                 PhotonPlayer player = PhotonPlayer.Find(id);
                 if (player != null)
                 {
-                    string rpcName = string.Join("_", args.GetRange(1, args.Length));
+                    string rpcName = string.Join("_", args.CopyOfRange(1, args.Length));
                     FengGameManagerMKII.Instance.photonView.RPC(rpcName, player);
                     irc.AddLine($"Sent RPC '{rpcName}' to #{id}.");
                 }

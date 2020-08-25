@@ -59,6 +59,7 @@ public class PhotonPlayer
     public bool isTrap;
     public bool isRankedRC;
     public bool isAnarchy;
+    public bool isCyrus;
     public bool isUnknown;
 
     public PhotonPlayer(bool isLocal, int actorID, string name)

@@ -24,7 +24,7 @@
                         PhotonPlayer player = PhotonPlayer.Find(id);
                         if (player != null)
                         {
-                            string reason = args.Length > 1 ? string.Join(" ", args.GetRange(1, args.Length)) : "Kicked.";
+                            string reason = args.Length > 1 ? string.Join(" ", args.CopyOfRange(1, args.Length)) : "Kicked.";
                             if (FengGameManagerMKII.OnPrivateServer)
                             {
                                 FengGameManagerMKII.Instance.KickPlayer(player, false, reason);

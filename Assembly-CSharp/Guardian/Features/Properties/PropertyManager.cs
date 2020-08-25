@@ -1,17 +1,17 @@
 ﻿using Guardian.Utilities;
 using System.IO;
 using System.Text;
-using UnityEngine;
 
 namespace Guardian.Features.Properties
 {
     class PropertyManager : FeatureManager<Property>
     {
-        private string DataPath;
+        private string DataPath = Mod.RootDir + "\\GameSettings.txt";
 
         // Master Client
         public Property<bool> LaughingTitans = new Property<bool>("MC_TitansLaughOnDeath", new string[0], false);
         public Property<bool> EndlessTitans = new Property<bool>("MC_EndlessTitans", new string[0], false);
+        public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], false);
 
         // Player
         public Property<bool> AlternateIdle = new Property<bool>("Player_AHSSIdle", new string[0], false);
@@ -22,13 +22,16 @@ namespace Guardian.Features.Properties
 
         // Chat
         public Property<string> ChatName = new Property<string>("Chat_UserName", new string[0], "");
-        public Property<string> TextColor = new Property<string>("Chat_TextColor", new string[0], "");
         public Property<bool> BoldName = new Property<bool>("Chat_BoldName", new string[0], false);
         public Property<bool> ItalicName = new Property<bool>("Chat_ItalicName", new string[0], false);
-        public Property<string> MessagePrefix = new Property<string>("Chat_TextPrefix", new string[0], "");
-        public Property<string> MessageSuffix = new Property<string>("Chat_TextSuffix", new string[0], "");
-        public Property<bool> BoldMessage = new Property<bool>("Chat_BoldText", new string[0], false);
-        public Property<bool> ItalicMessage = new Property<bool>("Chat_ItalicText", new string[0], false);
+        public Property<string> TextColor = new Property<string>("Chat_TextColor", new string[0], "");
+        public Property<string> TextPrefix = new Property<string>("Chat_TextPrefix", new string[0], "");
+        public Property<string> TextSuffix = new Property<string>("Chat_TextSuffix", new string[0], "");
+        public Property<bool> BoldText = new Property<bool>("Chat_BoldText", new string[0], false);
+        public Property<bool> ItalicText = new Property<bool>("Chat_ItalicText", new string[0], false);
+
+        // Visual
+        public Property<bool> LegacyTimeFormat = new Property<bool>("Visual_LegacyTimeFormat", new string[0], false);
 
         // Logging
         public Property<bool> ShowLog = new Property<bool>("Log_ShowLog", new string[0], true);
@@ -38,11 +41,10 @@ namespace Guardian.Features.Properties
 
         public override void Load()
         {
-            DataPath = $"{Application.dataPath}\\..\\GameSettings.txt";
-
             // Gameplay
             base.Add(LaughingTitans);
             base.Add(EndlessTitans);
+            base.Add(InfiniteRoom);
 
             // Player
             base.Add(AlternateIdle);
@@ -56,10 +58,13 @@ namespace Guardian.Features.Properties
             base.Add(TextColor);
             base.Add(BoldName);
             base.Add(ItalicName);
-            base.Add(MessagePrefix);
-            base.Add(MessageSuffix);
-            base.Add(BoldMessage);
-            base.Add(ItalicMessage);
+            base.Add(TextPrefix);
+            base.Add(TextSuffix);
+            base.Add(BoldText);
+            base.Add(ItalicText);
+
+            // Visual
+            base.Add(LegacyTimeFormat);
 
             // Logging
             base.Add(ShowLog);

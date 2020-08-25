@@ -6,7 +6,7 @@ public class Btn_CreateLanGame : MonoBehaviour
 	{
 		PhotonNetwork.Disconnect();
 		MonoBehaviour.print("IP:" + Network.player.ipAddress + Network.player.externalIP);
-		PhotonNetwork.ConnectToMaster(Network.player.ipAddress, 5055, FengGameManagerMKII.ApplicationId, UIMainReferences.version);
+		PhotonNetwork.ConnectToMaster(Network.player.ipAddress, 5055, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
 	}
 
 	private void Start()

@@ -23,7 +23,8 @@ namespace Guardian.Features.Commands.Impl
             }
             int endIndex = Math.Min(page * Mod.Commands.PerPage, Mod.Commands.Elements.Count);
 
-            irc.AddLine($"-=+=- Commands (Page {page}/{Mod.Commands.Pages}): -=+=-".WithColor("aaff00"));
+            irc.AddLine($"Commands (Page {page}/{Mod.Commands.Pages})".WithColor("aaff00"));
+            irc.AddLine($"/command <requiredArg> [optionalArg]".WithColor("aaaaaa"));
             for (int i = (page - 1) * Mod.Commands.PerPage; i < endIndex; i++)
             {
                 Command command = Mod.Commands.Elements[i];

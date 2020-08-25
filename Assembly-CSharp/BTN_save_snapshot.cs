@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using System.IO;
-using System.Diagnostics;
 using Guardian.Utilities;
 
 public class BTN_save_snapshot : MonoBehaviour
@@ -10,13 +9,7 @@ public class BTN_save_snapshot : MonoBehaviour
     public GameObject targetTexture;
     public GameObject info;
     public GameObject[] thingsNeedToHide;
-    private string saveDirectory;
-
-    public void Start()
-    {
-        saveDirectory = $"{Application.dataPath}\\..\\Screenshots";
-        GameHelper.TryCreateFile(saveDirectory, true);
-    }
+    private string SaveDir = Guardian.Mod.RootDir + "\\Screenshots";
 
     private void OnClick()
     {
@@ -45,11 +38,15 @@ public class BTN_save_snapshot : MonoBehaviour
         {
             go.transform.position -= Vector3.up * 10000f;
         }
-        string img_name = "aottg_ss-" + DateTime.Today.Month.ToString() + "_" + DateTime.Today.Day.ToString() + "_" + DateTime.Today.Year.ToString() + "-" + DateTime.Now.Hour.ToString() + "_" + DateTime.Now.Minute.ToString() + "_" + DateTime.Now.Second.ToString() + ".png";
+
+        DateTime now = DateTime.Now;
+        string img_name = "aottg_ss-" + now.Month + "_" + now.Day + "_" + now.Year + "-" + now.Hour + "_" + now.Minute + "_" + now.Second + ".png";
         byte[] imgData = texture.EncodeToPNG();
-        GameHelper.TryCreateFile(saveDirectory, true);
-        File.WriteAllBytes($"{saveDirectory}\\{img_name}", imgData);
-        Application.ExternalCall("SaveImg", img_name, texture.width, texture.height, Convert.ToBase64String(imgData));
+        GameHelper.TryCreateFile(SaveDir, true);
+        File.WriteAllBytes($"{SaveDir}\\{img_name}", imgData);
+
+        // ExternalCall is legacy code, it used to execute JavaScript on http://fenglee.com/game/aog/
+        // Application.ExternalCall("SaveImg", img_name, texture.width, texture.height, Convert.ToBase64String(imgData));
         UnityEngine.Object.DestroyObject(texture);
     }
 }

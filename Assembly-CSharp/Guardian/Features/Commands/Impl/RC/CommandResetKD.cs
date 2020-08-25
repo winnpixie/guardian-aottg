@@ -15,6 +15,7 @@ namespace Guardian.Features.Commands.Impl.RC
                 { PhotonPlayerProperty.MaxDamage, 0 },
                 { PhotonPlayerProperty.TotalDamage, 0 }
             };
+
             if (args.Length > 0)
             {
                 if (PhotonNetwork.isMasterClient)
@@ -26,6 +27,15 @@ namespace Guardian.Features.Commands.Impl.RC
                             player.SetCustomProperties(properties);
                         }
                         FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, "All stats have been reset.".WithColor("ffcc00"), string.Empty);
+                    }
+                    else if (int.TryParse(args[0], out int id))
+                    {
+                        PhotonPlayer player = PhotonPlayer.Find(id);
+                        if (player != null)
+                        {
+                            player.SetCustomProperties(properties);
+                        }
+                        irc.AddLine($"You reset #{id}'s stats.".WithColor("ffcc00"));
                     }
                 }
                 else

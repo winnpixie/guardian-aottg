@@ -4,13 +4,20 @@ using UnityEngine;
 
 public static class GExtensions
 {
-    public static T[] GetRange<T>(this T[] arrIn, int from, int to)
+    public static T[] CopyOfRange<T>(this T[] arrIn, int startIndex, int endIndex)
     {
-        int newLength = to - from;
-        T[] newArr = new T[newLength];
-        Array.Copy(arrIn, from, newArr, 0, newLength);
+        // Decrement endIndex until it is arrIn.Length - 1
+        while (endIndex >= arrIn.Length)
+        {
+            endIndex--;
+        }
 
-        return newArr;
+        int len = endIndex - startIndex + 1;
+        T[] arrOut = new T[len];
+
+        Array.Copy(arrIn, startIndex, arrOut, 0, len);
+
+        return arrOut;
     }
 
     public static T[] Sorted<T>(this T[] arrIn, Comparison<T> comparer)

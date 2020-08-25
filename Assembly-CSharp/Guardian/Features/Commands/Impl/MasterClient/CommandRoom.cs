@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guardian.Utilities;
+using System;
 
 namespace Guardian.Features.Commands.Impl.MasterClient
 {
@@ -14,7 +15,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 if (args[0].Equals("time", StringComparison.OrdinalIgnoreCase) && int.TryParse(args[1], out int time))
                 {
                     FengGameManagerMKII.Instance.AddTime(time);
-                    FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Added {time} seconds to the clock!".WithColor("ffcc00"), "");
+                    FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Added {GameHelper.FormatTime(time, false).WithColor("ffffff")} to the clock!".WithColor("ffcc00"), "");
                 }
 
                 // Max players

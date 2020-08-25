@@ -9,7 +9,7 @@ public class BTN_Join_LAN : MonoBehaviour
 		string passwd = base.transform.parent.Find("InputAuthPass").GetComponent<UIInput>().text;
 		PhotonNetwork.Disconnect();
 
-		if (int.TryParse(port, out int result) && PhotonNetwork.ConnectToMaster(ip, result, FengGameManagerMKII.ApplicationId, UIMainReferences.version))
+		if (int.TryParse(port, out int result) && PhotonNetwork.ConnectToMaster(ip, result, FengGameManagerMKII.ApplicationId, UIMainReferences.Version))
 		{
 			PlayerPrefs.SetString("lastIP", ip);
 			PlayerPrefs.SetString("lastPort", port);

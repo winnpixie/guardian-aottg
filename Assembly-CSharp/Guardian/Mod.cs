@@ -8,14 +8,16 @@ using System.IO;
 using Guardian.Features.Properties;
 using Guardian.AntiAbuse;
 using Guardian.Networking;
+using System.Collections;
 
 namespace Guardian
 {
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string RootDir = Path.Combine(Application.dataPath, "..");
-        public static string HostWhitelistPath = Path.Combine(RootDir, "Hosts.txt");
+        public static string Build = "08252020";
+        public static string RootDir = Application.dataPath + "\\..";
+        public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
         public static CommandManager Commands = new CommandManager();
         public static PropertyManager Properties = new PropertyManager();
@@ -31,6 +33,9 @@ namespace Guardian
 
             if (!Initialized)
             {
+                StartCoroutine(CheckForUpdate());
+
+                // Host whitelist (for skins)
                 if (!File.Exists(HostWhitelistPath))
                 {
                     HostWhitelist.Add("i.imgur.com");
@@ -43,6 +48,7 @@ namespace Guardian
                 }
                 LoadSkinHostWhitelist();
 
+                // Auto-load RC name and guild (if possible)
                 FengGameManagerMKII.NameField = PlayerPrefs.GetString("name", string.Empty);
                 if (FengGameManagerMKII.NameField.Uncolored().Length == 0)
                 {
@@ -50,10 +56,11 @@ namespace Guardian
                 }
                 LoginFengKAI.Player.guildname = PlayerPrefs.GetString("guildname", string.Empty);
 
+                // Load various features
                 Commands.Load();
                 Properties.Load();
 
-                // Cache property whitelist
+                // Property whitelist
                 NetworkPatches.PropertyWhitelist.Add("sender");
                 NetworkPatches.PropertyWhitelist.Add("GuardianMod");
                 NetworkPatches.PropertyWhitelist.Add("Stats");
@@ -74,6 +81,19 @@ namespace Guardian
             {
                 details = "Staring at the main menu..."
             });
+        }
+
+        private IEnumerator CheckForUpdate()
+        {
+            using (WWW www = new WWW("https://raw.githubusercontent.com/alerithe/guardian/master/BUILD.DAT"))
+            {
+                yield return www;
+
+                if (!www.text.Equals(Build))
+                {
+                    UIMainReferences.Version = "outdated";
+                }
+            }
         }
 
         public static void LoadSkinHostWhitelist()
@@ -114,12 +134,12 @@ namespace Guardian
             }
 
             // Bold chat
-            if (Properties.BoldMessage.Value)
+            if (Properties.BoldText.Value)
             {
                 input = input.AsBold();
             }
             // Italic chat
-            if (Properties.ItalicMessage.Value)
+            if (Properties.ItalicText.Value)
             {
                 input = input.AsItalic();
             }
@@ -145,17 +165,17 @@ namespace Guardian
             input = input.Replace("<3", "<color=#ff0000>\u2665</color>");
             input = input.Replace(":lenny:", "( ͡° ͜ʖ ͡°)");
 
-            return new object[] { $"{Properties.MessagePrefix.Value}{input}{Properties.MessageSuffix.Value}", name };
+            return new object[] { $"{Properties.TextPrefix.Value}{input}{Properties.TextSuffix.Value}", name };
         }
 
         public void OnPhotonPlayerConnected(PhotonPlayer player)
         {
-            Logger.Info($"[{player.id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " joined.".WithColor("00ff99"));
+            Logger.Info($"[{player.id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00ff00"));
         }
 
         public void OnPhotonPlayerDisconnected(PhotonPlayer player)
         {
-            Logger.Info($"[{player.id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " left.".WithColor("ff0000"));
+            Logger.Info($"[{player.id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("ff0000"));
         }
 
         public void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)

@@ -136,5 +136,148 @@ namespace Guardian.Utilities
         {
             return (long)DateTime.UtcNow.Subtract(epoch).TotalMilliseconds;
         }
+
+        public static string FormatTime(float time, bool precise = false, bool isSeconds = true)
+        {
+            if (Mod.Properties.LegacyTimeFormat.Value)
+            {
+                float tmpSecs = isSeconds ? time : (time / 1000f);
+                if (precise)
+                {
+                    if (tmpSecs > 1)
+                    {
+                        return tmpSecs + " secs";
+                    }
+                    else
+                    {
+                        return tmpSecs + " sec";
+                    }
+                }
+                else
+                {
+                    tmpSecs = MathHelper.Floor(tmpSecs);
+                    if (tmpSecs > 1)
+                    {
+                        return tmpSecs + " secs";
+                    }
+                    else
+                    {
+                        return tmpSecs + " sec";
+                    }
+                }
+            }
+
+            string output = "";
+
+            if (isSeconds)
+            {
+                time *= 1000;
+            }
+
+            int ms = (int)time % 1000;
+            int sec = MathHelper.Floor(time / 1000f);
+            int min = MathHelper.Floor(sec / 60f);
+            sec -= min * 60;
+            int hrs = MathHelper.Floor(min / 60f);
+            min -= hrs * 60;
+            int days = MathHelper.Floor(hrs / 24f);
+            hrs -= days * 24;
+            int years = MathHelper.Floor(days / 365f);
+            days -= years * 365;
+
+
+            // Milliseconds
+            if (ms > 0 && precise)
+            {
+                output = $"{ms}ms";
+            }
+
+            // Seconds
+            if (sec > 0)
+            {
+                if (output.Length > 0)
+                {
+                    output = $", {output}";
+                }
+                if (sec > 1)
+                {
+                    output = $"{sec} secs{output}";
+                }
+                else
+                {
+                    output = $"{sec} sec{output}";
+                }
+            }
+
+            // Minutes
+            if (min > 0)
+            {
+                if (output.Length > 0)
+                {
+                    output = $", {output}";
+                }
+                if (min > 1)
+                {
+                    output = $"{min } mins{output}";
+                }
+                else
+                {
+                    output = $"{min} min{output}";
+                }
+            }
+
+            // Hours
+            if (hrs > 0)
+            {
+                if (output.Length > 0)
+                {
+                    output = $", {output}";
+                }
+                if (hrs > 1)
+                {
+                    output = $"{hrs} hrs{output}";
+                }
+                else
+                {
+                    output = $"{hrs} hr{output}";
+                }
+            }
+
+            // Days
+            if (days > 0)
+            {
+                if (output.Length > 0)
+                {
+                    output = $", {output}";
+                }
+                if (days > 1)
+                {
+                    output = $"{days} days{output}";
+                }
+                else
+                {
+                    output = $"{days} day{output}";
+                }
+            }
+
+            // Years
+            if (years > 0)
+            {
+                if (output.Length > 0)
+                {
+                    output = $", {output}";
+                }
+                if (years > 1)
+                {
+                    output = $"{years} yrs{output}";
+                }
+                else
+                {
+                    output = $"{years} yr{output}";
+                }
+            }
+
+            return output;
+        }
     }
 }

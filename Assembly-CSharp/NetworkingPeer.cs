@@ -1433,7 +1433,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             }
         }
-        if (photonView != null && sender != null)
+        if (sender != null)
         {
             if (!isKnown)
             {
@@ -1471,6 +1471,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     case "NekoRPC":
                     case "receiveSatanPlayers":
                         sender.isUnknown = true;
+                        break;
+                    case "AddMeToCEList": // Cyrus Essentials
+                        sender.isCyrus = true;
                         break;
                     case "ResetRPCMgr": // ExpMod
                     case "HookDMRPC":

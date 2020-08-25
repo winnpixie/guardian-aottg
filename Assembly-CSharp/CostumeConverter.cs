@@ -122,31 +122,31 @@ public class CostumeConverter
 
     public static void HeroCostumeToPhotonData2(HeroCostume costume, PhotonPlayer player)
     {
-        Hashtable hashtable = new Hashtable();
-        hashtable.Add(PhotonPlayerProperty.Sex, SexToInt(costume.sex));
+        Hashtable properties = new Hashtable();
+        properties.Add(PhotonPlayerProperty.Sex, SexToInt(costume.sex));
         int num = costume.costumeId;
         if (num == 26)
         {
             num = 25;
         }
-        hashtable.Add(PhotonPlayerProperty.CostumeId, num);
-        hashtable.Add(PhotonPlayerProperty.HeroCostumeId, costume.id);
-        hashtable.Add(PhotonPlayerProperty.Cape, costume.cape);
-        hashtable.Add(PhotonPlayerProperty.HairInfo, costume.hairInfo.id);
-        hashtable.Add(PhotonPlayerProperty.EyeTextureId, costume.eye_texture_id);
-        hashtable.Add(PhotonPlayerProperty.BeardTextureId, costume.beard_texture_id);
-        hashtable.Add(PhotonPlayerProperty.GlassTextureId, costume.glass_texture_id);
-        hashtable.Add(PhotonPlayerProperty.SkinColor, costume.skin_color);
-        hashtable.Add(PhotonPlayerProperty.HairColor1, costume.hair_color.r);
-        hashtable.Add(PhotonPlayerProperty.HairColor2, costume.hair_color.g);
-        hashtable.Add(PhotonPlayerProperty.HairColor3, costume.hair_color.b);
-        hashtable.Add(PhotonPlayerProperty.Division, DivisionToInt(costume.division));
-        hashtable.Add(PhotonPlayerProperty.StatSpd, costume.stat.SPD);
-        hashtable.Add(PhotonPlayerProperty.StatGas, costume.stat.GAS);
-        hashtable.Add(PhotonPlayerProperty.StatBla, costume.stat.BLA);
-        hashtable.Add(PhotonPlayerProperty.StatAcl, costume.stat.ACL);
-        hashtable.Add(PhotonPlayerProperty.StatSkill, costume.stat.skillId);
-        player.SetCustomProperties(hashtable);
+        properties.Add(PhotonPlayerProperty.CostumeId, num);
+        properties.Add(PhotonPlayerProperty.HeroCostumeId, costume.id);
+        properties.Add(PhotonPlayerProperty.Cape, costume.cape);
+        properties.Add(PhotonPlayerProperty.HairInfo, costume.hairInfo.id);
+        properties.Add(PhotonPlayerProperty.EyeTextureId, costume.eye_texture_id);
+        properties.Add(PhotonPlayerProperty.BeardTextureId, costume.beard_texture_id);
+        properties.Add(PhotonPlayerProperty.GlassTextureId, costume.glass_texture_id);
+        properties.Add(PhotonPlayerProperty.SkinColor, costume.skin_color);
+        properties.Add(PhotonPlayerProperty.HairColor1, costume.hair_color.r);
+        properties.Add(PhotonPlayerProperty.HairColor2, costume.hair_color.g);
+        properties.Add(PhotonPlayerProperty.HairColor3, costume.hair_color.b);
+        properties.Add(PhotonPlayerProperty.Division, DivisionToInt(costume.division));
+        properties.Add(PhotonPlayerProperty.StatSpd, costume.stat.SPD);
+        properties.Add(PhotonPlayerProperty.StatGas, costume.stat.GAS);
+        properties.Add(PhotonPlayerProperty.StatBla, costume.stat.BLA);
+        properties.Add(PhotonPlayerProperty.StatAcl, costume.stat.ACL);
+        properties.Add(PhotonPlayerProperty.StatSkill, costume.stat.skillId);
+        player.SetCustomProperties(properties);
     }
 
     public static HeroCostume PhotonDataToHeroCostume2(PhotonPlayer player)

@@ -9,13 +9,13 @@ namespace Guardian.Utilities
         public static int Ceil(float vIn)
         {
             int vOut = (int)vIn;
-            return vOut < vIn ? vOut + 1 : vOut;
+            return vOut <= vIn ? vOut + 1 : vOut;
         }
 
         public static int Floor(float vIn)
         {
             int vOut = (int)vIn;
-            return vOut < vIn ? vOut : vOut - 1;
+            return vOut <= vIn ? vOut : vOut - 1;
         }
 
         public static int Clamp(int val, int min, int max)

@@ -5,7 +5,7 @@ namespace Guardian.Features.Commands.Impl.RC
 {
     class CommandTeam : Command
     {
-        public CommandTeam() : base("team", new string[0], "<0 OR individual/1 OR cyan/2 OR magenta>", false) { }
+        public CommandTeam() : base("team", new string[0], "<0,individual/1,cyan/2,magenta>", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

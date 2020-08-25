@@ -11,6 +11,10 @@ namespace Guardian.Utilities
             message = Mod.BlacklistedTags.Replace(message, "");
             if (message.Length != 0)
             {
+                if (Messages.Count > 49)
+                {
+                    Messages.RemoveAt(0);
+                }
                 Messages.Add(message);
             }
         }

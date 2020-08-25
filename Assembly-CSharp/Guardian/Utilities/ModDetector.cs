@@ -22,6 +22,12 @@
                 mod += "[ffcc00]]";
             }
 
+            // Cyrus Essentials
+            if (player.isCyrus)
+            {
+                mod += "[ffcc00][[ffff00]CE[-]]";
+            }
+
             // Photon mod
             if (player.isPhoton)
             {
@@ -56,7 +62,7 @@
             if ((properties.ContainsKey("GuardianMod") && properties["GuardianMod"] is int)
                 || (properties.ContainsKey("Stats") && properties["Stats"] is int))
             {
-                mod += string.Concat("[ffcc00][[aabb66]Guardian");
+                mod += string.Concat("[ffcc00][[ffff00]Guardian");
                 if (properties.ContainsKey("Stats"))
                 {
                     int stats = GExtensions.AsInt(properties["Stats"]);
