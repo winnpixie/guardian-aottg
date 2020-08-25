@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "08252020";
+        public static string Build = "08252020-1";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -83,15 +83,17 @@ namespace Guardian
             });
         }
 
-        private IEnumerator CheckForUpdate()
+        public static IEnumerator CheckForUpdate()
         {
-            using (WWW www = new WWW("https://raw.githubusercontent.com/alerithe/guardian/master/BUILD.DAT"))
+            using (WWW www = new WWW("https://raw.githubusercontent.com/alerithe/guardian/master/BUILD.TXT"))
             {
                 yield return www;
 
                 if (!www.text.Equals(Build))
                 {
+                    Logger.Error("You are running an outdated build, please update!");
                     UIMainReferences.Version = "outdated";
+                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "[ff0000]Mod is outdated![-] Please download the latest build from [0099ff]https://tiny.cc/GuardianMod[-]!";
                 }
             }
         }

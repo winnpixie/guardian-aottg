@@ -25,17 +25,18 @@ public class UIMainReferences : MonoBehaviour
         string rcBuild = "8/12/2015";
 
         NGUITools.SetActive(panelMain, state: true);
+        UILabel versionText = GameObject.Find("VERSION").GetComponent<UILabel>();
         if (Version == null || Version.StartsWith("error"))
         {
-            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[ff0000]Verification failed. Please try redownloading Guardian from [0099ff]https://discord.gg/JGzTdWm[-]!";
+            versionText.text = "[ff0000]Verification failed.[-] Please try re-downloading Guardian from [0099ff]https://tiny.cc/GuardianMod[-]!";
         }
         else if (Version.StartsWith("outdated"))
         {
-            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[ff0000]Guardian is outdated! Please download the latest build from [0099ff]https://discord.gg/JGzTdWm[-]!";
+            versionText.text = "[ff0000]Mod is outdated![-] Please download the latest build from [0099ff]https://tiny.cc/GuardianMod[-]!";
         }
         else
         {
-            GameObject.Find("VERSION").GetComponent<UILabel>().text = "Client Verified | [9999ff]RC " + rcBuild + "[-] | [ffff00]Guardian " + Guardian.Mod.Build;
+            versionText.text = "Client Verified | [9999ff]RC " + rcBuild + "[-] | [ffff00]Guardian " + Guardian.Mod.Build;
         }
 
         if (IsFirstLaunch)
