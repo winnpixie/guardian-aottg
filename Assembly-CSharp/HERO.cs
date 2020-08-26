@@ -1621,7 +1621,7 @@ public class HERO : Photon.MonoBehaviour
         transform.rotation = oldHeadRotation;
     }
 
-    public void shootFlare(int type)
+    public void ShootFlare(int type)
     {
         bool flag = false;
         if (type == 1 && flare1CD == 0f)
@@ -3331,15 +3331,15 @@ public class HERO : Photon.MonoBehaviour
                 case HERO_STATE.Idle:
                     if (inputManager.isInputDown[InputCode.flare1])
                     {
-                        shootFlare(1);
+                        ShootFlare(1);
                     }
                     if (inputManager.isInputDown[InputCode.flare2])
                     {
-                        shootFlare(2);
+                        ShootFlare(2);
                     }
                     if (inputManager.isInputDown[InputCode.flare3])
                     {
-                        shootFlare(3);
+                        ShootFlare(3);
                     }
                     if (inputManager.isInputDown[InputCode.restart])
                     {
@@ -5159,7 +5159,7 @@ public class HERO : Photon.MonoBehaviour
         LayerMask mask3 = 1 << LayerMask.NameToLayer("EnemyBox");
         RaycastHit[] array = Physics.RaycastAll(ray, 180f, ((LayerMask)((int)mask | (int)mask2 | (int)mask3)).value);
         List<RaycastHit> list = new List<RaycastHit>();
-        List<TITAN> list2 = new List<TITAN>();
+        List<TITAN> titans = new List<TITAN>();
         foreach (RaycastHit item in array)
         {
             list.Add(item);
@@ -5181,7 +5181,7 @@ public class HERO : Photon.MonoBehaviour
                     TITAN component = gameObject.transform.root.gameObject.GetComponent<TITAN>();
                     if (component != null)
                     {
-                        list2.Add(component);
+                        titans.Add(component);
                     }
                 }
             }
@@ -5193,17 +5193,17 @@ public class HERO : Photon.MonoBehaviour
         for (int i = 0; i < myTitans.Count; i++)
         {
             TITAN tITAN = myTitans[i];
-            if (!list2.Contains(tITAN))
+            if (!titans.Contains(tITAN))
             {
                 tITAN.isLook = false;
             }
         }
-        for (int i = 0; i < list2.Count; i++)
+        for (int i = 0; i < titans.Count; i++)
         {
-            TITAN tITAN2 = list2[i];
+            TITAN tITAN2 = titans[i];
             tITAN2.isLook = true;
         }
-        myTitans = list2;
+        myTitans = titans;
     }
 
     private void checkDashRebind()

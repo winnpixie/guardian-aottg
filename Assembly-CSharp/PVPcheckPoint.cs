@@ -296,7 +296,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             titanPt = 0f;
             syncPts();
             state = CheckPointState.Human;
-            base.photonView.RPC("changeState", PhotonTargets.All, 1);
+            base.photonView.RPC("changeState", PhotonTargets.AllBuffered, 1);
             if (LevelInfo.getInfo(FengGameManagerMKII.level).mapName != "The City I")
             {
                 Vector3 position = base.transform.position;
@@ -329,7 +329,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                 PhotonNetwork.Destroy(supply);
             }
             state = CheckPointState.Titan;
-            base.photonView.RPC("changeState", PhotonTargets.All, 2);
+            base.photonView.RPC("changeState", PhotonTargets.AllBuffered, 2);
             fengGame.PVPtitanScore += 2;
             fengGame.CheckPvPPoints();
             if (checkIfTitanWins())
@@ -376,7 +376,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             if (state != CheckPointState.Human)
             {
                 state = CheckPointState.Non;
-                base.photonView.RPC("changeState", PhotonTargets.All, 0);
+                base.photonView.RPC("changeState", PhotonTargets.AllBuffered, 0);
             }
         }
     }
@@ -395,7 +395,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             if (state != CheckPointState.Titan)
             {
                 state = CheckPointState.Non;
-                base.photonView.RPC("changeState", PhotonTargets.Others, 0);
+                base.photonView.RPC("changeState", PhotonTargets.OthersBuffered, 0);
             }
         }
     }
