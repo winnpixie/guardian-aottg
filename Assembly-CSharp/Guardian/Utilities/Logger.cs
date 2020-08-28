@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Guardian.Utilities
 {
     class Logger
     {
         public List<string> Messages = new List<string>();
+        public Vector2 ScrollPosition = GameHelper.ScrollBottom;
 
         private void Log(string message)
         {
@@ -16,6 +18,7 @@ namespace Guardian.Utilities
                     Messages.RemoveAt(0);
                 }
                 Messages.Add(message);
+                ScrollPosition = GameHelper.ScrollBottom;
             }
         }
 

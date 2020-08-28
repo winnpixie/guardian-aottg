@@ -145,21 +145,6 @@ namespace Guardian.AntiAbuse
             PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
             ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
 
-            // Photon Mod detection (probably not the right way to detect but it'll work
-            if (properties.ContainsKey("guildName")
-                && properties["guildName"] is string && ((string)properties["guildName"]).Equals("photonMod"))
-            {
-                player.isPhoton = true;
-            }
-
-            // Neko Mod detection
-            if (properties.ContainsValue("N_user") || properties.ContainsValue("N_owner"))
-            {
-                player.isNeko = true;
-                player.isNekoUser = properties.ContainsValue("N_user");
-                player.isNekoOwner = properties.ContainsValue("N_owner");
-            }
-
             // Remove invalid properties
             if (player.isLocal && properties.ContainsKey("sender") && properties["sender"] is PhotonPlayer)
             {

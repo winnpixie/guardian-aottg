@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "08262020";
+        public static string Build = "08282020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -183,6 +183,29 @@ namespace Guardian
         public void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
         {
             NetworkPatches.OnPlayerPropertyModification(playerAndUpdatedProps);
+
+            PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
+            ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
+
+            // Photon Mod detection (probably not the right way to detect but it'll work
+            if (properties.ContainsKey("guildName")
+                && properties["guildName"] is string && ((string)properties["guildName"]).Equals("photonMod"))
+            {
+                player.isPhoton = true;
+            }
+
+            // Neko Mod detection
+            if (properties.ContainsValue("N_user") || properties.ContainsValue("N_owner"))
+            {
+                player.isNeko = true;
+                player.isNekoUser = properties.ContainsValue("N_user");
+                player.isNekoOwner = properties.ContainsValue("N_owner");
+            }
+
+            if (properties.ContainsKey("FoxMod"))
+            {
+                player.isFoxMod = true;
+            }
         }
 
         public void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)

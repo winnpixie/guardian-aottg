@@ -22,6 +22,12 @@
                 mod += "[ffcc00]]";
             }
 
+            // Fox Mod
+            if (player.isFoxMod)
+            {
+                mod += "[ffcc00][[ff6600]FoxMod[-]]";
+            }
+
             // Cyrus Essentials
             if (player.isCyrus)
             {
@@ -77,6 +83,12 @@
                     }
                 }
                 mod += "[-]]";
+            }
+
+            if ((properties.ContainsKey("A.S Guard") && properties["A.S Guard"] is int)
+                || (properties.ContainsKey("Allstar Mod") && properties["Allstar Mod"] is int))
+            {
+                mod += "[ffcc00][[ffffff]All[ff0000]Star[-]]";
             }
 
             // DogS

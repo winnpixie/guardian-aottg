@@ -4,8 +4,6 @@ namespace Guardian
 {
     class ModUI : MonoBehaviour
     {
-        private Vector2 ScrollPosition = new Vector2(0, 0);
-
         void OnGUI()
         {
             if (Mod.Properties.ShowLog.Value)
@@ -13,7 +11,7 @@ namespace Guardian
                 GUI.SetNextControlName(string.Empty);
                 GUILayout.BeginArea(new Rect(Screen.width - 331f, Screen.height - 255f, 330f, 225f), GUI.skin.box);
                 GUILayout.FlexibleSpace();
-                ScrollPosition = GUILayout.BeginScrollView(ScrollPosition);
+                Mod.Logger.ScrollPosition = GUILayout.BeginScrollView(Mod.Logger.ScrollPosition);
                 GUIStyle labelStyle = new GUIStyle(GUI.skin.label)
                 {
                     margin = new RectOffset(0, 0, 0, 0),

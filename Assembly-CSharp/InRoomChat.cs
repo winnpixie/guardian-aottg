@@ -1,4 +1,5 @@
 using Guardian;
+using Guardian.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,8 +12,7 @@ public class InRoomChat : Photon.MonoBehaviour
     private bool AlignBottom = true;
     public static List<Message> Messages = new List<Message>();
     public string inputLine = string.Empty;
-    private static readonly Vector2 ScrollBottom = new Vector2(0, float.MaxValue);
-    private Vector2 ScrollPosition = ScrollBottom;
+    private Vector2 ScrollPosition = GameHelper.ScrollBottom;
     private string TextFieldName = "ChatInput";
 
     public void Start()
@@ -24,7 +24,7 @@ public class InRoomChat : Photon.MonoBehaviour
     {
         if (AlignBottom)
         {
-            ScrollPosition = ScrollBottom;
+            ScrollPosition = GameHelper.ScrollBottom;
             MessagesRect = new Rect(1f, Screen.height - 255f, 329f, 225f);
             ChatBoxRect = new Rect(30f, Screen.height - 25f, 300f, 25f);
         }
@@ -47,7 +47,7 @@ public class InRoomChat : Photon.MonoBehaviour
                 Messages.RemoveAt(0);
             }
             Messages.Add(new Message(sender, text));
-            ScrollPosition = ScrollBottom;
+            ScrollPosition = GameHelper.ScrollBottom;
         }
     }
 
@@ -91,13 +91,18 @@ public class InRoomChat : Photon.MonoBehaviour
 
         // Sends chat messages
         KeyCode rcChatKey = FengGameManagerMKII.InputRC.humanKeys[InputCodeRC.chat];
-        if (Event.current.type == EventType.KeyDown)
+        if (Event.current.type == EventType.KeyUp && Event.current.keyCode == rcChatKey && rcChatKey != KeyCode.None && !GUI.GetNameOfFocusedControl().Equals(TextFieldName))
+        {
+            GUI.FocusControl(TextFieldName);
+            inputLine = "\t";
+        }
+        else if (Event.current.type == EventType.KeyDown)
         {
             if ((Event.current.keyCode == KeyCode.Tab || Event.current.character == '\t') && rcChatKey != KeyCode.Tab && !IN_GAME_MAIN_CAMERA.IsPausing)
             {
                 Event.current.Use();
             }
-            else if (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return || (Event.current.keyCode == rcChatKey && rcChatKey != KeyCode.None))
+            else if (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return)
             {
                 if (GUI.GetNameOfFocusedControl().Equals(TextFieldName))
                 {
@@ -133,13 +138,13 @@ public class InRoomChat : Photon.MonoBehaviour
                         }
                     }
 
-                    inputLine = "";
                     GUI.FocusControl("");
+                    inputLine = "";
                 }
                 else
                 {
-                    inputLine = "\t";
                     GUI.FocusControl(TextFieldName);
+                    inputLine = "\t";
                 }
             }
         }

@@ -60,6 +60,7 @@ public class PhotonPlayer
     public bool isRankedRC;
     public bool isAnarchy;
     public bool isCyrus;
+    public bool isFoxMod;
     public bool isUnknown;
 
     public PhotonPlayer(bool isLocal, int actorID, string name)
