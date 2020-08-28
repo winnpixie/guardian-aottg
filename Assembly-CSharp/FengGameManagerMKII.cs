@@ -1119,6 +1119,21 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
     }
 
+    [RPC]
+    public void SetCurrentMap(string mapName, PhotonMessageInfo info)
+    {
+        if (info.sender.isMasterClient && Mod.Instance.IsMultiMap)
+        {
+            LevelInfo levelInfo = LevelInfo.getInfo(mapName);
+            if (levelInfo != null && !level.Equals(levelInfo.name))
+            {
+                level = levelInfo.name;
+                IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.type;
+                PhotonNetwork.LoadLevel(levelInfo.mapName);
+            }
+        }
+    }
+
     public void OnJoinedRoom()
     {
         PhotonNetwork.room.expectedMaxPlayers = PhotonNetwork.room.maxPlayers;

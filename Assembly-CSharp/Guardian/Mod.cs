@@ -15,17 +15,19 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "08282020";
+        public static string Build = "08282020-1";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
         public static CommandManager Commands = new CommandManager();
         public static PropertyManager Properties = new PropertyManager();
         public static List<string> HostWhitelist = new List<string>();
-        public List<int> Muted = new List<int>();
         public static Regex BlacklistedTags = new Regex("<\\/?(size(=\\d*)?|quad([^>]*)?|material([^>]*)?)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
         private static bool Initialized = false;
+
+        public List<int> Muted = new List<int>();
+        public bool IsMultiMap;
 
         void Start()
         {
@@ -173,6 +175,11 @@ namespace Guardian
         public void OnPhotonPlayerConnected(PhotonPlayer player)
         {
             Logger.Info($"[{player.id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00ff00"));
+
+            if (PhotonNetwork.isMasterClient && IsMultiMap)
+            {
+                FengGameManagerMKII.Instance.photonView.RPC("SetCurrentMap", player, FengGameManagerMKII.level);
+            }
         }
 
         public void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -237,6 +244,7 @@ namespace Guardian
         public void OnJoinedRoom()
         {
             Logger.Info("OnJoinedRoom");
+            IsMultiMap = PhotonNetwork.room.name.Split('`')[1].StartsWith("Multi-Map");
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {

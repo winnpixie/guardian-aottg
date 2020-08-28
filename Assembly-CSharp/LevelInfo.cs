@@ -17,15 +17,16 @@ public class LevelInfo
     public bool punk = true;
     public bool pvp;
     public static LevelInfo[] Levels;
-    private static bool Init;
+    private static bool Initialized;
     public Minimap.Preset minimapPreset;
 
     public static LevelInfo getInfo(string name)
     {
-        initData2();
+        InitData();
+
         foreach (LevelInfo levelInfo in Levels)
         {
-            if (levelInfo.name == name)
+            if (levelInfo.name.Equals(name, System.StringComparison.OrdinalIgnoreCase))
             {
                 return levelInfo;
             }
@@ -33,41 +34,17 @@ public class LevelInfo
         return null;
     }
 
-    private static void initData2()
+    private static void InitData()
     {
-        if (!Init)
+        if (!Initialized)
         {
-            Init = true;
-            Levels = new LevelInfo[27]
+            Initialized = true;
+
+            Levels = new LevelInfo[28];
+            for (int i = 0; i < Levels.Length; i++)
             {
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo(),
-                new LevelInfo()
-            };
+                Levels[i] = new LevelInfo();
+            }
 
             // The City I
             Levels[0].name = "The City";
@@ -331,7 +308,7 @@ public class LevelInfo
             Levels[25].pvp = true;
             Levels[25].punk = true;
 
-            // Custom (RC)
+            // Custom (No PT) (RC)
             Levels[26].name = "Custom (No PT)";
             Levels[26].mapName = "The Forest";
             Levels[26].desc = "Custom Map (No Player Titans).";
@@ -342,6 +319,18 @@ public class LevelInfo
             Levels[26].punk = true;
             Levels[26].supply = true;
             Levels[26].teamTitan = false;
+
+            // Multi-Map (Guardian)
+            Levels[27].name = "Multi-Map";
+            Levels[27].mapName = "The City I";
+            Levels[27].desc = "Allows for the switching of maps mid-game.";
+            Levels[27].enemyNumber = 10;
+            Levels[27].type = GAMEMODE.KILL_TITAN;
+            Levels[27].respawnMode = RespawnMode.NEVER;
+            Levels[27].supply = true;
+            Levels[27].teamTitan = true;
+            Levels[27].pvp = true;
+            Levels[27].punk = true;
 
             Levels[0].minimapPreset = new Minimap.Preset(new Vector3(22.6f, 0f, 13f), 731.9738f);
             Levels[8].minimapPreset = new Minimap.Preset(new Vector3(8.8f, 0f, 65f), 765.5751f);

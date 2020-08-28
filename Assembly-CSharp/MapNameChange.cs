@@ -21,6 +21,10 @@ public class MapNameChange : MonoBehaviour
             list.items.Remove("The City III");
             list.items.Insert(2, "The City III");
         }
+        if (!list.items.Contains("Multi-Map"))
+        {
+            list.items.Add("Multi-Map");
+        }
         if (!list.items.Contains("Custom"))
         {
             list.items.Add("Custom");

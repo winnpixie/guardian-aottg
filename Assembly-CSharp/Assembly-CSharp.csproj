@@ -241,6 +241,7 @@
     <Compile Include="GAMETYPE.cs" />
     <Compile Include="GROUP.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandScatterTitans.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandSetMap.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandSetTitans.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandUnmute.cs" />
     <Compile Include="Guardian\Discord\Discord.cs" />
