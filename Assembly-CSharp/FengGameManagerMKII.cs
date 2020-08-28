@@ -1129,7 +1129,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             {
                 level = levelInfo.name;
                 IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.type;
-                PhotonNetwork.LoadLevel(levelInfo.mapName);
             }
         }
     }
@@ -1168,6 +1167,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             IN_GAME_MAIN_CAMERA.DayLight = dayLight;
         }
 
+        if (PhotonNetwork.room.name.Split('`')[1].StartsWith("Multi-Map"))
+        {
+            string map = (string)PhotonNetwork.room.customProperties["Map"];
+            levelInfo = LevelInfo.getInfo(map);
+        }
         IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.type;
         PhotonNetwork.LoadLevel(levelInfo.mapName);
 

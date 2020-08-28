@@ -19,7 +19,11 @@ public class BTN_START_MULTI_SERVER : MonoBehaviour
         name = name + "`" + map + "`" + difficulty + "`" + time + "`" + daylight + "`" + password + "`" + MathHelper.RandomInt(int.MinValue, int.MaxValue);
         PhotonNetwork.CreateRoom(name, new RoomOptions
         {
-            maxPlayers = max
+            maxPlayers = max,
+            customRoomProperties = new ExitGames.Client.Photon.Hashtable
+            {
+                { "Map", map }
+            }
         }, TypedLobby.Default);
     }
 }
