@@ -126,7 +126,7 @@ public class InRoomChat : Photon.MonoBehaviour
                         if (!inputLine.StartsWith("/"))
                         {
                             string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored();
-                            if (name.Length > 0)
+                            if (name.Uncolored().Length <= 0)
                             {
                                 name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
                             }
