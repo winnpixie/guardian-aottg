@@ -905,7 +905,7 @@ public class HERO : Photon.MonoBehaviour
 
     private void changeBlade()
     {
-        if (useGun && !grounded && LevelInfo.getInfo(FengGameManagerMKII.level).type == GAMEMODE.PVP_AHSS)
+        if (useGun && !grounded && LevelInfo.GetInfo(FengGameManagerMKII.level).type == GAMEMODE.PVP_AHSS)
         {
             return;
         }
@@ -1945,7 +1945,7 @@ public class HERO : Photon.MonoBehaviour
     private void Start()
     {
         FengGameManagerMKII.Instance.AddHero(this);
-        if ((LevelInfo.getInfo(FengGameManagerMKII.level).horse || RCSettings.HorseMode == 1) && IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
+        if ((LevelInfo.GetInfo(FengGameManagerMKII.level).horse || RCSettings.HorseMode == 1) && IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
         {
             myHorse = PhotonNetwork.Instantiate("horse", baseTransform.position + Vector3.up * 5f, baseTransform.rotation, 0);
             myHorse.GetComponent<Horse>().myHero = base.gameObject;
@@ -3740,7 +3740,7 @@ public class HERO : Photon.MonoBehaviour
                             facingDirection = gunDummy.transform.rotation.eulerAngles.y;
                             targetRotation = Quaternion.Euler(0f, facingDirection, 0f);
                         }
-                        else if (flag4 && (grounded || (LevelInfo.getInfo(FengGameManagerMKII.level).type != GAMEMODE.PVP_AHSS && RCSettings.AhssReload == 0)))
+                        else if (flag4 && (grounded || (LevelInfo.GetInfo(FengGameManagerMKII.level).type != GAMEMODE.PVP_AHSS && RCSettings.AhssReload == 0)))
                         {
                             changeBlade();
                         }
@@ -4285,7 +4285,7 @@ public class HERO : Photon.MonoBehaviour
                 skillCDLast = 120f;
                 if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
                 {
-                    if (LevelInfo.getInfo(FengGameManagerMKII.level).teamTitan || LevelInfo.getInfo(FengGameManagerMKII.level).type == GAMEMODE.RACING || LevelInfo.getInfo(FengGameManagerMKII.level).type == GAMEMODE.PVP_CAPTURE || LevelInfo.getInfo(FengGameManagerMKII.level).type == GAMEMODE.TROST)
+                    if (LevelInfo.GetInfo(FengGameManagerMKII.level).teamTitan || LevelInfo.GetInfo(FengGameManagerMKII.level).type == GAMEMODE.RACING || LevelInfo.GetInfo(FengGameManagerMKII.level).type == GAMEMODE.PVP_CAPTURE || LevelInfo.GetInfo(FengGameManagerMKII.level).type == GAMEMODE.TROST)
                     {
                         skillId = "petra";
                         skillCDLast = 1f;
@@ -5472,7 +5472,7 @@ public class HERO : Photon.MonoBehaviour
             flaggas = true;
         }
         bool flaghorse = false;
-        if (LevelInfo.getInfo(FengGameManagerMKII.level).horse || RCSettings.HorseMode == 1)
+        if (LevelInfo.GetInfo(FengGameManagerMKII.level).horse || RCSettings.HorseMode == 1)
         {
             flaghorse = true;
         }

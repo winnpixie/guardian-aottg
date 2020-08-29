@@ -115,7 +115,7 @@ public class PhotonPlayer
         }
     }
 
-    public void SetCustomProperties(Hashtable propertiesToSet)
+    public void SetCustomProperties(Hashtable propertiesToSet, bool broadcast = true)
     {
         if (propertiesToSet != null)
         {
@@ -124,7 +124,7 @@ public class PhotonPlayer
             Hashtable actorProperties = propertiesToSet.StripToStringKeys();
             if (id > 0 && !PhotonNetwork.offlineMode)
             {
-                PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(id, actorProperties, broadcast: true, 0);
+                PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(id, actorProperties, broadcast, 0);
             }
             NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerPropertiesChanged, this, propertiesToSet);
         }

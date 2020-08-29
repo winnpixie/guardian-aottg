@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "08282020-2";
+        public static string Build = "08282020-3";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -175,11 +175,6 @@ namespace Guardian
         public void OnPhotonPlayerConnected(PhotonPlayer player)
         {
             Logger.Info($"[{player.id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00ff00"));
-
-            if (PhotonNetwork.isMasterClient && IsMultiMap)
-            {
-                FengGameManagerMKII.Instance.photonView.RPC("SetCurrentMap", player, FengGameManagerMKII.level);
-            }
         }
 
         public void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -218,6 +213,22 @@ namespace Guardian
         public void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
             NetworkPatches.OnRoomPropertyModification(propertiesThatChanged);
+
+            PhotonPlayer sender = null;
+            if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer)
+            {
+                sender = (PhotonPlayer)propertiesThatChanged["sender"];
+            }
+
+            if ((sender == null || sender.isMasterClient) && propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string && IsMultiMap)
+            {
+                LevelInfo levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
+                if (levelInfo != null)
+                {
+                    FengGameManagerMKII.level = levelInfo.name;
+                    IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.type;
+                }
+            }
         }
 
         public void OnJoinedLobby()

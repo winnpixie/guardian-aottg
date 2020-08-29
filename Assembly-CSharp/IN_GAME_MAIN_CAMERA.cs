@@ -858,7 +858,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     private void CreateMinimap()
     {
-        LevelInfo info = LevelInfo.getInfo(FengGameManagerMKII.level);
+        LevelInfo info = LevelInfo.GetInfo(FengGameManagerMKII.level);
         if (info != null)
         {
             Minimap minimap = base.gameObject.AddComponent<Minimap>();

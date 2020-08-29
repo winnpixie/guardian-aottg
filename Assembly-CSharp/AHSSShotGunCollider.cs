@@ -72,7 +72,7 @@ public class AHSSShotGunCollider : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "playerHitbox":
-                if (!LevelInfo.getInfo(FengGameManagerMKII.level).pvp)
+                if (!LevelInfo.GetInfo(FengGameManagerMKII.level).pvp)
                 {
                     return;
                 }

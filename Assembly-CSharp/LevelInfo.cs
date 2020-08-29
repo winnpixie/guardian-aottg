@@ -20,7 +20,7 @@ public class LevelInfo
     private static bool Initialized;
     public Minimap.Preset minimapPreset;
 
-    public static LevelInfo getInfo(string name)
+    public static LevelInfo GetInfo(string name)
     {
         InitData();
 
