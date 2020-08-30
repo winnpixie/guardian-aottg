@@ -3183,33 +3183,34 @@ public class TITAN : Photon.MonoBehaviour
                         return;
                     }
                 }
-                if (!(Vector3.Distance(baseTransform.position, targetCheckPt) < targetR))
+                if (Vector3.Distance(baseTransform.position, targetCheckPt) < targetR)
                 {
-                    return;
-                }
-                if (checkPoints.Count > 0)
-                {
-                    if (checkPoints.Count == 1)
+                    if (checkPoints.Count > 0)
                     {
-                        if (IN_GAME_MAIN_CAMERA.Gamemode == GAMEMODE.BOSS_FIGHT_CT)
+                        if (checkPoints.Count == 1)
                         {
-                            FengGameManagerMKII.Instance.gameLose2();
-                            checkPoints = new ArrayList();
-                            idle();
+                            if (IN_GAME_MAIN_CAMERA.Gamemode == GAMEMODE.BOSS_FIGHT_CT)
+                            {
+                                FengGameManagerMKII.Instance.gameLose2();
+                                checkPoints = new ArrayList();
+                                idle();
+                            }
+                        }
+                        else
+                        {
+                            if (checkPoints.Count == 4)
+                            {
+                                FengGameManagerMKII.Instance.sendChatContentInfo("*WARNING* An abnormal titan is approaching the North gate!".WithColor("a8ff24").AsBold().AsItalic());
+                            }
+                            Vector3 newCheckPt = (Vector3)this.checkPoints[0];
+                            targetCheckPt = newCheckPt;
+                            checkPoints.RemoveAt(0);
                         }
                     }
                     else
                     {
-                        if (checkPoints.Count == 4)
-                        {
-                            FengGameManagerMKII.Instance.sendChatContentInfo("<color=#A8FF24>*WARNING* An abnormal titan is approaching the North gate!</color>");
-                        }
-                        checkPoints.RemoveAt(0);
+                        idle();
                     }
-                }
-                else
-                {
-                    idle();
                 }
                 break;
             case TitanState.to_pvp_pt:

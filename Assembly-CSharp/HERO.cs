@@ -4617,10 +4617,6 @@ public class HERO : Photon.MonoBehaviour
                 if (info.sender.customProperties[PhotonPlayerProperty.Name] == null || info.sender.customProperties[PhotonPlayerProperty.IsTitan] == null)
                 {
                     FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + "</color>");
-                    if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                    {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                    }
                     return;
                 }
                 else if (viewID < 0)
@@ -4628,29 +4624,17 @@ public class HERO : Photon.MonoBehaviour
                     if (titanName == "")
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + " (possibly valid).</color>");
-                        if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                        {
-                            FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                        }
                         return;
                     }
                     else
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + "</color>");
-                        if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                        {
-                            FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                        }
                         return;
                     }
                 }
                 else if (PhotonView.Find(viewID) == null)
                 {
                     FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + "</color>");
-                    if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                    {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                    }
                     return;
                 }
                 else
@@ -4659,10 +4643,6 @@ public class HERO : Photon.MonoBehaviour
                     if (photonView.owner.id != info.sender.id)
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + "</color>");
-                        if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                        {
-                            FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                        }
                         return;
                     }
                 }
@@ -4778,10 +4758,6 @@ public class HERO : Photon.MonoBehaviour
                 if (info.sender.customProperties[PhotonPlayerProperty.Name] == null || info.sender.customProperties[PhotonPlayerProperty.IsTitan] == null)
                 {
                     FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + "</color>");
-                    if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                    {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                    }
                     return;
                 }
                 else if (viewID < 0)
@@ -4789,29 +4765,17 @@ public class HERO : Photon.MonoBehaviour
                     if (titanName == "")
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + " (possibly valid).</color>");
-                        if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                        {
-                            FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                        }
                         return;
                     }
                     else if (RCSettings.BombMode == 0 && RCSettings.DeadlyCannons == 0)
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + "</color>");
-                        if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                        {
-                            FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                        }
                         return;
                     }
                 }
                 else if (PhotonView.Find(viewID) == null)
                 {
                     FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + "</color>");
-                    if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                    {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                    }
                     return;
                 }
                 else
@@ -4820,10 +4784,6 @@ public class HERO : Photon.MonoBehaviour
                     if (photonView.owner.id != info.sender.id)
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.id.ToString() + "</color>");
-                        if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
-                        {
-                            FengGameManagerMKII.IgnoreList.Add(info.sender.id);
-                        }
                         return;
                     }
                 }
