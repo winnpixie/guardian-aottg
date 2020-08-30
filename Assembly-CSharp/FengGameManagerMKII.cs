@@ -2227,7 +2227,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     {
                         str += (PVPcheckPoint.chkPts[i] as PVPcheckPoint).getStateString() + " ";
                     }
-                    text = PVPtitanScoreMax - PVPtitanScore + "  " + str + "|  " + (PVPhumanScoreMax - PVPhumanScore) + "\nTime : " + GameHelper.FormatTime(time - timeTotalServer);
+                    text = $"[{ColorSet.TitanPlayer}]{PVPtitanScoreMax - PVPtitanScore} [-]{str}| [{ColorSet.Human}]{PVPhumanScoreMax - PVPhumanScore}\n[-]Time : {GameHelper.FormatTime(time - timeTotalServer)}";
                     break;
             }
             if (RCSettings.TeamMode > 0)

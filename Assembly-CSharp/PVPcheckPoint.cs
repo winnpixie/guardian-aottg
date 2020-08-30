@@ -244,47 +244,41 @@ public class PVPcheckPoint : Photon.MonoBehaviour
     {
         playerOn = false;
         titanOn = false;
-        GameObject[] array = GameObject.FindGameObjectsWithTag("Player");
-        GameObject[] array2 = GameObject.FindGameObjectsWithTag("titan");
-        int i;
-        for (i = 0; i < array.Length; i++)
+        GameObject[] heroes = GameObject.FindGameObjectsWithTag("Player");
+        for (int i = 0; i < heroes.Length; i++)
         {
-            if (!(Vector3.Distance(array[i].transform.position, base.transform.position) < hitTestR))
+            if (!(Vector3.Distance(heroes[i].transform.position, base.transform.position) < hitTestR))
             {
                 continue;
             }
             playerOn = true;
-            if (state == CheckPointState.Human && array[i].GetPhotonView().isMine)
+            if (state == CheckPointState.Human && heroes[i].GetPhotonView().isMine)
             {
                 if (fengGame.checkpoint != base.gameObject)
                 {
                     fengGame.checkpoint = base.gameObject;
-                    InRoomChat.Instance.AddLine("<color=#A8FF24>Respawn point changed to point" + id + "</color>");
+                    InRoomChat.Instance.AddLine(("Respawn point changed to Point #" + id).WithColor("A8FF24"));
                 }
                 break;
             }
         }
-        i = 0;
-        while (true)
+
+        GameObject[] titans = GameObject.FindGameObjectsWithTag("titan");
+        for (int i = 0; i < titans.Length; i++)
         {
-            if (i >= array2.Length)
-            {
-                return;
-            }
-            if (Vector3.Distance(array2[i].transform.position, base.transform.position) < hitTestR + 5f && (!array2[i].GetComponent<TITAN>() || !array2[i].GetComponent<TITAN>().hasDie))
+            if (Vector3.Distance(titans[i].transform.position, base.transform.position) < hitTestR + 5f && (!titans[i].GetComponent<TITAN>() || !titans[i].GetComponent<TITAN>().hasDie))
             {
                 titanOn = true;
-                if (state == CheckPointState.Titan && array2[i].GetPhotonView().isMine && (bool)array2[i].GetComponent<TITAN>() && array2[i].GetComponent<TITAN>().nonAI)
+                if (state == CheckPointState.Titan && titans[i].GetPhotonView().isMine && (bool)titans[i].GetComponent<TITAN>() && titans[i].GetComponent<TITAN>().nonAI)
                 {
+                    if (fengGame.checkpoint != base.gameObject)
+                    {
+                        fengGame.checkpoint = base.gameObject;
+                        InRoomChat.Instance.AddLine(("Respawn point changed to Point #" + id).WithColor("A8FF24"));
+                    }
                     break;
                 }
             }
-            i++;
-        }
-        if (fengGame.checkpoint != base.gameObject)
-        {
-            fengGame.checkpoint = base.gameObject;
-            InRoomChat.Instance.AddLine("<color=#A8FF24>Respawn point changed to point" + id + "</color>");
         }
     }
 
@@ -306,7 +300,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             }
             fengGame.PVPhumanScore += 2;
             fengGame.CheckPvPPoints();
-            if (checkIfHumanWins())
+            if (DidHumansWin())
             {
                 fengGame.gameWin2();
             }
@@ -332,7 +326,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             base.photonView.RPC("changeState", PhotonTargets.AllBuffered, 2);
             fengGame.PVPtitanScore += 2;
             fengGame.CheckPvPPoints();
-            if (checkIfTitanWins())
+            if (DidTitansWin())
             {
                 fengGame.gameLose2();
             }
@@ -419,7 +413,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         }
     }
 
-    private bool checkIfHumanWins()
+    private bool DidHumansWin()
     {
         for (int i = 0; i < chkPts.Count; i++)
         {
@@ -431,7 +425,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         return true;
     }
 
-    private bool checkIfTitanWins()
+    private bool DidTitansWin()
     {
         for (int i = 0; i < chkPts.Count; i++)
         {

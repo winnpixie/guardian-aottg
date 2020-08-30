@@ -7,7 +7,7 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info == null || titan.photonView.ownerId != info.sender.id)
+                if (info == null || (titan.photonView.ownerId != info.sender.id && !info.sender.isMasterClient))
                 {
                     Mod.Logger.Error($"'netSetAbnormalType' from #{(info == null ? "?" : info.sender.id.ToString())}.");
                     if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
@@ -151,7 +151,7 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info == null || titan.photonView.ownerId != info.sender.id)
+                if (info == null || (titan.photonView.ownerId != info.sender.id && !info.sender.isMasterClient))
                 {
                     Mod.Logger.Error($"'netSetLevel' from #{(info == null ? "?" : info.sender.id.ToString())}.");
                     if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
