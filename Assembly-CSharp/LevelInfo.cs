@@ -91,7 +91,7 @@ public class LevelInfo
                     name = "[S]Forest",
                     mapName = "The Forest",
                     description = "Kill all 15 titans!",
-                    enemyNumber =15,
+                    enemyNumber = 15,
                     type = GAMEMODE.KILL_TITAN,
                     respawnMode = RespawnMode.NEVER,
                     supply = true
@@ -194,7 +194,7 @@ public class LevelInfo
                     name = "The Forest",
                     mapName = "The Forest",
                     description = "The Forest of Giant Trees. (Player titans, PvP, no respawns)",
-                    enemyNumber = 5,
+                    enemyNumber = 10,
                     type = GAMEMODE.KILL_TITAN,
                     respawnMode = RespawnMode.NEVER,
                     supply = true,
