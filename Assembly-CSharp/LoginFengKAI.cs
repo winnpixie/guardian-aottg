@@ -3,16 +3,17 @@ using UnityEngine;
 
 public class LoginFengKAI : MonoBehaviour
 {
-    private static string PlayerName = string.Empty;
-    private static string PlayerGuild = string.Empty;
-    private static string PlayerPassword = string.Empty;
-    public string formText = string.Empty;
-    private string CheckUserURL = "http://fenglee.com/game/aog/login_check.php";
-    private string RegisterURL = "http://fenglee.com/game/aog/signup_check.php";
-    private string ForgetPasswordURL = "http://fenglee.com/game/aog/forget_password.php";
-    private string GetInfoURL = "http://fenglee.com/game/aog/require_user_info.php";
-    private string ChangePasswordURL = "http://fenglee.com/game/aog/change_password.php";
-    private string ChangeGuildURL = "http://fenglee.com/game/aog/change_guild_name.php";
+    public static LoginFengKAI Instance;
+    public static string PlayerName = string.Empty;
+    public static string PlayerGuild = string.Empty;
+    public static string PlayerPassword = string.Empty;
+    public static string formText = string.Empty;
+    public static string CheckUserURL = "http://fenglee.com/game/aog/login_check.php";
+    public static string RegisterURL = "http://fenglee.com/game/aog/signup_check.php";
+    public static string ForgetPasswordURL = "http://fenglee.com/game/aog/forget_password.php";
+    public static string GetInfoURL = "http://fenglee.com/game/aog/require_user_info.php";
+    public static string ChangePasswordURL = "http://fenglee.com/game/aog/change_password.php";
+    public static string ChangeGuildURL = "http://fenglee.com/game/aog/change_guild_name.php";
     public GameObject output;
     public GameObject output2;
     public PanelLoginGroupManager loginGroup;
@@ -26,6 +27,8 @@ public class LoginFengKAI : MonoBehaviour
 
     private void Start()
     {
+        Instance = this;
+
         if (Player == null)
         {
             Player = new PlayerInfoPHOTON();

@@ -3354,7 +3354,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         if (num == 4)
         {
-            if (!LevelInfo.GetInfo(FengGameManagerMKII.level).punk)
+            if (!FengGameManagerMKII.CurrentLevelInfo.punk)
             {
                 num = 1;
             }

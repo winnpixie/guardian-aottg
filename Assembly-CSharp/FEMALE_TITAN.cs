@@ -152,7 +152,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         AnkleLHPMAX = 50;
         AnkleRHPMAX = 50;
         bool flag = false;
-        if (LevelInfo.GetInfo(FengGameManagerMKII.level).respawnMode == RespawnMode.NEVER)
+        if (FengGameManagerMKII.CurrentLevelInfo.respawnMode == RespawnMode.NEVER)
         {
             flag = true;
         }
@@ -1547,7 +1547,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
                 transform2.GetComponent<AudioSource>().Play();
             }
         }
-        updateLabel();
+        UpdateLabel();
         healthTime -= Time.deltaTime;
     }
 
@@ -1659,7 +1659,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         }
     }
 
-    public void updateLabel()
+    public void UpdateLabel()
     {
         if (healthLabel != null && healthLabel.GetComponent<UILabel>().isVisible)
         {

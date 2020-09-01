@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "08302020-1";
+        public static string Build = "09012020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -225,6 +225,7 @@ namespace Guardian
                 LevelInfo levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
                 if (levelInfo != null)
                 {
+                    FengGameManagerMKII.CurrentLevelInfo = levelInfo;
                     FengGameManagerMKII.level = levelInfo.name;
                     IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.type;
                 }

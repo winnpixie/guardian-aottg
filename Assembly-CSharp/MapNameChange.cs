@@ -8,30 +8,22 @@ public class MapNameChange : MonoBehaviour
         LevelInfo info = LevelInfo.GetInfo(list.selection);
         if (info != null)
         {
-            GameObject.Find("LabelLevelInfo").GetComponent<UILabel>().text = info.desc;
+            GameObject.Find("LabelLevelInfo").GetComponent<UILabel>().text = info.description;
         }
+        LevelInfo.InitData();
 
-        if (!list.items.Contains("The City II"))
+        bool shouldResize = false;
+        foreach (LevelInfo levelInfo in LevelInfo.Levels)
         {
-            list.items.Insert(1, "The City II");
-            list.textScale *= 0.7f;
+            if (!list.items.Contains(levelInfo.name) && !levelInfo.name.StartsWith("[S]") && !levelInfo.name.Equals("Cage Fighting"))
+            {
+                list.items.Add(levelInfo.name);
+                shouldResize = true;
+            }
         }
-        if (list.items.Contains("The City III"))
+        if (shouldResize)
         {
-            list.items.Remove("The City III");
-            list.items.Insert(2, "The City III");
-        }
-        if (!list.items.Contains("Multi-Map"))
-        {
-            list.items.Add("Multi-Map");
-        }
-        if (!list.items.Contains("Custom"))
-        {
-            list.items.Add("Custom");
-        }
-        if (!list.items.Contains("Custom (No PT)"))
-        {
-            list.items.Add("Custom (No PT)");
+            list.textScale *= 0.55f;
         }
     }
 }

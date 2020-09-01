@@ -74,7 +74,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         if (humanPt == humanPtMax)
         {
             state = CheckPointState.Human;
-            if (base.photonView.isMine && LevelInfo.GetInfo(FengGameManagerMKII.level).mapName != "The City I")
+            if (base.photonView.isMine && FengGameManagerMKII.CurrentLevelInfo.mapName != "The City I")
             {
                 Vector3 position = base.transform.position;
                 Vector3 up = Vector3.up;
@@ -112,7 +112,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         Vector3 up = Vector3.up;
         Vector3 position2 = base.transform.position;
         GameObject gameObject = fengGame.SpawnTitan(rate, position - up * (position2.y - getHeight(base.transform.position)), base.transform.rotation);
-        if (LevelInfo.GetInfo(FengGameManagerMKII.level).mapName == "The City I")
+        if (FengGameManagerMKII.CurrentLevelInfo.mapName == "The City I")
         {
             gameObject.GetComponent<TITAN>().chaseDistance = 120f;
         }
@@ -213,7 +213,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                 if (spawnTitanTimer > titanInterval)
                 {
                     spawnTitanTimer = 0f;
-                    if (LevelInfo.GetInfo(FengGameManagerMKII.level).mapName == "The City I")
+                    if (FengGameManagerMKII.CurrentLevelInfo.mapName == "The City I")
                     {
                         if (GameObject.FindGameObjectsWithTag("titan").Length < 12)
                         {
@@ -291,7 +291,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             syncPts();
             state = CheckPointState.Human;
             base.photonView.RPC("changeState", PhotonTargets.AllBuffered, 1);
-            if (LevelInfo.GetInfo(FengGameManagerMKII.level).mapName != "The City I")
+            if (FengGameManagerMKII.CurrentLevelInfo.mapName != "The City I")
             {
                 Vector3 position = base.transform.position;
                 Vector3 up = Vector3.up;

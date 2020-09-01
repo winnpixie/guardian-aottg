@@ -48,7 +48,7 @@ public class TriggerColliderWeapon : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "playerHitbox":
-                if (!LevelInfo.GetInfo(FengGameManagerMKII.level).pvp)
+                if (!FengGameManagerMKII.CurrentLevelInfo.pvp)
                 {
                     return;
                 }

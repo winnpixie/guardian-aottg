@@ -10,7 +10,7 @@
             // Neko
             if (player.isNeko)
             {
-                mod += "[ffcc00][[da00ff]N[9115ff]e[492bff]k[0040ff]o";
+                mod += "[ffffff][[da00ff]N[9115ff]e[492bff]k[0040ff]o";
                 if (player.isNekoUser)
                 {
                     mod += "[ffffff](User)";
@@ -19,56 +19,56 @@
                 {
                     mod += "[ffffff](Owner)";
                 }
-                mod += "[ffcc00]]";
+                mod += "[ffffff]]";
             }
 
-            // Fox Mod
+            // Fox
             if (player.isFoxMod)
             {
-                mod += "[ffcc00][[ff6600]FoxMod[-]]";
+                mod += "[ff6600][Fox]";
             }
 
             // Cyrus Essentials
             if (player.isCyrus)
             {
-                mod += "[ffcc00][[ffff00]CE[-]]";
+                mod += "[ffff00][CE]";
             }
 
-            // Photon mod
+            // Photon
             if (player.isPhoton)
             {
-                mod += "[ffcc00][[ffffff]Photon[-]]";
+                mod += "[ffffff][Photon]";
             }
 
-            // Anarchy mod
+            // Anarchy
             if (player.isAnarchy)
             {
-                mod += "[ffcc00][[ffffff]Anarchy[-]]";
+                mod += "[ffffff][Anarchy]";
             }
 
             // KnK
             if (player.isKnK)
             {
-                mod += "[ffcc00][[ffffff]KnK[-]]";
+                mod += "[ff0000][KnK]";
             }
 
             // NRC
             if (player.isNRC)
             {
-                mod += "[ffcc00][[ffffff]NRC[-]]";
+                mod += "[ffffff][NRC]";
             }
 
             // TRAP
             if (player.isTrap)
             {
-                mod += "[ffcc00][[ee66ff]TRAP[-]]";
+                mod += "[ee66ff][TRAP]";
             }
 
-            // Mine!
+            // Guardian (mine!)
             if ((properties.ContainsKey("GuardianMod") && properties["GuardianMod"] is int)
                 || (properties.ContainsKey("Stats") && properties["Stats"] is int))
             {
-                mod += string.Concat("[ffcc00][[ffff00]Guardian");
+                mod += string.Concat("[ffff00][Guardian");
                 if (properties.ContainsKey("Stats"))
                 {
                     int stats = GExtensions.AsInt(properties["Stats"]);
@@ -82,66 +82,66 @@
                         mod += $"[ffffff](Inf:{modifications})[-]";
                     }
                 }
-                mod += "[-]]";
+                mod += "]";
             }
 
             if ((properties.ContainsKey("A.S Guard") && properties["A.S Guard"] is int)
                 || (properties.ContainsKey("Allstar Mod") && properties["Allstar Mod"] is int))
             {
-                mod += "[ffcc00][[ffffff]All[ff0000]Star[-]]";
+                mod += "[ffffff][All[ff0000]Star[-]]";
             }
 
             // DogS
             if (properties.ContainsKey("dogshitmod") && GExtensions.AsString(properties["dogshitmod"]).Equals("dogshitmod"))
             {
-                mod += "[ffcc00][[ffffff]DogS[-]]";
+                mod += "[ffffff][DogS]";
             }
 
             // LNON
             if (properties.ContainsKey("LNON"))
             {
-                mod += "[ffcc00][[ffffff]LNON[-]]";
+                mod += "[ffffff][LNON]";
             }
 
             // Ignis
             if (properties.ContainsKey("Ignis"))
             {
-                mod += "[ffcc00][[ffffff]Ignis[-]]";
+                mod += "[ffffff][Ignis]";
             }
 
             // PedoBear
             if (player.isPedoBear
                 || properties.ContainsKey("PBModRC"))
             {
-                mod += "[ffcc00][[ffffff]PedoBear[-]]";
+                mod += "[ffffff][[ff6600]Pedo[553300]Bear[-][-]]";
             }
 
             // Disciple
             if (properties.ContainsKey("DiscipleMod"))
             {
-                mod += "[ffcc00][[555555][000000]D[1F1F1F]i[3F3F3F]s[5F5F5F]c[7F7F7F]i[9F9F9F]p[BFBFBF]l[DFDFDF]e[ffcc00]]";
+                mod += "[ffffff][[555555][000000]D[1F1F1F]i[3F3F3F]s[5F5F5F]c[7F7F7F]i[9F9F9F]p[BFBFBF]l[DFDFDF]e[ffffff]]";
             }
 
             // TLW
             if (properties.ContainsKey("TLW"))
             {
-                mod += "[ffcc00][[ffffff]TLW[-]]";
+                mod += "[ffffff][TLW]";
             }
 
             // ARC
             if (properties.ContainsKey("ARC-CREADOR"))
             {
-                mod += "[ffcc00][[ffffff]ARC (Creator)[-]]";
+                mod += "[ffffff][ARC (Creator)]";
             }
             if (properties.ContainsKey("ARC"))
             {
-                mod += "[ffcc00][[ffffff]ARC[-]]";
+                mod += "[ffffff][ARC]";
             }
 
             // SRC
             if (properties.ContainsKey("SRC"))
             {
-                mod += "[ffcc00][[ffffff]SRC[-]]";
+                mod += "[ffffff][SRC]";
             }
 
             // Cyan Mod
@@ -149,7 +149,7 @@
                 || properties.ContainsKey("CyanMod")
                 || properties.ContainsKey("CyanModNew"))
             {
-                mod += "[ffcc00][[00ffff]Cyan Mod[-]]";
+                mod += "[ffffff][[00ffff]Cyan Mod[-]]";
             }
 
             // Expedition
@@ -168,7 +168,7 @@
                 {
                     version += GExtensions.AsString(properties["Pref"]);
                 }
-                mod += $"[ffcc00][[009900]Expedition[ffffff](v{version})[ffcc00]]";
+                mod += $"[009900][Expedition[ffffff](v{version})[-]]";
             }
 
             // Universe
@@ -184,22 +184,26 @@
                 || properties.ContainsKey("coins")
                 || (properties.ContainsKey("") && properties[""] is string))
             {
-                mod += "[ffcc00][[aa00aa]Universe";
+                mod += "[aa00aa][Universe[ffffff]";
                 if (properties.ContainsKey("UYoutube"))
                 {
-                    mod += "[ffffff](You[ff0000]tube[ffffff])";
+                    mod += "(You[ff0000]tube[-])";
+                }
+                if (properties.ContainsKey("UVip"))
+                {
+                    mod += "([ffcc00]VIP[-])";
                 }
                 if (properties.ContainsKey("UAdmin"))
                 {
-                    mod += "[ff0000](Admin)";
+                    mod += "([ff0000]Admin[-])";
                 }
-                mod += "[ffcc00]]";
+                mod += "[-]]";
             }
 
             // Teiko
             if (properties.ContainsKey("Teiko"))
             {
-                mod += "[ffcc00][[aed6f1]Teiko[-]]";
+                mod += "[aed6f1][Teiko]";
             }
 
             // SLB
@@ -207,7 +211,7 @@
                 || properties.ContainsKey("EarCat")
                 || properties.ContainsKey("Horns"))
             {
-                mod += "[ffcc00][[ffffff]SLB[-]]";
+                mod += "[ffffff][SLB]";
             }
 
             // Ranked RC
@@ -216,25 +220,25 @@
                 || properties.ContainsKey("diamond")
                 || (properties.ContainsKey("") && properties[""] is int))
             {
-                mod += "[ffcc00][[ffffff]Ranked RC[-]]";
+                mod += "[ffffff][Ranked RC]";
             }
 
-            // DeadInside?
+            // DeadInside
             if (properties.ContainsKey("DeadInside"))
             {
-                mod += "[ffcc00][[ffffff]DeadInside[-]]";
+                mod += "[000000][DeadInside]";
             }
 
             // DFSAO
             if (properties.ContainsKey("DFSAO"))
             {
-                mod += "[ffcc00][[ffffff]DFSAO[-]]";
+                mod += "[ffffff][DFSAO]";
             }
 
             // AoE
             if (properties.ContainsKey("AOE") && GExtensions.AsString(properties["AOE"]).Equals("Made By Exile"))
             {
-                mod += "[ffcc00][[0000ff]AoE[-]]";
+                mod += "[0000ff][AoE]";
             }
 
             // RC
@@ -249,7 +253,7 @@
                 || properties.ContainsKey(PhotonPlayerProperty.CustomInt)
                 || properties.ContainsKey(PhotonPlayerProperty.CustomString))
             {
-                mod += "[ffcc00][[9999ff]RC[-]]";
+                mod += "[9999ff][RC]";
             }
 
             string name = GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
@@ -258,7 +262,7 @@
             // Parrot
             if (guild.StartsWith("[00FF00]PARROT'S MOD"))
             {
-                mod += "[ffcc00][[00ff00]PARROT'S[-]]";
+                mod += "[00ff00][PARROT]";
             }
 
             // Unknown
@@ -267,19 +271,19 @@
                 || properties.ContainsKey("Pain")
                 || properties.ContainsKey("uishot"))
             {
-                mod += "[ffcc00][[ffffff]?[-]]";
+                mod += "[ffffff][???]";
             }
 
             // Vanilla
             if (mod.Length == 0)
             {
-                mod += "[ffcc00][[ffddaa]Vanilla[-]]";
+                mod += "[ffddaa][Vanilla]";
             }
 
             // >48/>40 chars
             if (name.Length > 48 || guild.Length > 40)
             {
-                mod += "[ffcc00][[ffffff]";
+                mod += "[ffffff][";
                 if (name.Length > 48)
                 {
                     mod += ">48";
@@ -288,7 +292,7 @@
                 {
                     mod += name.Length > 48 ? "|>40" : ">40";
                 }
-                mod += "[-]]";
+                mod += "]";
             }
 
             return mod;
