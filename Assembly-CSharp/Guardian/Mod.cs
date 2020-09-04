@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "09012020-1";
+        public static string Build = "09042020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -35,6 +35,7 @@ namespace Guardian
 
             if (!Initialized)
             {
+                // Check for an update before doing anything
                 StartCoroutine(CheckForUpdate());
 
                 // Host whitelist (for skins)
@@ -61,6 +62,12 @@ namespace Guardian
                 // Load various features
                 Commands.Load();
                 Properties.Load();
+
+                // Print out debug information
+                Logger.Info($"Guardian Version: {Build}");
+                Logger.Info($"Unity Version: {Application.unityVersion}");
+                Logger.Info($"OS: {SystemInfo.operatingSystem}");
+                Logger.Info($"Platform: {Application.platform}");
 
                 // Property whitelist
                 NetworkPatches.PropertyWhitelist.Add("sender");

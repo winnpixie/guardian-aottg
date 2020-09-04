@@ -1,4 +1,6 @@
-﻿namespace Guardian.Utilities
+﻿using UnityEngine;
+
+namespace Guardian.Utilities
 {
     class ModDetector
     {
@@ -88,7 +90,7 @@
             if ((properties.ContainsKey("A.S Guard") && properties["A.S Guard"] is int)
                 || (properties.ContainsKey("Allstar Mod") && properties["Allstar Mod"] is int))
             {
-                mod += "[ffffff][All[ff0000]Star[-]]";
+                mod += "[ffffff][[ff0000]A[-]llStar]";
             }
 
             // DogS
@@ -113,7 +115,7 @@
             if (player.isPedoBear
                 || properties.ContainsKey("PBModRC"))
             {
-                mod += "[ffffff][[ff6600]Pedo[553300]Bear[-][-]]";
+                mod += "[ffffff][[ff6600]P[553300]B[-][-]]";
             }
 
             // Disciple
