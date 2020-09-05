@@ -7,10 +7,10 @@
         {
             if (info != null)
             {
-                Mod.Logger.Error($"'Bullet.killObject' from #{info.sender.id}.");
-                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                Mod.Logger.Error($"'Bullet.killObject' from #{info.sender.Id}.");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                 {
-                    FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
                 return false;
             }
@@ -21,9 +21,9 @@
         public static bool IsHookMasterSetValid(Bullet hook, int viewId, PhotonMessageInfo info)
         {
             PhotonView view = PhotonView.Find(viewId);
-            if (info == null || view == null || hook.photonView.ownerId != info.sender.id || view.gameObject.GetComponent<HERO>() == null)
+            if (info == null || view == null || hook.photonView.ownerId != info.sender.Id || view.gameObject.GetComponent<HERO>() == null)
             {
-                Mod.Logger.Warn($"'Bullet.myMasterIs' from #{(info == null ? "?" : info.sender.id.ToString())}.");
+                Mod.Logger.Warn($"'Bullet.myMasterIs' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
                 return false;
             }
             return true;
@@ -33,9 +33,9 @@
         public static bool IsHookTieValid(Bullet hook, int viewId, PhotonMessageInfo info)
         {
             PhotonView view = PhotonView.Find(viewId);
-            if (info == null || view == null || hook.photonView.ownerId != info.sender.id)
+            if (info == null || view == null || hook.photonView.ownerId != info.sender.Id)
             {
-                Mod.Logger.Warn($"'Bullet.tieMeToOBJ' from #{(info == null ? "?" : info.sender.id.ToString())}.");
+                Mod.Logger.Warn($"'Bullet.tieMeToOBJ' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
                 return false;
             }
             return true;

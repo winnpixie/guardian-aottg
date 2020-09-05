@@ -208,12 +208,12 @@ public class MicEF : MonoBehaviour
     // Removes player so that it doesn't send stuff unnecessarily
     public void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
-        if (Users.ContainsKey(player.id))
+        if (Users.ContainsKey(player.Id))
         {
-            Users.Remove(player.id);
-            if (AdjustableList.Contains(player.id))
+            Users.Remove(player.Id);
+            if (AdjustableList.Contains(player.Id))
             {
-                AdjustableList.Remove(player.id);
+                AdjustableList.Remove(player.Id);
                 RecompileSendList();
             }
         }
@@ -225,9 +225,9 @@ public class MicEF : MonoBehaviour
         PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
         ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
 
-        if (properties.ContainsKey("name") && properties["name"] is string && Users.ContainsKey(player.id))
+        if (properties.ContainsKey("name") && properties["name"] is string && Users.ContainsKey(player.Id))
         {
-            Users[player.id].name = ((string)properties["name"]).Colored();
+            Users[player.Id].name = ((string)properties["name"]).Colored();
         }
     }
 

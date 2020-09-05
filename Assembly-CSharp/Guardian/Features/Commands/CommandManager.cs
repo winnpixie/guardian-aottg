@@ -43,6 +43,7 @@ namespace Guardian.Features.Commands
             base.Add(new CommandSetTitans());
 
             // Debug
+            base.Add(new CommandDrawDistance());
             base.Add(new CommandLogProperties());
             base.Add(new CommandNoClip());
             base.Add(new CommandRPC());

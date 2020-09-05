@@ -13,15 +13,15 @@ namespace Guardian.Utilities
             List<string> stats = new List<string>();
             if ((val & INFINITE_GAS) == INFINITE_GAS)
             {
-                stats.Add("Gas");
+                stats.Add("G");
             }
             if ((val & INFINITE_BLADES) == INFINITE_BLADES)
             {
-                stats.Add("Blades");
+                stats.Add("B");
             }
             if ((val & INFINITE_AHSS_AMMO) == INFINITE_AHSS_AMMO)
             {
-                stats.Add("AHSS");
+                stats.Add("A");
             }
 
             return string.Join(",", stats.ToArray());

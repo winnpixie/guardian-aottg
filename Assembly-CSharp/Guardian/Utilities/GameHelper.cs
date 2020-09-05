@@ -44,7 +44,7 @@ namespace Guardian.Utilities
         {
             foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
             {
-                if (hero.photonView.ownerId == player.id)
+                if (hero.photonView.ownerId == player.Id)
                 {
                     return hero;
                 }
@@ -56,7 +56,7 @@ namespace Guardian.Utilities
         {
             foreach (TITAN titan in FengGameManagerMKII.Instance.titans)
             {
-                if (titan.photonView.ownerId == player.id)
+                if (titan.photonView.ownerId == player.Id)
                 {
                     return titan;
                 }

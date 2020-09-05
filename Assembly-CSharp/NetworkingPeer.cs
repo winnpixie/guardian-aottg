@@ -218,7 +218,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         externalListener = listener;
         PlayerName = playername;
         mLocalActor = new PhotonPlayer(isLocal: true, -1, this.playername);
-        AddNewPlayer(mLocalActor.id, mLocalActor);
+        AddNewPlayer(mLocalActor.Id, mLocalActor);
         rpcShortcuts = new Dictionary<string, int>(PhotonNetwork.PhotonServerSettings.RpcList.Count);
         for (int i = 0; i < PhotonNetwork.PhotonServerSettings.RpcList.Count; i++)
         {
@@ -546,7 +546,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
     private void CheckMasterClient(int leavingPlayerId)
     {
-        bool flag = mMasterClient != null && mMasterClient.id == leavingPlayerId;
+        bool flag = mMasterClient != null && mMasterClient.Id == leavingPlayerId;
         bool flag2 = leavingPlayerId > 0;
         if (!flag2 || flag)
         {
@@ -575,7 +575,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
     protected internal bool SetMasterClient(int playerId, bool sync)
     {
-        if (mMasterClient == null || mMasterClient.id == -1 || !mActors.ContainsKey(playerId))
+        if (mMasterClient == null || mMasterClient.Id == -1 || !mActors.ContainsKey(playerId))
         {
             return false;
         }
@@ -624,9 +624,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             mLocalActor.name = PlayerName;
             ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
             hashtable[byte.MaxValue] = PlayerName;
-            if (mLocalActor.id > 0)
+            if (mLocalActor.Id > 0)
             {
-                OpSetPropertiesOfActor(mLocalActor.id, hashtable, broadcast: true, 0);
+                OpSetPropertiesOfActor(mLocalActor.Id, hashtable, broadcast: true, 0);
                 mPlayernameHasToBeUpdated = false;
             }
         }
@@ -713,12 +713,12 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         {
             Debug.LogWarning($"Local actor is null or not in mActors! mLocalActor: {mLocalActor} mActors==null: {mActors == null} newID: {newID}");
         }
-        if (mActors.ContainsKey(mLocalActor.id))
+        if (mActors.ContainsKey(mLocalActor.Id))
         {
-            mActors.Remove(mLocalActor.id);
+            mActors.Remove(mLocalActor.Id);
         }
         mLocalActor.InternalChangeLocalID(newID);
-        mActors[mLocalActor.id] = mLocalActor;
+        mActors[mLocalActor.Id] = mLocalActor;
         RebuildPlayerListCopies();
     }
 
@@ -1397,10 +1397,10 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                     {
                                         if (callParameterTypes.Length == methodParameters.Length)
                                         {
-                                            Mod.Logger.Error($"Spoofed '{rpcName}({argsAsString})' RPC from #{(sender == null ? "?" : sender.id.ToString())}.");
-                                            if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.id))
+                                            Mod.Logger.Error($"Spoofed '{rpcName}({argsAsString})' RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                                            if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                                             {
-                                                FengGameManagerMKII.IgnoreList.Add(sender.id);
+                                                FengGameManagerMKII.IgnoreList.Add(sender.Id);
                                             }
                                             break;
                                         }
@@ -1425,7 +1425,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                 }
                                 else
                                 {
-                                    Mod.Logger.Warn($"Invalid '{rpcName}' RPC from #{(sender == null ? "?" : sender.id.ToString())}, parameters: {argsAsString}.");
+                                    Mod.Logger.Warn($"Invalid '{rpcName}' RPC from #{(sender == null ? "?" : sender.Id.ToString())}, parameters: {argsAsString}.");
                                 }
                             }
                         }
@@ -1489,7 +1489,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         sender.isRankedRC = true;
                         break;
                     default:
-                        Mod.Logger.Warn($"No '{rpcName}({argsAsString})' from #{sender.id} in PV {viewID}.");
+                        Mod.Logger.Warn($"No '{rpcName}({argsAsString})' from #{sender.Id} in PV {viewID}.");
                         break;
                 }
             }
@@ -1848,7 +1848,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
     public void CleanRpcBufferIfMine(PhotonView view)
     {
-        if (view.ownerId != mLocalActor.id && !mLocalActor.isMasterClient)
+        if (view.ownerId != mLocalActor.Id && !mLocalActor.isMasterClient)
         {
             Debug.LogError("Cannot remove cached RPCs on a PhotonView thats not ours! " + view.owner + " scene: " + view.isSceneView);
         }
@@ -1924,7 +1924,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
             raiseEventOptions.TargetActors = new int[1]
             {
-                player.id
+                player.Id
             };
             RaiseEventOptions raiseEventOptions2 = raiseEventOptions;
             OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions2);
@@ -2184,7 +2184,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             foreach (KeyValuePair<int, PhotonView> photonView in photonViewList)
             {
                 PhotonView value = photonView.Value;
-                if (value.observed != null && value.synchronization != 0 && (value.ownerId == mLocalActor.id || (value.isSceneView && mMasterClient == mLocalActor)) && value.gameObject.activeInHierarchy && !blockSendingGroups.Contains(value.group))
+                if (value.observed != null && value.synchronization != 0 && (value.ownerId == mLocalActor.Id || (value.isSceneView && mMasterClient == mLocalActor)) && value.gameObject.activeInHierarchy && !blockSendingGroups.Contains(value.group))
                 {
                     ExitGames.Client.Photon.Hashtable hashtable = OnSerializeWrite(value);
                     if (hashtable != null)
@@ -2666,7 +2666,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             return;
         }
 
-        if (sender != null && FengGameManagerMKII.IgnoreList.Contains(sender.id)
+        if (sender != null && FengGameManagerMKII.IgnoreList.Contains(sender.Id)
             && photonEvent.Code != 254
             && (photonEvent.Code != 203 || (!sender.isMasterClient && sender.isLocal))
             && (photonEvent.Code != 208 || !sender.isMasterClient)
@@ -2678,9 +2678,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         if (photonEvent[245] is byte[] && photonEvent.Code != 173)
         {
             Mod.Logger.Error($"Event {photonEvent.Code} ({((byte[])photonEvent[245]).Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
-            if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.id))
+            if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
             {
-                FengGameManagerMKII.IgnoreList.Add(sender.id);
+                FengGameManagerMKII.IgnoreList.Add(sender.Id);
             }
             return;
         }
@@ -2780,12 +2780,12 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                             if (value != null && sender != null)
                             {
                                 PhotonView[] photonViews = value.GetPhotonViewsInChildren();
-                                if (photonViews != null && photonViews.Length > 0 && photonViews[0].ownerId != sender.id && !sender.isMasterClient)
+                                if (photonViews != null && photonViews.Length > 0 && photonViews[0].ownerId != sender.Id && !sender.isMasterClient)
                                 {
-                                    Guardian.Mod.Logger.Error($"Object.Destroy from #{sender.id}.");
-                                    if (!FengGameManagerMKII.IgnoreList.Contains(sender.id))
+                                    Guardian.Mod.Logger.Error($"Object.Destroy from #{sender.Id}.");
+                                    if (!FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                                     {
-                                        FengGameManagerMKII.IgnoreList.Add(sender.id);
+                                        FengGameManagerMKII.IgnoreList.Add(sender.Id);
                                     }
                                     return;
                                 }
@@ -2809,7 +2809,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         {
                             DestroyAll(localOnly: true);
                         }
-                        else if (sender != null && (sender.isMasterClient || sender.isLocal || num2 != PhotonNetwork.player.id))
+                        else if (sender != null && (sender.isMasterClient || sender.isLocal || num2 != PhotonNetwork.player.Id))
                         {
                             DestroyPlayerObjects(num2, localOnly: true);
                         }
@@ -2828,7 +2828,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         break;
                     }
                     int num3 = (int)hashtable[(byte)1];
-                    if (sender != null && sender.isMasterClient && num3 == sender.id)
+                    if (sender != null && sender.isMasterClient && num3 == sender.Id)
                     {
                         return;
                     }
@@ -2842,7 +2842,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         }
                         return;
                     }
-                    if (num3 == mLocalActor.id)
+                    if (num3 == mLocalActor.Id)
                     {
                         SetMasterClient(num3, sync: false);
                     }
@@ -2948,7 +2948,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                             if (sender != null)
                             {
                                 hashtable3["sender"] = sender;
-                                if (PhotonNetwork.isMasterClient && !sender.isLocal && num6 == sender.id && (hashtable3.ContainsKey("statACL") || hashtable3.ContainsKey("statBLA") || hashtable3.ContainsKey("statGAS") || hashtable3.ContainsKey("statSPD")))
+                                if (PhotonNetwork.isMasterClient && !sender.isLocal && num6 == sender.Id && (hashtable3.ContainsKey("statACL") || hashtable3.ContainsKey("statBLA") || hashtable3.ContainsKey("statGAS") || hashtable3.ContainsKey("statSPD")))
                                 {
                                     if (hashtable3.ContainsKey("statACL"))
                                     {
@@ -3019,11 +3019,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     ExitGames.Client.Photon.Hashtable properties = (ExitGames.Client.Photon.Hashtable)obj5;
                     if (sender == null)
                     {
-                        bool isLocal = mLocalActor.id == actorNr;
+                        bool isLocal = mLocalActor.Id == actorNr;
                         AddNewPlayer(actorNr, new PhotonPlayer(isLocal, actorNr, properties));
                         ResetPhotonViewsOnSerialize();
                     }
-                    if (actorNr != mLocalActor.id)
+                    if (actorNr != mLocalActor.Id)
                     {
                         object[] parameters = new object[1]
                         {
@@ -3040,12 +3040,12 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     int[] array = (int[])obj6;
                     foreach (int num11 in array)
                     {
-                        if (mLocalActor.id != num11 && !mActors.ContainsKey(num11))
+                        if (mLocalActor.Id != num11 && !mActors.ContainsKey(num11))
                         {
                             AddNewPlayer(num11, new PhotonPlayer(isLocal: false, num11, string.Empty));
                         }
                     }
-                    if (mLastJoinType == JoinType.JoinOrCreateOnDemand && mLocalActor.id == 1)
+                    if (mLastJoinType == JoinType.JoinOrCreateOnDemand && mLocalActor.Id == 1)
                     {
                         SendMonoMessage(PhotonNetworkingMessage.OnCreatedRoom);
                     }
@@ -3078,9 +3078,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         }
                         else if (bytes.Length < 4) // 1 float requires at least 4 bytes
                         {
-                            if (!MicEF.Users.ContainsKey(sender.id))
+                            if (!MicEF.Users.ContainsKey(sender.Id))
                             {
-                                MicEF.AddSpeaker(sender.id);
+                                MicEF.AddSpeaker(sender.Id);
                             }
 
                             if (bytes.Length == 1) // Commands
@@ -3088,26 +3088,26 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                 switch (bytes[0])
                                 {
                                     case 254: // Muted
-                                        if (MicEF.AdjustableList.Contains(sender.id))
+                                        if (MicEF.AdjustableList.Contains(sender.Id))
                                         {
-                                            MicEF.AdjustableList.Remove(sender.id);
+                                            MicEF.AdjustableList.Remove(sender.Id);
                                             MicEF.RecompileSendList();
-                                            MicEF.Users[sender.id].mutedYou = true;
+                                            MicEF.Users[sender.Id].mutedYou = true;
                                         }
                                         break;
                                     case 255: // Unmuted
-                                        if (!MicEF.AdjustableList.Contains(sender.id))
+                                        if (!MicEF.AdjustableList.Contains(sender.Id))
                                         {
-                                            MicEF.AdjustableList.Add(sender.id);
+                                            MicEF.AdjustableList.Add(sender.Id);
                                             MicEF.RecompileSendList();
-                                            MicEF.Users[sender.id].mutedYou = false;
+                                            MicEF.Users[sender.Id].mutedYou = false;
                                         }
                                         break;
                                     case 253: // Disconnected
-                                        if (MicEF.Users.ContainsKey(sender.id))
+                                        if (MicEF.Users.ContainsKey(sender.Id))
                                         {
-                                            MicEF.Users.Remove(sender.id);
-                                            MicEF.AdjustableList.Remove(sender.id);
+                                            MicEF.Users.Remove(sender.Id);
+                                            MicEF.AdjustableList.Remove(sender.Id);
                                             MicEF.RecompileSendList();
                                         }
                                         break;
@@ -3116,10 +3116,10 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         }
                         else
                         {
-                            if (MicEF.MuteList.Contains(sender.id)) // In case they didn't remove you for some reason
+                            if (MicEF.MuteList.Contains(sender.Id)) // In case they didn't remove you for some reason
                             {
                                 RaiseEventOptions raised = new RaiseEventOptions();
-                                raised.TargetActors = new int[] { sender.id };
+                                raised.TargetActors = new int[] { sender.Id };
                                 PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[] { (byte)254 }, true, raised);
                                 return;
                             }
@@ -3129,9 +3129,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                 float[] micData = MicEF.GzipDecompress(bytes);
 
                                 // Identifier so they can add them to the list on join
-                                if (!MicEF.Users.ContainsKey(sender.id)) // I know that this will make the person who joined send 0 twice(one on entry one in return) but that doesn't really matter
+                                if (!MicEF.Users.ContainsKey(sender.Id)) // I know that this will make the person who joined send 0 twice(one on entry one in return) but that doesn't really matter
                                 {
-                                    MicEF.AddSpeaker(sender.id);
+                                    MicEF.AddSpeaker(sender.Id);
                                 }
                                 else if (micData.Length > 0)
                                 {
@@ -3141,7 +3141,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                     {
                                         return;
                                     }
-                                    MicEF.Users[sender.id].AddClip(clip);
+                                    MicEF.Users[sender.Id].AddClip(clip);
                                 }
                             }
                             catch { }
@@ -3159,9 +3159,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 else if (actorNr != -1) // -1 = Server
                 {
                     Guardian.Mod.Logger.Error($"Event {photonEvent.Code} ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
-                    if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.id))
+                    if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(sender.Id);
                     }
                     return;
                 }

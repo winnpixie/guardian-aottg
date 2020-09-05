@@ -409,31 +409,33 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             case CheckPointState.Titan:
                 return "[" + ColorSet.TitanPlayer + "]T[-]";
             default:
-                return "[" + ColorSet.D + "]_[-]";
+                return "[FFFFFF]_[-]";
         }
     }
 
     private bool DidHumansWin()
     {
-        for (int i = 0; i < chkPts.Count; i++)
+        foreach (PVPcheckPoint checkPoint in chkPts)
         {
-            if ((chkPts[i] as PVPcheckPoint).state != CheckPointState.Human)
+            if (checkPoint.state != CheckPointState.Human)
             {
                 return false;
             }
         }
+
         return true;
     }
 
     private bool DidTitansWin()
     {
-        for (int i = 0; i < chkPts.Count; i++)
+        foreach (PVPcheckPoint checkPoint in chkPts)
         {
-            if ((chkPts[i] as PVPcheckPoint).state != CheckPointState.Titan)
+            if (checkPoint.state != CheckPointState.Titan)
             {
                 return false;
             }
         }
+
         return true;
     }
 

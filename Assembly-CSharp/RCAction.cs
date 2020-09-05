@@ -428,7 +428,7 @@ public class RCAction
                     {
                         case 0:
                             {
-                                int iD2 = photonPlayer.id;
+                                int iD2 = photonPlayer.Id;
                                 if (FengGameManagerMKII.HeroHash.ContainsKey(iD2))
                                 {
                                     HERO hERO2 = (HERO)FengGameManagerMKII.HeroHash[iD2];
@@ -449,7 +449,7 @@ public class RCAction
                             break;
                         case 3:
                             {
-                                int iD = photonPlayer.id;
+                                int iD = photonPlayer.Id;
                                 if (FengGameManagerMKII.HeroHash.ContainsKey(iD))
                                 {
                                     HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD];
@@ -549,7 +549,7 @@ public class RCAction
                             TITAN tITAN3 = parameters[0].returnTitan(null);
                             object[] array = new object[2]
                             {
-                                parameters[1].returnPlayer(null).id,
+                                parameters[1].returnPlayer(null).Id,
                                 parameters[2].returnInt(null)
                             };
                             tITAN3.photonView.RPC("titanGetHit", tITAN3.photonView.owner, array);

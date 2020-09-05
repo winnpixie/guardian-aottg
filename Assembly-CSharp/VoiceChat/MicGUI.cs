@@ -91,7 +91,7 @@ public class MicGUI : MonoBehaviour
             GUILayout.BeginVertical();
             if (MicEF.ThreadId != -1) // This sees if your mic is on
             {
-                GUILayout.Label("<b>(" + PhotonNetwork.player.id + ") </b>" + PhotonNetwork.player.customProperties["name"].ToString().Colored());
+                GUILayout.Label("<b>(" + PhotonNetwork.player.Id + ") </b>" + PhotonNetwork.player.customProperties["name"].ToString().Colored());
             }
             foreach (KeyValuePair<int, MicPlayer> entry in MicEF.Users)
             {

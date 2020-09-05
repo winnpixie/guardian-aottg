@@ -359,7 +359,7 @@ public class InstantiateTracker
     {
         if (!photonPlayer.isMasterClient && !photonPlayer.isLocal)
         {
-            int num = photonPlayer.id * PhotonNetwork.MAX_VIEW_IDS;
+            int num = photonPlayer.Id * PhotonNetwork.MAX_VIEW_IDS;
             int num2 = num + PhotonNetwork.MAX_VIEW_IDS;
             foreach (int num3 in viewIDS)
             {
@@ -428,7 +428,7 @@ public class InstantiateTracker
                     return Instantiated(photonPlayer, GameResource.bomb);
                 case "rcasset/cannonwall":
                 case "rcasset/cannonground":
-                    if (PhotonNetwork.isMasterClient && !FengGameManagerMKII.Instance.allowedToCannon.ContainsKey(photonPlayer.id) && !FengGameManagerMKII.Instance.restartingMC)
+                    if (PhotonNetwork.isMasterClient && !FengGameManagerMKII.Instance.allowedToCannon.ContainsKey(photonPlayer.Id) && !FengGameManagerMKII.Instance.restartingMC)
                     {
                         FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: false, "spawning cannon item (" + key + ").");
                     }
@@ -587,7 +587,7 @@ public class InstantiateTracker
 
     public bool Instantiated(PhotonPlayer owner, GameResource type)
     {
-        if (TryGetPlayer(owner.id, out int result))
+        if (TryGetPlayer(owner.Id, out int result))
         {
             if (players[result].IsThingExcessive(type))
             {
@@ -601,7 +601,7 @@ public class InstantiateTracker
         }
         else
         {
-            RCextensions.Add(ref players, new Player(owner.id));
+            RCextensions.Add(ref players, new Player(owner.Id));
             players[players.Length - 1].IsThingExcessive(type);
         }
         return true;
@@ -609,7 +609,7 @@ public class InstantiateTracker
 
     public bool PropertiesChanged(PhotonPlayer owner)
     {
-        if (TryGetPlayer(owner.id, out int result))
+        if (TryGetPlayer(owner.Id, out int result))
         {
             if (players[result].IsThingExcessive(GameResource.name))
             {
@@ -618,7 +618,7 @@ public class InstantiateTracker
         }
         else
         {
-            RCextensions.Add(ref players, new Player(owner.id));
+            RCextensions.Add(ref players, new Player(owner.Id));
             players[players.Length - 1].IsThingExcessive(GameResource.name);
         }
         return true;

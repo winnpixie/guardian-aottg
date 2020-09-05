@@ -7,12 +7,12 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info == null || (titan.photonView.ownerId != info.sender.id && !info.sender.isMasterClient))
+                if (info == null || (titan.photonView.ownerId != info.sender.Id && !info.sender.isMasterClient))
                 {
-                    Mod.Logger.Error($"'netSetAbnormalType' from #{(info == null ? "?" : info.sender.id.ToString())}.");
-                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                    Mod.Logger.Error($"'netSetAbnormalType' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
                     return false;
                 }
@@ -25,12 +25,12 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info == null || titan.photonView.ownerId != info.sender.id)
+                if (info == null || titan.photonView.ownerId != info.sender.Id)
                 {
-                    Mod.Logger.Error($"'netCrossFade' from #{(info == null ? "?" : info.sender.id.ToString())}.");
-                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                    Mod.Logger.Error($"'netCrossFade' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
                     return false;
                 }
@@ -43,12 +43,12 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info == null || titan.photonView.ownerId != info.sender.id)
+                if (info == null || titan.photonView.ownerId != info.sender.Id)
                 {
-                    Mod.Logger.Error($"'netPlayAnimation' from #{(info == null ? "?" : info.sender.id.ToString())}.");
-                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                    Mod.Logger.Error($"'netPlayAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
                     return false;
                 }
@@ -61,12 +61,12 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info == null || titan.photonView.ownerId != info.sender.id)
+                if (info == null || titan.photonView.ownerId != info.sender.Id)
                 {
-                    Mod.Logger.Error($"'netPlayAnimationAt' from #{(info == null ? "?" : info.sender.id.ToString())}.");
-                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                    Mod.Logger.Error($"'netPlayAnimationAt' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
                     return false;
                 }
@@ -79,12 +79,12 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info == null || titan.photonView.ownerId != info.sender.id)
+                if (info == null || titan.photonView.ownerId != info.sender.Id)
                 {
-                    Mod.Logger.Error($"'setMyTarget' from #{(info == null ? "?" : info.sender.id.ToString())}.");
-                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                    Mod.Logger.Error($"'setMyTarget' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
                     return false;
                 }
@@ -97,12 +97,12 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info != null && titan.photonView.ownerId != info.sender.id)
+                if (info != null && titan.photonView.ownerId != info.sender.Id)
                 {
-                    Mod.Logger.Error($"'playsoundRPC' from #{(info == null ? "?" : info.sender.id.ToString())}.");
-                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                    Mod.Logger.Error($"'playsoundRPC' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
                     return false;
                 }
@@ -115,12 +115,12 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info != null && titan.photonView.ownerId != info.sender.id)
+                if (info != null && titan.photonView.ownerId != info.sender.Id)
                 {
-                    Mod.Logger.Error($"'grabToRight' from #{info.sender.id}.");
-                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                    Mod.Logger.Error($"'grabToRight' from #{info.sender.Id}.");
+                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
                     return false;
                 }
@@ -133,12 +133,12 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info != null && titan.photonView.ownerId != info.sender.id)
+                if (info != null && titan.photonView.ownerId != info.sender.Id)
                 {
-                    Mod.Logger.Error($"'grabToLeft' from #{info.sender.id}.");
-                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                    Mod.Logger.Error($"'grabToLeft' from #{info.sender.Id}.");
+                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
                     return false;
                 }
@@ -151,12 +151,12 @@
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
             {
-                if (info == null || (titan.photonView.ownerId != info.sender.id && !info.sender.isMasterClient))
+                if (info == null || (titan.photonView.ownerId != info.sender.Id && !info.sender.isMasterClient))
                 {
-                    Mod.Logger.Error($"'netSetLevel' from #{(info == null ? "?" : info.sender.id.ToString())}.");
-                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                    Mod.Logger.Error($"'netSetLevel' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                    if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                        FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
                     return false;
                 }

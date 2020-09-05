@@ -51,10 +51,10 @@ namespace Guardian.AntiAbuse
 
             if (malformed)
             {
-                Mod.Logger.Error($"Malformed instantiate from #{(sender == null ? "?" : sender.id.ToString())}.");
-                if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.id))
+                Mod.Logger.Error($"Malformed instantiate from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
-                    FengGameManagerMKII.IgnoreList.Add(sender.id);
+                    FengGameManagerMKII.IgnoreList.Add(sender.Id);
                 }
                 return false;
             }
@@ -82,10 +82,10 @@ namespace Guardian.AntiAbuse
 
             if (malformed)
             {
-                Mod.Logger.Error($"Malformed serialization from #{(sender == null ? "?" : sender.id.ToString())}.");
-                if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.id))
+                Mod.Logger.Error($"Malformed serialization from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
-                    FengGameManagerMKII.IgnoreList.Add(sender.id);
+                    FengGameManagerMKII.IgnoreList.Add(sender.Id);
                 }
                 return false;
             }
@@ -129,10 +129,10 @@ namespace Guardian.AntiAbuse
 
             if (malformed)
             {
-                Mod.Logger.Error($"Malformed RPC from #{(sender == null ? "?" : sender.id.ToString())}.");
-                if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.id))
+                Mod.Logger.Error($"Malformed RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
-                    FengGameManagerMKII.IgnoreList.Add(sender.id);
+                    FengGameManagerMKII.IgnoreList.Add(sender.Id);
                 }
                 return false;
             }
@@ -157,7 +157,7 @@ namespace Guardian.AntiAbuse
 
                     if (keys.Count > 0)
                     {
-                        Mod.Logger.Error($"#{sender.id} applied foreign properties to you.");
+                        Mod.Logger.Error($"#{sender.Id} applied foreign properties to you.");
                         string propertiesModified = string.Join(", ", keys.Select(k => $"{{{k}={properties[k]}}}").ToArray());
                         Mod.Logger.Error($"Properties: {propertiesModified}");
 
@@ -165,9 +165,9 @@ namespace Guardian.AntiAbuse
                         keys.ForEach(v => nullified.Add(v, null));
                         PhotonNetwork.player.SetCustomProperties(nullified);
 
-                        if (!FengGameManagerMKII.IgnoreList.Contains(sender.id))
+                        if (!FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                         {
-                            FengGameManagerMKII.IgnoreList.Add(sender.id);
+                            FengGameManagerMKII.IgnoreList.Add(sender.Id);
                         }
                     }
                 }
@@ -190,7 +190,7 @@ namespace Guardian.AntiAbuse
 
                         if (keys.Count > 0)
                         {
-                            Mod.Logger.Error($"#{sender.id} applied foreign properties to the room.");
+                            Mod.Logger.Error($"#{sender.Id} applied foreign properties to the room.");
                             string propertiesModified = string.Join(", ", keys.Select(k => $"{{{k}={propertiesThatChanged[k]}}}").ToArray());
                             Mod.Logger.Error($"Properties: {propertiesModified}");
 

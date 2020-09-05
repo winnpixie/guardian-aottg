@@ -42,7 +42,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 // Player TTL
                 if (args[0].Equals("pttl", StringComparison.OrdinalIgnoreCase) && int.TryParse(args[1], out int pttl))
                 {
-                    if (PhotonNetwork.player.id == 1)
+                    if (PhotonNetwork.player.Id == 1)
                     {
                         PhotonNetwork.room.playerTtl = pttl;
                         FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Player TTL is now {pttl}ms!".WithColor("ffcc00"), "");
@@ -56,7 +56,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 // Room TTL
                 if (args[0].Equals("rttl", StringComparison.OrdinalIgnoreCase) && int.TryParse(args[1], out int rttl))
                 {
-                    if (PhotonNetwork.player.id == 1)
+                    if (PhotonNetwork.player.Id == 1)
                     {
                         PhotonNetwork.room.emptyRoomTtl = rttl;
                         FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Room TTL is now {rttl}ms!".WithColor("ffcc00"), "");

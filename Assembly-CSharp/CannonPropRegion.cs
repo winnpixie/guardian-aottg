@@ -58,11 +58,11 @@ public class CannonPropRegion : Photon.MonoBehaviour
         if (base.photonView.isMine && PhotonNetwork.isMasterClient && !disabled)
         {
             HERO component = PhotonView.Find(viewID).gameObject.GetComponent<HERO>();
-            if (component != null && component.photonView.owner == info.sender && !FengGameManagerMKII.Instance.allowedToCannon.ContainsKey(info.sender.id))
+            if (component != null && component.photonView.owner == info.sender && !FengGameManagerMKII.Instance.allowedToCannon.ContainsKey(info.sender.Id))
             {
                 disabled = true;
                 StartCoroutine(WaitAndEnable());
-                FengGameManagerMKII.Instance.allowedToCannon.Add(info.sender.id, new CannonValues(base.photonView.viewID, settings));
+                FengGameManagerMKII.Instance.allowedToCannon.Add(info.sender.Id, new CannonValues(base.photonView.viewID, settings));
                 component.photonView.RPC("SpawnCannonRPC", info.sender, settings);
             }
         }

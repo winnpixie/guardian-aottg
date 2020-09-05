@@ -551,7 +551,7 @@ public static class PhotonNetwork
 
     public static bool SetMasterClient(PhotonPlayer masterClientPlayer)
     {
-        return networkingPeer.SetMasterClient(masterClientPlayer.id, sync: true);
+        return networkingPeer.SetMasterClient(masterClientPlayer.Id, sync: true);
     }
 
     public static void NetworkStatisticsReset()
@@ -979,7 +979,7 @@ public static class PhotonNetwork
 
     public static int AllocateViewID()
     {
-        int num = AllocateViewID(player.id);
+        int num = AllocateViewID(player.Id);
         manuallyAllocatedViewIds.Add(num);
         return num;
     }
@@ -1076,7 +1076,7 @@ public static class PhotonNetwork
         int[] array = new int[photonViewsInChildren.Length];
         for (int i = 0; i < array.Length; i++)
         {
-            array[i] = AllocateViewID(player.id);
+            array[i] = AllocateViewID(player.Id);
         }
         Hashtable evData = networkingPeer.SendInstantiate(prefabName, position, rotation, group, array, data, isGlobalObject: false);
         return networkingPeer.DoInstantiate2(evData, networkingPeer.mLocalActor, value);
@@ -1165,7 +1165,7 @@ public static class PhotonNetwork
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
         raiseEventOptions.TargetActors = new int[1]
         {
-            kickPlayer.id
+            kickPlayer.Id
         };
         RaiseEventOptions raiseEventOptions2 = raiseEventOptions;
         return networkingPeer.OpRaiseEvent(203, null, sendReliable: true, raiseEventOptions2);
@@ -1194,14 +1194,14 @@ public static class PhotonNetwork
         {
             Debug.LogError("DestroyPlayerObjects() failed, cause parameter 'targetPlayer' was null.");
         }
-        DestroyPlayerObjects(targetPlayer.id);
+        DestroyPlayerObjects(targetPlayer.Id);
     }
 
     public static void DestroyPlayerObjects(int targetPlayerId)
     {
         if (VerifyCanUseNetwork())
         {
-            if (player.isMasterClient || targetPlayerId == player.id)
+            if (player.isMasterClient || targetPlayerId == player.Id)
             {
                 networkingPeer.DestroyPlayerObjects(targetPlayerId, localOnly: false);
             }
@@ -1234,7 +1234,7 @@ public static class PhotonNetwork
             }
             else
             {
-                networkingPeer.OpCleanRpcBuffer(targetPlayer.id);
+                networkingPeer.OpCleanRpcBuffer(targetPlayer.Id);
             }
         }
     }

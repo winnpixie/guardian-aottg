@@ -76,7 +76,7 @@ public class PhotonView : Photon.MonoBehaviour
     public bool isSceneView => ownerId == 0;
     public PhotonPlayer owner => PhotonPlayer.Find(ownerId);
     public int OwnerActorNr => ownerId;
-    public bool isMine => ownerId == PhotonNetwork.player.id || (isSceneView && PhotonNetwork.isMasterClient);
+    public bool isMine => ownerId == PhotonNetwork.player.Id || (isSceneView && PhotonNetwork.isMasterClient);
 
     protected internal void Awake()
     {

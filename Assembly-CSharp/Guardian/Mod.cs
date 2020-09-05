@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "09042020";
+        public static string Build = "09052020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -181,12 +181,12 @@ namespace Guardian
 
         public void OnPhotonPlayerConnected(PhotonPlayer player)
         {
-            Logger.Info($"[{player.id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00ff00"));
+            Logger.Info($"[{player.Id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00ff00"));
         }
 
         public void OnPhotonPlayerDisconnected(PhotonPlayer player)
         {
-            Logger.Info($"[{player.id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("ff0000"));
+            Logger.Info($"[{player.Id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("ff0000"));
         }
 
         public void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
@@ -301,6 +301,7 @@ namespace Guardian
         void OnApplicationQuit()
         {
             Properties.Save();
+
             DiscordRpc.Shutdown();
         }
 

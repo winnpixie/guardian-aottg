@@ -185,7 +185,7 @@ public class RCActionHelper
                                 return nextHelper.returnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
                             case 14:
                                 {
-                                    int iD4 = photonPlayer.id;
+                                    int iD4 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD4))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD4];
@@ -195,7 +195,7 @@ public class RCActionHelper
                                 }
                             case 15:
                                 {
-                                    int iD3 = photonPlayer.id;
+                                    int iD3 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD3))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD3];
@@ -205,7 +205,7 @@ public class RCActionHelper
                                 }
                             case 16:
                                 {
-                                    int iD2 = photonPlayer.id;
+                                    int iD2 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD2))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD2];
@@ -219,7 +219,7 @@ public class RCActionHelper
                                 return nextHelper.returnInt(photonPlayer.customProperties[PhotonPlayerProperty.Guild]);
                             case 17:
                                 {
-                                    int iD = photonPlayer.id;
+                                    int iD = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD];
@@ -363,7 +363,7 @@ public class RCActionHelper
                                 return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
                             case 14:
                                 {
-                                    int iD4 = photonPlayer.id;
+                                    int iD4 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD4))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD4];
@@ -373,7 +373,7 @@ public class RCActionHelper
                                 }
                             case 15:
                                 {
-                                    int iD3 = photonPlayer.id;
+                                    int iD3 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD3))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD3];
@@ -383,7 +383,7 @@ public class RCActionHelper
                                 }
                             case 16:
                                 {
-                                    int iD2 = photonPlayer.id;
+                                    int iD2 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD2))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD2];
@@ -397,7 +397,7 @@ public class RCActionHelper
                                 return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.Guild]);
                             case 17:
                                 {
-                                    int iD = photonPlayer.id;
+                                    int iD = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD];
@@ -532,7 +532,7 @@ public class RCActionHelper
                                 return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
                             case 14:
                                 {
-                                    int iD4 = photonPlayer.id;
+                                    int iD4 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD4))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD4];
@@ -542,7 +542,7 @@ public class RCActionHelper
                                 }
                             case 15:
                                 {
-                                    int iD3 = photonPlayer.id;
+                                    int iD3 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD3))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD3];
@@ -552,7 +552,7 @@ public class RCActionHelper
                                 }
                             case 16:
                                 {
-                                    int iD2 = photonPlayer.id;
+                                    int iD2 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD2))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD2];
@@ -566,7 +566,7 @@ public class RCActionHelper
                                 return (string)photonPlayer.customProperties[PhotonPlayerProperty.Guild];
                             case 17:
                                 {
-                                    int iD = photonPlayer.id;
+                                    int iD = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD];
@@ -714,7 +714,7 @@ public class RCActionHelper
                                 return (float)photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat];
                             case 14:
                                 {
-                                    int iD4 = photonPlayer.id;
+                                    int iD4 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD4))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD4];
@@ -724,7 +724,7 @@ public class RCActionHelper
                                 }
                             case 15:
                                 {
-                                    int iD3 = photonPlayer.id;
+                                    int iD3 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD3))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD3];
@@ -734,7 +734,7 @@ public class RCActionHelper
                                 }
                             case 16:
                                 {
-                                    int iD2 = photonPlayer.id;
+                                    int iD2 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD2))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD2];
@@ -748,7 +748,7 @@ public class RCActionHelper
                                 return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Guild]);
                             case 17:
                                 {
-                                    int iD = photonPlayer.id;
+                                    int iD = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD];

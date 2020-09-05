@@ -6,7 +6,7 @@ public class PhotonPlayer
 {
     private string nameField = string.Empty;
     public readonly bool isLocal;
-    public int id = -1;
+    public int Id = -1;
 
     public string name
     {
@@ -67,7 +67,7 @@ public class PhotonPlayer
     {
         customProperties = new Hashtable();
         this.isLocal = isLocal;
-        this.id = actorID;
+        this.Id = actorID;
         nameField = name;
     }
 
@@ -75,7 +75,7 @@ public class PhotonPlayer
     {
         customProperties = new Hashtable();
         this.isLocal = isLocal;
-        this.id = actorID;
+        this.Id = actorID;
         InternalCacheProperties(properties);
     }
 
@@ -87,7 +87,7 @@ public class PhotonPlayer
 
     public override int GetHashCode()
     {
-        return id;
+        return Id;
     }
 
     internal void InternalChangeLocalID(int newId)
@@ -98,7 +98,7 @@ public class PhotonPlayer
         }
         else
         {
-            id = newId;
+            Id = newId;
         }
     }
 
@@ -122,9 +122,9 @@ public class PhotonPlayer
             customProperties.MergeStringKeys(propertiesToSet);
             customProperties.StripKeysWithNullValues();
             Hashtable actorProperties = propertiesToSet.StripToStringKeys();
-            if (id > 0 && !PhotonNetwork.offlineMode)
+            if (Id > 0 && !PhotonNetwork.offlineMode)
             {
-                PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(id, actorProperties, broadcast, 0);
+                PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(Id, actorProperties, broadcast, 0);
             }
             NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerPropertiesChanged, this, propertiesToSet);
         }
@@ -135,7 +135,7 @@ public class PhotonPlayer
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
             PhotonPlayer photonPlayer = PhotonNetwork.playerList[i];
-            if (photonPlayer.id == ID)
+            if (photonPlayer.Id == ID)
             {
                 return photonPlayer;
             }
@@ -145,7 +145,7 @@ public class PhotonPlayer
 
     public PhotonPlayer GetNext()
     {
-        return GetNextFor(id);
+        return GetNextFor(Id);
     }
 
     public PhotonPlayer GetNextFor(PhotonPlayer currentPlayer)
@@ -154,7 +154,7 @@ public class PhotonPlayer
         {
             return null;
         }
-        return GetNextFor(currentPlayer.id);
+        return GetNextFor(currentPlayer.Id);
     }
 
     public PhotonPlayer GetNextFor(int currentPlayerId)
@@ -184,13 +184,13 @@ public class PhotonPlayer
     {
         if (string.IsNullOrEmpty(name))
         {
-            return string.Format("#{0:00}{1}", id, (!isMasterClient) ? string.Empty : "(master)");
+            return string.Format("#{0:00}{1}", Id, (!isMasterClient) ? string.Empty : "(master)");
         }
         return string.Format("'{0}'{1}", name, (!isMasterClient) ? string.Empty : "(master)");
     }
 
     public string ToStringFull()
     {
-        return $"#{id:00} '{name}' {customProperties.ToStringFull()}";
+        return $"#{Id:00} '{name}' {customProperties.ToStringFull()}";
     }
 }

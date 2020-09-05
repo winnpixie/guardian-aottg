@@ -23,15 +23,19 @@ namespace Guardian.Features.Commands.Impl
             }
             int endIndex = Math.Min(page * Mod.Commands.PerPage, Mod.Commands.Elements.Count);
 
-            irc.AddLine($"Commands (Page {page}/{Mod.Commands.Pages})".WithColor("aaff00"));
+            irc.AddLine($"Commands (Page {page}/{Mod.Commands.Pages})".WithColor("aaff00").AsBold());
             irc.AddLine($"<arg> = Required, [arg] = Optional".WithColor("aaaaaa").AsBold());
             for (int i = (page - 1) * Mod.Commands.PerPage; i < endIndex; i++)
             {
                 Command command = Mod.Commands.Elements[i];
-                string msg = $"/{command.Name} {command.usage}";
+                string msg = "> ".WithColor("00ff00").AsBold() + $"/{command.Name} {command.usage}";
                 if (command.masterClient)
                 {
                     msg += " [MC]".WithColor("ff0000").AsBold();
+                }
+                if (command.GetType().Namespace.EndsWith("Debug"))
+                {
+                    msg += " [Debug]".WithColor("aaaaa").AsBold();
                 }
                 irc.AddLine(msg);
             }

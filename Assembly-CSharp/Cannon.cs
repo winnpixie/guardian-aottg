@@ -43,12 +43,12 @@ public class Cannon : Photon.MonoBehaviour
             return;
         }
         PhotonPlayer owner = base.photonView.owner;
-        if (FengGameManagerMKII.Instance.allowedToCannon.ContainsKey(owner.id))
+        if (FengGameManagerMKII.Instance.allowedToCannon.ContainsKey(owner.Id))
         {
-            settings = FengGameManagerMKII.Instance.allowedToCannon[owner.id].settings;
+            settings = FengGameManagerMKII.Instance.allowedToCannon[owner.Id].settings;
             base.photonView.RPC("SetSize", PhotonTargets.All, settings);
-            int viewID = FengGameManagerMKII.Instance.allowedToCannon[owner.id].viewID;
-            FengGameManagerMKII.Instance.allowedToCannon.Remove(owner.id);
+            int viewID = FengGameManagerMKII.Instance.allowedToCannon[owner.Id].viewID;
+            FengGameManagerMKII.Instance.allowedToCannon.Remove(owner.Id);
             CannonPropRegion component = PhotonView.Find(viewID).gameObject.GetComponent<CannonPropRegion>();
             if (component != null)
             {

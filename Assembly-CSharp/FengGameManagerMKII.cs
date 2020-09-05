@@ -1105,18 +1105,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     private void Chat(string content, string sender, PhotonMessageInfo info)
     {
         // Mod
-        if (Mod.Instance.Muted.Contains(info.sender.id))
+        if (Mod.Instance.Muted.Contains(info.sender.Id))
         {
             return;
         }
 
         if (sender.Length == 0)
         {
-            chatRoom.AddMessage("<color=#ffcc00>[" + info.sender.id + "]</color>", content);
+            chatRoom.AddMessage("<color=#ffcc00>[" + info.sender.Id + "]</color>", content);
         }
         else
         {
-            chatRoom.AddMessage("<color=#ffcc00>[" + info.sender.id + "]</color> " + sender, content);
+            chatRoom.AddMessage("<color=#ffcc00>[" + info.sender.Id + "]</color> " + sender, content);
         }
     }
 
@@ -1659,14 +1659,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             oneTitanDown(string.Empty, onPlayerLeave: true);
             someOneIsDead(0);
         }
-        if (IgnoreList.Contains(player.id))
+        if (IgnoreList.Contains(player.Id))
         {
-            IgnoreList.Remove(player.id);
+            IgnoreList.Remove(player.Id);
         }
-        InstantiateTracker.instance.TryRemovePlayer(player.id);
+        InstantiateTracker.instance.TryRemovePlayer(player.Id);
         if (PhotonNetwork.isMasterClient)
         {
-            base.photonView.RPC("verifyPlayerHasLeft", PhotonTargets.All, player.id);
+            base.photonView.RPC("verifyPlayerHasLeft", PhotonTargets.All, player.Id);
         }
         if (RCSettings.AsoPreserveKDR == 1)
         {
@@ -1828,7 +1828,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         if (!info.sender.isMasterClient && !info.sender.isLocal && PhotonNetwork.isMasterClient)
         {
-            chatRoom.AddLine("<color=#ffcc00>Round end sent from Player " + info.sender.id.ToString() + "</color>");
+            chatRoom.AddLine("<color=#ffcc00>Round end sent from Player " + info.sender.Id.ToString() + "</color>");
         }
     }
 
@@ -1865,7 +1865,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         if (!info.sender.isMasterClient && !info.sender.isLocal)
         {
-            chatRoom.AddLine("<color=#ffcc00>Round end sent from Player " + info.sender.id.ToString() + "</color>");
+            chatRoom.AddLine("<color=#ffcc00>Round end sent from Player " + info.sender.Id.ToString() + "</color>");
         }
     }
 
@@ -2920,7 +2920,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     private string GetPlayerTextForList(PhotonPlayer player)
     {
         string content = "";
-        if (IgnoreList.Contains(player.id))
+        if (IgnoreList.Contains(player.Id))
         {
             content += "[990000][X][-] ";
         }
@@ -2936,11 +2936,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             content += "[ffcc00]";
         }
-        content += "[" + player.id + "][-] ";
+        content += "[" + player.Id + "][-] ";
 
         if (player.customProperties[PhotonPlayerProperty.Dead] == null)
         {
-            content += $"[ff0000]({(player.id < 0 ? "Connecting" : "Invisible")})[-] ";
+            content += $"[ff0000]({(player.Id < 0 ? "Connecting" : "Invisible")})[-] ";
         }
 
         if (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]))
@@ -2952,46 +2952,40 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             content += "[" + ColorSet.TitanPlayer + "]<T>[-] ";
         }
+        else if (GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Team]) == 2)
+        {
+            content += "[" + ColorSet.AHSS + "]<A>[-] ";
+        }
         else
         {
-            int team = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Team]);
-            if (team == 2)
-            {
-                content += "[" + ColorSet.AHSS + "]<A>[-] ";
-            }
-            else
-            {
-                content += "[" + ColorSet.Human + "]<H>[-] ";
-            }
+            content += "[" + ColorSet.Human + "]<H>[-] ";
         }
 
-        string name = GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
+        content += "[ffffff]" + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
+
         int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
         int deaths = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Deaths]);
         int maxDmg = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.MaxDamage]);
         int totalDmg = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.TotalDamage]);
         content += string.Concat(
-            "[ffffff]",
-            name,
-            " [ffffff](",
+            " [aaaaaa]::[ffffff] ",
             kills,
-            " [aaaaaa]/[-] ",
+            " / ",
             deaths,
-            " [aaaaaa]/[-] ",
-            maxDmg >= 1000 ? "[ff0000]" + maxDmg : maxDmg.ToString(),
-            " [aaaaaa]/[ffffff] ",
-            totalDmg,
-            ")"
+            " / ",
+            maxDmg,
+            " / ",
+            totalDmg
         );
 
-        return content + $" {ModDetector.GetMod(player)}[-]\n";
+        return content + $" {ModDetector.GetMods(player)[0]}[-]\n";
     }
 
     public IEnumerator WaitAndRecompilePlayerList(float time)
     {
         yield return new WaitForSeconds(time);
         string content = string.Empty;
-        Comparison<PhotonPlayer> comparator = new Comparison<PhotonPlayer>((p1, p2) => p1.id - p2.id);
+        Comparison<PhotonPlayer> comparator = new Comparison<PhotonPlayer>((p1, p2) => p1.Id - p2.Id);
         PhotonPlayer[] array = PhotonNetwork.playerList.Sorted(comparator);
         if (RCSettings.TeamMode != 0)
         {
@@ -3008,22 +3002,22 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             Dictionary<int, PhotonPlayer> individualPlayers = new Dictionary<int, PhotonPlayer>();
             foreach (PhotonPlayer photonPlayer in array)
             {
-                if (photonPlayer.customProperties[PhotonPlayerProperty.Dead] != null && !IgnoreList.Contains(photonPlayer.id))
+                if (photonPlayer.customProperties[PhotonPlayerProperty.Dead] != null && !IgnoreList.Contains(photonPlayer.Id))
                 {
                     switch (GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]))
                     {
                         case 0:
-                            individualPlayers.Add(photonPlayer.id, photonPlayer);
+                            individualPlayers.Add(photonPlayer.Id, photonPlayer);
                             break;
                         case 1:
-                            cyanPlayers.Add(photonPlayer.id, photonPlayer);
+                            cyanPlayers.Add(photonPlayer.Id, photonPlayer);
                             _cyanKills += GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.Kills]);
                             _cyanDeaths += GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.Deaths]);
                             _cyanMaxDmg += GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.MaxDamage]);
                             _cyanDmgSum += GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
                             break;
                         case 2:
-                            magentaPlayers.Add(photonPlayer.id, photonPlayer);
+                            magentaPlayers.Add(photonPlayer.Id, photonPlayer);
                             _magentaKills += GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.Kills]);
                             _magentaDeaths += GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.Deaths]);
                             _magentaMaxDmg += GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.MaxDamage]);
@@ -3044,25 +3038,25 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         if (cyanPlayers.Count > magentaPlayers.Count + 1)
                         {
                             rcTeam = 2;
-                            if (cyanPlayers.ContainsKey(player.id))
+                            if (cyanPlayers.ContainsKey(player.Id))
                             {
-                                cyanPlayers.Remove(player.id);
+                                cyanPlayers.Remove(player.Id);
                             }
-                            if (!magentaPlayers.ContainsKey(player.id))
+                            if (!magentaPlayers.ContainsKey(player.Id))
                             {
-                                magentaPlayers.Add(player.id, player);
+                                magentaPlayers.Add(player.Id, player);
                             }
                         }
                         else if (magentaPlayers.Count > cyanPlayers.Count + 1)
                         {
                             rcTeam = 1;
-                            if (!cyanPlayers.ContainsKey(player.id))
+                            if (!cyanPlayers.ContainsKey(player.Id))
                             {
-                                cyanPlayers.Add(player.id, player);
+                                cyanPlayers.Add(player.Id, player);
                             }
-                            if (magentaPlayers.ContainsKey(player.id))
+                            if (magentaPlayers.ContainsKey(player.Id))
                             {
-                                magentaPlayers.Remove(player.id);
+                                magentaPlayers.Remove(player.Id);
                             }
                         }
                         if (rcTeam > 0)
@@ -3161,7 +3155,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 for (int j = 0; j < PhotonNetwork.playerList.Length; j++)
                 {
                     PhotonPlayer player = PhotonNetwork.playerList[j];
-                    if (IgnoreList.Contains(player.id) || player.customProperties[PhotonPlayerProperty.Dead] == null || player.customProperties[PhotonPlayerProperty.IsTitan] == null)
+                    if (IgnoreList.Contains(player.Id) || player.customProperties[PhotonPlayerProperty.Dead] == null || player.customProperties[PhotonPlayerProperty.IsTitan] == null)
                     {
                         continue;
                     }
@@ -3169,9 +3163,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     {
                         if (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]) && GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Deaths]) > 0)
                         {
-                            if (!ImATitan.ContainsKey(player.id))
+                            if (!ImATitan.ContainsKey(player.Id))
                             {
-                                ImATitan.Add(player.id, 2);
+                                ImATitan.Add(player.Id, 2);
                             }
                             ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
                             hashtable.Add(PhotonPlayerProperty.IsTitan, 2);
@@ -3180,7 +3174,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         }
                         else
                         {
-                            if (!ImATitan.ContainsKey(player.id))
+                            if (!ImATitan.ContainsKey(player.Id))
                             {
                                 continue;
                             }
@@ -3259,7 +3253,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     for (int j = 0; j < PhotonNetwork.playerList.Length; j++)
                     {
                         PhotonPlayer photonPlayer7 = PhotonNetwork.playerList[j];
-                        if (IgnoreList.Contains(photonPlayer7.id) || photonPlayer7.customProperties[PhotonPlayerProperty.RCTeam] == null || photonPlayer7.customProperties[PhotonPlayerProperty.Dead] == null)
+                        if (IgnoreList.Contains(photonPlayer7.Id) || photonPlayer7.customProperties[PhotonPlayerProperty.RCTeam] == null || photonPlayer7.customProperties[PhotonPlayerProperty.Dead] == null)
                         {
                             continue;
                         }
@@ -3431,7 +3425,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     {
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions
         {
-            TargetActors = new int[] { targetPlayer.id }
+            TargetActors = new int[] { targetPlayer.Id }
         };
         if (requestIpBan)
         {
@@ -3494,7 +3488,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         ExitGames.Client.Photon.Hashtable hashtable3 = new ExitGames.Client.Photon.Hashtable();
                         hashtable3.Add(PhotonPlayerProperty.IsTitan, 2);
                         photonPlayer2.SetCustomProperties(hashtable3);
-                        ImATitan.Add(photonPlayer2.id, 2);
+                        ImATitan.Add(photonPlayer2.Id, 2);
                         num2--;
                     }
                     num--;
@@ -5554,7 +5548,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (num > 0 && UnityEngine.Random.Range(0f, 1f) <= (float)num2 / (float)num)
             {
                 photonPlayer2.SetCustomProperties(hashtable2);
-                ImATitan.Add(photonPlayer2.id, 2);
+                ImATitan.Add(photonPlayer2.Id, 2);
                 num2--;
             }
             num--;
@@ -5573,24 +5567,24 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         PhotonNetwork.DestroyPlayerObjects(player);
         PhotonNetwork.CloseConnection(player);
-        base.photonView.RPC("ignorePlayer", PhotonTargets.Others, player.id);
-        if (!IgnoreList.Contains(player.id))
+        base.photonView.RPC("ignorePlayer", PhotonTargets.Others, player.Id);
+        if (!IgnoreList.Contains(player.Id))
         {
-            IgnoreList.Add(player.id);
+            IgnoreList.Add(player.Id);
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                TargetActors = new int[] { player.id }
+                TargetActors = new int[] { player.Id }
             };
             PhotonNetwork.RaiseEvent(254, null, sendReliable: true, raiseEventOptions);
         }
-        if (ban && !BanHash.ContainsKey(player.id))
+        if (ban && !BanHash.ContainsKey(player.Id))
         {
             string empty = GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
-            BanHash.Add(player.id, empty);
+            BanHash.Add(player.Id, empty);
         }
         if (reason != string.Empty)
         {
-            chatRoom.AddLine($"Player #{player.id} was {(ban ? "banned" : "kicked")}. Reason: " + reason);
+            chatRoom.AddLine($"Player #{player.Id} was {(ban ? "banned" : "kicked")}. Reason: " + reason);
         }
         RecompilePlayerList(0.1f);
     }
@@ -5729,12 +5723,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     private void ChatPM(string sender, string content, PhotonMessageInfo info)
     {
         // Mod
-        if (Mod.Instance.Muted.Contains(info.sender.id))
+        if (Mod.Instance.Muted.Contains(info.sender.Id))
         {
             return;
         }
 
-        chatRoom.AddMessage($"FROM [{info.sender.id}]".WithColor("ffcc00"), content);
+        chatRoom.AddMessage($"FROM [{info.sender.Id}]".WithColor("ffcc00"), content);
     }
 
     [RPC]
@@ -12171,7 +12165,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     {
         // Anarchy Detection
         // https://github.com/Orrder/Anarchy/blob/master/Anarchy/Assembly/AoTTG/FengRPCs.cs
-        if (((info.timeInt - 1000000) * -1) == info.sender.id)
+        if (((info.timeInt - 1000000) * -1) == info.sender.Id)
         {
             info.sender.isAnarchy = true;
         }

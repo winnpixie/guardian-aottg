@@ -100,7 +100,7 @@ internal static class CustomTypes
 
     private static byte[] SerializePhotonPlayer(object obj)
     {
-        int id = ((PhotonPlayer)obj).id;
+        int id = ((PhotonPlayer)obj).Id;
         byte[] array = new byte[4];
         int targetOffset = 0;
         Protocol.Serialize(id, array, ref targetOffset);

@@ -13,7 +13,7 @@ namespace Guardian.Features.Commands.Impl
                 PhotonPlayer player = PhotonPlayer.Find(id);
                 if (player != null)
                 {
-                    irc.AddLine($"-=+=- Whois Report (#{player.id}) -=+=-".WithColor("ffcc00"));
+                    irc.AddLine($"-=+=- Whois Report (#{player.Id}) -=+=-".WithColor("ffcc00"));
                     irc.AddLine("Name: ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored());
                     irc.AddLine("Guild: ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Guild]).Colored());
                     irc.AddLine("Status: ".WithColor("ffcc00") + (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]) ? "Dead" : "Alive"));

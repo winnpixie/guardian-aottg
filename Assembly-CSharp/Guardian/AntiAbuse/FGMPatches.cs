@@ -10,10 +10,10 @@ namespace Guardian.AntiAbuse
         {
             if (info != null && !PhotonNetwork.isMasterClient)
             {
-                Mod.Logger.Error($"'FengGameManagerMKII.RequireStatus' from #{info.sender.id}.");
-                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                Mod.Logger.Error($"'FengGameManagerMKII.RequireStatus' from #{info.sender.Id}.");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                 {
-                    FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
                 return false;
             }
@@ -25,10 +25,10 @@ namespace Guardian.AntiAbuse
         {
             if (info == null || !info.sender.isMasterClient)
             {
-                Mod.Logger.Error($"'FengGameManagerMKII.refreshStatus' from #{(info == null ? "?" : info.sender.id.ToString())}.");
-                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                Mod.Logger.Error($"'FengGameManagerMKII.refreshStatus' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                 {
-                    FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
                 return false;
             }
@@ -40,10 +40,10 @@ namespace Guardian.AntiAbuse
         {
             if (info != null)
             {
-                Mod.Logger.Error($"'FengGameManagerMKII.titanGetKill' from #{info.sender.id}");
-                if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                Mod.Logger.Error($"'FengGameManagerMKII.titanGetKill' from #{info.sender.Id}");
+                if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                 {
-                    FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
                 return false;
             }
@@ -59,10 +59,10 @@ namespace Guardian.AntiAbuse
                 {
                     return true;
                 }
-                Mod.Logger.Error($"'FengGameManagerMKII.netShowDamage' from #{(info == null ? "?" : info.sender.id.ToString())}");
-                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+                Mod.Logger.Error($"'FengGameManagerMKII.netShowDamage' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
                 {
-                    FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
                 return false;
             }
@@ -82,10 +82,10 @@ namespace Guardian.AntiAbuse
             {
                 return true;
             }
-            Mod.Logger.Error($"'FengGameManagerMKII.updateKillInfo' from #{(info == null ? "?" : info.sender.id.ToString())}");
-            if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.id))
+            Mod.Logger.Error($"'FengGameManagerMKII.updateKillInfo' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
-                FengGameManagerMKII.IgnoreList.Add(info.sender.id);
+                FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
             }
             return false;
         }

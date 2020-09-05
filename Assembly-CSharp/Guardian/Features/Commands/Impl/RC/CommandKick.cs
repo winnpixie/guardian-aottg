@@ -8,7 +8,7 @@
         {
             if (args.Length > 0 && int.TryParse(args[0], out int id))
             {
-                if (id != PhotonNetwork.player.id)
+                if (id != PhotonNetwork.player.Id)
                 {
                     if (!(FengGameManagerMKII.OnPrivateServer || PhotonNetwork.isMasterClient))
                     {
