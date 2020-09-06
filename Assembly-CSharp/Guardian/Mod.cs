@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "09052020";
+        public static string Build = "09062020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -227,14 +227,25 @@ namespace Guardian
                 sender = (PhotonPlayer)propertiesThatChanged["sender"];
             }
 
-            if ((sender == null || sender.isMasterClient) && propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string && IsMultiMap)
+            if ((sender == null || sender.isMasterClient))
             {
-                LevelInfo levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
-                if (levelInfo != null)
+                if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string && IsMultiMap)
                 {
-                    FengGameManagerMKII.CurrentLevelInfo = levelInfo;
-                    FengGameManagerMKII.level = levelInfo.name;
-                    IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.type;
+                    LevelInfo levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
+                    if (levelInfo != null)
+                    {
+                        FengGameManagerMKII.CurrentLevelInfo = levelInfo;
+                        FengGameManagerMKII.level = levelInfo.name;
+                        IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.type;
+                    }
+                }
+
+                if (propertiesThatChanged.ContainsKey("DayLight") && propertiesThatChanged["DayLight"] is string)
+                {
+                    if (GExtensions.TryParseEnum((string)propertiesThatChanged["DayLight"], out DayLight dayLight))
+                    {
+                        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(dayLight);
+                    }
                 }
             }
         }

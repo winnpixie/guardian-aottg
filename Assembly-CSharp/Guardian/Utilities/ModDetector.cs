@@ -66,6 +66,12 @@ namespace Guardian.Utilities
                 mods.Add("[ee66ff][TRAP]");
             }
 
+            // RC83
+            if (player.isRC83)
+            {
+                mods.Add("[ffffff][RC83]");
+            }
+
             // Guardian (mine!)
             if ((properties.ContainsKey("GuardianMod") && properties["GuardianMod"] is int)
                 || (properties.ContainsKey("Stats") && properties["Stats"] is int))

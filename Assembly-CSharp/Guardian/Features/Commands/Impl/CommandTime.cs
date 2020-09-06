@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Guardian.Utilities;
 
 namespace Guardian.Features.Commands.Impl
 {
@@ -8,18 +9,23 @@ namespace Guardian.Features.Commands.Impl
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            if (args.Length > 0)
+            if (args.Length > 0 && GExtensions.TryParseEnum(args[0], out DayLight dayLight))
             {
-                try
+                IN_GAME_MAIN_CAMERA.DayLight = dayLight;
+
+                if (PhotonNetwork.isMasterClient)
                 {
-                    if (GExtensions.TryParseEnum(args[0], out DayLight value))
+                    PhotonNetwork.room.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                     {
-                        IN_GAME_MAIN_CAMERA.DayLight = value;
-                        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(IN_GAME_MAIN_CAMERA.DayLight);
-                        irc.AddLine($"Lighting is now {args[0].ToUpper()}.");
-                    }
+                        { "DayLight", args[0].ToUpper() }
+                    });
+                    GameHelper.Broadcast($"The current map lighting is now {args[0].ToUpper()}!");
                 }
-                catch { }
+                else
+                {
+                    Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(dayLight);
+                    irc.AddLine($"Map lighting is now {args[0].ToUpper()}.");
+                }
             }
         }
     }

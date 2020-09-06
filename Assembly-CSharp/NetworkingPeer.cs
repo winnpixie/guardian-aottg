@@ -1469,8 +1469,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     case "WingsRPC":
                     case "HornsRPC":
                     case "NekoRPC":
-                    case "receiveSatanPlayers":
-                        sender.isUnknown = true;
+                        break;
+                    case "receiveSatanPlayers": // RC83
+                        sender.isRC83 = true;
                         break;
                     case "AddMeToCEList": // Cyrus Essentials
                         sender.isCyrus = true;

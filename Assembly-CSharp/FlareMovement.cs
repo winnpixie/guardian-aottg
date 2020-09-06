@@ -13,6 +13,14 @@ public class FlareMovement : MonoBehaviour
     private void Start()
     {
         hero = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
+
+        Light light = base.gameObject.AddComponent<Light>();
+        light.type = LightType.Point;
+        light.intensity = 1f;
+        light.range = 125f;
+        light.color = base.GetComponent<ParticleSystem>().startColor;
+        light.renderMode = LightRenderMode.ForcePixel;
+
         if (!nohint && hero != null)
         {
             hint = (GameObject)Object.Instantiate(Resources.Load("UI/" + color + "FlareHint"));

@@ -1154,12 +1154,24 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             IN_GAME_MAIN_CAMERA.DayLight = dayLight;
         }
 
-        if (roomInfo[1].StartsWith("Multi-Map"))
+        if (PhotonNetwork.room.customProperties.ContainsKey("DayLight")
+            && PhotonNetwork.room.customProperties["DayLight"] is string)
+        {
+            if (GExtensions.TryParseEnum((string)PhotonNetwork.room.customProperties["DayLight"], out DayLight customDayLight))
+            {
+                IN_GAME_MAIN_CAMERA.DayLight = customDayLight;
+            }
+        }
+
+        if (roomInfo[1].StartsWith("Multi-Map")
+            && PhotonNetwork.room.customProperties.ContainsKey("Map")
+            && PhotonNetwork.room.customProperties["Map"] is string)
         {
             string map = (string)PhotonNetwork.room.customProperties["Map"];
             levelInfo = LevelInfo.GetInfo(map);
             level = levelInfo.name;
         }
+
         CurrentLevelInfo = levelInfo;
         IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.type;
         PhotonNetwork.LoadLevel(levelInfo.mapName);
@@ -2930,7 +2942,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         else if (player.isLocal)
         {
-            content += "[00ff99]";
+            content += "[0099ff]";
         }
         else
         {
