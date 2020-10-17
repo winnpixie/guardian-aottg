@@ -2300,11 +2300,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             string difficultyTxt = (IN_GAME_MAIN_CAMERA.Difficulty < 0) ? "Training" : ((IN_GAME_MAIN_CAMERA.Difficulty == 0) ? "Normal" : ((IN_GAME_MAIN_CAMERA.Difficulty != 1) ? "Abnormal" : "Hard"));
             if (Level.Mode == GameMode.CAGE_FIGHT)
             {
-                ShowHUDInfoTopRightMAPNAME(GameHelper.FormatTime(roundTime) + "\n" + Level + " : " + difficultyTxt);
+                ShowHUDInfoTopRightMAPNAME(GameHelper.FormatTime(roundTime) + "\n" + Level.Name + " : " + difficultyTxt);
             }
             else
             {
-                ShowHUDInfoTopRightMAPNAME("\n" + Level + " : " + difficultyTxt);
+                ShowHUDInfoTopRightMAPNAME("\n" + Level.Name + " : " + difficultyTxt);
             }
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
             {

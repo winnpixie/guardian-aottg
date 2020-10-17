@@ -25,8 +25,8 @@ namespace Guardian.Features.Commands
             base.Add(new CommandSay());
             base.Add(new CommandSetGuild());
             base.Add(new CommandSetName());
+            base.Add(new CommandSetTime());
             base.Add(new CommandTeleport());
-            base.Add(new CommandTime());
             base.Add(new CommandTranslate());
             base.Add(new CommandUnignore());
             base.Add(new CommandUnmute());

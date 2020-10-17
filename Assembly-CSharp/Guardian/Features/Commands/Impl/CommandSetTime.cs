@@ -3,9 +3,9 @@ using Guardian.Utilities;
 
 namespace Guardian.Features.Commands.Impl
 {
-    class CommandTime : Command
+    class CommandSetTime : Command
     {
-        public CommandTime() : base("time", new string[0], "<day/dawn/night>", false) { }
+        public CommandSetTime() : base("settime", new string[] { "time" }, "<day/dawn/night>", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

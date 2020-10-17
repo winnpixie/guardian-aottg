@@ -4,7 +4,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 {
     class CommandSetMap : Command
     {
-        public CommandSetMap() : base("setmap", new string[] { "map" }, "<mapname>", true) { }
+        public CommandSetMap() : base("setmap", new string[] { "map" }, "<name>", true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
