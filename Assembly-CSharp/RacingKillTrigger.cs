@@ -10,7 +10,7 @@ public class RacingKillTrigger : MonoBehaviour
             return;
         }
         gameObject = gameObject.transform.root.gameObject;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && gameObject.GetPhotonView() != null && gameObject.GetPhotonView().isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && gameObject.GetPhotonView() != null && gameObject.GetPhotonView().isMine)
         {
             HERO component = gameObject.GetComponent<HERO>();
             if (component != null)

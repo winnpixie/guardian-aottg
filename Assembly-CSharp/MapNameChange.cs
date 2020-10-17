@@ -8,16 +8,16 @@ public class MapNameChange : MonoBehaviour
         LevelInfo info = LevelInfo.GetInfo(list.selection);
         if (info != null)
         {
-            GameObject.Find("LabelLevelInfo").GetComponent<UILabel>().text = info.description;
+            GameObject.Find("LabelLevelInfo").GetComponent<UILabel>().text = info.Description;
         }
         LevelInfo.InitData();
 
         bool shouldResize = false;
         foreach (LevelInfo levelInfo in LevelInfo.Levels)
         {
-            if (!list.items.Contains(levelInfo.name) && !levelInfo.name.StartsWith("[S]") && !levelInfo.name.Equals("Cage Fighting"))
+            if (!list.items.Contains(levelInfo.Name) && !levelInfo.Name.StartsWith("[S]") && !levelInfo.Name.Equals("Cage Fighting"))
             {
-                list.items.Add(levelInfo.name);
+                list.items.Add(levelInfo.Name);
                 shouldResize = true;
             }
         }

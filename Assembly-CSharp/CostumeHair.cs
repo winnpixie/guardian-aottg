@@ -8,7 +8,7 @@ public class CostumeHair
     public static CostumeHair[] hairsF;
     public int id;
 
-    public static void init()
+    public static void Init()
     {
         // Male
         hairsM = new CostumeHair[11];

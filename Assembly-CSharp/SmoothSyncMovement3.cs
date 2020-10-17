@@ -37,7 +37,7 @@ public class SmoothSyncMovement3 : Photon.MonoBehaviour
 	public void Awake()
 	{
 		SmoothingDelay = 10f;
-		if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+		if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
 		{
 			base.enabled = false;
 		}

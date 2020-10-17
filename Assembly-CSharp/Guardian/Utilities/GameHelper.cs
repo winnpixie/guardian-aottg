@@ -142,30 +142,14 @@ namespace Guardian.Utilities
         {
             if (Mod.Properties.LegacyTimeFormat.Value)
             {
-                float tmpSecs = isSeconds ? time : (time / 1000f);
-                if (precise)
+                float secs = isSeconds ? time : (time / 1000f);
+
+                if (!precise)
                 {
-                    if (tmpSecs > 1)
-                    {
-                        return tmpSecs + " secs";
-                    }
-                    else
-                    {
-                        return tmpSecs + " sec";
-                    }
+                    secs = MathHelper.Floor(secs);
                 }
-                else
-                {
-                    tmpSecs = MathHelper.Floor(tmpSecs);
-                    if (tmpSecs > 1)
-                    {
-                        return tmpSecs + " secs";
-                    }
-                    else
-                    {
-                        return tmpSecs + " sec";
-                    }
-                }
+
+                return secs > 1 ? secs + " secs" : secs + " sec";
             }
 
             string output = "";
@@ -200,14 +184,7 @@ namespace Guardian.Utilities
                 {
                     output = $", {output}";
                 }
-                if (sec > 1)
-                {
-                    output = $"{sec} secs{output}";
-                }
-                else
-                {
-                    output = $"{sec} sec{output}";
-                }
+                output = sec > 1 ? $"{sec} secs{output}" : $"{sec} sec{output}";
             }
 
             // Minutes
@@ -217,14 +194,7 @@ namespace Guardian.Utilities
                 {
                     output = $", {output}";
                 }
-                if (min > 1)
-                {
-                    output = $"{min } mins{output}";
-                }
-                else
-                {
-                    output = $"{min} min{output}";
-                }
+                output = min > 1 ? $"{min } mins{output}" : $"{min} min{output}";
             }
 
             // Hours
@@ -234,14 +204,7 @@ namespace Guardian.Utilities
                 {
                     output = $", {output}";
                 }
-                if (hrs > 1)
-                {
-                    output = $"{hrs} hrs{output}";
-                }
-                else
-                {
-                    output = $"{hrs} hr{output}";
-                }
+                output = hrs > 1 ? $"{hrs} hrs{output}" : $"{hrs} hr{output}";
             }
 
             // Days
@@ -251,14 +214,7 @@ namespace Guardian.Utilities
                 {
                     output = $", {output}";
                 }
-                if (days > 1)
-                {
-                    output = $"{days} days{output}";
-                }
-                else
-                {
-                    output = $"{days} day{output}";
-                }
+                output = days > 1 ? $"{days} days{output}" : $"{days} day{output}";
             }
 
             // Years
@@ -268,14 +224,8 @@ namespace Guardian.Utilities
                 {
                     output = $", {output}";
                 }
-                if (years > 1)
-                {
-                    output = $"{years} yrs{output}";
-                }
-                else
-                {
-                    output = $"{years} yr{output}";
-                }
+                output = years > 1 ? $"{years} yrs{output}" : $"{years} yr{output}";
+
             }
 
             return output;

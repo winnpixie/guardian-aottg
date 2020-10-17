@@ -9,8 +9,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         MouseY
     }
 
-    public static GAMETYPE Gametype = GAMETYPE.STOP;
-    public static GAMEMODE Gamemode;
+    public static GameType Gametype = GameType.STOP;
     public static int Difficulty;
     public static bool TriggerAutoLock;
     public static int Level;
@@ -21,7 +20,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public static int InvertY = 1;
     public static int CameraTilt = 1;
     public static STEREO_3D_TYPE StereoType;
-    public static DayLight DayLight = DayLight.Dawn;
+    public static DayLight Time = DayLight.Dawn;
     public FengCustomInputs inputManager;
     public RotationAxes axes;
     public float minimumX = -360f;
@@ -83,7 +82,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         SensitivityMulti = PlayerPrefs.GetFloat("MouseSensitivity");
         InvertY = PlayerPrefs.GetInt("invertMouseY");
         inputManager = GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>();
-        setDayLight(DayLight);
+        setDayLight(Time);
         locker = GameObject.Find("locker");
         if (PlayerPrefs.HasKey("cameraTilt"))
         {
@@ -102,8 +101,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     public void setDayLight(DayLight val)
     {
-        DayLight = val;
-        switch (DayLight)
+        Time = val;
+        switch (Time)
         {
             case DayLight.Day:
                 RenderSettings.ambientLight = FengColor.AmbientDay;
@@ -149,7 +148,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             GameObject.Find("Chatroom").GetComponent<InRoomChat>().UpdatePosition();
         }
-        if (!UsingTitan || Gametype == GAMETYPE.SINGLE)
+        if (!UsingTitan || Gametype == GameType.SINGLE)
         {
             GameObject.Find("skill_cd_bottom").transform.localPosition = new Vector3(0f, (int)((float)(-Screen.height) * 0.5f + 5f), 0f);
             GameObject.Find("GasUI").transform.localPosition = GameObject.Find("skill_cd_bottom").transform.localPosition;
@@ -174,7 +173,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
         if (main_object != null && main_object.GetComponent<HERO>() != null)
         {
-            if (Gametype == GAMETYPE.SINGLE)
+            if (Gametype == GameType.SINGLE)
             {
                 main_object.GetComponent<HERO>().setSkillHUDPosition2();
             }
@@ -199,7 +198,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     private float getSensitivityMultiWithDeltaTime()
     {
-        return SensitivityMulti * Time.deltaTime * 62f;
+        return SensitivityMulti * UnityEngine.Time.deltaTime * 62f;
     }
 
     private float getSensitivityMulti()
@@ -214,7 +213,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     private void reset()
     {
-        if (Gametype == GAMETYPE.SINGLE)
+        if (Gametype == GameType.SINGLE)
         {
             GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().restartGameSingle2();
         }
@@ -234,67 +233,64 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         base.transform.position += Vector3.up * heightMulti;
         base.transform.position -= Vector3.up * (0.6f - CameraDistance) * 2f;
 
+        float dYaw = Input.GetAxis("Mouse X") * 10f * getSensitivityMulti();
+        float dPitch = (0f - Input.GetAxis("Mouse Y")) * 10f * getSensitivityMulti() * (float)getReverse();
+
         switch (CameraMode)
         {
-            case CAMERA_TYPE.TPS:
-                if (!inputManager.menuOn)
+            case CAMERA_TYPE.WOW:
                 {
-                    Screen.lockCursor = true;
-                }
-                float angle3 = Input.GetAxis("Mouse X") * 10f * getSensitivityMulti();
-                float num4 = (0f - Input.GetAxis("Mouse Y")) * 10f * getSensitivityMulti() * (float)getReverse();
-                base.transform.RotateAround(base.transform.position, Vector3.up, angle3);
-                Vector3 eulerAngles3 = base.transform.rotation.eulerAngles;
-                float num5 = eulerAngles3.x % 360f;
-                float num6 = num5 + num4;
-                if ((!(num4 > 0f) || ((!(num5 < 260f) || !(num6 > 260f)) && (!(num5 < 80f) || !(num6 > 80f)))) && (!(num4 < 0f) || ((!(num5 > 280f) || !(num6 < 280f)) && (!(num5 > 100f) || !(num6 < 100f)))))
-                {
-                    base.transform.RotateAround(base.transform.position, base.transform.right, num4);
-                }
-                base.transform.position -= base.transform.forward * distance * distanceMulti * distanceOffsetMulti;
-                break;
-            case CAMERA_TYPE.ORIGINAL:
-                float num = 0f;
-                Vector3 mousePosition = Input.mousePosition;
-                if (mousePosition.x < (float)Screen.width * 0.4f)
-                {
-                    float num2 = (float)Screen.width * 0.4f;
-                    Vector3 mousePosition2 = Input.mousePosition;
-                    num = (0f - (num2 - mousePosition2.x) / (float)Screen.width * 0.4f) * getSensitivityMultiWithDeltaTime() * 150f;
-                    base.transform.RotateAround(base.transform.position, Vector3.up, num);
-                }
-                else
-                {
-                    Vector3 mousePosition3 = Input.mousePosition;
-                    if (mousePosition3.x > (float)Screen.width * 0.6f)
+                    if (Input.GetKey(KeyCode.Mouse1))
                     {
-                        Vector3 mousePosition4 = Input.mousePosition;
-                        num = (mousePosition4.x - (float)Screen.width * 0.6f) / (float)Screen.width * 0.4f * getSensitivityMultiWithDeltaTime() * 150f;
+                        base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
+                        float currentPitch = base.transform.rotation.eulerAngles.x % 360f;
+                        float newPitch = currentPitch + dPitch;
+                        if ((!(dPitch > 0f) || ((!(currentPitch < 260f) || !(newPitch > 260f)) && (!(currentPitch < 80f) || !(newPitch > 80f)))) && (!(dPitch < 0f) || ((!(currentPitch > 280f) || !(newPitch < 280f)) && (!(currentPitch > 100f) || !(newPitch < 100f)))))
+                        {
+                            base.transform.RotateAround(base.transform.position, base.transform.right, dPitch);
+                        }
+                    }
+                    break;
+                }
+            case CAMERA_TYPE.TPS:
+                {
+                    if (!inputManager.menuOn)
+                    {
+                        Screen.lockCursor = true;
+                    }
+                    base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
+                    float currentPitch = base.transform.rotation.eulerAngles.x % 360f;
+                    float newPitch = currentPitch + dPitch;
+                    if ((!(dPitch > 0f) || ((!(currentPitch < 260f) || !(newPitch > 260f)) && (!(currentPitch < 80f) || !(newPitch > 80f)))) && (!(dPitch < 0f) || ((!(currentPitch > 280f) || !(newPitch < 280f)) && (!(currentPitch > 100f) || !(newPitch < 100f)))))
+                    {
+                        base.transform.RotateAround(base.transform.position, base.transform.right, dPitch);
+                    }
+                    break;
+                }
+            case CAMERA_TYPE.ORIGINAL:
+                {
+                    float num = 0f;
+                    Vector3 mousePosition = Input.mousePosition;
+                    if (mousePosition.x < (float)Screen.width * 0.4f)
+                    {
+                        num = (0f - ((Screen.width * 0.4f) - mousePosition.x) / (float)Screen.width * 0.4f) * getSensitivityMultiWithDeltaTime() * 150f;
                         base.transform.RotateAround(base.transform.position, Vector3.up, num);
                     }
+                    else
+                    {
+                        if (mousePosition.x > (float)Screen.width * 0.6f)
+                        {
+                            num = (mousePosition.x - (float)Screen.width * 0.6f) / (float)Screen.width * 0.4f * getSensitivityMultiWithDeltaTime() * 150f;
+                            base.transform.RotateAround(base.transform.position, Vector3.up, num);
+                        }
+                    }
+                    float x = 140f * ((Screen.height * 0.6f) - mousePosition.y) / (float)Screen.height * 0.5f;
+                    base.transform.rotation = Quaternion.Euler(x, base.transform.rotation.eulerAngles.y, base.transform.rotation.eulerAngles.z);
+                    break;
                 }
-                float num3 = (float)Screen.height * 0.6f;
-                Vector3 mousePosition5 = Input.mousePosition;
-                float x = 140f * (num3 - mousePosition5.y) / (float)Screen.height * 0.5f;
-                Transform transform = base.transform;
-                Vector3 eulerAngles = base.transform.rotation.eulerAngles;
-                float y = eulerAngles.y;
-                Vector3 eulerAngles2 = base.transform.rotation.eulerAngles;
-                transform.rotation = Quaternion.Euler(x, y, eulerAngles2.z);
-                base.transform.position -= base.transform.forward * distance * distanceMulti * distanceOffsetMulti;
-                break;
-            case CAMERA_TYPE.WOW:
-                if (Input.GetKey(KeyCode.Mouse1))
-                {
-                    float angle = Input.GetAxis("Mouse X") * 10f * getSensitivityMulti();
-                    float angle2 = (0f - Input.GetAxis("Mouse Y")) * 10f * getSensitivityMulti() * (float)getReverse();
-                    base.transform.RotateAround(base.transform.position, Vector3.up, angle);
-                    base.transform.RotateAround(base.transform.position, base.transform.right, angle2);
-                }
-                base.transform.position -= base.transform.forward * distance * distanceMulti * distanceOffsetMulti;
-                break;
-
         }
+
+        base.transform.position -= base.transform.forward * distance * distanceMulti * distanceOffsetMulti;
         if (CameraDistance < 0.65f)
         {
             base.transform.position += base.transform.right * Mathf.Max((0.6f - CameraDistance) * 2f, 0.65f);
@@ -305,7 +301,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     {
         if (duration > 0f)
         {
-            duration -= Time.deltaTime;
+            duration -= UnityEngine.Time.deltaTime;
             if (flip)
             {
                 base.gameObject.transform.position += Vector3.up * R;
@@ -404,7 +400,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     {
         if (startSnapShotFrameCount)
         {
-            snapShotStartCountDownTime -= Time.deltaTime;
+            snapShotStartCountDownTime -= UnityEngine.Time.deltaTime;
             if (snapShotStartCountDownTime <= 0f)
             {
                 snapShot2(1);
@@ -415,7 +411,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             return;
         }
-        snapShotCountDown -= Time.deltaTime;
+        snapShotCountDown -= UnityEngine.Time.deltaTime;
         if (snapShotCountDown <= 0f)
         {
             GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[0].transform.Find("snapshot1").GetComponent<UITexture>().enabled = false;
@@ -432,7 +428,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
         if (snapShotCount < 3)
         {
-            snapShotInterval -= Time.deltaTime;
+            snapShotInterval -= UnityEngine.Time.deltaTime;
             if (snapShotInterval <= 0f)
             {
                 snapShotInterval = 0.05f;
@@ -610,14 +606,14 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     {
         if (flashDuration > 0f)
         {
-            flashDuration -= Time.deltaTime;
+            flashDuration -= UnityEngine.Time.deltaTime;
             if (flashDuration <= 0f)
             {
                 flashDuration = 0f;
             }
             GameObject.Find("flash").GetComponent<UISprite>().alpha = flashDuration * 0.5f;
         }
-        if (Gametype == GAMETYPE.STOP)
+        if (Gametype == GameType.STOP)
         {
             Screen.showCursor = true;
             Screen.lockCursor = false;
@@ -691,9 +687,9 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             IsPausing = !IsPausing;
             if (IsPausing)
             {
-                if (Gametype == GAMETYPE.SINGLE)
+                if (Gametype == GameType.SINGLE)
                 {
-                    Time.timeScale = 0f;
+                    UnityEngine.Time.timeScale = 0f;
                 }
                 GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = true;
                 Screen.showCursor = true;
@@ -809,7 +805,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             lockCameraPosition = ((head == null) ? main_object.transform.position : head.transform.position);
             lockCameraPosition -= a * distance * distanceMulti * distanceOffsetMulti;
             lockCameraPosition += Vector3.up * 3f * heightMulti * distanceOffsetMulti;
-            base.transform.position = Vector3.Lerp(base.transform.position, lockCameraPosition, Time.deltaTime * 4f);
+            base.transform.position = Vector3.Lerp(base.transform.position, lockCameraPosition, UnityEngine.Time.deltaTime * 4f);
             if (head != null)
             {
                 base.transform.LookAt(head.transform.position * 0.8f + transform.position * 0.2f);
@@ -858,7 +854,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     private void CreateMinimap()
     {
-        if (FengGameManagerMKII.CurrentLevelInfo != null)
+        if (FengGameManagerMKII.Level != null)
         {
             Minimap minimap = base.gameObject.AddComponent<Minimap>();
             if (Minimap.Instance.myCam == null)
@@ -869,7 +865,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 Minimap.Instance.myCam.farClipPlane = 1000f;
                 Minimap.Instance.myCam.enabled = false;
             }
-            minimap.CreateMinimap(Minimap.Instance.myCam, 512, 0.3f, FengGameManagerMKII.CurrentLevelInfo.minimapPreset);
+            minimap.CreateMinimap(Minimap.Instance.myCam, 512, 0.3f, FengGameManagerMKII.Level.MinimapPreset);
             if ((int)FengGameManagerMKII.Settings[231] == 0 || RCSettings.GlobalDisableMinimap == 1)
             {
                 minimap.SetEnabled(enabled: false);
@@ -913,6 +909,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             base.transform.position += base.transform.right * Mathf.Max((0.6f - hero.CameraMultiplier) * 2f, 0.65f);
         }
-        base.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, hero.GetComponent<SmoothSyncMovement>().correctCameraRot, Time.deltaTime * 5f);
+        base.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, hero.GetComponent<SmoothSyncMovement>().correctCameraRot, UnityEngine.Time.deltaTime * 5f);
     }
 }

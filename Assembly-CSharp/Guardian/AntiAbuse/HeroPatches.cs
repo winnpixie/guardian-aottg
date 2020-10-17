@@ -77,7 +77,7 @@ namespace Guardian.AntiAbuse
         // HERO.netGrabbed
         public static bool IsGrabValid(int viewID, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info != null)
                 {
@@ -113,7 +113,7 @@ namespace Guardian.AntiAbuse
         // HERO.blowAway
         public static bool IsBlowAwayValid(PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info == null || (!info.sender.isMasterClient && !info.sender.isLocal && !GameHelper.IsPT(info.sender)))
                 {

@@ -28,6 +28,30 @@ namespace Guardian.Utilities
             return val < min ? min : val > max ? max : val;
         }
 
+        public static float ClampAngle180(float angle)
+        {
+            angle = (angle + 180f) % 360f;
+
+            if (angle < 0)
+            {
+                angle += 360f;
+            }
+
+            return angle - 180f;
+        }
+
+        public static float ClampAngle360(float angle)
+        {
+            angle %= 360f;
+
+            if (angle < 0)
+            {
+                angle += 360f;
+            }
+
+            return angle;
+        }
+
         // Min-inclusive, max-exclusive
         public static int RandomInt(int min, int max)
         {

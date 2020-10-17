@@ -24,7 +24,7 @@ namespace Guardian.Features
                 {
                     return element;
                 }
-                foreach (string alias in element.aliases)
+                foreach (string alias in element.Aliases)
                 {
                     if (alias.Equals(name, StringComparison.OrdinalIgnoreCase))
                     {

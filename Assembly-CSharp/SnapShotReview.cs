@@ -19,7 +19,7 @@ public class SnapShotReview : MonoBehaviour
         {
             texture.GetComponent<UITexture>().mainTexture = SnapShotSaves.getCurrentIMG();
         }
-        labelInfo.GetComponent<UILabel>().text = LoginFengKAI.Player.name + " " + DateTime.Today.ToShortDateString();
+        labelInfo.GetComponent<UILabel>().text = LoginFengKAI.Player.Name + " " + DateTime.Today.ToShortDateString();
         freshInfo();
         setTextureWH();
     }

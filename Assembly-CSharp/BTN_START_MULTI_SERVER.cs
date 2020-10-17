@@ -10,7 +10,7 @@ public class BTN_START_MULTI_SERVER : MonoBehaviour
         int time = int.Parse(GameObject.Find("InputMaxTime").GetComponent<UIInput>().label.text);
         string map = GameObject.Find("PopupListMap").GetComponent<UIPopupList>().selection;
         string difficulty = GameObject.Find("CheckboxHard").GetComponent<UICheckbox>().isChecked ? "hard" : ((!GameObject.Find("CheckboxAbnormal").GetComponent<UICheckbox>().isChecked) ? "normal" : "abnormal");
-        string daylight = IN_GAME_MAIN_CAMERA.DayLight.ToString().ToLower();
+        string daylight = IN_GAME_MAIN_CAMERA.Time.ToString().ToLower();
         string password = GameObject.Find("InputStartServerPWD").GetComponent<UIInput>().label.text;
         if (password.Length > 0)
         {

@@ -3,18 +3,14 @@ using UnityEngine;
 public class MovementUpdate : MonoBehaviour
 {
 	private Vector3 lastPosition;
-
 	private Vector3 lastVelocity;
-
 	private Quaternion lastRotation;
-
 	public bool disabled;
-
 	private Vector3 targetPosition;
 
 	private void Start()
 	{
-		if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+		if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
 		{
 			disabled = true;
 			base.enabled = false;

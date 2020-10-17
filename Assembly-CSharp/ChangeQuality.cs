@@ -3,7 +3,7 @@ using UnityEngine;
 public class ChangeQuality : MonoBehaviour
 {
     private bool init;
-    public static bool isTiltShiftOn;
+    public static bool TiltShift;
 
     private void OnSliderChange()
     {
@@ -23,10 +23,10 @@ public class ChangeQuality : MonoBehaviour
         {
             PlayerPrefs.SetFloat("GameQuality", base.gameObject.GetComponent<UISlider>().sliderValue);
         }
-        setQuality(base.gameObject.GetComponent<UISlider>().sliderValue);
+        SetQuality(base.gameObject.GetComponent<UISlider>().sliderValue);
     }
 
-    private static void setQuality(float val)
+    private static void SetQuality(float val)
     {
         if (val < 0.167f)
         {
@@ -52,41 +52,25 @@ public class ChangeQuality : MonoBehaviour
         {
             QualitySettings.SetQualityLevel(5, applyExpensiveChanges: true);
         }
-        if (val < 0.9f)
-        {
-            turnOffTiltShift();
-        }
-        else
-        {
-            turnOnTiltShift();
-        }
+
+        SetTiltShift(val >= 0.9f);
     }
 
-    public static void setCurrentQuality()
+    public static void SetCurrentQuality()
     {
         if (PlayerPrefs.HasKey("GameQuality"))
         {
-            setQuality(PlayerPrefs.GetFloat("GameQuality"));
+            SetQuality(PlayerPrefs.GetFloat("GameQuality"));
         }
     }
 
-    public static void turnOffTiltShift()
+    public static void SetTiltShift(bool tiltShift)
     {
-        isTiltShiftOn = false;
+        TiltShift = tiltShift;
         GameObject mainCam = GameObject.Find("MainCamera");
-        if (mainCam != null)
+        if(mainCam)
         {
-            mainCam.GetComponent<TiltShift>().enabled = false;
-        }
-    }
-
-    public static void turnOnTiltShift()
-    {
-        isTiltShiftOn = true;
-        GameObject mainCam = GameObject.Find("MainCamera");
-        if (mainCam != null)
-        {
-            mainCam.GetComponent<TiltShift>().enabled = true;
+            mainCam.GetComponent<TiltShift>().enabled = tiltShift;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 using UnityEngine;
 
 public class UIMainReferences : MonoBehaviour
@@ -26,11 +27,7 @@ public class UIMainReferences : MonoBehaviour
 
         NGUITools.SetActive(panelMain, state: true);
         UILabel versionText = GameObject.Find("VERSION").GetComponent<UILabel>();
-        if (Version == null || Version.StartsWith("error"))
-        {
-            versionText.text = "[ff0000]Verification failed.[-] Please try re-downloading Guardian from [0099ff]https://tiny.cc/GuardianMod[-]!";
-        }
-        else if (Version.StartsWith("outdated"))
+        if (Version.StartsWith("outdated"))
         {
             versionText.text = "[ff0000]Mod is outdated![-] Please download the latest build from [0099ff]https://tiny.cc/GuardianMod[-]!";
         }
@@ -47,30 +44,9 @@ public class UIMainReferences : MonoBehaviour
             gameObject.name = "InputManagerController";
             UnityEngine.Object.DontDestroyOnLoad(gameObject);
             FengGameManagerMKII.S = "verified343,hair,character_eye,glass,character_face,character_head,character_hand,character_body,character_arm,character_leg,character_chest,character_cape,character_brand,character_3dmg,r,character_blade_l,character_3dmg_gas_r,character_blade_r,3dmg_smoke,HORSE,hair,body_001,Cube,Plane_031,mikasa_asset,character_cap_,character_gun".Split(',');
-            StartCoroutine(LoadRCAssets());
-            FengGameManagerMKII.LoginState = 0;
-        }
-    }
+            LoginFengKAI.LoginState = LoginState.LoggedOut;
 
-    public IEnumerator LoadRCAssets()
-    {
-        string bundleUrl = Application.dataPath + "\\RCAssets.unity3d";
-        if (!Application.isWebPlayer)
-        {
-            bundleUrl = "file://" + bundleUrl;
-        }
-        while (!Caching.ready)
-        {
-        }
-        int assetVersion = 1;
-        using (WWW www = WWW.LoadFromCacheOrDownload(bundleUrl, assetVersion))
-        {
-            yield return www;
-            if (www.error != null)
-            {
-                throw new Exception("WWW download had an error:" + www.error);
-            }
-            FengGameManagerMKII.RCAssets = www.assetBundle;
+            FengGameManagerMKII.RCAssets = AssetBundle.CreateFromMemoryImmediate(File.ReadAllBytes(Application.dataPath + "/RCAssets.unity3d"));
             FengGameManagerMKII.IsAssetLoadeed = true;
         }
     }

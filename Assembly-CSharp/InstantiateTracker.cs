@@ -408,7 +408,7 @@ public class InstantiateTracker
                 case "fx/boom5":
                 case "fx/rockthrow":
                 case "fx/bite":
-                    if (!FengGameManagerMKII.CurrentLevelInfo.teamTitan && RCSettings.InfectionMode <= 0 && IN_GAME_MAIN_CAMERA.Gamemode != GAMEMODE.BOSS_FIGHT_CT)
+                    if (!FengGameManagerMKII.Level.PlayerTitans && RCSettings.InfectionMode <= 0 && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
                     {
                         if (PhotonNetwork.isMasterClient && !FengGameManagerMKII.Instance.restartingTitan)
                         {
@@ -483,21 +483,21 @@ public class InstantiateTracker
                 case "fx/colossal_steam_dmg":
                 case "fx/colossal_steam":
                 case "fx/boom1_ct_kick":
-                    if (PhotonNetwork.isMasterClient && IN_GAME_MAIN_CAMERA.Gamemode != GAMEMODE.BOSS_FIGHT_CT)
+                    if (PhotonNetwork.isMasterClient && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
                     {
                         FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: true, "spawning colossal effect (" + key + ").");
                         return false;
                     }
                     return Instantiated(photonPlayer, GameResource.effect);
                 case "rock":
-                    if (PhotonNetwork.isMasterClient && IN_GAME_MAIN_CAMERA.Gamemode != GAMEMODE.BOSS_FIGHT_CT)
+                    if (PhotonNetwork.isMasterClient && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
                     {
                         FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: true, "spawning MC item (" + key + ").");
                         return false;
                     }
                     return Instantiated(photonPlayer, GameResource.general);
                 case "horse":
-                    if (!FengGameManagerMKII.CurrentLevelInfo.horse && RCSettings.HorseMode == 0)
+                    if (!FengGameManagerMKII.Level.Horses && RCSettings.HorseMode == 0)
                     {
                         if (PhotonNetwork.isMasterClient && !FengGameManagerMKII.Instance.restartingHorse)
                         {
@@ -509,12 +509,12 @@ public class InstantiateTracker
                 case "titan_ver3.1":
                     if (PhotonNetwork.isMasterClient)
                     {
-                        if (!FengGameManagerMKII.CurrentLevelInfo.teamTitan && RCSettings.InfectionMode <= 0 && IN_GAME_MAIN_CAMERA.Gamemode != GAMEMODE.BOSS_FIGHT_CT && !FengGameManagerMKII.Instance.restartingTitan)
+                        if (!FengGameManagerMKII.Level.PlayerTitans && RCSettings.InfectionMode <= 0 && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT && !FengGameManagerMKII.Instance.restartingTitan)
                         {
                             FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: false, "spawning titan (" + key + ").");
                             return false;
                         }
-                        if (IN_GAME_MAIN_CAMERA.Gamemode != GAMEMODE.BOSS_FIGHT_CT)
+                        if (FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
                         {
                             int num4 = 0;
                             foreach (TITAN titan in FengGameManagerMKII.Instance.titans)
@@ -531,7 +531,7 @@ public class InstantiateTracker
                             }
                         }
                     }
-                    else if (FengGameManagerMKII.MasterRC && IN_GAME_MAIN_CAMERA.Gamemode != GAMEMODE.BOSS_FIGHT_CT)
+                    else if (FengGameManagerMKII.MasterRC && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
                     {
                         int num4 = 0;
                         foreach (TITAN titan2 in FengGameManagerMKII.Instance.titans)

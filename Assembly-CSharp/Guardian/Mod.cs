@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "09062020";
+        public static string Build = "10172020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -25,14 +25,18 @@ namespace Guardian
         public static Regex BlacklistedTags = new Regex("<\\/?(size(=\\d*)?|quad([^>]*)?|material([^>]*)?)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
         private static bool Initialized = false;
+        private static bool FirstJoin = true;
 
         public List<int> Muted = new List<int>();
         public bool IsMultiMap;
 
-        void Start()
+        void Awake()
         {
             Instance = this;
+        }
 
+        void Start()
+        {
             if (!Initialized)
             {
                 // Check for an update before doing anything
@@ -55,9 +59,9 @@ namespace Guardian
                 FengGameManagerMKII.NameField = PlayerPrefs.GetString("name", string.Empty);
                 if (FengGameManagerMKII.NameField.Uncolored().Length == 0)
                 {
-                    FengGameManagerMKII.NameField = LoginFengKAI.Player.name;
+                    FengGameManagerMKII.NameField = LoginFengKAI.Player.Name;
                 }
-                LoginFengKAI.Player.guildname = PlayerPrefs.GetString("guildname", string.Empty);
+                LoginFengKAI.Player.Guild = PlayerPrefs.GetString("guildname", string.Empty);
 
                 // Load various features
                 Commands.Load();
@@ -80,19 +84,20 @@ namespace Guardian
 
                 Initialized = true;
 
-                Discord.Discord.StartTimestamp = GameHelper.CurrentTimeMillis();
+                DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
+                DiscordHelper.Initialize();
             }
 
             base.gameObject.AddComponent<ModUI>();
             base.gameObject.AddComponent<MicEF>();
 
-            Discord.Discord.SetPresence(new DiscordRpc.RichPresence
+            DiscordHelper.SetPresence(new Discord.Activity
             {
-                details = "Staring at the main menu..."
+                Details = $"Staring at the main menu...",
             });
         }
 
-        public static IEnumerator CheckForUpdate()
+        private IEnumerator CheckForUpdate()
         {
             using (WWW www = new WWW("https://raw.githubusercontent.com/alerithe/guardian/master/BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()))
             {
@@ -114,6 +119,10 @@ namespace Guardian
 
         public static object[] HandleChat(string input, string name)
         {
+            // Emotes
+            input = input.Replace("<3", "\u2665");
+            input = input.Replace(":lenny:", "( ͡° ͜ʖ ͡°)");
+
             // Color and fading
             string chatColor = Properties.TextColor.Value;
             if (chatColor.Length != 0)
@@ -172,24 +181,65 @@ namespace Guardian
                 name = name.AsItalic();
             }
 
-            // Emotes
-            input = input.Replace("<3", "<color=#ff0000>\u2665</color>");
-            input = input.Replace(":lenny:", "( ͡° ͜ʖ ͡°)");
-
             return new object[] { $"{Properties.TextPrefix.Value}{input}{Properties.TextSuffix.Value}", name };
         }
 
-        public void OnPhotonPlayerConnected(PhotonPlayer player)
+        void OnLevelWasLoaded(int level)
+        {
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            {
+                string difficulty = "Training";
+                switch (IN_GAME_MAIN_CAMERA.Difficulty)
+                {
+                    case 0:
+                        difficulty = "Normal";
+                        break;
+                    case 1:
+                        difficulty = "Hard";
+                        break;
+                    case 2:
+                        difficulty = "Abnormal";
+                        break;
+                }
+
+                DiscordHelper.SetPresence(new Discord.Activity
+                {
+                    Details = $"Playing in singleplayer.",
+                    State = $"{FengGameManagerMKII.Level.Name} / {difficulty}"
+                });
+            }
+
+            if (FirstJoin)
+            {
+                FirstJoin = false;
+                string joinMessage = Properties.JoinMessage.Value.Colored();
+                if (joinMessage.Uncolored().Length <= 0)
+                {
+                    joinMessage = Properties.JoinMessage.Value;
+                }
+                if (joinMessage.Length > 0)
+                {
+                    string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored();
+                    if (name.Uncolored().Length <= 0)
+                    {
+                        name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
+                    }
+                    FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, HandleChat(joinMessage, name));
+                }
+            }
+        }
+
+        void OnPhotonPlayerConnected(PhotonPlayer player)
         {
             Logger.Info($"[{player.Id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00ff00"));
         }
 
-        public void OnPhotonPlayerDisconnected(PhotonPlayer player)
+        void OnPhotonPlayerDisconnected(PhotonPlayer player)
         {
             Logger.Info($"[{player.Id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("ff0000"));
         }
 
-        public void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
+        void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
         {
             NetworkPatches.OnPlayerPropertyModification(playerAndUpdatedProps);
 
@@ -217,7 +267,7 @@ namespace Guardian
             }
         }
 
-        public void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+        void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
             NetworkPatches.OnRoomPropertyModification(propertiesThatChanged);
 
@@ -234,23 +284,21 @@ namespace Guardian
                     LevelInfo levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
                     if (levelInfo != null)
                     {
-                        FengGameManagerMKII.CurrentLevelInfo = levelInfo;
-                        FengGameManagerMKII.level = levelInfo.name;
-                        IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.type;
+                        FengGameManagerMKII.Level = levelInfo;
                     }
                 }
 
-                if (propertiesThatChanged.ContainsKey("DayLight") && propertiesThatChanged["DayLight"] is string)
+                if (propertiesThatChanged.ContainsKey("Time") && propertiesThatChanged["Time"] is string)
                 {
-                    if (GExtensions.TryParseEnum((string)propertiesThatChanged["DayLight"], out DayLight dayLight))
+                    if (GExtensions.TryParseEnum((string)propertiesThatChanged["Time"], out DayLight time))
                     {
-                        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(dayLight);
+                        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(time);
                     }
                 }
             }
         }
 
-        public void OnJoinedLobby()
+        void OnJoinedLobby()
         {
             Logger.Info("OnJoinedLobby");
             if (PhotonNetwork.room != null)
@@ -259,22 +307,25 @@ namespace Guardian
                 return;
             }
 
-            Discord.Discord.SetPresence(new DiscordRpc.RichPresence
+            DiscordHelper.SetPresence(new Discord.Activity
             {
-                details = "Searching for a room...",
-                state = $"Region: {NetworkHelper.GetRegionCode()}"
+                Details = "Searching for a room...",
+                State = $"Region: {NetworkHelper.GetRegionCode()}"
             });
         }
 
-        public void OnLeftLobby()
+        void OnLeftLobby()
         {
             Logger.Info("OnLeftLobby");
         }
 
-        public void OnJoinedRoom()
+        void OnJoinedRoom()
         {
             Logger.Info("OnJoinedRoom");
+
             IsMultiMap = PhotonNetwork.room.name.Split('`')[1].StartsWith("Multi-Map");
+            Muted = new List<int>();
+            FirstJoin = true;
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
@@ -285,26 +336,28 @@ namespace Guardian
             string[] roomInfo = PhotonNetwork.room.name.Split('`');
             if (roomInfo.Length > 6)
             {
-                Discord.Discord.SetPresence(new DiscordRpc.RichPresence
+
+                DiscordHelper.SetPresence(new Discord.Activity
                 {
-                    details = $"Playing in {(roomInfo[5].Length == 0 ? "" : "[PWD]")} {roomInfo[0].Uncolored()}",
-                    state = $"({NetworkHelper.GetRegionCode()}) {roomInfo[1]} / {roomInfo[2]}"
+                    Details = $"Playing in {(roomInfo[5].Length == 0 ? "" : "[PWD]")} {roomInfo[0].Uncolored()}",
+                    State = $"({NetworkHelper.GetRegionCode()}) {roomInfo[1]} / {roomInfo[2].ToUpper()}"
                 });
             }
         }
 
-        public void OnLeftRoom()
+        void OnLeftRoom()
         {
             Logger.Info("OnLeftRoom");
 
             MapData = "";
-            Discord.Discord.SetPresence(new DiscordRpc.RichPresence
+
+            DiscordHelper.SetPresence(new Discord.Activity
             {
-                details = "Idle..."
+                Details = "Idle..."
             });
         }
 
-        public void OnConnectionFail(DisconnectCause cause)
+        void OnConnectionFail(DisconnectCause cause)
         {
             Logger.Warn($"OnConnectionFail ({cause})");
         }
@@ -313,12 +366,12 @@ namespace Guardian
         {
             Properties.Save();
 
-            DiscordRpc.Shutdown();
+            DiscordHelper.DiscordInstance.Dispose();
         }
 
         void Update()
         {
-            DiscordRpc.RunCallbacks();
+            DiscordHelper.DiscordInstance.RunCallbacks();
         }
     }
 }

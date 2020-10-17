@@ -5,7 +5,7 @@
         // TITAN.netSetAbnormalType
         public static bool IsTitanTypeSetValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info == null || (titan.photonView.ownerId != info.sender.Id && !info.sender.isMasterClient))
                 {
@@ -23,7 +23,7 @@
         // TITAN.netCrossFade
         public static bool IsCrossFadeValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info == null || titan.photonView.ownerId != info.sender.Id)
                 {
@@ -41,7 +41,7 @@
         // TITAN.netPlayAnimation
         public static bool IsAnimationPlayValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info == null || titan.photonView.ownerId != info.sender.Id)
                 {
@@ -59,7 +59,7 @@
         // TITAN.netPlayAnimationAt
         public static bool IsAnimationSeekedPlayValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info == null || titan.photonView.ownerId != info.sender.Id)
                 {
@@ -77,7 +77,7 @@
         // TITAN.setMyTarget
         public static bool IsTargetSetValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info == null || titan.photonView.ownerId != info.sender.Id)
                 {
@@ -95,7 +95,7 @@
         // TITAN.playsoundRPC
         public static bool IsSoundPlayValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info != null && titan.photonView.ownerId != info.sender.Id)
                 {
@@ -113,7 +113,7 @@
         // TITAN.grabToRight
         public static bool IsRightGrabValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info != null && titan.photonView.ownerId != info.sender.Id)
                 {
@@ -131,7 +131,7 @@
         // TITAN.grabToLeft
         public static bool IsLeftGrabValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info != null && titan.photonView.ownerId != info.sender.Id)
                 {
@@ -149,7 +149,7 @@
         // TITAN.netSetLevel
         public static bool IsLevelSetValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info == null || (titan.photonView.ownerId != info.sender.Id && !info.sender.isMasterClient))
                 {

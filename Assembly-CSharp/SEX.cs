@@ -1,5 +1,5 @@
-public enum SEX
+public enum Sex : int
 {
-    MALE,
-    FEMALE
+    MALE = 1,
+    FEMALE = 0
 }

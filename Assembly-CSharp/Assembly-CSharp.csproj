@@ -201,6 +201,13 @@
     <Compile Include="DayLight.cs" />
     <Compile Include="DaylightChange.cs" />
     <Compile Include="DisconnectCause.cs" />
+    <Compile Include="Discord\ActivityManager.cs" />
+    <Compile Include="Discord\Constants.cs" />
+    <Compile Include="Discord\Core.cs" />
+    <Compile Include="Discord\ImageManager.cs" />
+    <Compile Include="Discord\LobbyManager.cs" />
+    <Compile Include="Discord\StorageManager.cs" />
+    <Compile Include="Discord\StoreManager.cs" />
     <Compile Include="DownloadTexture.cs" />
     <Compile Include="DragDropContainer.cs" />
     <Compile Include="DragDropItem.cs" />
@@ -226,7 +233,7 @@
     <Compile Include="Guardian\Features\Commands\Impl\CommandMute.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandRejoin.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandSay.cs" />
-    <Compile Include="DIVISION.cs" />
+    <Compile Include="Division.cs" />
     <Compile Include="EanAnimation.cs" />
     <Compile Include="EanFile.cs" />
     <Compile Include="EanFrame.cs" />
@@ -249,17 +256,15 @@
     <Compile Include="FengMath.cs" />
     <Compile Include="FlareMovement.cs" />
     <Compile Include="FriendInfo.cs" />
-    <Compile Include="GAMEMODE.cs" />
+    <Compile Include="GameMode.cs" />
     <Compile Include="GameObjectExtensions.cs" />
     <Compile Include="GameProperties.cs" />
-    <Compile Include="GAMETYPE.cs" />
+    <Compile Include="GameType.cs" />
     <Compile Include="GROUP.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandScatterTitans.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandSetMap.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandSetTitans.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandUnmute.cs" />
-    <Compile Include="Guardian\Discord\Discord.cs" />
-    <Compile Include="Guardian\Discord\DiscordRpc.cs" />
     <Compile Include="Guardian\Features\Commands\Command.cs" />
     <Compile Include="Guardian\Features\Commands\CommandManager.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandClear.cs" />
@@ -294,6 +299,7 @@
     <Compile Include="Guardian\Features\Properties\PropertyManager.cs" />
     <Compile Include="Guardian\Mod.cs" />
     <Compile Include="Guardian\ModUI.cs" />
+    <Compile Include="Guardian\Utilities\DiscordHelper.cs" />
     <Compile Include="Guardian\Utilities\Logger.cs" />
     <Compile Include="Guardian\Networking\PhotonApplication.cs" />
     <Compile Include="Guardian\Networking\PhotonConnection.cs" />
@@ -355,6 +361,7 @@
     <Compile Include="LobbyType.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="LoginFengKAI.cs" />
+    <Compile Include="LoginState.cs" />
     <Compile Include="LookAtTarget.cs" />
     <Compile Include="ManualPhotonViewAllocator.cs" />
     <Compile Include="MapNameChange.cs" />
@@ -419,7 +426,7 @@
     <Compile Include="PickupItemSyncer.cs" />
     <Compile Include="PingMonoEditor.cs" />
     <Compile Include="PlanetMouseOrbit.cs" />
-    <Compile Include="PlayerInfoPHOTON.cs" />
+    <Compile Include="FengPlayer.cs" />
     <Compile Include="PlayIdleAnimations.cs" />
     <Compile Include="PointedAtGameObjectInfo.cs" />
     <Compile Include="PopListCamera.cs" />
@@ -469,7 +476,7 @@
     <Compile Include="ServerTime.cs" />
     <Compile Include="SetColorOnSelection.cs" />
     <Compile Include="SettingReciveInput.cs" />
-    <Compile Include="SEX.cs" />
+    <Compile Include="Sex.cs" />
     <Compile Include="ShaderQuality.cs" />
     <Compile Include="ShowInfoOfPlayer.cs" />
     <Compile Include="SimpleAES.cs" />

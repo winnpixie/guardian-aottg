@@ -118,7 +118,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
 
     public void update()
     {
-        if ((IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE) || rockLift)
+        if ((IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE) || rockLift)
         {
             return;
         }
@@ -159,7 +159,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             if (dieTime > 2f && !hasDieSteam)
             {
                 hasDieSteam = true;
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
                 {
                     GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/FXtitanDie1"));
                     gameObject.transform.position = base.transform.Find("Amarture/Core/Controller_Body/hip").position;
@@ -173,7 +173,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             }
             if (dieTime > 5f)
             {
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
                 {
                     GameObject gameObject3 = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/FXtitanDie"));
                     gameObject3.transform.position = base.transform.Find("Amarture/Core/Controller_Body/hip").position;
@@ -528,7 +528,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
 
     public void lateUpdate()
     {
-        if ((!IN_GAME_MAIN_CAMERA.IsPausing || IN_GAME_MAIN_CAMERA.Gametype != 0) && !rockLift && (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine))
+        if ((!IN_GAME_MAIN_CAMERA.IsPausing || IN_GAME_MAIN_CAMERA.Gametype != 0) && !rockLift && (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine))
         {
             GameObject mainCamera = GameObject.Find("MainCamera");
             Vector3 eulerAngles = mainCamera.transform.rotation.eulerAngles;
@@ -566,7 +566,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
         {
             return;
         }
@@ -790,7 +790,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             isPlayRoar = false;
         }
         playSound("snd_eren_shift");
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
         {
             UnityEngine.Object.Instantiate(Resources.Load("FX/Thunder"), base.transform.position + Vector3.up * 23f, Quaternion.Euler(270f, 0f, 0f));
         }
@@ -838,9 +838,9 @@ public class TITAN_EREN : Photon.MonoBehaviour
         {
             hasDied = true;
             Transform transform = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck");
-            GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.MULTIPLAYER || !PhotonNetwork.isMasterClient) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("bloodExplore"), transform.position + Vector3.up * 1f * 4f, Quaternion.Euler(270f, 0f, 0f))) : PhotonNetwork.Instantiate("bloodExplore", transform.position + Vector3.up * 1f * 4f, Quaternion.Euler(270f, 0f, 0f), 0);
+            GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || !PhotonNetwork.isMasterClient) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("bloodExplore"), transform.position + Vector3.up * 1f * 4f, Quaternion.Euler(270f, 0f, 0f))) : PhotonNetwork.Instantiate("bloodExplore", transform.position + Vector3.up * 1f * 4f, Quaternion.Euler(270f, 0f, 0f), 0);
             gameObject.transform.localScale = base.transform.localScale;
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && PhotonNetwork.isMasterClient)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && PhotonNetwork.isMasterClient)
             {
                 Vector3 position = transform.position;
                 Vector3 eulerAngles = transform.rotation.eulerAngles;
@@ -863,7 +863,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             }
             gameObject.transform.localScale = base.transform.localScale;
             gameObject.transform.parent = transform;
-            gameObject = ((IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.MULTIPLAYER || !PhotonNetwork.isMasterClient) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/justSmoke"), transform.position, Quaternion.Euler(270f, 0f, 0f))) : PhotonNetwork.Instantiate("FX/justSmoke", transform.position, Quaternion.Euler(270f, 0f, 0f), 0));
+            gameObject = ((IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || !PhotonNetwork.isMasterClient) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/justSmoke"), transform.position, Quaternion.Euler(270f, 0f, 0f))) : PhotonNetwork.Instantiate("FX/justSmoke", transform.position, Quaternion.Euler(270f, 0f, 0f), 0));
             gameObject.transform.parent = transform;
         }
     }
@@ -1072,7 +1072,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
                 if (base.animation["rock_fix_hole"].normalizedTime >= 0.62f && !rockHitGround)
                 {
                     rockHitGround = true;
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && PhotonNetwork.isMasterClient)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && PhotonNetwork.isMasterClient)
                     {
                         PhotonNetwork.Instantiate("FX/boom1_CT_KICK", new Vector3(0f, 30f, 684f), Quaternion.Euler(270f, 0f, 0f), 0);
                     }
@@ -1138,7 +1138,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
 
     public void loadskin()
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
         {
             string text = (string)FengGameManagerMKII.Settings[65];
             if ((int)FengGameManagerMKII.Settings[1] == 1 && (text.EndsWith(".jpg") || text.EndsWith(".png") || text.EndsWith(".jpeg")))

@@ -21,7 +21,7 @@ public class HERO : Photon.MonoBehaviour
     {
         get
         {
-            return (base.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+            return (base.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
                 && Guardian.Mod.Properties.AlternateIdle.Value ? "AHSS_stand_gun" : _standAnimation;
         }
         set { _standAnimation = value; }
@@ -253,7 +253,7 @@ public class HERO : Photon.MonoBehaviour
         myTeam = val;
         checkBoxLeft.GetComponent<TriggerColliderWeapon>().myTeam = val;
         checkBoxRight.GetComponent<TriggerColliderWeapon>().myTeam = val;
-        if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.MULTIPLAYER || !PhotonNetwork.isMasterClient)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || !PhotonNetwork.isMasterClient)
         {
             return;
         }
@@ -353,7 +353,7 @@ public class HERO : Photon.MonoBehaviour
         {
             eren_titan.GetComponent<TITAN_EREN>().lifeTime = 0.1f;
         }
-        if (!useGun && (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine))
+        if (!useGun && (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine))
         {
             leftbladetrail.Deactivate();
             rightbladetrail.Deactivate();
@@ -546,7 +546,7 @@ public class HERO : Photon.MonoBehaviour
         {
             bulletRight.GetComponent<Bullet>().removeMe();
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
         {
             eren_titan = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("TITAN_EREN"), base.transform.position, base.transform.rotation);
         }
@@ -905,7 +905,7 @@ public class HERO : Photon.MonoBehaviour
 
     private void changeBlade()
     {
-        if (useGun && !grounded && FengGameManagerMKII.CurrentLevelInfo.type == GAMEMODE.PVP_AHSS)
+        if (useGun && !grounded && FengGameManagerMKII.Level.Mode == GameMode.PVP_AHSS)
         {
             return;
         }
@@ -987,7 +987,7 @@ public class HERO : Photon.MonoBehaviour
             targetRotation = rotation;
             if (Guardian.Mod.Properties.AlternateBurst.Value)
             {
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
                 {
                     UnityEngine.Object.Instantiate(Resources.Load("redCross1"), base.transform.position, base.transform.rotation);
                     UnityEngine.Object.Instantiate(Resources.Load("redCross1"), base.transform.position, base.transform.rotation);
@@ -1000,7 +1000,7 @@ public class HERO : Photon.MonoBehaviour
             }
             else
             {
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
                 {
                     UnityEngine.Object.Instantiate(Resources.Load("FX/boost_smoke"), base.transform.position, base.transform.rotation);
                 }
@@ -1110,7 +1110,7 @@ public class HERO : Photon.MonoBehaviour
         currentBladeSta -= amount;
         if (currentBladeSta <= 0f)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
             {
                 leftbladetrail.Deactivate();
                 rightbladetrail.Deactivate();
@@ -1160,7 +1160,7 @@ public class HERO : Photon.MonoBehaviour
         if (currentGas != 0f)
         {
             useGas(0f);
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
             {
                 bulletLeft = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("hook"));
             }
@@ -1192,7 +1192,7 @@ public class HERO : Photon.MonoBehaviour
         if (currentGas != 0f)
         {
             useGas(0f);
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
             {
                 bulletRight = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("hook"));
             }
@@ -1231,7 +1231,7 @@ public class HERO : Photon.MonoBehaviour
             }
             return;
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
         {
             checkBoxLeft.GetComponent<TriggerColliderWeapon>().active_me = false;
             checkBoxRight.GetComponent<TriggerColliderWeapon>().active_me = false;
@@ -1641,7 +1641,7 @@ public class HERO : Photon.MonoBehaviour
         }
         if (flag)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
             {
                 GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/flareBullet" + type), base.transform.position, base.transform.rotation);
                 gameObject.GetComponent<FlareMovement>().dontShowHint();
@@ -1683,7 +1683,7 @@ public class HERO : Photon.MonoBehaviour
                 bulletRight.GetComponent<Bullet>().removeMe();
             }
             meatDie.Play();
-            if ((IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine) && !useGun)
+            if ((IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine) && !useGun)
             {
                 leftbladetrail.Deactivate();
                 rightbladetrail.Deactivate();
@@ -1725,12 +1725,12 @@ public class HERO : Photon.MonoBehaviour
             applyForceToBody(gameObject2, v);
             applyForceToBody(gameObject3, v);
             applyForceToBody(gameObject4, v);
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
             {
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(gameObject2, resetRotation: false);
             }
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
         {
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(gameObject, resetRotation: false);
         }
@@ -1866,7 +1866,7 @@ public class HERO : Photon.MonoBehaviour
     [RPC]
     public void blowAway(Vector3 force, PhotonMessageInfo info = null)
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
         {
             if (Guardian.AntiAbuse.HeroPatches.IsBlowAwayValid(info))
             {
@@ -1945,7 +1945,7 @@ public class HERO : Photon.MonoBehaviour
     private void Start()
     {
         FengGameManagerMKII.Instance.AddHero(this);
-        if ((FengGameManagerMKII.CurrentLevelInfo.horse || RCSettings.HorseMode == 1) && IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
+        if ((FengGameManagerMKII.Level.Horses || RCSettings.HorseMode == 1) && IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
         {
             myHorse = PhotonNetwork.Instantiate("horse", baseTransform.position + Vector3.up * 5f, baseTransform.rotation, 0);
             myHorse.GetComponent<Horse>().myHero = base.gameObject;
@@ -1960,7 +1960,7 @@ public class HERO : Photon.MonoBehaviour
         sparks.enableEmission = false;
         speedFXPS = speedFX1.GetComponent<ParticleSystem>();
         speedFXPS.enableEmission = false;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
         {
             if (PhotonNetwork.isMasterClient)
             {
@@ -2050,7 +2050,7 @@ public class HERO : Photon.MonoBehaviour
 
             setup.init();
             setup.myCostume = new HeroCostume();
-            setup.myCostume = CostumeConverter.PhotonDataToHeroCostume2(base.photonView.owner);
+            setup.myCostume = CostumeConverter.FromPhotonData(base.photonView.owner);
             setup.setCharacterComponent();
             UnityEngine.Object.Destroy(checkBoxLeft);
             UnityEngine.Object.Destroy(checkBoxRight);
@@ -2070,15 +2070,15 @@ public class HERO : Photon.MonoBehaviour
         }
 
         // TODO: Flashlight Fix?
-        if (IN_GAME_MAIN_CAMERA.DayLight == DayLight.Night)
+        if (IN_GAME_MAIN_CAMERA.Time == DayLight.Night)
         {
             myFlashlight = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("flashlight"));
 
-            if (base.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+            if (base.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
             {
                 myFlashlight.GetComponent<Light>().renderMode = LightRenderMode.ForcePixel;
                 myFlashlight.transform.parent = currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform;
-                myFlashlight.transform.position = IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE ?
+                myFlashlight.transform.position = IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE ?
                     currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform.position
                     : (currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform.position + (Vector3.down * 5));
             }
@@ -2100,7 +2100,7 @@ public class HERO : Photon.MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (titanForm || isCannon || (IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE))
+        if (titanForm || isCannon || (IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE))
         {
             return;
         }
@@ -2989,7 +2989,7 @@ public class HERO : Photon.MonoBehaviour
         {
             UnityEngine.Object.Destroy(gunDummy);
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
         {
             releaseIfIHookSb();
         }
@@ -2998,7 +2998,7 @@ public class HERO : Photon.MonoBehaviour
         {
             mm.GetComponent<FengGameManagerMKII>().RemoveHero(this);
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
         {
             Vector3 localPosition = Vector3.up * 5000f;
             cross1.transform.localPosition = localPosition;
@@ -3063,7 +3063,7 @@ public class HERO : Photon.MonoBehaviour
         {
             return;
         }
-        if (IN_GAME_MAIN_CAMERA.CameraTilt == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine))
+        if (IN_GAME_MAIN_CAMERA.CameraTilt == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine))
         {
             Vector3 vector3 = Vector3.zero;
             Vector3 vector4 = Vector3.zero;
@@ -3208,7 +3208,7 @@ public class HERO : Photon.MonoBehaviour
                 }
                 ungrabbed();
                 baseRigidBody.velocity = Vector3.up * 30f;
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
                 {
                     titanWhoGrabMe.GetComponent<TITAN>().grabbedTargetEscape();
                     return;
@@ -3230,7 +3230,7 @@ public class HERO : Photon.MonoBehaviour
                     return;
                 }
                 showSkillCD();
-                if (IN_GAME_MAIN_CAMERA.Gametype != 0 || (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE && !IN_GAME_MAIN_CAMERA.IsPausing))
+                if (IN_GAME_MAIN_CAMERA.Gametype != 0 || (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE && !IN_GAME_MAIN_CAMERA.IsPausing))
                 {
                     calcSkillCD();
                     calcFlareCD();
@@ -3250,7 +3250,7 @@ public class HERO : Photon.MonoBehaviour
                     return;
                 }
                 ungrabbed();
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
                 {
                     titanObj.grabbedTargetEscape();
                 }
@@ -3740,7 +3740,7 @@ public class HERO : Photon.MonoBehaviour
                             facingDirection = gunDummy.transform.rotation.eulerAngles.y;
                             targetRotation = Quaternion.Euler(0f, facingDirection, 0f);
                         }
-                        else if (flag4 && (grounded || (FengGameManagerMKII.CurrentLevelInfo.type != GAMEMODE.PVP_AHSS && RCSettings.AhssReload == 0)))
+                        else if (flag4 && (grounded || (FengGameManagerMKII.Level.Mode != GameMode.PVP_AHSS && RCSettings.AhssReload == 0)))
                         {
                             changeBlade();
                         }
@@ -3969,7 +3969,7 @@ public class HERO : Photon.MonoBehaviour
                             }
                             baseRigidBody.AddForce(Vector3.up * 200f, ForceMode.Acceleration);
                             string text = !flag6 ? "FX/shotGun" : "FX/shotGun 1";
-                            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
                             {
                                 GameObject gameObject3 = PhotonNetwork.Instantiate(text, baseTransform.position + baseTransform.up * 0.8f - baseTransform.right * 0.1f, baseTransform.rotation, 0);
                                 if (gameObject3.GetComponent<EnemyfxIDcontainer>() != null)
@@ -4218,7 +4218,7 @@ public class HERO : Photon.MonoBehaviour
                     }
                 }
             }
-            if (IN_GAME_MAIN_CAMERA.Gametype != 0 || (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE && !IN_GAME_MAIN_CAMERA.IsPausing))
+            if (IN_GAME_MAIN_CAMERA.Gametype != 0 || (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE && !IN_GAME_MAIN_CAMERA.IsPausing))
             {
                 calcSkillCD();
                 calcFlareCD();
@@ -4283,9 +4283,9 @@ public class HERO : Photon.MonoBehaviour
                 break;
             case "eren":
                 skillCDLast = 120f;
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
                 {
-                    if (FengGameManagerMKII.CurrentLevelInfo.teamTitan || FengGameManagerMKII.CurrentLevelInfo.type == GAMEMODE.RACING || FengGameManagerMKII.CurrentLevelInfo.type == GAMEMODE.PVP_CAPTURE || FengGameManagerMKII.CurrentLevelInfo.type == GAMEMODE.TROST)
+                    if (FengGameManagerMKII.Level.PlayerTitans || FengGameManagerMKII.Level.Mode == GameMode.RACING || FengGameManagerMKII.Level.Mode == GameMode.PVP_CAPTURE || FengGameManagerMKII.Level.Mode == GameMode.TROST)
                     {
                         skillId = "petra";
                         skillCDLast = 1f;
@@ -4323,7 +4323,7 @@ public class HERO : Photon.MonoBehaviour
         skillCD = GameObject.Find("skill_cd_" + skillIDHUD);
         skillCD.transform.localPosition = skillCdBottom.transform.localPosition;
         GameObject.Find("GasUI").transform.localPosition = skillCdBottom.transform.localPosition;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
         {
             GameObject.Find("bulletL").GetComponent<UISprite>().enabled = false;
             GameObject.Find("bulletR").GetComponent<UISprite>().enabled = false;
@@ -4352,7 +4352,7 @@ public class HERO : Photon.MonoBehaviour
             gunDummy.transform.rotation = baseTransform.rotation;
             myGroup = GROUP.A;
             setTeam2(2);
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
             {
                 GameObject.Find("bladeCL").GetComponent<UISprite>().enabled = false;
                 GameObject.Find("bladeCR").GetComponent<UISprite>().enabled = false;
@@ -4388,7 +4388,7 @@ public class HERO : Photon.MonoBehaviour
                 }
             }
         }
-        else if (setup.myCostume.sex == SEX.FEMALE)
+        else if (setup.myCostume.sex == Sex.FEMALE)
         {
             standAnimation = "stand";
             setTeam2(1);
@@ -4441,7 +4441,7 @@ public class HERO : Photon.MonoBehaviour
             bulletRight.GetComponent<Bullet>().removeMe();
         }
         meatDie.Play();
-        if (!useGun && (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine))
+        if (!useGun && (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine))
         {
             leftbladetrail.Deactivate();
             rightbladetrail.Deactivate();
@@ -4554,12 +4554,12 @@ public class HERO : Photon.MonoBehaviour
             applyForceToBody(gameObject2, v);
             applyForceToBody(gameObject3, v);
             applyForceToBody(gameObject4, v);
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
             {
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(gameObject2, resetRotation: false);
             }
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
         {
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(gameObject, resetRotation: false);
         }
@@ -4602,7 +4602,7 @@ public class HERO : Photon.MonoBehaviour
     [RPC]
     public void netDie(Vector3 v, bool isBite, int viewID = -1, string titanName = "", bool killByTitan = true, PhotonMessageInfo info = null)
     {
-        if (base.photonView.isMine && info != null && IN_GAME_MAIN_CAMERA.Gamemode != GAMEMODE.BOSS_FIGHT_CT)
+        if (base.photonView.isMine && info != null && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
         {
             if (FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
@@ -4683,7 +4683,7 @@ public class HERO : Photon.MonoBehaviour
             bulletRight.GetComponent<Bullet>().removeMe();
         }
         meatDie.Play();
-        if (!useGun && (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine))
+        if (!useGun && (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine))
         {
             leftbladetrail.Deactivate();
             rightbladetrail.Deactivate();
@@ -4743,7 +4743,7 @@ public class HERO : Photon.MonoBehaviour
     [RPC]
     private void netDie2(int viewID = -1, string titanName = "", PhotonMessageInfo info = null)
     {
-        if (base.photonView.isMine && info != null && IN_GAME_MAIN_CAMERA.Gamemode != GAMEMODE.BOSS_FIGHT_CT)
+        if (base.photonView.isMine && info != null && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
         {
             if (FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
@@ -4829,7 +4829,7 @@ public class HERO : Photon.MonoBehaviour
         falseAttack();
         hasDied = true;
         base.gameObject.GetComponent<SmoothSyncMovement>().disabled = true;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
         {
             PhotonNetwork.RemoveRPCs(base.photonView);
             ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
@@ -4857,7 +4857,7 @@ public class HERO : Photon.MonoBehaviour
             };
             FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, parameters);
         }
-        GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("hitMeat2"))) : PhotonNetwork.Instantiate("hitMeat2", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
+        GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("hitMeat2"))) : PhotonNetwork.Instantiate("hitMeat2", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
         gameObject.transform.position = base.transform.position;
         if (base.photonView.isMine)
         {
@@ -5058,7 +5058,7 @@ public class HERO : Photon.MonoBehaviour
 
     public void setTeam2(int team)
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
         {
             object[] parameters = new object[1]
             {
@@ -5385,7 +5385,7 @@ public class HERO : Photon.MonoBehaviour
         string text12 = (string)FengGameManagerMKII.Settings[num12];
         string text13 = (string)FengGameManagerMKII.Settings[num13];
         string text14 = text12 + "," + text2 + "," + text3 + "," + text4 + "," + text5 + "," + text6 + "," + text7 + "," + text8 + "," + text9 + "," + text10 + "," + text11 + "," + text + "," + text13;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
         {
             StartCoroutine(LoadSkinE(-1, text14));
             return;
@@ -5429,12 +5429,12 @@ public class HERO : Photon.MonoBehaviour
             flaggas = true;
         }
         bool flaghorse = false;
-        if (FengGameManagerMKII.CurrentLevelInfo.horse || RCSettings.HorseMode == 1)
+        if (FengGameManagerMKII.Level.Horses || RCSettings.HorseMode == 1)
         {
             flaghorse = true;
         }
         bool flagtrail = false;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
         {
             flagtrail = true;
         }

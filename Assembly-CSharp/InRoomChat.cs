@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class InRoomChat : Photon.MonoBehaviour
 {
-    public static InRoomChat Instance => FengGameManagerMKII.Instance.chatRoom;
+    public static InRoomChat Instance;
     public static Rect MessagesRect = new Rect(1f, 0f, 329f, 225f);
     public static Rect ChatBoxRect = new Rect(30f, 575f, 300f, 25f);
     public bool IsVisible = true;
@@ -14,6 +14,11 @@ public class InRoomChat : Photon.MonoBehaviour
     public string inputLine = string.Empty;
     private Vector2 ScrollPosition = GameHelper.ScrollBottom;
     private string TextFieldName = "ChatInput";
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     public void Start()
     {

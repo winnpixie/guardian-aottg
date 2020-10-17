@@ -17,7 +17,7 @@ public class LevelBottom : MonoBehaviour
             {
                 return;
             }
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
             {
                 if (other.gameObject.GetPhotonView().isMine)
                 {

@@ -30,7 +30,7 @@ public class BTN_choose_human : MonoBehaviour
         string selection = GameObject.Find("PopupListCharacterHUMAN").GetComponent<UIPopupList>().selection;
         NGUITools.SetActive(GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[0], state: true);
         fgmkii.needChooseSide = false;
-        if (IN_GAME_MAIN_CAMERA.Gamemode == GAMEMODE.PVP_CAPTURE)
+        if (FengGameManagerMKII.Level.Mode == GameMode.PVP_CAPTURE)
         {
             fgmkii.checkpoint = GameObject.Find("PVPchkPtH");
         }
@@ -46,7 +46,7 @@ public class BTN_choose_human : MonoBehaviour
                 fgmkii.photonView.RPC("restartGameByClient", PhotonTargets.MasterClient);
             }
         }
-        else if (IN_GAME_MAIN_CAMERA.Gamemode == GAMEMODE.BOSS_FIGHT_CT || IN_GAME_MAIN_CAMERA.Gamemode == GAMEMODE.TROST || IN_GAME_MAIN_CAMERA.Gamemode == GAMEMODE.PVP_CAPTURE)
+        else if (FengGameManagerMKII.Level.Mode == GameMode.BOSS_FIGHT_CT || FengGameManagerMKII.Level.Mode == GameMode.TROST || FengGameManagerMKII.Level.Mode == GameMode.PVP_CAPTURE)
         {
             if (isPlayerAllDead2())
             {

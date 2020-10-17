@@ -21,6 +21,7 @@ namespace Guardian.Features.Properties
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
 
         // Chat
+        public Property<string> JoinMessage = new Property<string>("Chat_JoinMessage", new string[0], "");
         public Property<string> ChatName = new Property<string>("Chat_UserName", new string[0], "");
         public Property<bool> BoldName = new Property<bool>("Chat_BoldName", new string[0], false);
         public Property<bool> ItalicName = new Property<bool>("Chat_ItalicName", new string[0], false);
@@ -31,7 +32,7 @@ namespace Guardian.Features.Properties
         public Property<bool> ItalicText = new Property<bool>("Chat_ItalicText", new string[0], false);
 
         // Visual
-        public Property<bool> LegacyTimeFormat = new Property<bool>("Visual_LegacyTimeFormat", new string[0], false);
+        public Property<bool> LegacyTimeFormat = new Property<bool>("Visual_LegacyTimeFormat", new string[0], true);
 
         // Logging
         public Property<bool> ShowLog = new Property<bool>("Log_ShowLog", new string[0], true);
@@ -54,6 +55,7 @@ namespace Guardian.Features.Properties
             base.Add(AlternateBurst);
 
             // Chat
+            base.Add(JoinMessage);
             base.Add(ChatName);
             base.Add(TextColor);
             base.Add(BoldName);

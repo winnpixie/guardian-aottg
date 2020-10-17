@@ -3,17 +3,19 @@ using UnityEngine;
 
 public class LoginFengKAI : MonoBehaviour
 {
-    public static LoginFengKAI Instance;
     public static string PlayerName = string.Empty;
-    public static string PlayerGuild = string.Empty;
-    public static string PlayerPassword = string.Empty;
-    public static string formText = string.Empty;
-    public static string CheckUserURL = "http://fenglee.com/game/aog/login_check.php";
-    public static string RegisterURL = "http://fenglee.com/game/aog/signup_check.php";
-    public static string ForgetPasswordURL = "http://fenglee.com/game/aog/forget_password.php";
-    public static string GetInfoURL = "http://fenglee.com/game/aog/require_user_info.php";
-    public static string ChangePasswordURL = "http://fenglee.com/game/aog/change_password.php";
-    public static string ChangeGuildURL = "http://fenglee.com/game/aog/change_guild_name.php";
+    public static string GuildName = string.Empty;
+    public static string Password = string.Empty;
+    public static FengPlayer Player;
+    public static LoginState LoginState;
+
+    public string CheckUserURL = "http://fenglee.com/game/aog/login_check.php";
+    public string RegisterURL = "http://fenglee.com/game/aog/signup_check.php";
+    public string ForgetPasswordURL = "http://fenglee.com/game/aog/forget_password.php";
+    public string GetInfoURL = "http://fenglee.com/game/aog/require_user_info.php";
+    public string ChangePasswordURL = "http://fenglee.com/game/aog/change_password.php";
+    public string ChangeGuildURL = "http://fenglee.com/game/aog/change_guild_name.php";
+    public string formText = string.Empty;
     public GameObject output;
     public GameObject output2;
     public PanelLoginGroupManager loginGroup;
@@ -23,17 +25,15 @@ public class LoginFengKAI : MonoBehaviour
     public GameObject panelStatus;
     public GameObject panelChangePassword;
     public GameObject panelChangeGUILDNAME;
-    public static PlayerInfoPHOTON Player;
 
     private void Start()
     {
-        Instance = this;
-
         if (Player == null)
         {
-            Player = new PlayerInfoPHOTON();
+            Player = new FengPlayer();
             Player.InitAsGuest();
         }
+
         if (PlayerName != string.Empty)
         {
             NGUITools.SetActive(panelLogin, state: false);
@@ -42,7 +42,7 @@ public class LoginFengKAI : MonoBehaviour
         }
         else
         {
-            output.GetComponent<UILabel>().text = "Welcome, " + Player.name;
+            output.GetComponent<UILabel>().text = "Welcome, " + Player.Name;
         }
     }
 
@@ -57,23 +57,25 @@ public class LoginFengKAI : MonoBehaviour
         form.AddField("userid", name);
         form.AddField("password", password);
         form.AddField("version", UIMainReferences.Version);
-        WWW w = new WWW(CheckUserURL, form);
-        yield return w;
-        ClearCookies();
-        if (w.error != null)
+
+        using (WWW www = new WWW(CheckUserURL, form))
         {
-            print(w.error);
-            yield break;
+            yield return www;
+            ClearCookies();
+            if (www.error != null)
+            {
+                print(www.error);
+            }
+            output.GetComponent<UILabel>().text = www.text;
+            formText = www.text;
         }
-        output.GetComponent<UILabel>().text = w.text;
-        formText = w.text;
-        w.Dispose();
+
         if (formText.Contains("Welcome back") && formText.Contains("(^o^)/~"))
         {
             NGUITools.SetActive(panelLogin, state: false);
             NGUITools.SetActive(panelStatus, state: true);
             PlayerName = name;
-            PlayerPassword = password;
+            Password = password;
             StartCoroutine(GetInfo());
         }
     }
@@ -82,31 +84,32 @@ public class LoginFengKAI : MonoBehaviour
     {
         WWWForm form = new WWWForm();
         form.AddField("userid", PlayerName);
-        form.AddField("password", PlayerPassword);
-        WWW w = new WWW(GetInfoURL, form);
-        yield return w;
-        if (w.error != null)
+        form.AddField("password", Password);
+
+        using (WWW www = new WWW(GetInfoURL, form))
         {
-            print(w.error);
-            yield break;
+            yield return www;
+            if (www.error != null)
+            {
+                print(www.error);
+            }
+            if (www.text.Contains("Error,please sign in again."))
+            {
+                NGUITools.SetActive(panelLogin, state: true);
+                NGUITools.SetActive(panelStatus, state: false);
+                output.GetComponent<UILabel>().text = www.text;
+                PlayerName = string.Empty;
+                Password = string.Empty;
+            }
+            else
+            {
+                string[] result = www.text.Split('|');
+                GuildName = result[0];
+                output2.GetComponent<UILabel>().text = result[1];
+                Player.Name = PlayerName;
+                Player.Guild = GuildName;
+            }
         }
-        if (w.text.Contains("Error,please sign in again."))
-        {
-            NGUITools.SetActive(panelLogin, state: true);
-            NGUITools.SetActive(panelStatus, state: false);
-            output.GetComponent<UILabel>().text = w.text;
-            PlayerName = string.Empty;
-            PlayerPassword = string.Empty;
-        }
-        else
-        {
-            string[] result = w.text.Split('|');
-            PlayerGuild = result[0];
-            output2.GetComponent<UILabel>().text = result[1];
-            Player.name = PlayerName;
-            Player.guildname = PlayerGuild;
-        }
-        w.Dispose();
     }
 
     public void Register(string name, string password, string password2, string email)
@@ -121,22 +124,25 @@ public class LoginFengKAI : MonoBehaviour
         form.AddField("password", password);
         form.AddField("password2", password2);
         form.AddField("email", email);
-        WWW w = new WWW(RegisterURL, form);
-        yield return w;
-        if (w.error != null)
+
+        using (WWW www = new WWW(RegisterURL, form))
         {
-            print(w.error);
-        }
-        else
-        {
-            output.GetComponent<UILabel>().text = w.text;
-            if (w.text.Contains("Final step,to activate your account, please click the link in the activation email"))
+            yield return www;
+            if (www.error != null)
             {
-                NGUITools.SetActive(panelRegister, state: false);
-                NGUITools.SetActive(panelLogin, state: true);
+                print(www.error);
             }
-            w.Dispose();
+            else
+            {
+                output.GetComponent<UILabel>().text = www.text;
+                if (www.text.Contains("Final step,to activate your account, please click the link in the activation email"))
+                {
+                    NGUITools.SetActive(panelRegister, state: false);
+                    NGUITools.SetActive(panelLogin, state: true);
+                }
+            }
         }
+
         ClearCookies();
     }
 
@@ -162,20 +168,21 @@ public class LoginFengKAI : MonoBehaviour
         form.AddField("old_password", oldpassword);
         form.AddField("password", password);
         form.AddField("password2", password2);
-        WWW www = new WWW(ChangePasswordURL, form);
-        yield return www;
-        if (www.error != null)
+
+        using (WWW www = new WWW(ChangePasswordURL, form))
         {
-            print(www.error);
-            yield break;
+            yield return www;
+            if (www.error != null)
+            {
+                print(www.error);
+            }
+            output.GetComponent<UILabel>().text = www.text;
+            if (www.text.Contains("Thanks, your password changed successfully"))
+            {
+                NGUITools.SetActive(panelChangePassword, state: false);
+                NGUITools.SetActive(panelLogin, state: true);
+            }
         }
-        output.GetComponent<UILabel>().text = www.text;
-        if (www.text.Contains("Thanks, your password changed successfully"))
-        {
-            NGUITools.SetActive(panelChangePassword, state: false);
-            NGUITools.SetActive(panelLogin, state: true);
-        }
-        www.Dispose();
     }
 
     public void ChangeGuild(string name)
@@ -198,21 +205,22 @@ public class LoginFengKAI : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("name", PlayerName);
         form.AddField("guildname", name);
-        WWW w = new WWW(ChangeGuildURL, form);
-        yield return w;
-        if (w.error != null)
+
+        using (WWW www = new WWW(ChangeGuildURL, form))
         {
-            print(w.error);
-            yield break;
+            yield return www;
+            if (www.error != null)
+            {
+                print(www.error);
+            }
+            output.GetComponent<UILabel>().text = www.text;
+            if (www.text.Contains("Guild name set."))
+            {
+                NGUITools.SetActive(panelChangeGUILDNAME, state: false);
+                NGUITools.SetActive(panelStatus, state: true);
+                StartCoroutine(GetInfo());
+            }
         }
-        output.GetComponent<UILabel>().text = w.text;
-        if (w.text.Contains("Guild name set."))
-        {
-            NGUITools.SetActive(panelChangeGUILDNAME, state: false);
-            NGUITools.SetActive(panelStatus, state: true);
-            StartCoroutine(GetInfo());
-        }
-        w.Dispose();
     }
 
     public void ResetPassword(string email)
@@ -224,18 +232,20 @@ public class LoginFengKAI : MonoBehaviour
     {
         WWWForm form = new WWWForm();
         form.AddField("email", email);
-        WWW w = new WWW(ForgetPasswordURL, form);
-        yield return w;
-        if (w.error != null)
+
+        using (WWW www = new WWW(ForgetPasswordURL, form))
         {
-            print(w.error);
-        }
-        else
-        {
-            output.GetComponent<UILabel>().text = w.text;
-            w.Dispose();
-            NGUITools.SetActive(panelForget, state: false);
-            NGUITools.SetActive(panelLogin, state: true);
+            yield return www;
+            if (www.error != null)
+            {
+                print(www.error);
+            }
+            else
+            {
+                output.GetComponent<UILabel>().text = www.text;
+                NGUITools.SetActive(panelForget, state: false);
+                NGUITools.SetActive(panelLogin, state: true);
+            }
         }
         ClearCookies();
     }
@@ -243,14 +253,15 @@ public class LoginFengKAI : MonoBehaviour
     private void ClearCookies()
     {
         PlayerName = string.Empty;
-        PlayerPassword = string.Empty;
+        Password = string.Empty;
+        LoginState = LoginState.LoggedOut;
     }
 
     public void Logout()
     {
         ClearCookies();
-        Player = new PlayerInfoPHOTON();
+        Player = new FengPlayer();
         Player.InitAsGuest();
-        output.GetComponent<UILabel>().text = "Welcome, " + Player.name;
+        output.GetComponent<UILabel>().text = "Welcome, " + Player.Name;
     }
 }

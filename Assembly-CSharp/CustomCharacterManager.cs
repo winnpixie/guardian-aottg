@@ -23,7 +23,7 @@ public class CustomCharacterManager : MonoBehaviour
     public GameObject hairR;
     public GameObject hairG;
     public GameObject hairB;
-    private SEX[] sexOption;
+    private Sex[] sexOption;
     private int sexId;
     private int[] eyeOption;
     private int eyeId;
@@ -39,7 +39,7 @@ public class CustomCharacterManager : MonoBehaviour
     private int costumeId = 1;
     private int[] capeOption;
     private int capeId;
-    private DIVISION[] divisionOption;
+    private Division[] divisionOption;
     private int divisionId;
     private int presetId;
     private string[] skillOption;
@@ -54,12 +54,12 @@ public class CustomCharacterManager : MonoBehaviour
         setup.init();
         setup.myCostume = new HeroCostume();
         copyCostume(HeroCostume.costume[2], setup.myCostume);
-        setup.myCostume.setMesh2();
+        setup.myCostume.SetMesh();
         setup.setCharacterComponent();
-        sexOption = new SEX[2]
+        sexOption = new Sex[2]
         {
-            SEX.MALE,
-            SEX.FEMALE
+            Sex.MALE,
+            Sex.FEMALE
         };
         eyeOption = new int[28];
         for (int i = 0; i < 28; i++)
@@ -91,12 +91,12 @@ public class CustomCharacterManager : MonoBehaviour
         {
             capeOption[i] = i;
         }
-        divisionOption = new DIVISION[4]
+        divisionOption = new Division[4]
         {
-            DIVISION.TraineesSquad,
-            DIVISION.TheGarrison,
-            DIVISION.TheMilitaryPolice,
-            DIVISION.TheSurveryCorps
+            Division.TraineesSquad,
+            Division.TheGarrison,
+            Division.TheMilitaryPolice,
+            Division.TheSurveryCorps
         };
         skillOption = new string[7]
         {
@@ -475,12 +475,12 @@ public class CustomCharacterManager : MonoBehaviour
 
     public void SaveData()
     {
-        CostumeConverter.HeroCostumeToLocalData(setup.myCostume, currentSlot);
+        CostumeConverter.ToLocalData(setup.myCostume, currentSlot);
     }
 
     public void LoadData()
     {
-        HeroCostume heroCostume = CostumeConverter.LocalDataToHeroCostume(currentSlot);
+        HeroCostume heroCostume = CostumeConverter.FromLocalData(currentSlot);
         if (heroCostume != null)
         {
             copyCostume(heroCostume, setup.myCostume);
@@ -558,14 +558,12 @@ public class CustomCharacterManager : MonoBehaviour
                 setHairColor();
                 break;
             case CreatePart.Skin:
-                if (setup.myCostume.uniform_type != UNIFORM_TYPE.CasualAHSS)
-                {
-                    skinId = ((!next) ? toPrev(skinId, 2) : toNext(skinId, 2));
-                }
-                else
+                skinId = ((!next) ? toPrev(skinId, 2) : toNext(skinId, 2));
+                if (setup.myCostume.uniform_type == UNIFORM_TYPE.CasualAHSS && skinId == 0)
                 {
                     skinId = 2;
                 }
+
                 setup.myCostume.skin_color = skinOption[skinId];
                 setup.myCostume.setTexture();
                 setup.setSkin();
@@ -574,17 +572,12 @@ public class CustomCharacterManager : MonoBehaviour
                 if (setup.myCostume.uniform_type != UNIFORM_TYPE.CasualAHSS)
                 {
                     costumeId = !next ? toPrev(costumeId, 24) : toNext(costumeId, 24);
-                }
-                else if (setup.myCostume.sex == SEX.FEMALE)
-                {
-                    costumeId = 26;
-                }
-                else if (setup.myCostume.sex == SEX.MALE)
+                } else
                 {
                     costumeId = 25;
                 }
                 copyBodyCostume(costumeOption[costumeId], setup.myCostume);
-                setup.myCostume.setMesh2();
+                setup.myCostume.SetMesh();
                 setup.myCostume.setTexture();
                 setup.createUpperBody2();
                 setup.createLeftArm();

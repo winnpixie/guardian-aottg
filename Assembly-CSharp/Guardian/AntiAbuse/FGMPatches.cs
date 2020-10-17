@@ -53,7 +53,7 @@ namespace Guardian.AntiAbuse
         // FengGameManager.netShowDamage
         public static bool IsNetShowDamageValid(PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
             {
                 if (info != null && (info.sender.isMasterClient || GameHelper.IsPT(info.sender)))
                 {

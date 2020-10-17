@@ -11,13 +11,13 @@ namespace Guardian.Features.Commands.Impl
         {
             if (args.Length > 0 && GExtensions.TryParseEnum(args[0], out DayLight dayLight))
             {
-                IN_GAME_MAIN_CAMERA.DayLight = dayLight;
+                IN_GAME_MAIN_CAMERA.Time = dayLight;
 
                 if (PhotonNetwork.isMasterClient)
                 {
                     PhotonNetwork.room.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                     {
-                        { "DayLight", args[0].ToUpper() }
+                        { "Time", args[0].ToUpper() }
                     });
                     GameHelper.Broadcast($"The current map lighting is now {args[0].ToUpper()}!");
                 }

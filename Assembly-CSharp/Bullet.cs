@@ -354,7 +354,7 @@ public class Bullet : Photon.MonoBehaviour
     {
         phase = 2;
         killTime = 0f;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
         {
             base.photonView.RPC("setPhase", PhotonTargets.Others, 2);
         }
@@ -368,7 +368,7 @@ public class Bullet : Photon.MonoBehaviour
             PhotonNetwork.Destroy(base.photonView);
             PhotonNetwork.RemoveRPCs(base.photonView);
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
         {
             UnityEngine.Object.Destroy(rope);
             UnityEngine.Object.Destroy(base.gameObject);
@@ -436,7 +436,7 @@ public class Bullet : Photon.MonoBehaviour
                 bool flag3 = true;
                 if (hitInfo.collider.transform.gameObject.layer == LayerMask.NameToLayer("EnemyBox"))
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
                     {
                         object[] parameters = new object[1]
                         {
@@ -453,7 +453,7 @@ public class Bullet : Photon.MonoBehaviour
                 }
                 else if (hitInfo.collider.transform.gameObject.layer == LayerMask.NameToLayer("NetworkObject") && hitInfo.collider.transform.gameObject.tag == "Player" && !leviMode)
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
                     {
                         object[] parameters2 = new object[1]
                         {
@@ -480,7 +480,7 @@ public class Bullet : Photon.MonoBehaviour
                     if (phase != 2)
                     {
                         phase = 1;
-                        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
                         {
                             object[] parameters3 = new object[1]
                             {
@@ -510,7 +510,7 @@ public class Bullet : Photon.MonoBehaviour
             if (killTime2 > 0.8f)
             {
                 phase = 4;
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
                 {
                     object[] parameters5 = new object[1]
                     {

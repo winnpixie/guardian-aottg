@@ -1,4 +1,4 @@
-public enum GAMEMODE
+public enum GameMode
 {
     KILL_TITAN,
     PVP_AHSS,

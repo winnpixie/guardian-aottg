@@ -13,7 +13,7 @@ namespace Guardian.Features.Commands.Impl
             {
                 name = string.Join(" ", args);
             }
-            LoginFengKAI.Player.name = name;
+            LoginFengKAI.Player.Name = name;
             FengGameManagerMKII.NameField = name;
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable

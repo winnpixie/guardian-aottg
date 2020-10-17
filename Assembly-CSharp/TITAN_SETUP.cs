@@ -13,9 +13,9 @@ public class TITAN_SETUP : Photon.MonoBehaviour
 
     private void Awake()
     {
-        CostumeHair.init();
+        CostumeHair.Init();
         CharacterMaterials.InitData();
-        HeroCostume.init2();
+        HeroCostume.Init();
         hair_go_ref = new GameObject();
         eye.transform.parent = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck/head").transform;
         hair_go_ref.transform.position = eye.transform.position + Vector3.up * 3.5f + base.transform.forward * 5.2f;
@@ -63,7 +63,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         }
         part_hair = gameObject;
         setFacialTexture(eye, 0);
-        if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
         {
             PhotonView photonView = base.photonView;
             object[] obj = new object[5]
@@ -104,7 +104,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
 
     public void setHair2()
     {
-        if ((int)FengGameManagerMKII.Settings[1] == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE || base.photonView.isMine))
+        if ((int)FengGameManagerMKII.Settings[1] == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine))
         {
             int num = Random.Range(0, 9);
             if (num == 3)
@@ -131,7 +131,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             {
                 flag = true;
             }
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
             {
                 if (flag)
                 {
@@ -157,7 +157,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
                     base.photonView.RPC("setHairPRC", PhotonTargets.AllBuffered, parameters);
                 }
             }
-            else if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
             {
                 if (flag)
                 {
@@ -192,7 +192,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             part_hair.renderer.material.color = HeroCostume.costume[Random.Range(0, HeroCostume.costume.Length - 5)].hair_color;
             int num4 = Random.Range(1, 8);
             setFacialTexture(eye, num4);
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && base.photonView.isMine)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
             {
                 object[] parameters = new object[5]
                 {

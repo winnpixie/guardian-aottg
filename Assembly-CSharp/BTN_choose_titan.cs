@@ -7,7 +7,7 @@ public class BTN_choose_titan : MonoBehaviour
 
     private void Start()
     {
-        if (!FengGameManagerMKII.CurrentLevelInfo.teamTitan)
+        if (!FengGameManagerMKII.Level.PlayerTitans)
         {
             base.gameObject.GetComponent<UIButton>().isEnabled = false;
         }
@@ -19,7 +19,7 @@ public class BTN_choose_titan : MonoBehaviour
 
     private void OnClick()
     {
-        if (IN_GAME_MAIN_CAMERA.Gamemode == GAMEMODE.PVP_AHSS)
+        if (FengGameManagerMKII.Level.Mode == GameMode.PVP_AHSS)
         {
             string text = "AHSS";
             NGUITools.SetActive(GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[0], state: true);
@@ -45,7 +45,7 @@ public class BTN_choose_titan : MonoBehaviour
         }
         else
         {
-            if (IN_GAME_MAIN_CAMERA.Gamemode == GAMEMODE.PVP_CAPTURE)
+            if (FengGameManagerMKII.Level.Mode == GameMode.PVP_CAPTURE)
             {
                 GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().checkpoint = GameObject.Find("PVPchkPtT");
             }

@@ -61,7 +61,7 @@ public class PanelMultiJoin : MonoBehaviour
         showServerList();
     }
 
-    private string getServerDataString(RoomInfo room)
+    private string GetServerDataString(RoomInfo room)
     {
         string[] info = room.name.Split('`');
         if (info.Length < 7)
@@ -69,45 +69,44 @@ public class PanelMultiJoin : MonoBehaviour
             return "[ff0000]Insufficient room data to be playable.";
         }
 
-        string pwd = info[5].Length == 0 ? "" : "[ff0000](PWD)[-] ";
-        string name = $"{info[0]}[-]";
-        string map = info[1];
+        string pwd = info[5].Length == 0 ? "" : "[ff0000](Pwd)[-] ";
 
         string difficulty = info[2];
         if (difficulty.Equals("normal", StringComparison.OrdinalIgnoreCase))
         {
-            difficulty = $"[00ff00]{difficulty}[-]";
+            difficulty = $"[00ff00]Normal[-]";
         }
         else if (difficulty.Equals("hard", StringComparison.OrdinalIgnoreCase))
         {
-            difficulty = $"[ff0000]{difficulty}[-]";
+            difficulty = $"[ff0000]Hard[-]";
         }
         else if (difficulty.Equals("abnormal", StringComparison.OrdinalIgnoreCase))
         {
-            difficulty = $"[000000]{difficulty}[-]";
+            difficulty = $"[000000]Abnormal[-]";
         }
 
         string daylight = info[4];
         if (daylight.Equals("day", StringComparison.OrdinalIgnoreCase))
         {
-            daylight = $"[ffff00]{daylight}[-]";
+            daylight = $"[ffff00]Day[-]";
         }
         else if (daylight.Equals("dawn", StringComparison.OrdinalIgnoreCase))
         {
-            daylight = $"[ff6600]{daylight}[-]";
+            daylight = $"[ff6600]Dawn[-]";
         }
         else if (daylight.Equals("night", StringComparison.OrdinalIgnoreCase))
         {
-            daylight = $"[000000]{daylight}[-]";
+            daylight = $"[000000]Night[-]";
         }
 
-        string roomSize = $"{room.playerCount}/{room.maxPlayers}";
-        if (room.maxPlayers != 0 && room.playerCount >= room.maxPlayers)
+        string roomMeta = "";
+        if (!room.open || (room.maxPlayers != 0 && room.playerCount >= room.maxPlayers))
         {
-            roomSize += " [ff0000](Full)[-]";
+            roomMeta = "[ff0000]";
         }
+        roomMeta += $"{room.playerCount}/{room.maxPlayers}[-]";
 
-        return $"{pwd}{name}/{map}/{difficulty}/{daylight} {roomSize}";
+        return $"{pwd}{info[0]}[-][ffffff]/{info[1]}/{difficulty}/{daylight} {roomMeta}";
     }
 
     private void showServerList()
@@ -124,7 +123,7 @@ public class PanelMultiJoin : MonoBehaviour
                     {
                         RoomInfo roomInfo = rooms[index];
                         items[i].SetActive(value: true);
-                        items[i].GetComponentInChildren<UILabel>().text = getServerDataString(roomInfo);
+                        items[i].GetComponentInChildren<UILabel>().text = GetServerDataString(roomInfo);
                         items[i].GetComponentInChildren<BTN_Connect_To_Server_On_List>().roomName = roomInfo.name;
                     }
                     else
@@ -142,7 +141,7 @@ public class PanelMultiJoin : MonoBehaviour
                     {
                         RoomInfo roomInfo = (RoomInfo)filterRoom[index];
                         items[i].SetActive(value: true);
-                        items[i].GetComponentInChildren<UILabel>().text = getServerDataString(roomInfo);
+                        items[i].GetComponentInChildren<UILabel>().text = GetServerDataString(roomInfo);
                         items[i].GetComponentInChildren<BTN_Connect_To_Server_On_List>().roomName = roomInfo.name;
                     }
                     else

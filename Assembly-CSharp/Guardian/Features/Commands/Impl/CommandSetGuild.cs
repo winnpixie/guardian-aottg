@@ -13,7 +13,7 @@ namespace Guardian.Features.Commands.Impl
             {
                 guild = string.Join(" ", args);
             }
-            LoginFengKAI.Player.guildname = guild;
+            LoginFengKAI.Player.Guild = guild;
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
                 { PhotonPlayerProperty.Guild, guild }

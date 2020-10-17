@@ -6,7 +6,7 @@ public class DaylightChange : MonoBehaviour
     {
         if(GExtensions.TryParseEnum(GetComponent<UIPopupList>().selection, out DayLight dayLight))
         {
-            IN_GAME_MAIN_CAMERA.DayLight = dayLight;
+            IN_GAME_MAIN_CAMERA.Time = dayLight;
         }
     }
 }

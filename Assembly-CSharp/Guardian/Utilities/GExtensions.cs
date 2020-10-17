@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,11 +21,11 @@ public static class GExtensions
         return arrOut;
     }
 
-    public static T[] Sorted<T>(this T[] arrIn, Comparison<T> comparer)
+    public static T[] Sorted<T>(this T[] arrIn, Comparison<T> comparator)
     {
         T[] sorted = new T[arrIn.Length];
         arrIn.CopyTo(sorted, 0);
-        Array.Sort(sorted, comparer);
+        Array.Sort(sorted, comparator);
 
         return sorted;
     }
@@ -62,7 +63,7 @@ public static class GExtensions
                     i += 2;
                     continue;
                 }
-                else if (i + 7 < str.Length && str[i + 7] == ']' && str.Substring(i + 1, 6).IsHex()) // [HEXHEX], aka use the color supplied by HEXHEX
+                else if (i + 7 < str.Length && str[i + 7] == ']' && str.Substring(i + 1, 6).IsHex()) // [RRGGBB], aka use the color supplied by RRGGBB
                 {
                     string color = str.Substring(i + 1, 6).ToUpper();
                     colors.Push(color);

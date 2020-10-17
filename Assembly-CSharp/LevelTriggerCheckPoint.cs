@@ -13,7 +13,7 @@ public class LevelTriggerCheckPoint : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
             {
                 fengGame.checkpoint = base.gameObject;
             }

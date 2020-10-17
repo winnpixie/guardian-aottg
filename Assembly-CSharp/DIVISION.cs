@@ -1,7 +1,7 @@
-public enum DIVISION
+public enum Division : int
 {
-    TraineesSquad,
-    TheSurveryCorps,
-    TheGarrison,
-    TheMilitaryPolice
+    TraineesSquad = 3,
+    TheSurveryCorps = 2,
+    TheGarrison = 0,
+    TheMilitaryPolice = 1
 }

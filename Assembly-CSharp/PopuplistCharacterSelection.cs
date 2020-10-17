@@ -17,7 +17,7 @@ public class PopuplistCharacterSelection : MonoBehaviour
             case "Set 2":
             case "Set 3":
                 {
-                    HeroCostume heroCostume = CostumeConverter.LocalDataToHeroCostume(selection.ToUpper());
+                    HeroCostume heroCostume = CostumeConverter.FromLocalData(selection.ToUpper());
                     heroStat = ((heroCostume != null) ? heroCostume.stat : new HeroStat());
                     break;
                 }

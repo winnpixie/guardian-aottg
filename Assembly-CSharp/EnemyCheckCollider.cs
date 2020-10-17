@@ -28,7 +28,7 @@ public class EnemyCheckCollider : Photon.MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if ((IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && !base.transform.root.gameObject.GetPhotonView().isMine) || !active_me)
+        if ((IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && !base.transform.root.gameObject.GetPhotonView().isMine) || !active_me)
         {
             return;
         }
@@ -60,11 +60,11 @@ public class EnemyCheckCollider : Photon.MonoBehaviour
                 {
                     d = Mathf.Max(5f, num - vector.magnitude);
                 }
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
                 {
                     component.transform.root.GetComponent<HERO>().blowAway(vector.normalized * d + Vector3.up * 1f);
                 }
-                else if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER)
+                else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
                 {
                     component.transform.root.GetComponent<HERO>().photonView.RPC("blowAway", PhotonTargets.All, vector.normalized * d + Vector3.up * 1f);
                 }
@@ -75,14 +75,14 @@ public class EnemyCheckCollider : Photon.MonoBehaviour
                 {
                     return;
                 }
-                if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
                 {
                     if (!component.transform.root.GetComponent<HERO>().isGrabbed)
                     {
                         component.transform.root.GetComponent<HERO>().die((component.transform.root.transform.position - base.transform.position).normalized * b * 1000f + Vector3.up * 50f, isThisBite);
                     }
                 }
-                else if (IN_GAME_MAIN_CAMERA.Gametype == GAMETYPE.MULTIPLAYER && !component.transform.root.GetComponent<HERO>().HasDied() && !component.transform.root.GetComponent<HERO>().isGrabbed)
+                else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && !component.transform.root.GetComponent<HERO>().HasDied() && !component.transform.root.GetComponent<HERO>().isGrabbed)
                 {
                     component.transform.root.GetComponent<HERO>().markDie();
                     int num2 = -1;

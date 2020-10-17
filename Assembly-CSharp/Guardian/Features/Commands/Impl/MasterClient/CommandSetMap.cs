@@ -15,10 +15,10 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 {
                     PhotonNetwork.room.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                     {
-                        { "Map", levelInfo.name }
+                        { "Map", levelInfo.Name }
                     });
                     FengGameManagerMKII.Instance.RestartGame();
-                    GameHelper.Broadcast($"The current map in play is now {levelInfo.name}!");
+                    GameHelper.Broadcast($"The current map in play is now {levelInfo.Name}!");
                 }
             }
         }
