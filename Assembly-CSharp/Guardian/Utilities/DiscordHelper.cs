@@ -7,39 +7,52 @@
 
         public static void Initialize()
         {
-            DiscordInstance = new Discord.Discord(721934748825550931L, (ulong)Discord.CreateFlags.NoRequireDiscord);
-
-            DiscordInstance.SetLogHook(Discord.LogLevel.Debug, (logLevel, message) =>
+            if (DiscordInstance == null)
             {
-                switch (logLevel)
+                try
                 {
-                    case Discord.LogLevel.Debug:
-                    case Discord.LogLevel.Info:
-                        Mod.Logger.Info(message);
-                        break;
-                    case Discord.LogLevel.Warn:
-                        Mod.Logger.Warn(message);
-                        break;
-                    case Discord.LogLevel.Error:
-                        Mod.Logger.Error(message);
-                        break;
+                    DiscordInstance = new Discord.Discord(721934748825550931L, (ulong)Discord.CreateFlags.NoRequireDiscord);
+
+                    DiscordInstance.SetLogHook(Discord.LogLevel.Debug, (logLevel, message) =>
+                    {
+                        switch (logLevel)
+                        {
+                            case Discord.LogLevel.Debug:
+                            case Discord.LogLevel.Info:
+                                Mod.Logger.Info(message);
+                                break;
+                            case Discord.LogLevel.Warn:
+                                Mod.Logger.Warn(message);
+                                break;
+                            case Discord.LogLevel.Error:
+                                Mod.Logger.Error(message);
+                                break;
+                        }
+                    });
                 }
-            });
+                finally { }
+            }
         }
 
         public static void SetPresence(Discord.Activity activity)
         {
-            activity.Assets = new Discord.ActivityAssets
+            try
             {
-                LargeImage = "main_icon"
-            };
+                Initialize();
 
-            activity.Timestamps = new Discord.ActivityTimestamps
-            {
-                Start = StartTime
-            };
+                activity.Assets = new Discord.ActivityAssets
+                {
+                    LargeImage = "main_icon"
+                };
 
-            DiscordInstance.GetActivityManager().UpdateActivity(activity, result => { });
+                activity.Timestamps = new Discord.ActivityTimestamps
+                {
+                    Start = StartTime
+                };
+
+                DiscordInstance.GetActivityManager().UpdateActivity(activity, result => { });
+            }
+            finally { }
         }
     }
 }

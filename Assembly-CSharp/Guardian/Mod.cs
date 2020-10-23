@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "10172020-1";
+        public static string Build = "10222020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -85,7 +85,6 @@ namespace Guardian
                 Initialized = true;
 
                 DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
-                DiscordHelper.Initialize();
             }
 
             base.gameObject.AddComponent<ModUI>();

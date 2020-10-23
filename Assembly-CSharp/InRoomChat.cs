@@ -14,6 +14,9 @@ public class InRoomChat : Photon.MonoBehaviour
     public string inputLine = string.Empty;
     private Vector2 ScrollPosition = GameHelper.ScrollBottom;
     private string TextFieldName = "ChatInput";
+    private GUIStyle boxStyle;
+    private GUIStyle labelStyle;
+    private GUIStyle textboxStyle;
 
     void Awake()
     {
@@ -64,17 +67,30 @@ public class InRoomChat : Photon.MonoBehaviour
         }
 
         // Chat messages
+        if (boxStyle == null)
+        {
+            boxStyle = new GUIStyle(GUI.skin.box);
+            Texture2D flat = new Texture2D(1, 1);
+            flat.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
+            flat.Apply();
+            boxStyle.normal.background = flat;
+        }
+
         GUI.SetNextControlName(string.Empty);
-        GUILayout.BeginArea(MessagesRect, GUI.skin.box);
+        GUILayout.BeginArea(MessagesRect, boxStyle);
         GUILayout.FlexibleSpace();
+
         ScrollPosition = GUILayout.BeginScrollView(ScrollPosition);
 
-        GUIStyle labelStyle = new GUIStyle(GUI.skin.label)
+        if (labelStyle == null)
         {
-            margin = new RectOffset(0, 0, 0, 0),
-            padding = new RectOffset(0, 0, 0, 0),
-            border = new RectOffset(0, 0, 0, 0)
-        };
+            labelStyle = new GUIStyle(GUI.skin.label)
+            {
+                margin = new RectOffset(0, 0, 0, 0),
+                padding = new RectOffset(0, 0, 0, 0),
+                border = new RectOffset(0, 0, 0, 0)
+            };
+        }
 
         foreach (Message message in Messages)
         {
@@ -155,10 +171,24 @@ public class InRoomChat : Photon.MonoBehaviour
         }
 
         // Chat text-field
+        if (textboxStyle == null)
+        {
+            textboxStyle = new GUIStyle(GUI.skin.textField);
+            Texture2D flat = new Texture2D(1, 1);
+            flat.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
+            flat.Apply();
+            textboxStyle.normal.background = flat;
+
+            Texture2D flatFocused = new Texture2D(1, 1);
+            flatFocused.SetPixel(0, 0, new Color(0, 0, 0, 0.8f));
+            flatFocused.Apply();
+            textboxStyle.focused.background = flatFocused;
+        }
+
         GUILayout.BeginArea(ChatBoxRect);
         GUILayout.BeginHorizontal();
         GUI.SetNextControlName(TextFieldName);
-        inputLine = GUILayout.TextField(inputLine, GUILayout.MaxWidth(300));
+        inputLine = GUILayout.TextField(inputLine, textboxStyle, GUILayout.MaxWidth(300));
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
     }
