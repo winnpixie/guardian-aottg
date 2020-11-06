@@ -79,7 +79,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                 Vector3 position = base.transform.position;
                 Vector3 up = Vector3.up;
                 Vector3 position2 = base.transform.position;
-                supply = PhotonNetwork.Instantiate("aot_supply", position - up * (position2.y - getHeight(base.transform.position)), base.transform.rotation, 0);
+                supply = PhotonNetwork.Instantiate("aot_supply", position - up * (position2.y - GetHeight(base.transform.position)), base.transform.rotation, 0);
             }
         }
         else if (base.photonView.isMine && !hasAnnie)
@@ -89,12 +89,12 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                 int num = Random.Range(1, 2);
                 for (int i = 0; i < num; i++)
                 {
-                    newTitan();
+                    NewTitan();
                 }
             }
             if (isBase)
             {
-                newTitan();
+                NewTitan();
             }
         }
         if (titanPt == titanPtMax)
@@ -105,13 +105,13 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         base.transform.localScale = new Vector3(size, size, size);
     }
 
-    private void newTitan()
+    private void NewTitan()
     {
         int rate = normalTitanRate;
         Vector3 position = base.transform.position;
         Vector3 up = Vector3.up;
         Vector3 position2 = base.transform.position;
-        GameObject gameObject = fengGame.SpawnTitan(rate, position - up * (position2.y - getHeight(base.transform.position)), base.transform.rotation);
+        GameObject gameObject = fengGame.SpawnTitan(rate, position - up * (position2.y - GetHeight(base.transform.position)), base.transform.rotation);
         if (FengGameManagerMKII.Level.Map == "The City I")
         {
             gameObject.GetComponent<TITAN>().chaseDistance = 120f;
@@ -123,7 +123,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         gameObject.GetComponent<TITAN>().PVPfromCheckPt = this;
     }
 
-    private float getHeight(Vector3 pt)
+    private float GetHeight(Vector3 pt)
     {
         LayerMask layerMask = 1 << LayerMask.NameToLayer("Ground");
         LayerMask layerMask2 = layerMask;
@@ -153,7 +153,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         }
         switch (state)
         {
-            case CheckPointState.Non:
+            case CheckPointState.None:
                 if (playerOn && !titanOn)
                 {
                     humanGetsPoint();
@@ -217,12 +217,12 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                     {
                         if (GameObject.FindGameObjectsWithTag("titan").Length < 12)
                         {
-                            newTitan();
+                            NewTitan();
                         }
                     }
                     else if (GameObject.FindGameObjectsWithTag("titan").Length < 20)
                     {
-                        newTitan();
+                        NewTitan();
                     }
                 }
                 break;
@@ -232,7 +232,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         {
             syncTimer = 0f;
             checkIfBeingCapture();
-            syncPts();
+            SyncPoints();
         }
         num = humanPt / humanPtMax;
         num2 = titanPt / titanPtMax;
@@ -266,10 +266,11 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         GameObject[] titans = GameObject.FindGameObjectsWithTag("titan");
         for (int i = 0; i < titans.Length; i++)
         {
-            if (Vector3.Distance(titans[i].transform.position, base.transform.position) < hitTestR + 5f && (!titans[i].GetComponent<TITAN>() || !titans[i].GetComponent<TITAN>().hasDie))
+            TITAN titan = titans[i].GetComponent<TITAN>();
+            if (Vector3.Distance(titans[i].transform.position, base.transform.position) < hitTestR + 5f && (!titan || !titan.hasDie))
             {
                 titanOn = true;
-                if (state == CheckPointState.Titan && titans[i].GetPhotonView().isMine && (bool)titans[i].GetComponent<TITAN>() && titans[i].GetComponent<TITAN>().nonAI)
+                if (state == CheckPointState.Titan && titan.photonView.isMine && (bool)titan && titan.nonAI)
                 {
                     if (fengGame.checkpoint != base.gameObject)
                     {
@@ -288,19 +289,19 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         {
             humanPt = humanPtMax;
             titanPt = 0f;
-            syncPts();
+            SyncPoints();
             state = CheckPointState.Human;
-            base.photonView.RPC("changeState", PhotonTargets.AllBuffered, 1);
+            base.photonView.RPC("changeState", PhotonTargets.AllBuffered, (int)CheckPointState.Human);
             if (FengGameManagerMKII.Level.Map != "The City I")
             {
                 Vector3 position = base.transform.position;
                 Vector3 up = Vector3.up;
                 Vector3 position2 = base.transform.position;
-                supply = PhotonNetwork.Instantiate("aot_supply", position - up * (position2.y - getHeight(base.transform.position)), base.transform.rotation, 0);
+                supply = PhotonNetwork.Instantiate("aot_supply", position - up * (position2.y - GetHeight(base.transform.position)), base.transform.rotation, 0);
             }
             fengGame.PVPhumanScore += 2;
             fengGame.CheckPvPPoints();
-            if (DidHumansWin())
+            if (HasTeamWon(CheckPointState.Human))
             {
                 fengGame.gameWin2();
             }
@@ -317,16 +318,16 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         {
             titanPt = titanPtMax;
             humanPt = 0f;
-            syncPts();
+            SyncPoints();
             if (state == CheckPointState.Human && supply != null)
             {
                 PhotonNetwork.Destroy(supply);
             }
             state = CheckPointState.Titan;
-            base.photonView.RPC("changeState", PhotonTargets.AllBuffered, 2);
+            base.photonView.RPC("changeState", PhotonTargets.AllBuffered, (int)CheckPointState.Titan);
             fengGame.PVPtitanScore += 2;
             fengGame.CheckPvPPoints();
-            if (DidTitansWin())
+            if (HasTeamWon(CheckPointState.Titan))
             {
                 fengGame.gameLose2();
             }
@@ -338,16 +339,16 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                     Vector3 position = base.transform.position;
                     Vector3 up = Vector3.up;
                     Vector3 position2 = base.transform.position;
-                    PhotonNetwork.Instantiate("FEMALE_TITAN", position - up * (position2.y - getHeight(base.transform.position)), base.transform.rotation, 0);
+                    PhotonNetwork.Instantiate("FEMALE_TITAN", position - up * (position2.y - GetHeight(base.transform.position)), base.transform.rotation, 0);
                 }
                 else
                 {
-                    newTitan();
+                    NewTitan();
                 }
             }
             else
             {
-                newTitan();
+                NewTitan();
             }
         }
         else
@@ -366,11 +367,10 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         if (titanPt <= 0f)
         {
             titanPt = 0f;
-            syncPts();
+            SyncPoints();
             if (state != CheckPointState.Human)
             {
-                state = CheckPointState.Non;
-                base.photonView.RPC("changeState", PhotonTargets.AllBuffered, 0);
+                base.photonView.RPC("changeState", PhotonTargets.AllBuffered, (int)CheckPointState.None);
             }
         }
     }
@@ -385,22 +385,21 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         if (humanPt <= 0f)
         {
             humanPt = 0f;
-            syncPts();
+            SyncPoints();
             if (state != CheckPointState.Titan)
             {
-                state = CheckPointState.Non;
-                base.photonView.RPC("changeState", PhotonTargets.OthersBuffered, 0);
+                base.photonView.RPC("changeState", PhotonTargets.AllBuffered, (int)CheckPointState.None);
             }
         }
     }
 
-    private void syncPts()
+    private void SyncPoints()
     {
         base.photonView.RPC("changeTitanPt", PhotonTargets.Others, titanPt);
         base.photonView.RPC("changeHumanPt", PhotonTargets.Others, humanPt);
     }
 
-    public string getStateString()
+    public string GetState()
     {
         switch (state)
         {
@@ -413,24 +412,11 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         }
     }
 
-    private bool DidHumansWin()
+    private bool HasTeamWon(CheckPointState state)
     {
         foreach (PVPcheckPoint checkPoint in chkPts)
         {
-            if (checkPoint.state != CheckPointState.Human)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private bool DidTitansWin()
-    {
-        foreach (PVPcheckPoint checkPoint in chkPts)
-        {
-            if (checkPoint.state != CheckPointState.Titan)
+            if (checkPoint.state != state)
             {
                 return false;
             }
@@ -440,31 +426,20 @@ public class PVPcheckPoint : Photon.MonoBehaviour
     }
 
     [RPC]
-    private void changeHumanPt(float pt)
+    private void changeHumanPt(float points)
     {
-        humanPt = pt;
+        humanPt = points;
     }
 
     [RPC]
-    private void changeTitanPt(float pt)
+    private void changeTitanPt(float points)
     {
-        titanPt = pt;
+        titanPt = points;
     }
 
     [RPC]
     private void changeState(int num)
     {
-        switch (num)
-        {
-            case 0:
-                state = CheckPointState.Non;
-                break;
-            case 1:
-                state = CheckPointState.Human;
-                break;
-            case 2:
-                state = CheckPointState.Titan;
-                break;
-        }
+        state = (CheckPointState)num;
     }
 }

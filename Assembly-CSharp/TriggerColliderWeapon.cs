@@ -36,7 +36,7 @@ public class TriggerColliderWeapon : MonoBehaviour
         if (!currentHitsII.Contains(other.gameObject))
         {
             currentHitsII.Add(other.gameObject);
-            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(0.1f, 0.1f);
+            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(0.1f, 0.1f);
             if (other.gameObject.transform.root.gameObject.tag == "titan")
             {
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.GetComponent<HERO>().slashHit.Play();
@@ -333,7 +333,7 @@ public class TriggerColliderWeapon : MonoBehaviour
 
     private void showCriticalHitFX()
     {
-        currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(0.2f, 0.3f);
+        currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(0.2f, 0.3f);
         GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE) ? ((GameObject)Object.Instantiate(Resources.Load("redCross"))) : PhotonNetwork.Instantiate("redCross", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
         gameObject.transform.position = base.transform.position;
     }

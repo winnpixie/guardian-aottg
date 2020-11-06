@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "10222020";
+        public static string Build = "11062020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -245,13 +245,6 @@ namespace Guardian
             PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
             ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
 
-            // Photon Mod detection (probably not the right way to detect but it'll work
-            if (properties.ContainsKey("guildName")
-                && properties["guildName"] is string && ((string)properties["guildName"]).Equals("photonMod"))
-            {
-                player.isPhoton = true;
-            }
-
             // Neko Mod detection
             if (properties.ContainsValue("N_user") || properties.ContainsValue("N_owner"))
             {
@@ -276,7 +269,7 @@ namespace Guardian
                 sender = (PhotonPlayer)propertiesThatChanged["sender"];
             }
 
-            if ((sender == null || sender.isMasterClient))
+            if (sender == null || sender.isMasterClient)
             {
                 if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string && IsMultiMap)
                 {
@@ -299,12 +292,7 @@ namespace Guardian
 
         void OnJoinedLobby()
         {
-            Logger.Info("OnJoinedLobby");
-            if (PhotonNetwork.room != null)
-            {
-                PhotonNetwork.networkingPeer.State = PeerState.Joined;
-                return;
-            }
+            PhotonNetwork.playerName = LoginFengKAI.Player.Name;
 
             DiscordHelper.SetPresence(new Discord.Activity
             {
@@ -313,15 +301,8 @@ namespace Guardian
             });
         }
 
-        void OnLeftLobby()
-        {
-            Logger.Info("OnLeftLobby");
-        }
-
         void OnJoinedRoom()
         {
-            Logger.Info("OnJoinedRoom");
-
             IsMultiMap = PhotonNetwork.room.name.Split('`')[1].StartsWith("Multi-Map");
             Muted = new List<int>();
             FirstJoin = true;
@@ -346,8 +327,6 @@ namespace Guardian
 
         void OnLeftRoom()
         {
-            Logger.Info("OnLeftRoom");
-
             MapData = "";
 
             DiscordHelper.SetPresence(new Discord.Activity

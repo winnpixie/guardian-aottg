@@ -189,29 +189,29 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         createSnapShotRT2();
     }
 
-    public void flashBlind()
+    public void Flash()
     {
         GameObject gameObject = GameObject.Find("flash");
         gameObject.GetComponent<UISprite>().alpha = 1f;
         flashDuration = 2f;
     }
 
-    private float getSensitivityMultiWithDeltaTime()
+    private float GetSensitivityMultiWithTimeDelta()
     {
         return SensitivityMulti * UnityEngine.Time.deltaTime * 62f;
     }
 
-    private float getSensitivityMulti()
+    private float GetSensitivityMulti()
     {
         return SensitivityMulti;
     }
 
-    private int getReverse()
+    private int GetReverse()
     {
         return InvertY;
     }
 
-    private void reset()
+    private void Reset()
     {
         if (Gametype == GameType.SINGLE)
         {
@@ -219,7 +219,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
     }
 
-    public void setSpectorMode(bool val)
+    public void SetSpectorMode(bool val)
     {
         spectatorMode = val;
         GameObject.Find("MainCamera").GetComponent<SpectatorMovement>().disable = !val;
@@ -233,8 +233,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         base.transform.position += Vector3.up * heightMulti;
         base.transform.position -= Vector3.up * (0.6f - CameraDistance) * 2f;
 
-        float dYaw = Input.GetAxis("Mouse X") * 10f * getSensitivityMulti();
-        float dPitch = (0f - Input.GetAxis("Mouse Y")) * 10f * getSensitivityMulti() * (float)getReverse();
+        float dYaw = Input.GetAxis("Mouse X") * 10f * GetSensitivityMulti();
+        float dPitch = (0f - Input.GetAxis("Mouse Y")) * 10f * GetSensitivityMulti() * (float)GetReverse();
 
         switch (CameraMode)
         {
@@ -273,14 +273,14 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     Vector3 mousePosition = Input.mousePosition;
                     if (mousePosition.x < (float)Screen.width * 0.4f)
                     {
-                        num = (0f - ((Screen.width * 0.4f) - mousePosition.x) / (float)Screen.width * 0.4f) * getSensitivityMultiWithDeltaTime() * 150f;
+                        num = (0f - ((Screen.width * 0.4f) - mousePosition.x) / (float)Screen.width * 0.4f) * GetSensitivityMultiWithTimeDelta() * 150f;
                         base.transform.RotateAround(base.transform.position, Vector3.up, num);
                     }
                     else
                     {
                         if (mousePosition.x > (float)Screen.width * 0.6f)
                         {
-                            num = (mousePosition.x - (float)Screen.width * 0.6f) / (float)Screen.width * 0.4f * getSensitivityMultiWithDeltaTime() * 150f;
+                            num = (mousePosition.x - (float)Screen.width * 0.6f) / (float)Screen.width * 0.4f * GetSensitivityMultiWithTimeDelta() * 150f;
                             base.transform.RotateAround(base.transform.position, Vector3.up, num);
                         }
                     }
@@ -297,7 +297,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
     }
 
-    private void shakeUpdate()
+    private void UpdateShake()
     {
         if (duration > 0f)
         {
@@ -315,7 +315,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
     }
 
-    public void startShake(float R, float duration, float decay = 0.95f)
+    public void StartShake(float R, float duration, float decay = 0.95f)
     {
         if (this.duration < duration)
         {
@@ -496,15 +496,15 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             case 1:
                 snapshot1 = RTImage2(snapShotCamera.GetComponent<Camera>());
-                SnapShotSaves.addIMG(snapshot1, snapShotDmg);
+                SnapShotSaves.AddImage(snapshot1, snapShotDmg);
                 break;
             case 2:
                 snapshot2 = RTImage2(snapShotCamera.GetComponent<Camera>());
-                SnapShotSaves.addIMG(snapshot2, snapShotDmg);
+                SnapShotSaves.AddImage(snapshot2, snapShotDmg);
                 break;
             case 3:
                 snapshot3 = RTImage2(snapShotCamera.GetComponent<Camera>());
-                SnapShotSaves.addIMG(snapshot3, snapShotDmg);
+                SnapShotSaves.AddImage(snapshot3, snapShotDmg);
                 break;
         }
         snapShotCount = index;
@@ -625,11 +625,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             {
                 if (spectatorMode)
                 {
-                    setSpectorMode(val: false);
+                    SetSpectorMode(val: false);
                 }
                 else
                 {
-                    setSpectorMode(val: true);
+                    SetSpectorMode(val: true);
                 }
             }
             if (inputManager.isInputDown[InputCode.flare1])
@@ -643,7 +643,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 if (num > 0)
                 {
                     setMainObject(GameObject.FindGameObjectsWithTag("Player")[currentPeekPlayerIndex]);
-                    setSpectorMode(val: false);
+                    SetSpectorMode(val: false);
                     lockAngle = false;
                 }
             }
@@ -662,7 +662,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 if (num2 > 0)
                 {
                     setMainObject(GameObject.FindGameObjectsWithTag("Player")[currentPeekPlayerIndex]);
-                    setSpectorMode(val: false);
+                    SetSpectorMode(val: false);
                     lockAngle = false;
                 }
             }
@@ -719,7 +719,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
         if (inputManager.isInputDown[InputCode.restart])
         {
-            reset();
+            Reset();
         }
         if (main_object == null)
         {
@@ -849,7 +849,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             base.transform.position = hitInfo.point;
         }
-        shakeUpdate();
+        UpdateShake();
     }
 
     private void CreateMinimap()

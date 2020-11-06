@@ -625,7 +625,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
             {
                 base.transform.position = new Vector3(30f, 0f, 784f);
                 UnityEngine.Object.Instantiate(Resources.Load("FX/ThunderCT"), base.transform.position + Vector3.up * 350f, Quaternion.Euler(270f, 0f, 0f));
-                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().flashBlind();
+                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().Flash();
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
                 {
                     idle();

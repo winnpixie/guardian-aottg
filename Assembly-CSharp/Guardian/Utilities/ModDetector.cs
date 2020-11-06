@@ -36,12 +36,6 @@ namespace Guardian.Utilities
                 mods.Add("[ffff00][CE]");
             }
 
-            // Photon
-            if (player.isPhoton)
-            {
-                mods.Add("[ffffff][Photon]");
-            }
-
             // Anarchy
             if (player.isAnarchy)
             {

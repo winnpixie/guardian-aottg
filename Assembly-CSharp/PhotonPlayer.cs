@@ -54,7 +54,6 @@ public class PhotonPlayer
     public bool isUniverse;
     public bool isKnK;
     public bool isNRC;
-    public bool isPhoton;
     public bool isExpedition;
     public bool isTrap;
     public bool isRankedRC;

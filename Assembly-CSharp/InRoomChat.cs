@@ -71,7 +71,7 @@ public class InRoomChat : Photon.MonoBehaviour
         {
             boxStyle = new GUIStyle(GUI.skin.box);
             Texture2D flat = new Texture2D(1, 1);
-            flat.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
+            flat.SetPixel(0, 0, new Color(0.125f, 0.125f, 0.125f, 0.6f));
             flat.Apply();
             boxStyle.normal.background = flat;
         }
@@ -98,10 +98,20 @@ public class InRoomChat : Photon.MonoBehaviour
             {
                 GUILayout.Label(message.ToString(), labelStyle);
                 if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)
-                    && Input.GetMouseButtonDown(0) && Event.current.type != EventType.Repaint
+                    && Event.current.type != EventType.Repaint
                     && GUI.GetNameOfFocusedControl().Equals(TextFieldName))
                 {
-                    Mod.Commands.Find("translate").Execute(this, message.Content.Split(' '));
+                    if (Input.GetMouseButtonDown(0)) // Mouse1/Left Click
+                    {
+                        Mod.Commands.Find("translate").Execute(this, message.Content.Split(' '));
+                    }
+                    else if (Input.GetMouseButtonDown(1)) // Mouse2/Right Click
+                    {
+                        TextEditor te = new TextEditor();
+                        te.content = new GUIContent(message.Content);
+                        te.SelectAll();
+                        te.Copy();
+                    }
                 }
             }
             catch { }
@@ -175,12 +185,12 @@ public class InRoomChat : Photon.MonoBehaviour
         {
             textboxStyle = new GUIStyle(GUI.skin.textField);
             Texture2D flat = new Texture2D(1, 1);
-            flat.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
+            flat.SetPixel(0, 0, new Color(0.125f, 0.125f, 0.125f, 0.2f));
             flat.Apply();
             textboxStyle.normal.background = flat;
 
             Texture2D flatFocused = new Texture2D(1, 1);
-            flatFocused.SetPixel(0, 0, new Color(0, 0, 0, 0.8f));
+            flatFocused.SetPixel(0, 0, new Color(0.125f, 0.125f, 0.125f, 0.6f));
             flatFocused.Apply();
             textboxStyle.focused.background = flatFocused;
         }

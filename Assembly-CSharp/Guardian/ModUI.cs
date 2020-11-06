@@ -14,7 +14,7 @@ namespace Guardian
                 {
                     boxStyle = new GUIStyle(GUI.skin.box);
                     Texture2D flat = new Texture2D(1, 1);
-                    flat.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
+                    flat.SetPixel(0, 0, new Color(0.125f, 0.125f, 0.125f, 0.6f));
                     flat.Apply();
                     boxStyle.normal.background = flat;
                 }

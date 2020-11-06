@@ -15,18 +15,18 @@ public class SnapShotReview : MonoBehaviour
     {
         QualitySettings.SetQualityLevel(5, applyExpensiveChanges: true);
         page = labelPage.GetComponent<UILabel>();
-        if (SnapShotSaves.getLength() > 0)
+        if (SnapShotSaves.GetLength() > 0)
         {
-            texture.GetComponent<UITexture>().mainTexture = SnapShotSaves.getCurrentIMG();
+            texture.GetComponent<UITexture>().mainTexture = SnapShotSaves.GetCurrentImage();
         }
         labelInfo.GetComponent<UILabel>().text = LoginFengKAI.Player.Name + " " + DateTime.Today.ToShortDateString();
-        freshInfo();
-        setTextureWH();
+        RefreshInfo();
+        SetTextureDimensions();
     }
 
-    private void setTextureWH()
+    private void SetTextureDimensions()
     {
-        if (SnapShotSaves.getLength() != 0)
+        if (SnapShotSaves.GetLength() != 0)
         {
             float num = 1.6f;
             float num2 = (float)texture.GetComponent<UITexture>().mainTexture.width / (float)texture.GetComponent<UITexture>().mainTexture.height;
@@ -45,19 +45,19 @@ public class SnapShotReview : MonoBehaviour
         }
     }
 
-    private void freshInfo()
+    private void RefreshInfo()
     {
-        if (SnapShotSaves.getLength() == 0)
+        if (SnapShotSaves.GetLength() == 0)
         {
-            page.text = "0/0";
+            page.text = " 0 / 0";
         }
         else
         {
-            page.text = (SnapShotSaves.getCurrentIndex() + 1).ToString() + "/" + SnapShotSaves.getLength().ToString();
+            page.text = " " + (SnapShotSaves.GetCurrentIndex() + 1) + " / " + SnapShotSaves.GetLength();
         }
-        if (SnapShotSaves.getCurrentDMG() > 0)
+        if (SnapShotSaves.GetCurrentDamage() > 0)
         {
-            labelDMG.GetComponent<UILabel>().text = SnapShotSaves.getCurrentDMG().ToString();
+            labelDMG.GetComponent<UILabel>().text = SnapShotSaves.GetCurrentDamage().ToString();
         }
         else
         {
@@ -65,17 +65,17 @@ public class SnapShotReview : MonoBehaviour
         }
     }
 
-    public void ShowNextIMG()
+    public void ShowNextImage()
     {
-        texture.GetComponent<UITexture>().mainTexture = SnapShotSaves.GetNextIMG();
-        setTextureWH();
-        freshInfo();
+        texture.GetComponent<UITexture>().mainTexture = SnapShotSaves.GetNextImage();
+        SetTextureDimensions();
+        RefreshInfo();
     }
 
-    public void ShowPrevIMG()
+    public void ShowPreviousImage()
     {
-        texture.GetComponent<UITexture>().mainTexture = SnapShotSaves.GetPrevIMG();
-        setTextureWH();
-        freshInfo();
+        texture.GetComponent<UITexture>().mainTexture = SnapShotSaves.GetPreviousImage();
+        SetTextureDimensions();
+        RefreshInfo();
     }
 }

@@ -1,90 +1,72 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class SnapShotSaves
 {
-    private static Texture2D[] img;
-    private static int[] dmg;
-    private static bool inited;
-    private static int index;
-    private static int currentIndex;
-    private static int maxIndex;
+    private static List<Texture2D> Images;
+    private static List<int> Damages;
+    private static bool Initialized;
+    private static int Index;
+    private static int CurrentIndex;
 
-    public static void init()
+    public static void Init()
     {
-        if (!inited)
+        if (!Initialized)
         {
-            inited = true;
-            index = 0;
-            maxIndex = 0;
-            img = new Texture2D[99];
-            dmg = new int[99];
+            Initialized = true;
+            Index = 0;
+            CurrentIndex = 0;
+            Images = new List<Texture2D>();
+            Damages = new List<int>();
         }
     }
 
-    public static void addIMG(Texture2D t, int d)
+    public static void AddImage(Texture2D tex, int damage)
     {
-        init();
-        img[index] = t;
-        dmg[index] = d;
-        currentIndex = index;
-        index++;
-        if (index >= img.Length)
+        Init();
+
+        Images.Add(tex);
+        Damages.Add(damage);
+
+        CurrentIndex = Index;
+        Index = (Index + 1) % Images.Count;
+    }
+
+    public static int GetCurrentIndex()
+    {
+        return CurrentIndex;
+    }
+
+    public static int GetLength()
+    {
+        return Images.Count;
+    }
+
+    public static Texture2D GetCurrentImage()
+    {
+        return Images.Count > 0 ? Images[CurrentIndex] : null;
+    }
+
+    public static int GetCurrentDamage()
+    {
+        return Damages.Count > 0 ? Damages[CurrentIndex] : 0;
+    }
+
+    public static Texture2D GetNextImage()
+    {
+        CurrentIndex = (CurrentIndex + 1) % Images.Count;
+
+        return GetCurrentImage();
+    }
+
+    public static Texture2D GetPreviousImage()
+    {
+        CurrentIndex--;
+        if (CurrentIndex < 0)
         {
-            index = 0;
+            CurrentIndex = Images.Count - 1;
         }
-        maxIndex = Mathf.Max(index, maxIndex);
-    }
 
-    public static int getCurrentIndex()
-    {
-        return currentIndex;
-    }
-
-    public static int getMaxIndex()
-    {
-        return maxIndex;
-    }
-
-    public static int getLength()
-    {
-        return maxIndex;
-    }
-
-    public static Texture2D getCurrentIMG()
-    {
-        if (maxIndex == 0)
-        {
-            return null;
-        }
-        return img[currentIndex];
-    }
-
-    public static int getCurrentDMG()
-    {
-        if (maxIndex == 0)
-        {
-            return 0;
-        }
-        return dmg[currentIndex];
-    }
-
-    public static Texture2D GetNextIMG()
-    {
-        currentIndex++;
-        if (currentIndex >= maxIndex)
-        {
-            currentIndex = 0;
-        }
-        return getCurrentIMG();
-    }
-
-    public static Texture2D GetPrevIMG()
-    {
-        currentIndex--;
-        if (currentIndex < 0)
-        {
-            currentIndex = maxIndex - 1;
-        }
-        return getCurrentIMG();
+        return GetCurrentImage();
     }
 }

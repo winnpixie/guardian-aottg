@@ -21,7 +21,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     public static object[] Settings;
     public static string[] S;
     public static AssetBundle RCAssets;
-    public static bool IsAssetLoadeed;
+    public static bool IsAssetLoaded;
     public static InputManagerRC InputRC;
     public static string CurrentScript;
     public static Material SkyMaterial;
@@ -86,7 +86,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     private float _timeTotalServer;
     public float timeTotalServer
     {
-        get { return (PhotonNetwork.isMasterClient && Mod.Properties.InfiniteRoom.Value) ? time < 0 ? (time * 2) : 0 : _timeTotalServer; }
+        get { return (PhotonNetwork.isMasterClient && Mod.Properties.InfiniteRoom.Value) ? time - 2 : _timeTotalServer; }
         set { _timeTotalServer = value; }
     }
     private float maxSpeed;
@@ -317,7 +317,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
         cam.enabled = true;
         cam.setMainObject(null);
-        cam.setSpectorMode(val: true);
+        cam.SetSpectorMode(val: true);
         cam.gameOver = true;
     }
 
@@ -334,7 +334,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
         cam.enabled = true;
         cam.setMainObject(null);
-        cam.setSpectorMode(val: true);
+        cam.SetSpectorMode(val: true);
         cam.gameOver = true;
     }
 
@@ -2237,7 +2237,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     string str = "| ";
                     for (int i = 0; i < PVPcheckPoint.chkPts.Count; i++)
                     {
-                        str += (PVPcheckPoint.chkPts[i] as PVPcheckPoint).getStateString() + " ";
+                        str += (PVPcheckPoint.chkPts[i] as PVPcheckPoint).GetState() + " ";
                     }
                     text = $"[{ColorSet.TitanPlayer}]{PVPtitanScoreMax - PVPtitanScore} [-]{str}| [{ColorSet.Human}]{PVPhumanScoreMax - PVPhumanScore}\n[-]Time : {GameHelper.FormatTime(time - timeTotalServer)}";
                     break;
@@ -2880,7 +2880,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             {
                 Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
             }
-            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setSpectorMode(val: false);
+            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: false);
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             StartCoroutine(WaitAndReloadSky());
         }
@@ -2906,7 +2906,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[3], state: false);
             needChooseSide = true;
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
-            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setSpectorMode(val: true);
+            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
         }
     }
@@ -5468,7 +5468,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
         cam.enabled = true;
         cam.setMainObject(null);
-        cam.setSpectorMode(val: true);
+        cam.SetSpectorMode(val: true);
         cam.gameOver = true;
     }
 
@@ -5485,7 +5485,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
         cam.enabled = true;
         cam.setMainObject(null);
-        cam.setSpectorMode(val: true);
+        cam.SetSpectorMode(val: true);
         cam.gameOver = true;
     }
 
@@ -7734,7 +7734,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     {
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.STOP && Application.loadedLevelName != "characterCreation")
         {
-            if (IsAssetLoadeed)
+            if (IsAssetLoaded)
             {
                 string text = GameObject.Find("VERSION").GetComponent<UILabel>().text;
                 if (text == null)

@@ -393,22 +393,22 @@ public class TITAN_EREN : Photon.MonoBehaviour
                         switch (attackAnimation)
                         {
                             case "attack_combo_001":
-                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(1.2f, 0.04f);
+                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(1.2f, 0.04f);
                                 hitPause = 0.08f;
                                 array[i].gameObject.transform.root.GetComponent<TITAN>().hitR(base.transform.position, hitPause);
                                 break;
                             case "attack_combo_002":
                                 hitPause = 0.05f;
                                 array[i].gameObject.transform.root.GetComponent<TITAN>().hitL(base.transform.position, hitPause);
-                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(1f, 0.03f);
+                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(1f, 0.03f);
                                 break;
                             case "attack_combo_003":
-                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(3f, 0.1f);
+                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(3f, 0.1f);
                                 hitPause = 0.3f;
                                 array[i].gameObject.transform.root.GetComponent<TITAN>().dieHeadBlow(base.transform.position, hitPause);
                                 break;
                             case "attack_kick":
-                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(3f, 0.1f);
+                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(3f, 0.1f);
                                 hitPause = 0.2f;
                                 if (array[i].gameObject.transform.root.GetComponent<TITAN>().abnormalType == AbnormalType.TYPE_CRAWLER)
                                 {
@@ -458,7 +458,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
                 }
                 if (base.animation["born"].normalizedTime >= 0.5f && base.animation["born"].normalizedTime <= 0.7f)
                 {
-                    currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(0.5f, 1f);
+                    currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(0.5f, 1f);
                 }
                 if (base.animation["born"].normalizedTime >= 1f)
                 {

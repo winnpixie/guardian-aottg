@@ -48,5 +48,7 @@ public class BTN_save_snapshot : MonoBehaviour
         // ExternalCall is legacy code, it used to execute JavaScript on http://fenglee.com/game/aog/
         // Application.ExternalCall("SaveImg", img_name, texture.width, texture.height, Convert.ToBase64String(imgData));
         UnityEngine.Object.DestroyObject(texture);
+
+        info.GetComponent<UILabel>().text = "Snapshot saved..";
     }
 }

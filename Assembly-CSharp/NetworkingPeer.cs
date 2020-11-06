@@ -2867,6 +2867,10 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     break;
                 }
             case EventCode.QueueState:
+                if (!Guardian.AntiAbuse.NetworkPatches.IsStateChangeValid(sender))
+                {
+                    return;
+                }
                 if (photonEvent.Parameters.ContainsKey(223))
                 {
                     object obj7 = photonEvent[223];

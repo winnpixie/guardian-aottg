@@ -671,7 +671,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
                 gameObject6.transform.localScale = base.transform.localScale;
                 float b = 1f - Vector3.Distance(currentCamera.transform.position, gameObject6.transform.position) * 0.05f;
                 b = Mathf.Min(1f, b);
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(b, b);
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(b, b);
             }
             if (attackCheckTimeA != 0f && ((base.animation["attack_" + attackAnimation].normalizedTime >= attackCheckTimeA && base.animation["attack_" + attackAnimation].normalizedTime <= attackCheckTimeB) || (!attackChkOnce && base.animation["attack_" + attackAnimation].normalizedTime >= attackCheckTimeA)))
             {

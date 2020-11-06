@@ -6,6 +6,6 @@ public class BTN_SSR_Down : MonoBehaviour
 
 	private void OnClick()
 	{
-		panel.GetComponent<SnapShotReview>().ShowNextIMG();
+		panel.GetComponent<SnapShotReview>().ShowNextImage();
 	}
 }

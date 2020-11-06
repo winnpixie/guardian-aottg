@@ -4,21 +4,9 @@ using System.Collections.Generic;
 public class PBitStream
 {
     private List<byte> streamBytes;
-    private int currentByte;
-    private int totalBits;
-    public int ByteCount => BytesForBits(totalBits);
+    public int ByteCount => BytesForBits(BitCount);
 
-    public int BitCount
-    {
-        get
-        {
-            return totalBits;
-        }
-        private set
-        {
-            totalBits = value;
-        }
-    }
+    public int BitCount { get; private set; }
 
     public int Position
     {
@@ -53,14 +41,14 @@ public class PBitStream
 
     public void Add(bool val)
     {
-        int num = totalBits / 8;
-        if (num > streamBytes.Count - 1 || totalBits == 0)
+        int num = BitCount / 8;
+        if (num > streamBytes.Count - 1 || BitCount == 0)
         {
             streamBytes.Add(0);
         }
         if (val)
         {
-            int num2 = 7 - totalBits % 8;
+            int num2 = 7 - BitCount % 8;
             List<byte> list;
             List<byte> list2 = list = streamBytes;
             int index;
@@ -68,7 +56,7 @@ public class PBitStream
             byte b = list[index];
             list2[index2] = (byte)(b | (byte)(1 << num2));
         }
-        totalBits++;
+        BitCount++;
     }
 
     public byte[] ToBytes()
@@ -78,7 +66,7 @@ public class PBitStream
 
     public bool GetNext()
     {
-        if (Position > totalBits)
+        if (Position > BitCount)
         {
             throw new Exception("End of PBitStream reached. Can't read more.");
         }

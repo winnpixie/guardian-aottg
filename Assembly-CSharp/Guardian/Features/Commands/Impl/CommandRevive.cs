@@ -5,7 +5,7 @@ namespace Guardian.Features.Commands.Impl
 {
     class CommandRevive : Command
     {
-        public CommandRevive() : base("revive", new string[] { "heal" }, "[all/id]", false) { }
+        public CommandRevive() : base("revive", new string[] { "heal", "respawn", "rev", "res" }, "[all/id]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

@@ -555,7 +555,7 @@ public class HERO : Photon.MonoBehaviour
             eren_titan = PhotonNetwork.Instantiate("TITAN_EREN", base.transform.position, base.transform.rotation, 0);
         }
         eren_titan.GetComponent<TITAN_EREN>().realBody = base.gameObject;
-        maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().flashBlind();
+        maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().Flash();
         maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(eren_titan);
         eren_titan.GetComponent<TITAN_EREN>().born();
         eren_titan.rigidbody.velocity = base.rigidbody.velocity;
@@ -2315,7 +2315,7 @@ public class HERO : Photon.MonoBehaviour
                         Vector3 zero = Vector3.zero;
                         baseRigidBody.velocity = zero;
                         a = zero;
-                        currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(0.2f, 0.3f);
+                        currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(0.2f, 0.3f);
                     }
                     break;
                 case HERO_STATE.GroundDodge:
@@ -4452,7 +4452,7 @@ public class HERO : Photon.MonoBehaviour
         breakApart2(v, isBite);
         if (base.photonView.isMine)
         {
-            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setSpectorMode(val: false);
+            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: false);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             FengGameManagerMKII.Instance.myRespawnTime = 0f;
         }
@@ -4694,7 +4694,7 @@ public class HERO : Photon.MonoBehaviour
         breakApart2(v, isBite);
         if (base.photonView.isMine)
         {
-            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setSpectorMode(val: false);
+            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: false);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             FengGameManagerMKII.Instance.myRespawnTime = 0f;
         }
@@ -4822,7 +4822,7 @@ public class HERO : Photon.MonoBehaviour
         if (base.photonView.isMine)
         {
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
-            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setSpectorMode(val: true);
+            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             FengGameManagerMKII.Instance.myRespawnTime = 0f;
         }

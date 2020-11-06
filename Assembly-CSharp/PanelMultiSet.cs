@@ -17,7 +17,8 @@ public class PanelMultiSet : MonoBehaviour
 
     private void OnEnable()
     {
-        GameObject.Find("InputServerName").GetComponent<UIInput>().label.text = "FoodForAngels";
+        // Maybe I'll play with this again later...
+        // GameObject.Find("InputServerName").GetComponent<UIInput>().label.text = "FoodForAngels";
         GameObject.Find("InputMaxTime").GetComponent<UIInput>().text = "999999";
     }
 

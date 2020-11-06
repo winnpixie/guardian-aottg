@@ -46,8 +46,29 @@ public class UIMainReferences : MonoBehaviour
             FengGameManagerMKII.S = "verified343,hair,character_eye,glass,character_face,character_head,character_hand,character_body,character_arm,character_leg,character_chest,character_cape,character_brand,character_3dmg,r,character_blade_l,character_3dmg_gas_r,character_blade_r,3dmg_smoke,HORSE,hair,body_001,Cube,Plane_031,mikasa_asset,character_cap_,character_gun".Split(',');
             LoginFengKAI.LoginState = LoginState.LoggedOut;
 
-            FengGameManagerMKII.RCAssets = AssetBundle.CreateFromMemoryImmediate(File.ReadAllBytes(Application.dataPath + "/RCAssets.unity3d"));
-            FengGameManagerMKII.IsAssetLoadeed = true;
+            StartCoroutine(LoadCustomAssets());
+        }
+    }
+
+    private IEnumerator LoadCustomAssets()
+    {
+        string url = Application.dataPath + "/RCAssets.unity3d";
+
+        if (!Application.isPlaying)
+        {
+            url = "file://" + url;
+        }
+
+        while (!Caching.ready)
+        {
+            yield return 0;
+        }
+
+        using (WWW www = WWW.LoadFromCacheOrDownload(url, 1))
+        {
+            yield return www;
+            FengGameManagerMKII.RCAssets = www.assetBundle;
+            FengGameManagerMKII.IsAssetLoaded = true;
         }
     }
 }

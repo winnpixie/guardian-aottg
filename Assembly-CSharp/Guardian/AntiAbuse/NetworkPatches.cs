@@ -140,6 +140,21 @@ namespace Guardian.AntiAbuse
             return true;
         }
 
+        public static bool IsStateChangeValid(PhotonPlayer sender)
+        {
+            if (sender != null)
+            {
+                Mod.Logger.Error($"State Change from #{sender.Id}.");
+                if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
+                {
+                    FengGameManagerMKII.IgnoreList.Add(sender.Id);
+                }
+                return false;
+            }
+
+            return true;
+        }
+
         public static void OnPlayerPropertyModification(object[] playerAndUpdatedProps)
         {
             PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;

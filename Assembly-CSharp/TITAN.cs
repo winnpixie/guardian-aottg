@@ -865,7 +865,7 @@ public class TITAN : Photon.MonoBehaviour
             if (nonAI)
             {
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setSpectorMode(val: true);
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                 {
@@ -976,7 +976,7 @@ public class TITAN : Photon.MonoBehaviour
             if (nonAI)
             {
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setSpectorMode(val: true);
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                 {
@@ -1501,7 +1501,7 @@ public class TITAN : Photon.MonoBehaviour
             if (nonAI)
             {
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setSpectorMode(val: true);
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                 {
@@ -2762,7 +2762,7 @@ public class TITAN : Photon.MonoBehaviour
                     }
                     float b = 1f - Vector3.Distance(currentCamera.transform.position, gameObject7.transform.position) * 0.05f;
                     b = Mathf.Min(1f, b);
-                    currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(b, b);
+                    currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(b, b);
                 }
                 if (attackAnimation == "throw")
                 {
@@ -2957,7 +2957,7 @@ public class TITAN : Photon.MonoBehaviour
                             gameObject9.transform.localScale = baseTransform.localScale * 1.6f;
                             float b2 = 1f - Vector3.Distance(currentCamera.transform.position, gameObject9.transform.position) * 0.05f;
                             b2 = Mathf.Min(1f, b2);
-                            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startShake(b2, b2);
+                            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(b2, b2);
                         }
                         break;
                     case "jumper_2":
