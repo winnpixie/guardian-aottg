@@ -260,7 +260,7 @@
     <Compile Include="GameObjectExtensions.cs" />
     <Compile Include="GameProperties.cs" />
     <Compile Include="GameType.cs" />
-    <Compile Include="GROUP.cs" />
+    <Compile Include="GroupType.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandScatterTitans.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandSetMap.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandSetTitans.cs" />

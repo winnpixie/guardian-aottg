@@ -36,7 +36,7 @@ public class TITAN : Photon.MonoBehaviour
     private float angle;
     private float between2;
     private GameObject throwRock;
-    public GROUP myGroup = GROUP.T;
+    public GroupType myGroup = GroupType.Titan;
     public PVPcheckPoint PVPfromCheckPt;
     public int myDifficulty;
     public TITAN_CONTROLLER controller;

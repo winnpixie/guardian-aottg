@@ -21,21 +21,24 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 // Max players
                 if (args[0].Equals("max", StringComparison.OrdinalIgnoreCase) && int.TryParse(args[1], out int max))
                 {
-                    PhotonNetwork.room.maxPlayers = PhotonNetwork.room.expectedMaxPlayers = max;
+                    PhotonNetwork.room.expectedMaxPlayers = max;
+                    PhotonNetwork.room.maxPlayers = PhotonNetwork.room.expectedMaxPlayers;
                     FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Max players is now {max}!".WithColor("ffcc00"), "");
                 }
 
                 // Allowing joins or not
                 if (args[0].Equals("open", StringComparison.OrdinalIgnoreCase))
                 {
-                    PhotonNetwork.room.open = PhotonNetwork.room.expectedJoinability = args[1].Equals("true", StringComparison.OrdinalIgnoreCase);
+                    PhotonNetwork.room.expectedJoinability = args[1].Equals("true", StringComparison.OrdinalIgnoreCase);
+                    PhotonNetwork.room.open = PhotonNetwork.room.expectedJoinability;
                     FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Room is {(PhotonNetwork.room.open ? "now" : "no longer")} allowing joins!".WithColor("ffcc00"), "");
                 }
 
                 // Visible in lobby or not
                 if (args[0].Equals("visible", StringComparison.OrdinalIgnoreCase))
                 {
-                    PhotonNetwork.room.visible = PhotonNetwork.room.expectedVisibility = args[1].Equals("true", StringComparison.OrdinalIgnoreCase);
+                    PhotonNetwork.room.expectedVisibility = args[1].Equals("true", StringComparison.OrdinalIgnoreCase);
+                    PhotonNetwork.room.visible = PhotonNetwork.room.expectedVisibility;
                     FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Room is {(PhotonNetwork.room.visible ? "now" : "no longer")} being shown in the lobby!".WithColor("ffcc00"), "");
                 }
 

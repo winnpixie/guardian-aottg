@@ -40,7 +40,7 @@ public class HERO : Photon.MonoBehaviour
     private Transform forearmR;
     private Transform upperarmL;
     private Transform upperarmR;
-    public GROUP myGroup;
+    public GroupType myGroup;
     public int myTeam = 1;
     private bool leftGunHasBullet = true;
     private bool rightGunHasBullet = true;
@@ -2025,19 +2025,31 @@ public class HERO : Photon.MonoBehaviour
                 }
             }
 
-            string text = "";
+            string nametagContent = "";
             UILabel component = myNetWorkName.GetComponent<UILabel>();
+            if (base.photonView.owner.customProperties[PhotonPlayerProperty.RCTeam] != null)
+            {
+                switch (GExtensions.AsInt(base.photonView.owner.customProperties[PhotonPlayerProperty.RCTeam]))
+                {
+                    case 1:
+                        nametagContent += "[00FFFF][CYAN][FFFFFF]\n";
+                        break;
+                    case 2:
+                        nametagContent += "[FF00FF][MAGENTA][FFFFFF]\n";
+                        break;
+                }
+            }
             if (GExtensions.AsInt(base.photonView.owner.customProperties[PhotonPlayerProperty.Team]) == 2)
             {
-                text = "[FF0000]AHSS\n[FFFFFF]";
+                nametagContent += "[" + ColorSet.AHSS + "]AHSS\n[FFFFFF]";
             }
             string playerGuild = GExtensions.AsString(base.photonView.owner.customProperties[PhotonPlayerProperty.Guild]);
-            if (playerGuild.Length != 0)
+            if (playerGuild.Length > 0)
             {
-                text += "[ffff00]" + playerGuild + "\n[ffffff]";
+                nametagContent += "[FFFF00]" + playerGuild + "\n[FFFFFF]";
             }
-            text += GExtensions.AsString(base.photonView.owner.customProperties[PhotonPlayerProperty.Name]);
-            component.text = text;
+            nametagContent += GExtensions.AsString(base.photonView.owner.customProperties[PhotonPlayerProperty.Name]);
+            component.text = nametagContent;
         }
         else if (Minimap.Instance != null)
         {
@@ -2896,13 +2908,14 @@ public class HERO : Photon.MonoBehaviour
         string text = (magnitude <= 1000f) ? ((int)magnitude).ToString() : "???";
         if ((int)FengGameManagerMKII.Settings[189] == 1)
         {
-            text = text + "\n" + currentSpeed.ToString("F1") + " u/s";
+            float _currentSpeed = myGroup.Equals(GroupType.AHSS) ? (currentSpeed * 0.588f) : currentSpeed;
+            text += "\n" + _currentSpeed.ToString("F1") + "u/s";
         }
         else if ((int)FengGameManagerMKII.Settings[189] == 2)
         {
             // Adjustment for AHSS vs Blade damage to speed ratio
-            float _currentSpeed = myGroup.Equals(GROUP.A) ? (currentSpeed * 0.588f) : currentSpeed;
-            text = text + "\n" + (_currentSpeed / 100f).ToString("F1") + "K";
+            float _currentSpeed = myGroup.Equals(GroupType.AHSS) ? (currentSpeed * 0.588f) : currentSpeed;
+            text += "\n" + (_currentSpeed / 100f).ToString("F1") + "K";
         }
         labelDistance2.GetComponent<UILabel>().text = text;
         if (magnitude > 120f)
@@ -4350,7 +4363,7 @@ public class HERO : Photon.MonoBehaviour
             gunDummy.name = "gunDummy";
             gunDummy.transform.position = baseTransform.position;
             gunDummy.transform.rotation = baseTransform.rotation;
-            myGroup = GROUP.A;
+            myGroup = GroupType.AHSS;
             setTeam2(2);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
             {
