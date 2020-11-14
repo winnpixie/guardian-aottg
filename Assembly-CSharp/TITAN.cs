@@ -114,7 +114,7 @@ public class TITAN : Photon.MonoBehaviour
     private void playAnimation(string aniName)
     {
         base.animation.Play(aniName);
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimation", PhotonTargets.Others, aniName);
         }
@@ -124,7 +124,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         base.animation.Play(aniName);
         base.animation[aniName].normalizedTime = normalizedTime;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimationAt", PhotonTargets.Others, aniName, normalizedTime);
         }
@@ -133,7 +133,7 @@ public class TITAN : Photon.MonoBehaviour
     public void crossFade(string aniName, float time)
     {
         base.animation.CrossFade(aniName, time);
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netCrossFade", PhotonTargets.Others, aniName, time);
         }
@@ -170,7 +170,7 @@ public class TITAN : Photon.MonoBehaviour
         base.animation.CrossFade(aniName, time);
     }
 
-    private int getPunkNumber()
+    private int GetPunkNumber()
     {
         int num = 0;
         GameObject[] array = GameObject.FindGameObjectsWithTag("titan");
@@ -295,17 +295,17 @@ public class TITAN : Photon.MonoBehaviour
         idle();
     }
 
-    private void setmyLevel()
+    private void SetMyLevel()
     {
         base.animation.cullingType = AnimationCullingType.BasedOnRenderers;
-        if (IN_GAME_MAIN_CAMERA.Gametype != 0 && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netSetLevel", PhotonTargets.AllBuffered, myLevel, fengGame.difficulty, UnityEngine.Random.Range(0, 4));
             base.animation.cullingType = AnimationCullingType.AlwaysAnimate;
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
-            setLevel2(myLevel, IN_GAME_MAIN_CAMERA.Difficulty, UnityEngine.Random.Range(0, 4));
+            SetLevel2(myLevel, IN_GAME_MAIN_CAMERA.Difficulty, UnityEngine.Random.Range(0, 4));
         }
     }
 
@@ -363,7 +363,7 @@ public class TITAN : Photon.MonoBehaviour
                     gameObject.GetComponent<TITAN_EREN>().hitByTitan();
                 }
             }
-            else if ((bool)gameObject.GetComponent<HERO>() && !gameObject.GetComponent<HERO>().isInvincible())
+            else if ((bool)gameObject.GetComponent<HERO>() && !gameObject.GetComponent<HERO>().IsInvincible())
             {
                 return gameObject;
             }
@@ -377,7 +377,7 @@ public class TITAN : Photon.MonoBehaviour
         GameObject[] array = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject gameObject in array)
         {
-            if (!gameObject.GetComponent<TITAN_EREN>() && (!gameObject.GetComponent<HERO>() || !gameObject.GetComponent<HERO>().isInvincible()))
+            if (!gameObject.GetComponent<TITAN_EREN>() && (!gameObject.GetComponent<HERO>() || !gameObject.GetComponent<HERO>().IsInvincible()))
             {
                 float num2 = gameObject.GetComponent<CapsuleCollider>().height * 0.5f;
                 if (Vector3.Distance(gameObject.transform.position + Vector3.up * num2, head.position + Vector3.up * 1.5f * myLevel) < num + num2)
@@ -395,7 +395,7 @@ public class TITAN : Photon.MonoBehaviour
         GameObject[] array = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject gameObject in array)
         {
-            if (!gameObject.GetComponent<TITAN_EREN>() && (!gameObject.GetComponent<HERO>() || !gameObject.GetComponent<HERO>().isInvincible()))
+            if (!gameObject.GetComponent<TITAN_EREN>() && (!gameObject.GetComponent<HERO>() || !gameObject.GetComponent<HERO>().IsInvincible()))
             {
                 float num2 = gameObject.GetComponent<CapsuleCollider>().height * 0.5f;
                 if (Vector3.Distance(gameObject.transform.position + Vector3.up * num2, head.position - Vector3.up * 1.5f * myLevel) < num + num2)
@@ -418,7 +418,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         if (!hasDie && abnormalType != AbnormalType.TYPE_CRAWLER)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
             {
                 base.photonView.RPC("laugh", PhotonTargets.All, 0f);
             }
@@ -740,7 +740,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         if (abnormalType != AbnormalType.TYPE_CRAWLER)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 hit("hit_eren_L", attacker, hitPauseTime);
             }
@@ -786,7 +786,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         if (abnormalType != AbnormalType.TYPE_CRAWLER)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 hit("hit_eren_R", attacker, hitPauseTime);
             }
@@ -812,7 +812,7 @@ public class TITAN : Photon.MonoBehaviour
 
     public void dieBlow(Vector3 attacker, float hitPauseTime)
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             dieBlowFunc(attacker, hitPauseTime);
             if (GameObject.FindGameObjectsWithTag("titan").Length <= 1)
@@ -882,7 +882,7 @@ public class TITAN : Photon.MonoBehaviour
         {
             return;
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             dieHeadBlowFunc(attacker, hitPauseTime);
             if (GameObject.FindGameObjectsWithTag("titan").Length <= 1)
@@ -944,9 +944,9 @@ public class TITAN : Photon.MonoBehaviour
         base.animation[hitAnimation].speed = 0f;
         fengGame.oneTitanDown(string.Empty, onPlayerLeave: false);
         needFreshCorePosition = true;
-        GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("bloodExplore"), head.position + Vector3.up * 1f * myLevel, Quaternion.Euler(270f, 0f, 0f))) : PhotonNetwork.Instantiate("bloodExplore", head.position + Vector3.up * 1f * myLevel, Quaternion.Euler(270f, 0f, 0f), 0);
+        GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("bloodExplore"), head.position + Vector3.up * 1f * myLevel, Quaternion.Euler(270f, 0f, 0f))) : PhotonNetwork.Instantiate("bloodExplore", head.position + Vector3.up * 1f * myLevel, Quaternion.Euler(270f, 0f, 0f), 0);
         gameObject.transform.localScale = base.transform.localScale;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             Vector3 position = head.position;
             Vector3 eulerAngles2 = neck.rotation.eulerAngles;
@@ -965,7 +965,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         gameObject.transform.localScale = base.transform.localScale;
         gameObject.transform.parent = neck;
-        gameObject = ((IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/justSmoke"), neck.position, Quaternion.Euler(270f, 0f, 0f))) : PhotonNetwork.Instantiate("FX/justSmoke", neck.position, Quaternion.Euler(270f, 0f, 0f), 0));
+        gameObject = ((IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/justSmoke"), neck.position, Quaternion.Euler(270f, 0f, 0f))) : PhotonNetwork.Instantiate("FX/justSmoke", neck.position, Quaternion.Euler(270f, 0f, 0f), 0));
         gameObject.transform.parent = neck;
         if (base.photonView.isMine)
         {
@@ -993,12 +993,12 @@ public class TITAN : Photon.MonoBehaviour
         {
             return;
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             HERO hero = target.GetComponent<HERO>();
             if (!hero.HasDied())
             {
-                hero.markDie();
+                hero.MarkDead();
                 if (nonAI)
                 {
                     hero.photonView.RPC("netDie2", PhotonTargets.All, base.photonView.viewID, base.name);
@@ -1009,9 +1009,9 @@ public class TITAN : Photon.MonoBehaviour
                 }
             }
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
-            target.GetComponent<HERO>().die2(hand);
+            target.GetComponent<HERO>().Die2(hand);
         }
     }
 
@@ -1177,10 +1177,10 @@ public class TITAN : Photon.MonoBehaviour
 
     private void eatSet(GameObject grabTarget)
     {
-        if ((IN_GAME_MAIN_CAMERA.Gametype != 0 && (IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || !base.photonView.isMine)) || !grabTarget.GetComponent<HERO>().isGrabbed)
+        if ((IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine)) || !grabTarget.GetComponent<HERO>().isGrabbed)
         {
             grabToRight();
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
             {
                 base.photonView.RPC("grabToRight", PhotonTargets.Others);
                 grabTarget.GetPhotonView().RPC("netPlayAnimation", PhotonTargets.All, "grabbed");
@@ -1188,7 +1188,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             else
             {
-                grabTarget.GetComponent<HERO>().grabbed(base.gameObject, leftHand: false);
+                grabTarget.GetComponent<HERO>().GetGrabbed(base.gameObject, leftHand: false);
                 grabTarget.GetComponent<HERO>().animation.Play("grabbed");
             }
         }
@@ -1196,10 +1196,10 @@ public class TITAN : Photon.MonoBehaviour
 
     private void eatSetL(GameObject grabTarget)
     {
-        if ((IN_GAME_MAIN_CAMERA.Gametype != 0 && (IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || !base.photonView.isMine)) || !grabTarget.GetComponent<HERO>().isGrabbed)
+        if ((IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine)) || !grabTarget.GetComponent<HERO>().isGrabbed)
         {
             grabToLeft();
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
             {
                 base.photonView.RPC("grabToLeft", PhotonTargets.Others);
                 grabTarget.GetPhotonView().RPC("netPlayAnimation", PhotonTargets.All, "grabbed");
@@ -1207,7 +1207,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             else
             {
-                grabTarget.GetComponent<HERO>().grabbed(base.gameObject, leftHand: true);
+                grabTarget.GetComponent<HERO>().GetGrabbed(base.gameObject, leftHand: true);
                 grabTarget.GetComponent<HERO>().animation.Play("grabbed");
             }
         }
@@ -1409,7 +1409,7 @@ public class TITAN : Photon.MonoBehaviour
     private void dieAnimation()
     {
         // Mod
-        if ((PhotonNetwork.isMasterClient && base.photonView.isMine) || IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if ((PhotonNetwork.isMasterClient && base.photonView.isMine) || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             // Endless
             if (Guardian.Mod.Properties.EndlessTitans.Value)
@@ -1545,7 +1545,7 @@ public class TITAN : Photon.MonoBehaviour
         head = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck/head");
         neck = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck");
         oldHeadRotation = head.rotation;
-        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || base.photonView.isMine)
         {
             if (!hasSetLevel)
             {
@@ -1562,7 +1562,7 @@ public class TITAN : Photon.MonoBehaviour
                 hasSetLevel = true;
             }
             spawnPt = baseTransform.position;
-            setmyLevel();
+            SetMyLevel();
             setAbnormalType2(abnormalType, forceCrawler: false);
             if (myHero == null)
             {
@@ -1646,7 +1646,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         GameObject oldHero = myHero;
         myHero = target;
-        if (oldHero != myHero && IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && PhotonNetwork.isMasterClient)
+        if (oldHero != myHero && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
             if (myHero == null)
             {
@@ -1664,7 +1664,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         GameObject y = myHero;
         myHero = getNearestHero2();
-        if (myHero != y && IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && PhotonNetwork.isMasterClient)
+        if (myHero != y && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
             if (myHero == null)
             {
@@ -1680,7 +1680,7 @@ public class TITAN : Photon.MonoBehaviour
 
     private void FixedUpdate()
     {
-        if ((IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE) || (IN_GAME_MAIN_CAMERA.Gametype != 0 && !base.photonView.isMine))
+        if ((IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) || (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine))
         {
             return;
         }
@@ -1775,13 +1775,13 @@ public class TITAN : Photon.MonoBehaviour
                         if (gameObject != null)
                         {
                             Vector3 position = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest").position;
-                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                             {
-                                gameObject.GetComponent<HERO>().die((gameObject.transform.position - position) * 15f * myLevel, isBite: false);
+                                gameObject.GetComponent<HERO>().Die((gameObject.transform.position - position) * 15f * myLevel, isBite: false);
                             }
-                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine && !gameObject.GetComponent<HERO>().HasDied())
+                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine && !gameObject.GetComponent<HERO>().HasDied())
                             {
-                                gameObject.GetComponent<HERO>().markDie();
+                                gameObject.GetComponent<HERO>().MarkDead();
                                 object[] parameters = new object[5]
                                 {
                                     (gameObject.transform.position - position) * 15f * myLevel,
@@ -2203,7 +2203,7 @@ public class TITAN : Photon.MonoBehaviour
             return;
         }
 
-        setLevel2(level, AI, skinColor);
+        SetLevel2(level, AI, skinColor);
         if (level > 5f)
         {
             headscale = new Vector3(1f, 1f, 1f);
@@ -2216,7 +2216,7 @@ public class TITAN : Photon.MonoBehaviour
 
     public void lateUpdate2()
     {
-        if (IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             return;
         }
@@ -2273,7 +2273,7 @@ public class TITAN : Photon.MonoBehaviour
 
     public void update()
     {
-        if ((IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE) || myDifficulty < 0 || (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE && !base.photonView.isMine))
+        if ((IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) || myDifficulty < 0 || (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine))
         {
             return;
         }
@@ -2302,7 +2302,7 @@ public class TITAN : Photon.MonoBehaviour
                     whoHasTauntMe = null;
                 }
                 myHero = whoHasTauntMe;
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && PhotonNetwork.isMasterClient)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
                 {
                     base.photonView.RPC("setMyTarget", PhotonTargets.Others, myHero.GetPhotonView().viewID);
                 }
@@ -2314,7 +2314,7 @@ public class TITAN : Photon.MonoBehaviour
             if (dieTime > 2f && !hasDieSteam)
             {
                 hasDieSteam = true;
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
                     GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/FXtitanDie1"));
                     gameObject.transform.position = baseTransform.Find("Amarture/Core/Controller_Body/hip").position;
@@ -2327,7 +2327,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             if (dieTime > 5f)
             {
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
                     GameObject gameObject2 = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/FXtitanDie"));
                     gameObject2.transform.position = baseTransform.Find("Amarture/Core/Controller_Body/hip").position;
@@ -2641,13 +2641,13 @@ public class TITAN : Photon.MonoBehaviour
                         if (gameObject3 != null)
                         {
                             Vector3 position = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest").position;
-                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                             {
-                                gameObject3.GetComponent<HERO>().die((gameObject3.transform.position - position) * 15f * myLevel, isBite: false);
+                                gameObject3.GetComponent<HERO>().Die((gameObject3.transform.position - position) * 15f * myLevel, isBite: false);
                             }
-                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine && !gameObject3.GetComponent<HERO>().HasDied())
+                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine && !gameObject3.GetComponent<HERO>().HasDied())
                             {
-                                gameObject3.GetComponent<HERO>().markDie();
+                                gameObject3.GetComponent<HERO>().MarkDead();
                                 object[] parameters2 = new object[5]
                                 {
                                     (gameObject3.transform.position - position) * 15f * myLevel,
@@ -2666,13 +2666,13 @@ public class TITAN : Photon.MonoBehaviour
                         if (gameObject4 != null)
                         {
                             Vector3 position2 = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest").position;
-                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                             {
-                                gameObject4.GetComponent<HERO>().die((gameObject4.transform.position - position2) * 15f * myLevel, isBite: false);
+                                gameObject4.GetComponent<HERO>().Die((gameObject4.transform.position - position2) * 15f * myLevel, isBite: false);
                             }
-                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine && !gameObject4.GetComponent<HERO>().HasDied())
+                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine && !gameObject4.GetComponent<HERO>().HasDied())
                             {
-                                gameObject4.GetComponent<HERO>().markDie();
+                                gameObject4.GetComponent<HERO>().MarkDead();
                                 object[] parameters3 = new object[5]
                                 {
                                 (gameObject4.transform.position - position2) * 15f * myLevel,
@@ -2694,13 +2694,13 @@ public class TITAN : Photon.MonoBehaviour
                         if (gameObject5 != null)
                         {
                             Vector3 position3 = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest").position;
-                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                             {
-                                gameObject5.GetComponent<HERO>().die((gameObject5.transform.position - position3) * 15f * myLevel, isBite: false);
+                                gameObject5.GetComponent<HERO>().Die((gameObject5.transform.position - position3) * 15f * myLevel, isBite: false);
                             }
-                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine && !gameObject5.GetComponent<HERO>().HasDied())
+                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine && !gameObject5.GetComponent<HERO>().HasDied())
                             {
-                                gameObject5.GetComponent<HERO>().markDie();
+                                gameObject5.GetComponent<HERO>().MarkDead();
                                 object[] parameters4 = new object[5]
                                 {
                                 (gameObject5.transform.position - position3) * 15f * myLevel,
@@ -2719,13 +2719,13 @@ public class TITAN : Photon.MonoBehaviour
                         if (gameObject6 != null)
                         {
                             Vector3 position4 = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest").position;
-                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                             {
-                                gameObject6.GetComponent<HERO>().die((gameObject6.transform.position - position4) * 15f * myLevel, isBite: false);
+                                gameObject6.GetComponent<HERO>().Die((gameObject6.transform.position - position4) * 15f * myLevel, isBite: false);
                             }
-                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine && !gameObject6.GetComponent<HERO>().HasDied())
+                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine && !gameObject6.GetComponent<HERO>().HasDied())
                             {
-                                gameObject6.GetComponent<HERO>().markDie();
+                                gameObject6.GetComponent<HERO>().MarkDead();
                                 object[] parameters5 = new object[5]
                                 {
                                 (gameObject6.transform.position - position4) * 15f * myLevel,
@@ -2743,7 +2743,7 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     attacked = true;
                     fxPosition = baseTransform.Find("ap_" + attackAnimation).position;
-                    GameObject gameObject7 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/" + fxName), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/" + fxName, fxPosition, fxRotation, 0);
+                    GameObject gameObject7 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/" + fxName), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/" + fxName, fxPosition, fxRotation, 0);
                     if (nonAI)
                     {
                         gameObject7.transform.localScale = baseTransform.localScale * 1.5f;
@@ -2770,7 +2770,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         attacked = true;
                         Transform transform = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R/hand_R/hand_R_001");
-                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
                         {
                             throwRock = PhotonNetwork.Instantiate("FX/rockThrow", transform.position, transform.rotation, 0);
                         }
@@ -2789,7 +2789,7 @@ public class TITAN : Photon.MonoBehaviour
                             throwRock.GetComponent<EnemyfxIDcontainer>().titanName = base.name;
                         }
                         throwRock.transform.parent = transform;
-                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
                         {
                             object[] parameters6 = new object[4]
                             {
@@ -2899,13 +2899,13 @@ public class TITAN : Photon.MonoBehaviour
                         if (gameObject8 != null)
                         {
                             Vector3 position5 = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest").position;
-                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                             {
-                                gameObject8.GetComponent<HERO>().die((gameObject8.transform.position - position5) * 15f * myLevel, isBite: false);
+                                gameObject8.GetComponent<HERO>().Die((gameObject8.transform.position - position5) * 15f * myLevel, isBite: false);
                             }
-                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine && !gameObject8.GetComponent<HERO>().HasDied())
+                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine && !gameObject8.GetComponent<HERO>().HasDied())
                             {
-                                gameObject8.GetComponent<HERO>().markDie();
+                                gameObject8.GetComponent<HERO>().MarkDead();
                                 object[] parameters7 = new object[5]
                                 {
                             (gameObject8.transform.position - position5) * 15f * myLevel,
@@ -2953,7 +2953,7 @@ public class TITAN : Photon.MonoBehaviour
                             }
                             crossFade("attack_" + attackAnimation, 0.1f);
                             fxPosition = baseTransform.position;
-                            GameObject gameObject9 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/boom2"), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/boom2", fxPosition, fxRotation, 0);
+                            GameObject gameObject9 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/boom2"), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/boom2", fxPosition, fxRotation, 0);
                             gameObject9.transform.localScale = baseTransform.localScale * 1.6f;
                             float b2 = 1f - Vector3.Distance(currentCamera.transform.position, gameObject9.transform.position) * 0.05f;
                             b2 = Mathf.Min(1f, b2);
@@ -3082,11 +3082,11 @@ public class TITAN : Photon.MonoBehaviour
                         if (gameObject11 != null)
                         {
                             Vector3 position6 = baseTransform.Find("Amarture/Core/Controller_Body/hip/spine/chest").position;
-                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                             {
-                                gameObject11.GetComponent<HERO>().die((gameObject11.transform.position - position6) * 15f * myLevel, isBite: false);
+                                gameObject11.GetComponent<HERO>().Die((gameObject11.transform.position - position6) * 15f * myLevel, isBite: false);
                             }
-                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && base.photonView.isMine)
+                            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
                             {
                                 if (gameObject11.GetComponent<TITAN_EREN>() != null)
                                 {
@@ -3094,7 +3094,7 @@ public class TITAN : Photon.MonoBehaviour
                                 }
                                 else if (!gameObject11.GetComponent<HERO>().HasDied())
                                 {
-                                    gameObject11.GetComponent<HERO>().markDie();
+                                    gameObject11.GetComponent<HERO>().MarkDead();
                                     object[] parameters8 = new object[5]
                                     {
                                     (gameObject11.transform.position - position6) * 15f * myLevel,
@@ -3190,7 +3190,7 @@ public class TITAN : Photon.MonoBehaviour
                         {
                             if (FengGameManagerMKII.Level.Mode == GameMode.BOSS_FIGHT_CT)
                             {
-                                FengGameManagerMKII.Instance.gameLose2();
+                                FengGameManagerMKII.Instance.LoseGame();
                                 checkPoints = new ArrayList();
                                 idle();
                             }
@@ -3295,7 +3295,7 @@ public class TITAN : Photon.MonoBehaviour
     public void setAbnormalType2(AbnormalType type, bool forceCrawler)
     {
         bool flag = false;
-        if (RCSettings.SpawnMode > 0 || ((int)FengGameManagerMKII.Settings[91] == 1 && IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && PhotonNetwork.isMasterClient))
+        if (RCSettings.SpawnMode > 0 || ((int)FengGameManagerMKII.Settings[91] == 1 && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient))
         {
             flag = true;
         }
@@ -3359,7 +3359,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             else
             {
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE && getPunkNumber() >= 3)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer && GetPunkNumber() >= 3)
                 {
                     num = 1;
                 }
@@ -3391,17 +3391,17 @@ public class TITAN : Photon.MonoBehaviour
                 num = 4;
             }
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype != 0 && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netSetAbnormalType", PhotonTargets.AllBuffered, num);
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             netSetAbnormalType(num);
         }
     }
 
-    private void setLevel2(float level, int AI, int skinColor)
+    private void SetLevel2(float level, int AI, int skinColor)
     {
         myLevel = level;
         myLevel = Mathf.Clamp(myLevel, 0.1f, 50f);
@@ -3498,7 +3498,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         if (!hasDie)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != 0)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
             {
                 if (base.photonView.isMine)
                 {
@@ -3647,10 +3647,10 @@ public class TITAN : Photon.MonoBehaviour
         }
     }
 
-    public void resetLevel(float level)
+    public void SetLevel(float level)
     {
         myLevel = level;
-        setmyLevel();
+        SetMyLevel();
     }
 
     [RPC]
@@ -3662,7 +3662,7 @@ public class TITAN : Photon.MonoBehaviour
         }
     }
 
-    public void moveTo(float posX, float posY, float posZ)
+    public void MoveTo(float posX, float posY, float posZ)
     {
         base.transform.position = new Vector3(posX, posY, posZ);
     }
@@ -3707,7 +3707,7 @@ public class TITAN : Photon.MonoBehaviour
         gameObject.layer = 16;
         gameObject.transform.parent = baseTransform.Find("AABB");
         gameObject.transform.localPosition = new Vector3(0f, 0f, 0f);
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
             baseGameObjectTransform = base.gameObject.transform;
         }
@@ -3777,7 +3777,7 @@ public class TITAN : Photon.MonoBehaviour
             return;
         }
         Vector3 vector = baseTransform.position + Vector3.up * d;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             GameObject.Instantiate(Resources.Load("FX/Thunder"), vector, Quaternion.Euler(270f, 0f, 0f));
             GameObject.Instantiate(Resources.Load("FX/boom1"), vector, Quaternion.Euler(270f, 0f, 0f));
@@ -3793,15 +3793,15 @@ public class TITAN : Photon.MonoBehaviour
             if ((gameObject.transform.position - vector).sqrMagnitude < (float)(RCSettings.ExplodeMode * RCSettings.ExplodeMode))
             {
                 HERO hero = gameObject.GetComponent<HERO>();
-                hero.markDie();
+                hero.MarkDead();
 
-                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
                 {
                     hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "[ff0000]Explosion ");
                 }
                 else
                 {
-                    hero.die2(base.transform);
+                    hero.Die2(base.transform);
                 }
             }
         }
@@ -3811,7 +3811,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         skin = 86;
         eye = false;
-        if ((IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || base.photonView.isMine) && (int)FengGameManagerMKII.Settings[1] == 1)
+        if ((IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine) && (int)FengGameManagerMKII.Settings[1] == 1)
         {
             int num = (int)UnityEngine.Random.Range(86f, 90f);
             int num2 = num - 60;
@@ -3827,7 +3827,7 @@ public class TITAN : Photon.MonoBehaviour
                 eye = true;
             }
             GetComponent<TITAN_SETUP>().setVar(skin, eye);
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 StartCoroutine(loadskinE(text, text2));
             }

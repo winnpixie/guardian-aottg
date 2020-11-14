@@ -15,14 +15,14 @@ public class TitanTrigger : MonoBehaviour
         {
             return;
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
         {
             if (gameObject.GetPhotonView().isMine)
             {
                 isCollide = true;
             }
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             GameObject main_object = Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
             if (main_object != null && main_object == gameObject)
@@ -43,14 +43,14 @@ public class TitanTrigger : MonoBehaviour
         {
             return;
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
         {
             if (gameObject.GetPhotonView().isMine)
             {
                 isCollide = false;
             }
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             GameObject main_object = Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
             if (main_object != null && main_object == gameObject)

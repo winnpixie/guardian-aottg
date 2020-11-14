@@ -17,30 +17,30 @@ public class Horse : Photon.MonoBehaviour
         controller = base.gameObject.GetComponent<TITAN_CONTROLLER>();
     }
 
-    public void mounted()
+    public void Mount()
     {
         State = "mounted";
         base.gameObject.GetComponent<TITAN_CONTROLLER>().enabled = true;
     }
 
-    public void unmounted()
+    public void Unmount()
     {
         State = "idle";
         base.gameObject.GetComponent<TITAN_CONTROLLER>().enabled = false;
     }
 
-    private void followed()
+    private void Follow()
     {
         if (!(myHero == null))
         {
             State = "follow";
             setPoint = myHero.transform.position + Vector3.right * Random.Range(-6, 6) + Vector3.forward * Random.Range(-6, 6);
-            setPoint.y = getHeight(setPoint + Vector3.up * 5f);
+            setPoint.y = GetHeight(setPoint + Vector3.up * 5f);
             awayTimer = 0f;
         }
     }
 
-    private float getHeight(Vector3 pt)
+    private float GetHeight(Vector3 pt)
     {
         LayerMask layerMask = 1 << LayerMask.NameToLayer("Ground");
         LayerMask layerMask2 = layerMask;
@@ -63,7 +63,7 @@ public class Horse : Photon.MonoBehaviour
             case "mounted":
                 if (myHero == null)
                 {
-                    unmounted();
+                    Unmount();
                     return;
                 }
                 myHero.transform.position = base.transform.position + Vector3.up * 1.68f;
@@ -92,11 +92,11 @@ public class Horse : Photon.MonoBehaviour
                     {
                         if (!base.animation.IsPlaying("horse_Run"))
                         {
-                            crossFade("horse_Run", 0.1f);
+                            CrossFade("horse_Run", 0.1f);
                         }
                         if (!myHero.animation.IsPlaying("horse_Run"))
                         {
-                            myHero.GetComponent<HERO>().crossFade("horse_run", 0.1f);
+                            myHero.GetComponent<HERO>().CrossFade("horse_run", 0.1f);
                         }
                         if (!dust.GetComponent<ParticleSystem>().enableEmission)
                         {
@@ -108,11 +108,11 @@ public class Horse : Photon.MonoBehaviour
                     {
                         if (!base.animation.IsPlaying("horse_WALK"))
                         {
-                            crossFade("horse_WALK", 0.1f);
+                            CrossFade("horse_WALK", 0.1f);
                         }
                         if (!myHero.animation.IsPlaying("horse_idle"))
                         {
-                            myHero.GetComponent<HERO>().crossFade("horse_idle", 0.1f);
+                            myHero.GetComponent<HERO>().CrossFade("horse_idle", 0.1f);
                         }
                         if (dust.GetComponent<ParticleSystem>().enableEmission)
                         {
@@ -123,17 +123,17 @@ public class Horse : Photon.MonoBehaviour
                 }
                 else
                 {
-                    toIdleAnimation();
+                    Idle();
                     if (base.rigidbody.velocity.magnitude > 15f)
                     {
                         if (!myHero.animation.IsPlaying("horse_Run"))
                         {
-                            myHero.GetComponent<HERO>().crossFade("horse_run", 0.1f);
+                            myHero.GetComponent<HERO>().CrossFade("horse_run", 0.1f);
                         }
                     }
                     else if (!myHero.animation.IsPlaying("horse_idle"))
                     {
-                        myHero.GetComponent<HERO>().crossFade("horse_idle", 0.1f);
+                        myHero.GetComponent<HERO>().CrossFade("horse_idle", 0.1f);
                     }
                 }
                 if ((controller.isAttackDown || controller.isAttackIIDown) && IsGrounded())
@@ -144,14 +144,14 @@ public class Horse : Photon.MonoBehaviour
             case "follow":
                 if (myHero == null)
                 {
-                    unmounted();
+                    Unmount();
                     return;
                 }
                 if (base.rigidbody.velocity.magnitude > 8f)
                 {
                     if (!base.animation.IsPlaying("horse_Run"))
                     {
-                        crossFade("horse_Run", 0.1f);
+                        CrossFade("horse_Run", 0.1f);
                     }
                     if (!dust.GetComponent<ParticleSystem>().enableEmission)
                     {
@@ -163,7 +163,7 @@ public class Horse : Photon.MonoBehaviour
                 {
                     if (!base.animation.IsPlaying("horse_WALK"))
                     {
-                        crossFade("horse_WALK", 0.1f);
+                        CrossFade("horse_WALK", 0.1f);
                     }
                     if (dust.GetComponent<ParticleSystem>().enableEmission)
                     {
@@ -200,16 +200,16 @@ public class Horse : Photon.MonoBehaviour
                     timeElapsed = 0f;
                     if (Vector3.Distance(myHero.transform.position, setPoint) > 20f)
                     {
-                        followed();
+                        Follow();
                     }
                 }
                 if (Vector3.Distance(myHero.transform.position, base.transform.position) < 5f)
                 {
-                    unmounted();
+                    Unmount();
                 }
                 if (Vector3.Distance(setPoint, base.transform.position) < 5f)
                 {
-                    unmounted();
+                    Unmount();
                 }
                 awayTimer += Time.deltaTime;
                 if (awayTimer > 6f)
@@ -222,17 +222,17 @@ public class Horse : Photon.MonoBehaviour
                         Transform transform2 = base.transform;
                         Vector3 position = myHero.transform.position;
                         float x = position.x;
-                        float height = getHeight(myHero.transform.position + Vector3.up * 5f);
+                        float height = GetHeight(myHero.transform.position + Vector3.up * 5f);
                         Vector3 position2 = myHero.transform.position;
                         transform2.position = new Vector3(x, height, position2.z);
                     }
                 }
                 break;
             case "idle":
-                toIdleAnimation();
+                Idle();
                 if (myHero != null && Vector3.Distance(myHero.transform.position, base.transform.position) > 20f)
                 {
-                    followed();
+                    Follow();
                 }
                 break;
         }
@@ -246,7 +246,7 @@ public class Horse : Photon.MonoBehaviour
         return Physics.Raycast(layerMask: ((LayerMask)((int)mask2 | (int)mask)).value, origin: base.gameObject.transform.position + Vector3.up * 0.1f, direction: -Vector3.up, distance: 0.3f);
     }
 
-    private void toIdleAnimation()
+    private void Idle()
     {
         if (base.rigidbody.velocity.magnitude > 0.1f)
         {
@@ -254,7 +254,7 @@ public class Horse : Photon.MonoBehaviour
             {
                 if (!base.animation.IsPlaying("horse_Run"))
                 {
-                    crossFade("horse_Run", 0.1f);
+                    CrossFade("horse_Run", 0.1f);
                 }
                 if (!dust.GetComponent<ParticleSystem>().enableEmission)
                 {
@@ -266,7 +266,7 @@ public class Horse : Photon.MonoBehaviour
             {
                 if (!base.animation.IsPlaying("horse_WALK"))
                 {
-                    crossFade("horse_WALK", 0.1f);
+                    CrossFade("horse_WALK", 0.1f);
                 }
                 if (dust.GetComponent<ParticleSystem>().enableEmission)
                 {
@@ -278,34 +278,34 @@ public class Horse : Photon.MonoBehaviour
         }
         if (base.animation.IsPlaying("horse_idle1") && base.animation["horse_idle1"].normalizedTime >= 1f)
         {
-            crossFade("horse_idle0", 0.1f);
+            CrossFade("horse_idle0", 0.1f);
         }
         if (base.animation.IsPlaying("horse_idle2") && base.animation["horse_idle2"].normalizedTime >= 1f)
         {
-            crossFade("horse_idle0", 0.1f);
+            CrossFade("horse_idle0", 0.1f);
         }
         if (base.animation.IsPlaying("horse_idle3") && base.animation["horse_idle3"].normalizedTime >= 1f)
         {
-            crossFade("horse_idle0", 0.1f);
+            CrossFade("horse_idle0", 0.1f);
         }
         if (!base.animation.IsPlaying("horse_idle0") && !base.animation.IsPlaying("horse_idle1") && !base.animation.IsPlaying("horse_idle2") && !base.animation.IsPlaying("horse_idle3"))
         {
-            crossFade("horse_idle0", 0.1f);
+            CrossFade("horse_idle0", 0.1f);
         }
         if (base.animation.IsPlaying("horse_idle0"))
         {
             int num = Random.Range(0, 10000);
             if (num < 10)
             {
-                crossFade("horse_idle1", 0.1f);
+                CrossFade("horse_idle1", 0.1f);
             }
             else if (num < 20)
             {
-                crossFade("horse_idle2", 0.1f);
+                CrossFade("horse_idle2", 0.1f);
             }
             else if (num < 30)
             {
-                crossFade("horse_idle3", 0.1f);
+                CrossFade("horse_idle3", 0.1f);
             }
         }
         if (dust.GetComponent<ParticleSystem>().enableEmission)
@@ -325,7 +325,7 @@ public class Horse : Photon.MonoBehaviour
         }
     }
 
-    public void playAnimation(string aniName)
+    public void PlayAnimation(string aniName)
     {
         base.animation.Play(aniName);
         if (PhotonNetwork.connected && base.photonView.isMine)
@@ -334,7 +334,7 @@ public class Horse : Photon.MonoBehaviour
         }
     }
 
-    private void playAnimationAt(string aniName, float normalizedTime)
+    private void PlayAnimationAt(string aniName, float normalizedTime)
     {
         base.animation.Play(aniName);
         base.animation[aniName].normalizedTime = normalizedTime;
@@ -344,7 +344,7 @@ public class Horse : Photon.MonoBehaviour
         }
     }
 
-    private void crossFade(string aniName, float time)
+    private void CrossFade(string aniName, float time)
     {
         base.animation.CrossFade(aniName, time);
         if (PhotonNetwork.connected && base.photonView.isMine)

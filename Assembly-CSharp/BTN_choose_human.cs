@@ -10,7 +10,7 @@ public class BTN_choose_human : MonoBehaviour
         fgmkii = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>();
     }
 
-    public bool isPlayerAllDead2()
+    public bool AreAllPlayersDead()
     {
         foreach (PhotonPlayer photonPlayer in PhotonNetwork.playerList)
         {
@@ -36,7 +36,7 @@ public class BTN_choose_human : MonoBehaviour
         }
         if (!PhotonNetwork.isMasterClient && fgmkii.roundTime > 60f)
         {
-            if (!isPlayerAllDead2())
+            if (!AreAllPlayersDead())
             {
                 fgmkii.NOTSpawnPlayer(selection);
             }
@@ -48,7 +48,7 @@ public class BTN_choose_human : MonoBehaviour
         }
         else if (FengGameManagerMKII.Level.Mode == GameMode.BOSS_FIGHT_CT || FengGameManagerMKII.Level.Mode == GameMode.TROST || FengGameManagerMKII.Level.Mode == GameMode.PVP_CAPTURE)
         {
-            if (isPlayerAllDead2())
+            if (AreAllPlayersDead())
             {
                 fgmkii.NOTSpawnPlayer(selection);
                 fgmkii.photonView.RPC("restartGameByClient", PhotonTargets.MasterClient);

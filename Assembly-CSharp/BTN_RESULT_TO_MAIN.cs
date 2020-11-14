@@ -9,7 +9,7 @@ public class BTN_RESULT_TO_MAIN : MonoBehaviour
 		{
 			PhotonNetwork.Disconnect();
 		}
-		IN_GAME_MAIN_CAMERA.Gametype = GameType.STOP;
+		IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
 		GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().gameStart = false;
 		Screen.lockCursor = false;
 		Screen.showCursor = true;

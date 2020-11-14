@@ -63,14 +63,14 @@ public class Bomb : Photon.MonoBehaviour
                     int num2 = GExtensions.AsInt(owner.customProperties[PhotonPlayerProperty.RCTeam]);
                     if (num == 0 || num != num2)
                     {
-                        gameObject.GetComponent<HERO>().markDie();
+                        gameObject.GetComponent<HERO>().MarkDead();
                         gameObject.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
                         FengGameManagerMKII.Instance.UpdatePlayerKillInfo(0, PhotonNetwork.player);
                     }
                 }
                 else
                 {
-                    gameObject.GetComponent<HERO>().markDie();
+                    gameObject.GetComponent<HERO>().MarkDead();
                     gameObject.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
                     FengGameManagerMKII.Instance.UpdatePlayerKillInfo(0, PhotonNetwork.player);
                 }

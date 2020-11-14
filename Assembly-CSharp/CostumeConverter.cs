@@ -31,7 +31,7 @@ public class CostumeConverter
         slot = slot.ToUpper();
         if (!PlayerPrefs.HasKey(slot + PhotonPlayerProperty.Sex))
         {
-            return HeroCostume.costume[0];
+            return HeroCostume.Costumes[0];
         }
         // Costume Info
         HeroCostume costume = new HeroCostume();

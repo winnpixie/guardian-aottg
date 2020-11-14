@@ -4,7 +4,6 @@ using UnityEngine;
 public class ConnectAndJoinRandom : Photon.MonoBehaviour
 {
 	public bool AutoConnect = true;
-
 	private bool ConnectInUpdate = true;
 
 	public virtual void Start()

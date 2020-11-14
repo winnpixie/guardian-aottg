@@ -16,7 +16,7 @@ public class AHSSShotGunCollider : MonoBehaviour
     private void Start()
     {
         currentCamera = GameObject.Find("MainCamera");
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
         {
             if (!base.transform.root.gameObject.GetPhotonView().isMine)
             {
@@ -65,7 +65,7 @@ public class AHSSShotGunCollider : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if ((IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && !base.transform.root.gameObject.GetPhotonView().isMine) || !active_me)
+        if ((IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && !base.transform.root.gameObject.GetPhotonView().isMine) || !active_me)
         {
             return;
         }
@@ -79,20 +79,20 @@ public class AHSSShotGunCollider : MonoBehaviour
                 float b = 1f - Vector3.Distance(other.gameObject.transform.position, base.transform.position) * 0.05f;
                 b = Mathf.Min(1f, b);
                 HitBox component = other.gameObject.GetComponent<HitBox>();
-                if (!(component != null) || !(component.transform.root != null) || component.transform.root.GetComponent<HERO>().myTeam == myTeam || component.transform.root.GetComponent<HERO>().isInvincible())
+                if (!(component != null) || !(component.transform.root != null) || component.transform.root.GetComponent<HERO>().myTeam == myTeam || component.transform.root.GetComponent<HERO>().IsInvincible())
                 {
                     return;
                 }
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
                     if (!component.transform.root.GetComponent<HERO>().isGrabbed)
                     {
-                        component.transform.root.GetComponent<HERO>().die((component.transform.root.transform.position - base.transform.position).normalized * b * 1000f + Vector3.up * 50f, isBite: false);
+                        component.transform.root.GetComponent<HERO>().Die((component.transform.root.transform.position - base.transform.position).normalized * b * 1000f + Vector3.up * 50f, isBite: false);
                     }
                 }
-                else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && !component.transform.root.GetComponent<HERO>().HasDied() && !component.transform.root.GetComponent<HERO>().isGrabbed)
+                else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && !component.transform.root.GetComponent<HERO>().HasDied() && !component.transform.root.GetComponent<HERO>().isGrabbed)
                 {
-                    component.transform.root.GetComponent<HERO>().markDie();
+                    component.transform.root.GetComponent<HERO>().MarkDead();
                     component.transform.root.GetComponent<HERO>().photonView.RPC("netDie", PhotonTargets.All, (component.transform.root.position - base.transform.position).normalized * b * 1000f + Vector3.up * 50f, false, viewID, ownerName, false);
                 }
                 break;
@@ -110,7 +110,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                 }
                 component2.hitPosition = (base.transform.position + component2.transform.position) * 0.5f;
                 currentHits.Add(component2);
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
                     if ((bool)component2.transform.root.GetComponent<TITAN>() && !component2.transform.root.GetComponent<TITAN>().hasDie)
                     {
@@ -214,7 +214,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                 GameObject gameObject = other.gameObject.transform.root.gameObject;
                 if ((bool)gameObject.GetComponent<FEMALE_TITAN>())
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         if (!gameObject.GetComponent<FEMALE_TITAN>().hasDie)
                         {
@@ -239,7 +239,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     {
                         return;
                     }
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         if (!gameObject.GetComponent<TITAN>().hasDie)
                         {
@@ -271,7 +271,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                 b9 = Mathf.Max(10, b9);
                 if ((bool)gameObject2.GetComponent<TITAN>() && gameObject2.GetComponent<TITAN>().abnormalType != AbnormalType.TYPE_CRAWLER)
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         if (!gameObject2.GetComponent<TITAN>().hasDie)
                         {
@@ -298,7 +298,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     {
                         return;
                     }
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         if (other.gameObject.name == "ankleR")
                         {
@@ -346,7 +346,7 @@ public class AHSSShotGunCollider : MonoBehaviour
     private void showCriticalHitFX(Vector3 position)
     {
         currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(0.2f, 0.3f);
-        GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE) ? ((GameObject)Object.Instantiate(Resources.Load("redCross1"))) : PhotonNetwork.Instantiate("redCross1", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
+        GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) ? ((GameObject)Object.Instantiate(Resources.Load("redCross1"))) : PhotonNetwork.Instantiate("redCross1", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
         gameObject.transform.position = position;
     }
 }

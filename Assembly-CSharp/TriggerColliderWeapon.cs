@@ -40,7 +40,7 @@ public class TriggerColliderWeapon : MonoBehaviour
             if (other.gameObject.transform.root.gameObject.tag == "titan")
             {
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.GetComponent<HERO>().slashHit.Play();
-                GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE) ? ((GameObject)Object.Instantiate(Resources.Load("hitMeat"))) : PhotonNetwork.Instantiate("hitMeat", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
+                GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) ? ((GameObject)Object.Instantiate(Resources.Load("hitMeat"))) : PhotonNetwork.Instantiate("hitMeat", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
                 gameObject.transform.position = base.transform.position;
                 base.transform.root.GetComponent<HERO>().useBlade();
             }
@@ -55,24 +55,24 @@ public class TriggerColliderWeapon : MonoBehaviour
                 float b = 1f - Vector3.Distance(other.gameObject.transform.position, base.transform.position) * 0.05f;
                 b = Mathf.Min(1f, b);
                 HitBox component = other.gameObject.GetComponent<HitBox>();
-                if (!(component != null) || !(component.transform.root != null) || component.transform.root.GetComponent<HERO>().myTeam == myTeam || component.transform.root.GetComponent<HERO>().isInvincible())
+                if (!(component != null) || !(component.transform.root != null) || component.transform.root.GetComponent<HERO>().myTeam == myTeam || component.transform.root.GetComponent<HERO>().IsInvincible())
                 {
                     return;
                 }
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
                     if (!component.transform.root.GetComponent<HERO>().isGrabbed)
                     {
-                        component.transform.root.GetComponent<HERO>().die((component.transform.root.transform.position - base.transform.position).normalized * b * 1000f + Vector3.up * 50f, isBite: false);
+                        component.transform.root.GetComponent<HERO>().Die((component.transform.root.transform.position - base.transform.position).normalized * b * 1000f + Vector3.up * 50f, isBite: false);
                     }
                 }
-                else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && !component.transform.root.GetComponent<HERO>().HasDied() && !component.transform.root.GetComponent<HERO>().isGrabbed)
+                else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && !component.transform.root.GetComponent<HERO>().HasDied() && !component.transform.root.GetComponent<HERO>().isGrabbed)
                 {
                     if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)
                     {
                         currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startSnapShot2(component.transform.position, 0, component.transform.root.gameObject, 0.02f);
                     }
-                    component.transform.root.GetComponent<HERO>().markDie();
+                    component.transform.root.GetComponent<HERO>().MarkDead();
                     component.transform.root.GetComponent<HERO>().photonView.RPC("netDie", PhotonTargets.All, (component.transform.root.position - base.transform.position).normalized * b * 1000f + Vector3.up * 50f, false, base.transform.root.gameObject.GetPhotonView().viewID, PhotonView.Find(base.transform.root.gameObject.GetPhotonView().viewID).owner.customProperties[PhotonPlayerProperty.Name], false);
                 }
                 break;
@@ -85,7 +85,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                 component2.hitPosition = (base.transform.position + component2.transform.position) * 0.5f;
                 currentHits.Add(component2);
                 meatDie.Play();
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
                     if ((bool)component2.transform.root.GetComponent<TITAN>() && !component2.transform.root.GetComponent<TITAN>().hasDie)
                     {
@@ -191,7 +191,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                 GameObject gameObject2 = other.gameObject.transform.root.gameObject;
                 if ((bool)gameObject2.GetComponent<FEMALE_TITAN>())
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         if (!gameObject2.GetComponent<FEMALE_TITAN>().hasDie)
                         {
@@ -216,7 +216,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     {
                         return;
                     }
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         if (!gameObject2.GetComponent<TITAN>().hasDie)
                         {
@@ -248,7 +248,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                 b9 = Mathf.Max(10, b9);
                 if ((bool)gameObject3.GetComponent<TITAN>() && gameObject3.GetComponent<TITAN>().abnormalType != AbnormalType.TYPE_CRAWLER)
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         if (!gameObject3.GetComponent<TITAN>().hasDie)
                         {
@@ -275,7 +275,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     {
                         return;
                     }
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         if (other.gameObject.name == "ankleR")
                         {
@@ -334,7 +334,7 @@ public class TriggerColliderWeapon : MonoBehaviour
     private void showCriticalHitFX()
     {
         currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(0.2f, 0.3f);
-        GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE) ? ((GameObject)Object.Instantiate(Resources.Load("redCross"))) : PhotonNetwork.Instantiate("redCross", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
+        GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) ? ((GameObject)Object.Instantiate(Resources.Load("redCross"))) : PhotonNetwork.Instantiate("redCross", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
         gameObject.transform.position = base.transform.position;
     }
 

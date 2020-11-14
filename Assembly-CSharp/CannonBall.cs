@@ -166,14 +166,14 @@ public class CannonBall : Photon.MonoBehaviour
                         int num2 = GExtensions.AsInt(owner.customProperties[PhotonPlayerProperty.RCTeam]);
                         if (num == 0 || num != num2)
                         {
-                            gameObject2.GetComponent<HERO>().markDie();
+                            gameObject2.GetComponent<HERO>().MarkDead();
                             gameObject2.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
                             FengGameManagerMKII.Instance.UpdatePlayerKillInfo(0, PhotonNetwork.player);
                         }
                     }
                     else
                     {
-                        gameObject2.GetComponent<HERO>().markDie();
+                        gameObject2.GetComponent<HERO>().MarkDead();
                         gameObject2.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
                         FengGameManagerMKII.Instance.UpdatePlayerKillInfo(0, PhotonNetwork.player);
                     }

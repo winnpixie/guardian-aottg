@@ -49,13 +49,13 @@ public class CustomCharacterManager : MonoBehaviour
     private void Start()
     {
         QualitySettings.SetQualityLevel(5, applyExpensiveChanges: true);
-        costumeOption = HeroCostume.costumeOption;
+        costumeOption = HeroCostume.CostumeOptions;
         setup = character.GetComponent<HERO_SETUP>();
-        setup.init();
+        setup.Init();
         setup.myCostume = new HeroCostume();
-        copyCostume(HeroCostume.costume[2], setup.myCostume);
+        copyCostume(HeroCostume.Costumes[2], setup.myCostume);
         setup.myCostume.SetMesh();
-        setup.setCharacterComponent();
+        setup.CreateCharacterComponent();
         sexOption = new Sex[2]
         {
             Sex.MALE,
@@ -138,12 +138,12 @@ public class CustomCharacterManager : MonoBehaviour
     {
         if (part == CreatePart.Preset)
         {
-            presetId = toNext(presetId, HeroCostume.costume.Length);
-            copyCostume(HeroCostume.costume[presetId], setup.myCostume, init: true);
+            presetId = toNext(presetId, HeroCostume.Costumes.Length);
+            copyCostume(HeroCostume.Costumes[presetId], setup.myCostume, init: true);
             CostumeDataToMyID();
-            setup.deleteCharacterComponent2();
-            setup.setCharacterComponent();
-            labelPreset.GetComponent<UILabel>().text = HeroCostume.costume[presetId].name;
+            setup.DeleteCharacterComponent();
+            setup.CreateCharacterComponent();
+            labelPreset.GetComponent<UILabel>().text = HeroCostume.Costumes[presetId].name;
             freshLabel();
         }
         else
@@ -156,12 +156,12 @@ public class CustomCharacterManager : MonoBehaviour
     {
         if (part == CreatePart.Preset)
         {
-            presetId = toPrev(presetId, HeroCostume.costume.Length);
-            copyCostume(HeroCostume.costume[presetId], setup.myCostume, init: true);
+            presetId = toPrev(presetId, HeroCostume.Costumes.Length);
+            copyCostume(HeroCostume.Costumes[presetId], setup.myCostume, init: true);
             CostumeDataToMyID();
-            setup.deleteCharacterComponent2();
-            setup.setCharacterComponent();
-            labelPreset.GetComponent<UILabel>().text = HeroCostume.costume[presetId].name;
+            setup.DeleteCharacterComponent();
+            setup.CreateCharacterComponent();
+            labelPreset.GetComponent<UILabel>().text = HeroCostume.Costumes[presetId].name;
             freshLabel();
         }
         else
@@ -484,8 +484,8 @@ public class CustomCharacterManager : MonoBehaviour
         if (heroCostume != null)
         {
             copyCostume(heroCostume, setup.myCostume);
-            setup.deleteCharacterComponent2();
-            setup.setCharacterComponent();
+            setup.DeleteCharacterComponent();
+            setup.CreateCharacterComponent();
         }
         CostumeDataToMyID();
         freshLabel();
@@ -514,31 +514,31 @@ public class CustomCharacterManager : MonoBehaviour
                 setup.myCostume.sex = sexOption[sexId];
                 character.GetComponent<CharacterCreateAnimationControl>().toStand();
                 CostumeDataToMyID();
-                setup.deleteCharacterComponent2();
-                setup.setCharacterComponent();
+                setup.DeleteCharacterComponent();
+                setup.CreateCharacterComponent();
                 break;
             case CreatePart.Eye:
                 eyeId = ((!next) ? toPrev(eyeId, eyeOption.Length) : toNext(eyeId, eyeOption.Length));
                 setup.myCostume.eye_texture_id = eyeId;
-                setup.setFacialTexture(setup.part_eye, eyeOption[eyeId]);
+                setup.SetFaceTexture(setup.part_eye, eyeOption[eyeId]);
                 break;
             case CreatePart.Face:
                 faceId = ((!next) ? toPrev(faceId, faceOption.Length) : toNext(faceId, faceOption.Length));
                 setup.myCostume.beard_texture_id = faceOption[faceId];
                 if (setup.part_face == null)
                 {
-                    setup.createFace();
+                    setup.CreateFace();
                 }
-                setup.setFacialTexture(setup.part_face, faceOption[faceId]);
+                setup.SetFaceTexture(setup.part_face, faceOption[faceId]);
                 break;
             case CreatePart.Glass:
                 glassId = ((!next) ? toPrev(glassId, glassOption.Length) : toNext(glassId, glassOption.Length));
                 setup.myCostume.glass_texture_id = glassOption[glassId];
                 if (setup.part_glass == null)
                 {
-                    setup.createGlass();
+                    setup.CreateGlasses();
                 }
-                setup.setFacialTexture(setup.part_glass, glassOption[glassId]);
+                setup.SetFaceTexture(setup.part_glass, glassOption[glassId]);
                 break;
             case CreatePart.Hair:
                 hairId = ((!next) ? toPrev(hairId, hairOption.Length) : toNext(hairId, hairOption.Length));
@@ -554,7 +554,7 @@ public class CustomCharacterManager : MonoBehaviour
                     setup.myCostume.hair_1_mesh = CostumeHair.hairsM[hairOption[hairId]].hair_1;
                     setup.myCostume.hairInfo = CostumeHair.hairsM[hairOption[hairId]];
                 }
-                setup.createHair2();
+                setup.CreateHair();
                 setHairColor();
                 break;
             case CreatePart.Skin:
@@ -566,7 +566,7 @@ public class CustomCharacterManager : MonoBehaviour
 
                 setup.myCostume.skin_color = skinOption[skinId];
                 setup.myCostume.setTexture();
-                setup.setSkin();
+                setup.SetSkin();
                 break;
             case CreatePart.Costume:
                 if (setup.myCostume.uniform_type != UNIFORM_TYPE.CasualAHSS)
@@ -579,23 +579,23 @@ public class CustomCharacterManager : MonoBehaviour
                 copyBodyCostume(costumeOption[costumeId], setup.myCostume);
                 setup.myCostume.SetMesh();
                 setup.myCostume.setTexture();
-                setup.createUpperBody2();
-                setup.createLeftArm();
-                setup.createRightArm();
-                setup.createLowerBody();
+                setup.CreateUpperBody();
+                setup.CreateLeftArm();
+                setup.CreateRightArm();
+                setup.CreateLowerBody();
                 break;
             case CreatePart.Cape:
                 capeId = ((!next) ? toPrev(capeId, capeOption.Length) : toNext(capeId, capeOption.Length));
                 setup.myCostume.cape = (capeId == 1);
                 setup.myCostume.setCape();
                 setup.myCostume.setTexture();
-                setup.createCape2();
+                setup.CreateCape();
                 break;
             case CreatePart.Division:
                 divisionId = ((!next) ? toPrev(divisionId, divisionOption.Length) : toNext(divisionId, divisionOption.Length));
                 setup.myCostume.division = divisionOption[divisionId];
                 setup.myCostume.setTexture();
-                setup.createUpperBody2();
+                setup.CreateUpperBody();
                 break;
         }
         freshLabel();

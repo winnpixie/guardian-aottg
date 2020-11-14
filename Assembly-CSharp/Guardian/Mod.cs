@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "11082020";
+        public static string Build = "11142020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -186,7 +186,7 @@ namespace Guardian
         void OnLevelWasLoaded(int level)
         {
             RenderSettings.haloStrength = 100;
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 string difficulty = "Training";
                 switch (IN_GAME_MAIN_CAMERA.Difficulty)

@@ -23,34 +23,34 @@ public class LevelTriggerHint : MonoBehaviour
             switch (myhint)
             {
                 case HintType.DODGE:
-                    content = "Press [F7D358]" + inputs.inputString[InputCode.dodge] + "[-] to Dodge.";
+                    content = "Press [F7D358]" + inputs.inputString[InputCode.Dodge] + "[-] to Dodge.";
                     break;
                 case HintType.ATTACK:
-                    content = "Press [F7D358]" + inputs.inputString[InputCode.attack0] + "[-] to Attack. \nPress [F7D358]" + inputs.inputString[InputCode.attack1] + "[-] to use special attack.\n***You can only kill a titan by slashing his [FA5858]NAPE[-].***\n\n";
+                    content = "Press [F7D358]" + inputs.inputString[InputCode.Attack0] + "[-] to Attack. \nPress [F7D358]" + inputs.inputString[InputCode.Attack1] + "[-] to use special attack.\n***You can only kill a titan by slashing his [FA5858]NAPE[-].***\n\n";
                     break;
                 case HintType.MOVE:
-                    content = "Hello soldier!\nWelcome to Attack On Titan Tribute Game!\n Press [F7D358]" + inputs.inputString[InputCode.up] + inputs.inputString[InputCode.left] + inputs.inputString[InputCode.down] + inputs.inputString[InputCode.right] + "[-] to Move.";
+                    content = "Hello soldier!\nWelcome to Attack On Titan Tribute Game!\n Press [F7D358]" + inputs.inputString[InputCode.Up] + inputs.inputString[InputCode.Left] + inputs.inputString[InputCode.Down] + inputs.inputString[InputCode.Right] + "[-] to Move.";
                     break;
                 case HintType.TELE:
                     content = "Move to [82FA58]green warp point[-] to proceed.";
                     break;
                 case HintType.CAMA:
-                    content = "Press [F7D358]" + inputs.inputString[InputCode.camera] + "[-] to change camera mode\nPress [F7D358]" + inputs.inputString[InputCode.hideCursor] + "[-] to hide or show the cursor.";
+                    content = "Press [F7D358]" + inputs.inputString[InputCode.ChangeCamera] + "[-] to change camera mode\nPress [F7D358]" + inputs.inputString[InputCode.ToggleCursor] + "[-] to hide or show the cursor.";
                     break;
                 case HintType.JUMP:
-                    content = "Press [F7D358]" + inputs.inputString[InputCode.jump] + "[-] to Jump.";
+                    content = "Press [F7D358]" + inputs.inputString[InputCode.Jump] + "[-] to Jump.";
                     break;
                 case HintType.JUMP2:
-                    content = "Press [F7D358]" + inputs.inputString[InputCode.up] + "[-] towards a wall to perform a wall-run.";
+                    content = "Press [F7D358]" + inputs.inputString[InputCode.Up] + "[-] towards a wall to perform a wall-run.";
                     break;
                 case HintType.HOOK:
-                    content = "Press and Hold[F7D358] " + inputs.inputString[InputCode.leftRope] + "[-] or [F7D358]" + inputs.inputString[InputCode.rightRope] + "[-] to launch your grapple.\nNow Try hooking to the [>3<] box. ";
+                    content = "Press and Hold[F7D358] " + inputs.inputString[InputCode.HookLeft] + "[-] or [F7D358]" + inputs.inputString[InputCode.HookRight] + "[-] to launch your grapple.\nNow Try hooking to the [>3<] box. ";
                     break;
                 case HintType.HOOK2:
-                    content = "Press and Hold[F7D358] " + inputs.inputString[InputCode.bothRope] + "[-] to launch both of your grapples at the same Time.\n\nNow aim between the two black blocks. \nYou will see the mark '<' and '>' appearing on the blocks. \nThen press " + inputs.inputString[InputCode.bothRope] + " to hook the blocks.";
+                    content = "Press and Hold[F7D358] " + inputs.inputString[InputCode.HookBoth] + "[-] to launch both of your grapples at the same Time.\n\nNow aim between the two black blocks. \nYou will see the mark '<' and '>' appearing on the blocks. \nThen press " + inputs.inputString[InputCode.HookBoth] + " to hook the blocks.";
                     break;
                 case HintType.SUPPLY:
-                    content = "Press [F7D358]" + inputs.inputString[InputCode.reload] + "[-] to reload your blades.\n Move to the supply station to refill your gas and blades.";
+                    content = "Press [F7D358]" + inputs.inputString[InputCode.Reload] + "[-] to reload your blades.\n Move to the supply station to refill your gas and blades.";
                     break;
             }
         }

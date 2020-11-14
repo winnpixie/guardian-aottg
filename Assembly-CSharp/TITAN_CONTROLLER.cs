@@ -32,7 +32,7 @@ public class TITAN_CONTROLLER : MonoBehaviour
 	{
 		inputManager = GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>();
 		currentCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
-		if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+		if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
 		{
 			base.enabled = false;
 		}
@@ -129,7 +129,7 @@ public class TITAN_CONTROLLER : MonoBehaviour
 		{
 			isJumpDown = true;
 		}
-		if (inputManager.GetComponent<FengCustomInputs>().isInputDown[InputCode.restart])
+		if (inputManager.GetComponent<FengCustomInputs>().isInputDown[InputCode.Restart])
 		{
 			isSuicide = true;
 		}

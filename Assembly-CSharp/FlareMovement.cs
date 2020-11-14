@@ -51,7 +51,7 @@ public class FlareMovement : MonoBehaviour
         }
     }
 
-    public void dontShowHint()
+    public void DontShowHint()
     {
         Object.Destroy(hint);
         nohint = true;

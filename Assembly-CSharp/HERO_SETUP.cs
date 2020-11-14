@@ -92,12 +92,12 @@ public class HERO_SETUP : MonoBehaviour
         mount_weapon_r.transform.parent = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R/hand_R").transform;
     }
 
-    public void init()
+    public void Init()
     {
         CharacterMaterials.InitData();
     }
 
-    public void create3DMG()
+    public void Create3DMG()
     {
         Object.Destroy(part_3dmg);
         Object.Destroy(part_3dmg_belt);
@@ -191,22 +191,22 @@ public class HERO_SETUP : MonoBehaviour
         }
     }
 
-    public void setCharacterComponent()
+    public void CreateCharacterComponent()
     {
-        createHead2();
-        createUpperBody2();
-        createLeftArm();
-        createRightArm();
-        createLowerBody();
-        create3DMG();
+        CreateHead();
+        CreateUpperBody();
+        CreateLeftArm();
+        CreateRightArm();
+        CreateLowerBody();
+        Create3DMG();
     }
 
-    public void createLowerBody()
+    public void CreateLowerBody()
     {
         part_leg.renderer.material = CharacterMaterials.materials[myCostume.body_texture];
     }
 
-    public void createLeftArm()
+    public void CreateLeftArm()
     {
         Object.Destroy(part_arm_l);
         if (myCostume.arm_l_mesh.Length > 0)
@@ -222,7 +222,7 @@ public class HERO_SETUP : MonoBehaviour
         }
     }
 
-    public void createRightArm()
+    public void CreateRightArm()
     {
         Object.Destroy(part_arm_r);
         if (myCostume.arm_r_mesh.Length > 0)
@@ -238,7 +238,7 @@ public class HERO_SETUP : MonoBehaviour
         }
     }
 
-    public void createFace()
+    public void CreateFace()
     {
         part_face = (GameObject)Object.Instantiate(Resources.Load("Character/character_face"));
         part_face.transform.position = part_head.transform.position;
@@ -246,7 +246,7 @@ public class HERO_SETUP : MonoBehaviour
         part_face.transform.parent = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck/head").transform;
     }
 
-    public void createGlass()
+    public void CreateGlasses()
     {
         part_glass = (GameObject)Object.Instantiate(Resources.Load("Character/glass"));
         part_glass.transform.position = part_head.transform.position;
@@ -254,7 +254,7 @@ public class HERO_SETUP : MonoBehaviour
         part_glass.transform.parent = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck/head").transform;
     }
 
-    public void setSkin()
+    public void SetSkin()
     {
         part_head.renderer.material = CharacterMaterials.materials[myCostume.skin_texture];
         part_chest.renderer.material = CharacterMaterials.materials[myCostume.skin_texture];
@@ -262,7 +262,7 @@ public class HERO_SETUP : MonoBehaviour
         part_hand_r.renderer.material = CharacterMaterials.materials[myCostume.skin_texture];
     }
 
-    public void setFacialTexture(GameObject go, int id)
+    public void SetFaceTexture(GameObject go, int id)
     {
         if (id >= 0)
         {
@@ -291,7 +291,7 @@ public class HERO_SETUP : MonoBehaviour
         return component2.gameObject;
     }
 
-    public void createCape2()
+    public void CreateCape()
     {
         if (!isDeadBody)
         {
@@ -303,7 +303,7 @@ public class HERO_SETUP : MonoBehaviour
         }
     }
 
-    public void createHair2()
+    public void CreateHair()
     {
         Object.Destroy(part_hair);
         if (!isDeadBody)
@@ -327,7 +327,7 @@ public class HERO_SETUP : MonoBehaviour
         }
     }
 
-    public void createHead2()
+    public void CreateHead()
     {
         Object.Destroy(part_eye);
         Object.Destroy(part_face);
@@ -337,30 +337,30 @@ public class HERO_SETUP : MonoBehaviour
         {
             ClothFactory.DisposeObject(part_hair_1);
         }
-        createHair2();
+        CreateHair();
         if (myCostume.eye_mesh.Length > 0)
         {
             part_eye = (GameObject)Object.Instantiate(Resources.Load("Character/" + myCostume.eye_mesh));
             part_eye.transform.position = part_head.transform.position;
             part_eye.transform.rotation = part_head.transform.rotation;
             part_eye.transform.parent = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck/head").transform;
-            setFacialTexture(part_eye, myCostume.eye_texture_id);
+            SetFaceTexture(part_eye, myCostume.eye_texture_id);
         }
         if (myCostume.beard_texture_id >= 0)
         {
-            createFace();
-            setFacialTexture(part_face, myCostume.beard_texture_id);
+            CreateFace();
+            SetFaceTexture(part_face, myCostume.beard_texture_id);
         }
         if (myCostume.glass_texture_id >= 0)
         {
-            createGlass();
-            setFacialTexture(part_glass, myCostume.glass_texture_id);
+            CreateGlasses();
+            SetFaceTexture(part_glass, myCostume.glass_texture_id);
         }
         part_head.renderer.material = CharacterMaterials.materials[myCostume.skin_texture];
         part_chest.renderer.material = CharacterMaterials.materials[myCostume.skin_texture];
     }
 
-    public void deleteCharacterComponent2()
+    public void DeleteCharacterComponent()
     {
         Object.Destroy(part_eye);
         Object.Destroy(part_face);
@@ -393,7 +393,7 @@ public class HERO_SETUP : MonoBehaviour
         Object.Destroy(part_blade_r);
     }
 
-    public void createUpperBody2()
+    public void CreateUpperBody()
     {
         Object.Destroy(part_upper_body);
         Object.Destroy(part_brand_1);
@@ -406,7 +406,7 @@ public class HERO_SETUP : MonoBehaviour
         {
             ClothFactory.DisposeObject(part_chest_3);
         }
-        createCape2();
+        CreateCape();
         if (myCostume.part_chest_object_mesh.Length > 0)
         {
             part_chest_1 = (GameObject)Object.Instantiate(Resources.Load("Character/" + myCostume.part_chest_object_mesh));

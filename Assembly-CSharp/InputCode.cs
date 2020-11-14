@@ -1,25 +1,25 @@
 public class InputCode
 {
-    public static int up;
-    public static int down = 1;
-    public static int left = 2;
-    public static int right = 3;
-    public static int jump = 4;
-    public static int dodge = 5;
-    public static int leftRope = 6;
-    public static int rightRope = 7;
-    public static int bothRope = 8;
-    public static int focus = 9;
-    public static int attack0 = 10;
-    public static int attack1 = 11;
-    public static int salute = 12;
-    public static int camera = 13;
-    public static int restart = 14;
-    public static int pause = 15;
-    public static int hideCursor = 16;
-    public static int fullscreen = 17;
-    public static int reload = 18;
-    public static int flare1 = 19;
-    public static int flare2 = 20;
-    public static int flare3 = 21;
+    public static int Up;
+    public static int Down = 1;
+    public static int Left = 2;
+    public static int Right = 3;
+    public static int Jump = 4;
+    public static int Dodge = 5;
+    public static int HookLeft = 6;
+    public static int HookRight = 7;
+    public static int HookBoth = 8;
+    public static int Focus = 9;
+    public static int Attack0 = 10;
+    public static int Attack1 = 11;
+    public static int Salute = 12;
+    public static int ChangeCamera = 13;
+    public static int Restart = 14;
+    public static int Pause = 15;
+    public static int ToggleCursor = 16;
+    public static int Fullscreen = 17;
+    public static int Reload = 18;
+    public static int Flare1 = 19;
+    public static int Flare2 = 20;
+    public static int Flare3 = 21;
 }

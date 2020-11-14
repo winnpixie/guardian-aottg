@@ -30,7 +30,7 @@ public class HERO_DEAD_BODY_SETUP : MonoBehaviour
         lifetime -= Time.deltaTime;
         if (lifetime <= 0f)
         {
-            base.gameObject.GetComponent<HERO_SETUP>().deleteCharacterComponent2();
+            base.gameObject.GetComponent<HERO_SETUP>().DeleteCharacterComponent();
             Object.Destroy(base.gameObject);
         }
     }
@@ -57,8 +57,8 @@ public class HERO_DEAD_BODY_SETUP : MonoBehaviour
                 Object.Destroy(blood_lower);
                 Object.Destroy(blood_arm_l);
                 Object.Destroy(blood_arm_r);
-                base.gameObject.GetComponent<HERO_SETUP>().createHead2();
-                base.gameObject.GetComponent<HERO_SETUP>().createUpperBody2();
+                base.gameObject.GetComponent<HERO_SETUP>().CreateHead();
+                base.gameObject.GetComponent<HERO_SETUP>().CreateUpperBody();
                 break;
             case BODY_PARTS.LOWER:
                 col_upper_arm_l.GetComponent<CapsuleCollider>().enabled = false;
@@ -76,7 +76,7 @@ public class HERO_DEAD_BODY_SETUP : MonoBehaviour
                 Object.Destroy(blood_upper2);
                 Object.Destroy(blood_arm_l);
                 Object.Destroy(blood_arm_r);
-                base.gameObject.GetComponent<HERO_SETUP>().createLowerBody();
+                base.gameObject.GetComponent<HERO_SETUP>().CreateLowerBody();
                 break;
             case BODY_PARTS.ARM_L:
                 col_upper_arm_r.GetComponent<CapsuleCollider>().enabled = false;
@@ -96,7 +96,7 @@ public class HERO_DEAD_BODY_SETUP : MonoBehaviour
                 Object.Destroy(blood_upper1);
                 Object.Destroy(blood_upper2);
                 Object.Destroy(blood_arm_r);
-                base.gameObject.GetComponent<HERO_SETUP>().createLeftArm();
+                base.gameObject.GetComponent<HERO_SETUP>().CreateLeftArm();
                 break;
             case BODY_PARTS.ARM_R:
                 col_upper_arm_l.GetComponent<CapsuleCollider>().enabled = false;
@@ -116,7 +116,7 @@ public class HERO_DEAD_BODY_SETUP : MonoBehaviour
                 Object.Destroy(blood_upper1);
                 Object.Destroy(blood_upper2);
                 Object.Destroy(blood_arm_l);
-                base.gameObject.GetComponent<HERO_SETUP>().createRightArm();
+                base.gameObject.GetComponent<HERO_SETUP>().CreateRightArm();
                 break;
         }
     }

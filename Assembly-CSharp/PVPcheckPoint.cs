@@ -58,7 +58,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
     private void Start()
     {
         fengGame = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>();
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             Object.Destroy(base.gameObject);
             return;
@@ -303,7 +303,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             fengGame.CheckPvPPoints();
             if (HasTeamWon(CheckPointState.Human))
             {
-                fengGame.gameWin2();
+                fengGame.WinGame();
             }
         }
         else
@@ -329,7 +329,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             fengGame.CheckPvPPoints();
             if (HasTeamWon(CheckPointState.Titan))
             {
-                fengGame.gameLose2();
+                fengGame.LoseGame();
             }
             if (hasAnnie)
             {

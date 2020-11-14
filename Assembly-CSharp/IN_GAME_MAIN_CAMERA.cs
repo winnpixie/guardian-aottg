@@ -9,7 +9,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         MouseY
     }
 
-    public static GameType Gametype = GameType.STOP;
+    public static GameType Gametype = GameType.Stop;
     public static int Difficulty;
     public static bool TriggerAutoLock;
     public static int Level;
@@ -134,7 +134,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         gameObject.transform.localPosition = new Vector3((int)((float)(-Screen.width) * 0.5f) + 14, (int)((float)(-Screen.height) * 0.5f), 0f);
         gameObject = GameObject.Find("LabelInfoBottomRight");
         gameObject.transform.localPosition = new Vector3((int)((float)Screen.width * 0.5f), (int)((float)(-Screen.height) * 0.5f), 0f);
-        gameObject.GetComponent<UILabel>().text = "Pause : " + GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().inputString[InputCode.pause] + " ";
+        gameObject.GetComponent<UILabel>().text = "Pause : " + GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().inputString[InputCode.Pause] + " ";
         gameObject = GameObject.Find("LabelInfoTopCenter");
         gameObject.transform.localPosition = new Vector3(0f, (int)((float)Screen.height * 0.5f), 0f);
         gameObject = GameObject.Find("LabelInfoTopRight");
@@ -148,7 +148,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             GameObject.Find("Chatroom").GetComponent<InRoomChat>().UpdatePosition();
         }
-        if (!UsingTitan || Gametype == GameType.SINGLE)
+        if (!UsingTitan || Gametype == GameType.Singleplayer)
         {
             GameObject.Find("skill_cd_bottom").transform.localPosition = new Vector3(0f, (int)((float)(-Screen.height) * 0.5f + 5f), 0f);
             GameObject.Find("GasUI").transform.localPosition = GameObject.Find("skill_cd_bottom").transform.localPosition;
@@ -173,7 +173,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
         if (main_object != null && main_object.GetComponent<HERO>() != null)
         {
-            if (Gametype == GameType.SINGLE)
+            if (Gametype == GameType.Singleplayer)
             {
                 main_object.GetComponent<HERO>().setSkillHUDPosition2();
             }
@@ -213,9 +213,9 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     private void Reset()
     {
-        if (Gametype == GameType.SINGLE)
+        if (Gametype == GameType.Singleplayer)
         {
-            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().restartGameSingle2();
+            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().RestartGameSingle();
         }
     }
 
@@ -613,15 +613,15 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             }
             GameObject.Find("flash").GetComponent<UISprite>().alpha = flashDuration * 0.5f;
         }
-        if (Gametype == GameType.STOP)
+        if (Gametype == GameType.Stop)
         {
             Screen.showCursor = true;
             Screen.lockCursor = false;
             return;
         }
-        if (Gametype != 0 && gameOver)
+        if (Gametype != GameType.Singleplayer && gameOver)
         {
-            if (inputManager.isInputDown[InputCode.attack1])
+            if (inputManager.isInputDown[InputCode.Attack1])
             {
                 if (spectatorMode)
                 {
@@ -632,7 +632,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     SetSpectorMode(val: true);
                 }
             }
-            if (inputManager.isInputDown[InputCode.flare1])
+            if (inputManager.isInputDown[InputCode.Flare1])
             {
                 int num = GameObject.FindGameObjectsWithTag("Player").Length;
                 currentPeekPlayerIndex++;
@@ -647,7 +647,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     lockAngle = false;
                 }
             }
-            if (inputManager.isInputDown[InputCode.flare2])
+            if (inputManager.isInputDown[InputCode.Flare2])
             {
                 currentPeekPlayerIndex--;
                 int num2 = GameObject.FindGameObjectsWithTag("Player").Length;
@@ -671,7 +671,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 return;
             }
         }
-        if (inputManager.isInputDown[InputCode.pause])
+        if (inputManager.isInputDown[InputCode.Pause])
         {
             if (IsPausing)
             {
@@ -687,7 +687,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             IsPausing = !IsPausing;
             if (IsPausing)
             {
-                if (Gametype == GameType.SINGLE)
+                if (Gametype == GameType.Singleplayer)
                 {
                     UnityEngine.Time.timeScale = 0f;
                 }
@@ -703,7 +703,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             Screen.lockCursor = !Screen.lockCursor;
             Screen.lockCursor = !Screen.lockCursor;
         }
-        if (inputManager.isInputDown[InputCode.fullscreen])
+        if (inputManager.isInputDown[InputCode.Fullscreen])
         {
             Screen.fullScreen = !Screen.fullScreen;
             if (Screen.fullScreen)
@@ -717,7 +717,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             needSetHUD = true;
             Minimap.OnScreenResolutionChanged();
         }
-        if (inputManager.isInputDown[InputCode.restart])
+        if (inputManager.isInputDown[InputCode.Restart])
         {
             Reset();
         }
@@ -725,7 +725,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             return;
         }
-        if (inputManager.isInputDown[InputCode.camera])
+        if (inputManager.isInputDown[InputCode.ChangeCamera])
         {
             switch (CameraMode)
             {
@@ -747,11 +747,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 Screen.showCursor = false;
             }
         }
-        if (inputManager.isInputDown[InputCode.hideCursor])
+        if (inputManager.isInputDown[InputCode.ToggleCursor])
         {
             Screen.showCursor = !Screen.showCursor;
         }
-        if (inputManager.isInputDown[InputCode.focus])
+        if (inputManager.isInputDown[InputCode.Focus])
         {
             TriggerAutoLock = !TriggerAutoLock;
             if (TriggerAutoLock)

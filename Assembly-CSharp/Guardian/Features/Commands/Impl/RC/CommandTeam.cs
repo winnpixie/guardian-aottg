@@ -20,7 +20,7 @@ namespace Guardian.Features.Commands.Impl.RC
                         HERO hero = GameHelper.GetHero(PhotonNetwork.player);
                         if (hero != null)
                         {
-                            hero.markDie();
+                            hero.MarkDead();
                             hero.photonView.RPC("netDie2", PhotonTargets.All, new object[] { -1, "Team Switch" });
                         }
                     }
@@ -31,7 +31,7 @@ namespace Guardian.Features.Commands.Impl.RC
                         HERO hero = GameHelper.GetHero(PhotonNetwork.player);
                         if (hero != null)
                         {
-                            hero.markDie();
+                            hero.MarkDead();
                             hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "Team Switch");
                         }
                     }
@@ -42,7 +42,7 @@ namespace Guardian.Features.Commands.Impl.RC
                         HERO hero = GameHelper.GetHero(PhotonNetwork.player);
                         if (hero != null)
                         {
-                            hero.markDie();
+                            hero.MarkDead();
                             hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "Team Switch");
                         }
                     }

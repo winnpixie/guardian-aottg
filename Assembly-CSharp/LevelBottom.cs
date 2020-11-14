@@ -17,7 +17,7 @@ public class LevelBottom : MonoBehaviour
             {
                 return;
             }
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
             {
                 if (other.gameObject.GetPhotonView().isMine)
                 {
@@ -26,7 +26,7 @@ public class LevelBottom : MonoBehaviour
             }
             else
             {
-                other.gameObject.GetComponent<HERO>().die(other.gameObject.rigidbody.velocity * 50f, isBite: false);
+                other.gameObject.GetComponent<HERO>().Die(other.gameObject.rigidbody.velocity * 50f, isBite: false);
             }
         }
         else if (type == BottomType.Teleport)

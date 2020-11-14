@@ -10,12 +10,12 @@ public class RacingKillTrigger : MonoBehaviour
             return;
         }
         gameObject = gameObject.transform.root.gameObject;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && gameObject.GetPhotonView() != null && gameObject.GetPhotonView().isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && gameObject.GetPhotonView() != null && gameObject.GetPhotonView().isMine)
         {
             HERO component = gameObject.GetComponent<HERO>();
             if (component != null)
             {
-                component.markDie();
+                component.MarkDead();
                 component.photonView.RPC("netDie2", PhotonTargets.All, -1, "Server");
             }
         }

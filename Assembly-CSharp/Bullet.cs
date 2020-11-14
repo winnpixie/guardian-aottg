@@ -233,7 +233,7 @@ public class Bullet : Photon.MonoBehaviour
     {
         if (master == null)
         {
-            removeMe();
+            RemoveMe();
         }
         else
         {
@@ -312,7 +312,7 @@ public class Bullet : Photon.MonoBehaviour
                     lineRenderer.SetWidth(0.1f - killTime, 0.1f - killTime);
                     if (killTime > 0.1f)
                     {
-                        removeMe();
+                        RemoveMe();
                     }
                 }
             }
@@ -343,32 +343,32 @@ public class Bullet : Photon.MonoBehaviour
                     lineRenderer.SetWidth(0.1f - killTime, 0.1f - killTime);
                     if (killTime > 0.1f)
                     {
-                        removeMe();
+                        RemoveMe();
                     }
                 }
             }
         }
     }
 
-    public void disable()
+    public void Disable()
     {
         phase = 2;
         killTime = 0f;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
         {
             base.photonView.RPC("setPhase", PhotonTargets.Others, 2);
         }
     }
 
-    public void removeMe()
+    public void RemoveMe()
     {
         isdestroying = true;
-        if (IN_GAME_MAIN_CAMERA.Gametype != 0 && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
         {
             PhotonNetwork.Destroy(base.photonView);
             PhotonNetwork.RemoveRPCs(base.photonView);
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             UnityEngine.Object.Destroy(rope);
             UnityEngine.Object.Destroy(base.gameObject);
@@ -406,11 +406,11 @@ public class Bullet : Photon.MonoBehaviour
             if (spiralcount >= 60)
             {
                 isdestroying = true;
-                removeMe();
+                RemoveMe();
                 return;
             }
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype != 0 && !base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine)
         {
             if (phase == 0)
             {
@@ -424,7 +424,7 @@ public class Bullet : Photon.MonoBehaviour
             {
                 return;
             }
-            checkTitan();
+            CheckTitan();
             base.gameObject.transform.position += velocity * Time.deltaTime * 50f + velocity2 * Time.deltaTime;
             LayerMask mask = 1 << LayerMask.NameToLayer("EnemyBox");
             LayerMask mask2 = 1 << LayerMask.NameToLayer("Ground");
@@ -436,7 +436,7 @@ public class Bullet : Photon.MonoBehaviour
                 bool flag3 = true;
                 if (hitInfo.collider.transform.gameObject.layer == LayerMask.NameToLayer("EnemyBox"))
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                     {
                         object[] parameters = new object[1]
                         {
@@ -453,7 +453,7 @@ public class Bullet : Photon.MonoBehaviour
                 }
                 else if (hitInfo.collider.transform.gameObject.layer == LayerMask.NameToLayer("NetworkObject") && hitInfo.collider.transform.gameObject.tag == "Player" && !leviMode)
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                     {
                         object[] parameters2 = new object[1]
                         {
@@ -475,12 +475,12 @@ public class Bullet : Photon.MonoBehaviour
                 }
                 if (flag3)
                 {
-                    master.GetComponent<HERO>().launch(hitInfo.point, left, leviMode);
+                    master.GetComponent<HERO>().Launch(hitInfo.point, left, leviMode);
                     base.transform.position = hitInfo.point;
                     if (phase != 2)
                     {
                         phase = 1;
-                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                         {
                             object[] parameters3 = new object[1]
                             {
@@ -510,7 +510,7 @@ public class Bullet : Photon.MonoBehaviour
             if (killTime2 > 0.8f)
             {
                 phase = 4;
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     object[] parameters5 = new object[1]
                     {
@@ -522,7 +522,7 @@ public class Bullet : Photon.MonoBehaviour
         }
     }
 
-    public void checkTitan()
+    public void CheckTitan()
     {
         GameObject main_object = Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
         if (!(main_object != null) || !(master != null) || !(master == main_object) || !Physics.Raycast(layerMask: ((LayerMask)(1 << LayerMask.NameToLayer("PlayerAttackBox"))).value, origin: base.transform.position, direction: velocity, hitInfo: out RaycastHit hitInfo, distance: 10f))

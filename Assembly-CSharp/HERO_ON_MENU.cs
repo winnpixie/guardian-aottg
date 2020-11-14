@@ -13,9 +13,9 @@ public class HERO_ON_MENU : MonoBehaviour
     {
         HERO_SETUP component = base.gameObject.GetComponent<HERO_SETUP>();
         HeroCostume.Init();
-        component.init();
-        component.myCostume = HeroCostume.costume[costumeId];
-        component.setCharacterComponent();
+        component.Init();
+        component.myCostume = HeroCostume.Costumes[costumeId];
+        component.CreateCharacterComponent();
         head = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck/head");
         cameraPref = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R");
         if (costumeId == 9)

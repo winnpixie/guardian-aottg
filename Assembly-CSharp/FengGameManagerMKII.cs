@@ -241,7 +241,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
     private void Update()
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype != 0)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
         {
             GameObject netStatus = GameObject.Find("LabelNetworkStatus");
             if (netStatus)
@@ -308,7 +308,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     {
         myLastHero = id.ToUpper();
         ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add("dead", true);
+        hashtable.Add(PhotonPlayerProperty.Dead, true);
         hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
         PhotonNetwork.player.SetCustomProperties(hashtable);
         Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
@@ -405,7 +405,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         UnityEngine.MonoBehaviour.print("OnConnectionFail : " + cause.ToString());
         Screen.lockCursor = false;
         Screen.showCursor = true;
-        IN_GAME_MAIN_CAMERA.Gametype = GameType.STOP;
+        IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
         gameStart = false;
         NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[0], state: false);
         NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[1], state: false);
@@ -527,7 +527,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             case GameMode.TROST:
                 if (AreAllPlayersDead())
                 {
-                    gameLose2();
+                    LoseGame();
                 }
                 break;
             case GameMode.PVP_AHSS:
@@ -535,18 +535,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     if (AreAllPlayersDead())
                     {
-                        gameLose2();
+                        LoseGame();
                         teamWinner = 0;
                     }
                     if (IsTeamDead(1))
                     {
                         teamWinner = 2;
-                        gameWin2();
+                        WinGame();
                     }
                     if (IsTeamDead(2))
                     {
                         teamWinner = 1;
-                        gameWin2();
+                        WinGame();
                     }
                 }
                 break;
@@ -558,12 +558,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         if (PVPtitanScore >= PVPtitanScoreMax)
         {
             PVPtitanScore = PVPtitanScoreMax;
-            gameLose2();
+            LoseGame();
         }
         else if (PVPhumanScore >= PVPhumanScoreMax)
         {
             PVPhumanScore = PVPhumanScoreMax;
-            gameWin2();
+            WinGame();
         }
     }
 
@@ -578,7 +578,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             base.photonView.RPC("getRacingResult", PhotonTargets.MasterClient, LoginFengKAI.Player.Name, num);
         }
-        gameWin2();
+        WinGame();
     }
 
     [RPC]
@@ -588,7 +588,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         racingResult.name = player;
         racingResult.time = time;
         this.racingResult.Add(racingResult);
-        refreshRacingResult2();
+        RefreshRacingResult();
     }
 
     [RPC]
@@ -597,32 +597,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         localRacingResult = tmp;
     }
 
-    public void randomSpawnTitan(string place, int rate, int num, bool punk = false)
-    {
-        if (num == -1)
-        {
-            num = 1;
-        }
-        GameObject[] array = GameObject.FindGameObjectsWithTag(place);
-        if (array.Length <= 0)
-        {
-            return;
-        }
-        for (int i = 0; i < num; i++)
-        {
-            int num2 = UnityEngine.Random.Range(0, array.Length);
-            GameObject gameObject = array[num2];
-            while (array[num2] == null)
-            {
-                num2 = UnityEngine.Random.Range(0, array.Length);
-                gameObject = array[num2];
-            }
-            array[num2] = null;
-            SpawnTitan(rate, gameObject.transform.position, gameObject.transform.rotation, punk);
-        }
-    }
-
-    public GameObject randomSpawnOneTitan(string place, int rate)
+    public GameObject SpawnTitanRandom(string place, int rate, bool punk = false)
     {
         GameObject[] array = GameObject.FindGameObjectsWithTag(place);
         int num = UnityEngine.Random.Range(0, array.Length);
@@ -633,12 +608,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             gameObject = array[num];
         }
         array[num] = null;
-        return SpawnTitan(rate, gameObject.transform.position, gameObject.transform.rotation);
+        return SpawnTitan(rate, gameObject.transform.position, gameObject.transform.rotation, punk);
     }
 
     public GameObject SpawnTitanRaw(Vector3 position, Quaternion rotation)
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             return (GameObject)UnityEngine.Object.Instantiate(Resources.Load("TITAN_VER3.1"), position, rotation);
         }
@@ -696,7 +671,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: false);
         }
-        GameObject gameObject2 = (IN_GAME_MAIN_CAMERA.Gametype != 0) ? PhotonNetwork.Instantiate("FX/FXtitanSpawn", gameObject.transform.position, Quaternion.Euler(-90f, 0f, 0f), 0) : ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/FXtitanSpawn"), gameObject.transform.position, Quaternion.Euler(-90f, 0f, 0f)));
+        GameObject gameObject2 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer) ? PhotonNetwork.Instantiate("FX/FXtitanSpawn", gameObject.transform.position, Quaternion.Euler(-90f, 0f, 0f), 0) : ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/FXtitanSpawn"), gameObject.transform.position, Quaternion.Euler(-90f, 0f, 0f)));
         gameObject2.transform.localScale = gameObject.transform.localScale;
         return gameObject;
     }
@@ -736,7 +711,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     [RPC]
     public void oneTitanDown(string name1, bool onPlayerLeave)
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype != 0 && !PhotonNetwork.isMasterClient)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !PhotonNetwork.isMasterClient)
         {
             return;
         }
@@ -780,7 +755,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             case GameMode.KILL_TITAN:
                 if (AreAllTitansDead())
                 {
-                    gameWin2();
+                    WinGame();
                     Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 }
                 break;
@@ -790,7 +765,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     return;
                 }
                 wave++;
-                if ((Level.RespawnMode == RespawnMode.NEWROUND || (Level.Name.StartsWith("Custom") && RCSettings.GameType == 1)) && IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+                if ((Level.RespawnMode == RespawnMode.NEWROUND || (Level.Name.StartsWith("Custom") && RCSettings.GameType == 1)) && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     foreach (PhotonPlayer photonPlayer in PhotonNetwork.playerList)
                     {
@@ -800,7 +775,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         }
                     }
                 }
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     sendChatContentInfo("Wave ".WithColor("a8ff24") + wave + " / " + RCSettings.GetMaxWave());
                 }
@@ -814,7 +789,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 if (wave > RCSettings.GetMaxWave())
                 {
-                    gameWin2();
+                    WinGame();
                     return;
                 }
                 int abnormal = 90;
@@ -1228,7 +1203,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             }
             ResetSettings(isLeave: true);
             LoadConfig();
-            IN_GAME_MAIN_CAMERA.Gametype = GameType.STOP;
+            IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
             gameStart = false;
             Screen.lockCursor = false;
             Screen.showCursor = true;
@@ -1352,7 +1327,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setHUDposition();
         Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(IN_GAME_MAIN_CAMERA.Time);
 
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             single_kills = 0;
             single_maxDamage = 0;
@@ -1375,7 +1350,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         PVPcheckPoint.chkPts = new ArrayList();
         Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().enabled = false;
         Camera.main.GetComponent<CameraShake>().enabled = false;
-        IN_GAME_MAIN_CAMERA.Gametype = GameType.MULTIPLAYER;
+        IN_GAME_MAIN_CAMERA.Gametype = GameType.Multiplayer;
 
         if (Level.Mode == GameMode.TROST)
         {
@@ -1694,9 +1669,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     {
         RecompilePlayerList(0.1f);
         PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
-        ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
+        ExitGames.Client.Photon.Hashtable properties = (ExitGames.Client.Photon.Hashtable)playerAndUpdatedProps[1];
+        PhotonPlayer sender = null;
+        if (properties.ContainsKey("sender") && properties["sender"] is PhotonPlayer)
+        {
+            sender = (PhotonPlayer)properties["sender"];
+        }
 
-        if (player.isLocal)
+        if (player.isLocal && sender != null && !sender.isLocal)
         {
             ExitGames.Client.Photon.Hashtable restored = new ExitGames.Client.Photon.Hashtable();
             if (properties.ContainsKey("name") && GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) != LoginFengKAI.Player.Name)
@@ -1768,7 +1748,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             GameObject.Find("LabelResultTitle").GetComponent<UILabel>().text = gameResult;
             Screen.lockCursor = false;
             Screen.showCursor = true;
-            IN_GAME_MAIN_CAMERA.Gametype = GameType.STOP;
+            IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
             gameStart = false;
         }
         else if (!info.sender.isMasterClient && PhotonNetwork.player.isMasterClient)
@@ -1920,9 +1900,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             CoreEditor();
             return;
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype != 0 && needChooseSide)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && needChooseSide)
         {
-            if (inputManager.isInputDown[InputCode.flare1])
+            if (inputManager.isInputDown[InputCode.Flare1])
             {
                 if (NGUITools.GetActive(ui.GetComponent<UIReferArray>().panels[3]))
                 {
@@ -1956,12 +1936,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 inputManager.menuOn = true;
             }
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE && IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer)
         {
             return;
         }
 
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER) // Multiplayer messages
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer) // Multiplayer messages
         {
             coreadd();
             ShowHUDInfoTopLeft(playerList);
@@ -1969,7 +1949,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             // Respawn message
             if (Camera.main != null && Level.Mode != GameMode.RACING && Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver && !needChooseSide && (int)Settings[245] == 0)
             {
-                ShowHUDInfoCenter("Press [F7D358]" + inputManager.inputString[InputCode.flare1] + "[-] to spectate the next player. \nPress [F7D358]" + inputManager.inputString[InputCode.flare2] + "[-] to spectate the previous player.\nPress [F7D358]" + inputManager.inputString[InputCode.attack1] + "[-] to enter the spectator mode.\n\n\n\n");
+                ShowHUDInfoCenter("Press [F7D358]" + inputManager.inputString[InputCode.Flare1] + "[-] to spectate the next player. \nPress [F7D358]" + inputManager.inputString[InputCode.Flare2] + "[-] to spectate the previous player.\nPress [F7D358]" + inputManager.inputString[InputCode.Attack1] + "[-] to enter the spectator mode.\n\n\n\n");
                 if (Level.RespawnMode == RespawnMode.DEATHMATCH || RCSettings.EndlessMode > 0 || ((RCSettings.BombMode == 1 || RCSettings.PvPMode > 0) && RCSettings.PointMode > 0))
                 {
                     myRespawnTime += Time.deltaTime;
@@ -2073,7 +2053,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
             timeTotalServer += Time.deltaTime;
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE) // Singleplayer messages
+        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) // Singleplayer messages
         {
             if (Level.Mode == GameMode.RACING)
             {
@@ -2093,11 +2073,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     if (Level.Mode == GameMode.SURVIVE_MODE)
                     {
-                        ShowHUDInfoCenter("Survived " + wave + " Waves!\nPress " + inputManager.inputString[InputCode.restart] + " to restart.");
+                        ShowHUDInfoCenter("Survived " + wave + " Waves!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                     }
                     else
                     {
-                        ShowHUDInfoCenter("Humanity Fail!\nPress " + inputManager.inputString[InputCode.restart] + " to restart.");
+                        ShowHUDInfoCenter("Humanity Fail!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                     }
                 }
             }
@@ -2108,13 +2088,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 switch (Level.Mode)
                 {
                     case GameMode.RACING:
-                        ShowHUDInfoCenter(((float)(int)(timeTotalServer * 10f) * 0.1f - 5f).ToString() + "s !\nPress " + inputManager.inputString[InputCode.restart] + " to restart.");
+                        ShowHUDInfoCenter(((float)(int)(timeTotalServer * 10f) * 0.1f - 5f).ToString() + "s !\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                         break;
                     case GameMode.SURVIVE_MODE:
-                        ShowHUDInfoCenter("Survived All Waves!\nPress " + inputManager.inputString[InputCode.restart] + " to restart.");
+                        ShowHUDInfoCenter("Survived All Waves!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                         break;
                     default:
-                        ShowHUDInfoCenter("Humanity Win!\nPress " + inputManager.inputString[InputCode.restart] + " to restart.");
+                        ShowHUDInfoCenter("Humanity Win!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                         break;
                 }
             }
@@ -2137,7 +2117,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
         if (Level.Mode == GameMode.RACING)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 if (!isWinning)
                 {
@@ -2223,7 +2203,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 case GameMode.KILL_TITAN:
                 case GameMode.None:
                     text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length
-                        + " Time : " + GameHelper.FormatTime((IN_GAME_MAIN_CAMERA.Gametype != 0 ? (time - timeTotalServer) : timeTotalServer));
+                        + " Time : " + GameHelper.FormatTime((IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer));
                     break;
                 case GameMode.SURVIVE_MODE:
                     text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length
@@ -2250,7 +2230,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             ShowHUDInfoTopCenter(text);
             text = string.Empty;
 
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 if (Level.Mode == GameMode.SURVIVE_MODE)
                 {
@@ -2306,7 +2286,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             {
                 ShowHUDInfoTopRightMAPNAME("\n" + Level.Name + " : " + difficultyTxt);
             }
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
             {
                 string[] array = PhotonNetwork.room.name.Split('`');
                 string roomName = array[0];
@@ -2325,15 +2305,15 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
             }
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && killInfoGO.Count > 0 && killInfoGO[0] == null)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && killInfoGO.Count > 0 && killInfoGO[0] == null)
         {
             killInfoGO.RemoveAt(0);
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || !PhotonNetwork.isMasterClient || (timeTotalServer < (float)time))
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || !PhotonNetwork.isMasterClient || (timeTotalServer < (float)time))
         {
             return;
         }
-        IN_GAME_MAIN_CAMERA.Gametype = GameType.STOP;
+        IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
         gameStart = false;
         Screen.lockCursor = false;
         Screen.showCursor = true;
@@ -2425,7 +2405,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             GameObject mainCam = GameObject.Find("MainCamera");
             IN_GAME_MAIN_CAMERA component = mainCam.GetComponent<IN_GAME_MAIN_CAMERA>();
             myLastHero = id.ToUpper();
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 if (IN_GAME_MAIN_CAMERA.SingleCharacter == "TITAN_EREN")
                 {
@@ -2441,7 +2421,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         HeroCostume heroCostume = CostumeConverter.FromLocalData(IN_GAME_MAIN_CAMERA.SingleCharacter);
                         heroCostume.CheckStats();
                         CostumeConverter.ToLocalData(heroCostume, IN_GAME_MAIN_CAMERA.SingleCharacter);
-                        setup.init();
+                        setup.Init();
                         if (heroCostume != null)
                         {
                             setup.myCostume = heroCostume;
@@ -2449,29 +2429,29 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         }
                         else
                         {
-                            heroCostume = HeroCostume.costumeOption[3];
+                            heroCostume = HeroCostume.CostumeOptions[3];
                             setup.myCostume = heroCostume;
                             setup.myCostume.stat = HeroStat.getInfo(heroCostume.name.ToUpper());
                         }
-                        setup.setCharacterComponent();
+                        setup.CreateCharacterComponent();
                         hero.setStat2();
                         hero.setSkillHUDPosition2();
                     }
                     else
                     {
-                        for (int i = 0; i < HeroCostume.costume.Length; i++)
+                        for (int i = 0; i < HeroCostume.Costumes.Length; i++)
                         {
-                            if (HeroCostume.costume[i].name.ToUpper() == IN_GAME_MAIN_CAMERA.SingleCharacter.ToUpper())
+                            if (HeroCostume.Costumes[i].name.ToUpper() == IN_GAME_MAIN_CAMERA.SingleCharacter.ToUpper())
                             {
-                                int num = HeroCostume.costume[i].id + CheckBoxCostume.costumeSet - 1;
-                                if (HeroCostume.costume[num].name != HeroCostume.costume[i].name)
+                                int num = HeroCostume.Costumes[i].id + CheckBoxCostume.costumeSet - 1;
+                                if (HeroCostume.Costumes[num].name != HeroCostume.Costumes[i].name)
                                 {
-                                    num = HeroCostume.costume[i].id + 1;
+                                    num = HeroCostume.Costumes[i].id + 1;
                                 }
-                                setup.init();
-                                setup.myCostume = HeroCostume.costume[num];
-                                setup.myCostume.stat = HeroStat.getInfo(HeroCostume.costume[num].name.ToUpper());
-                                setup.setCharacterComponent();
+                                setup.Init();
+                                setup.myCostume = HeroCostume.Costumes[num];
+                                setup.myCostume.stat = HeroStat.getInfo(HeroCostume.Costumes[num].name.ToUpper());
+                                setup.CreateCharacterComponent();
                                 hero.setStat2();
                                 hero.setSkillHUDPosition2();
                                 break;
@@ -2491,7 +2471,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     HeroCostume heroCostume2 = CostumeConverter.FromLocalData(id);
                     heroCostume2.CheckStats();
                     CostumeConverter.ToLocalData(heroCostume2, id);
-                    setup.init();
+                    setup.Init();
                     if (heroCostume2 != null)
                     {
                         setup.myCostume = heroCostume2;
@@ -2499,33 +2479,33 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     }
                     else
                     {
-                        heroCostume2 = HeroCostume.costumeOption[3];
+                        heroCostume2 = HeroCostume.CostumeOptions[3];
                         setup.myCostume = heroCostume2;
                         setup.myCostume.stat = HeroStat.getInfo(heroCostume2.name.ToUpper());
                     }
-                    setup.setCharacterComponent();
+                    setup.CreateCharacterComponent();
                     hero.setStat2();
                     hero.setSkillHUDPosition2();
                 }
                 else
                 {
-                    for (int j = 0; j < HeroCostume.costume.Length; j++)
+                    for (int j = 0; j < HeroCostume.Costumes.Length; j++)
                     {
-                        if (HeroCostume.costume[j].name.ToUpper() == id.ToUpper())
+                        if (HeroCostume.Costumes[j].name.ToUpper() == id.ToUpper())
                         {
-                            int num2 = HeroCostume.costume[j].id;
+                            int num2 = HeroCostume.Costumes[j].id;
                             if (id.ToUpper() != "AHSS")
                             {
                                 num2 += CheckBoxCostume.costumeSet - 1;
                             }
-                            if (HeroCostume.costume[num2].name != HeroCostume.costume[j].name)
+                            if (HeroCostume.Costumes[num2].name != HeroCostume.Costumes[j].name)
                             {
-                                num2 = HeroCostume.costume[j].id + 1;
+                                num2 = HeroCostume.Costumes[j].id + 1;
                             }
-                            setup.init();
-                            setup.myCostume = HeroCostume.costume[num2];
-                            setup.myCostume.stat = HeroStat.getInfo(HeroCostume.costume[num2].name.ToUpper());
-                            setup.setCharacterComponent();
+                            setup.Init();
+                            setup.myCostume = HeroCostume.Costumes[num2];
+                            setup.myCostume.stat = HeroStat.getInfo(HeroCostume.Costumes[num2].name.ToUpper());
+                            setup.CreateCharacterComponent();
                             hero.setStat2();
                             hero.setSkillHUDPosition2();
                             break;
@@ -2598,7 +2578,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
     }
 
-    public void gameLose2()
+    public void LoseGame()
     {
         if (isWinning || isLosing)
         {
@@ -2607,7 +2587,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         isLosing = true;
         titanScore++;
         gameEndCD = gameEndTotalCDtime;
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
         {
             base.photonView.RPC("netGameLose", PhotonTargets.Others, titanScore);
             if ((int)Settings[244] == 1)
@@ -2617,7 +2597,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
     }
 
-    public void gameWin2()
+    public void WinGame()
     {
         if (isLosing || isWinning)
         {
@@ -2637,14 +2617,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     gameEndCD = 20f;
                 }
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     base.photonView.RPC("netGameWin", PhotonTargets.Others, 0);
                 }
                 break;
             case GameMode.PVP_AHSS:
                 gameEndCD = gameEndTotalCDtime;
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     base.photonView.RPC("netGameWin", PhotonTargets.Others, teamWinner);
                 }
@@ -2655,7 +2635,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 break;
         }
 
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
         {
             base.photonView.RPC("netGameWin", PhotonTargets.Others, humanScore);
             if ((int)Settings[244] == 1)
@@ -2698,7 +2678,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         return true;
     }
 
-    private void refreshRacingResult2()
+    private void RefreshRacingResult()
     {
         localRacingResult = "Result\n";
         IComparer comparer = new IComparerRacingResult();
@@ -2721,7 +2701,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         base.photonView.RPC("netRefreshRacingResult", PhotonTargets.All, localRacingResult);
     }
 
-    public void restartGameSingle2()
+    public void RestartGameSingle()
     {
         startRacing = false;
         endRacing = false;
@@ -3186,7 +3166,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                                 HERO hero = (HERO)heroes[k];
                                 if (hero.photonView.owner == player)
                                 {
-                                    hero.markDie();
+                                    hero.MarkDead();
                                     hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "noswitchingfagt");
                                 }
                             }
@@ -3199,7 +3179,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 if (num19 <= 0 && Level.Mode != 0)
                 {
-                    gameWin2();
+                    WinGame();
                 }
             }
             else if (RCSettings.PointMode > 0)
@@ -3214,7 +3194,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                             string.Empty
                         };
                         base.photonView.RPC("Chat", PhotonTargets.All, parameters);
-                        gameWin2();
+                        WinGame();
                     }
                     else if (magentaKills >= RCSettings.PointMode)
                     {
@@ -3224,7 +3204,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                             string.Empty
                         };
                         base.photonView.RPC("Chat", PhotonTargets.All, args);
-                        gameWin2();
+                        WinGame();
                     }
                 }
                 else if (RCSettings.TeamMode == 0)
@@ -3240,7 +3220,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                                 string.Empty
                             };
                             base.photonView.RPC("Chat", PhotonTargets.All, parameters2);
-                            gameWin2();
+                            WinGame();
                         }
                     }
                 }
@@ -3287,7 +3267,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                                 string.Empty
                             };
                             base.photonView.RPC("Chat", PhotonTargets.All, parameters3);
-                            gameWin2();
+                            WinGame();
                         }
                         else if (num21 == 0)
                         {
@@ -3297,7 +3277,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                                 string.Empty
                             };
                             base.photonView.RPC("Chat", PhotonTargets.All, parameters4);
-                            gameWin2();
+                            WinGame();
                         }
                     }
                 }
@@ -3336,7 +3316,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                             string.Empty
                         };
                         base.photonView.RPC("Chat", PhotonTargets.All, parameters5);
-                        gameWin2();
+                        WinGame();
                     }
                 }
             }
@@ -5377,7 +5357,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             HeroCostume heroCostume = CostumeConverter.FromLocalData(text);
             heroCostume.CheckStats();
             CostumeConverter.ToLocalData(heroCostume, text);
-            setup.init();
+            setup.Init();
             if (heroCostume != null)
             {
                 setup.myCostume = heroCostume;
@@ -5385,33 +5365,33 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             }
             else
             {
-                heroCostume = HeroCostume.costumeOption[3];
+                heroCostume = HeroCostume.CostumeOptions[3];
                 setup.myCostume = heroCostume;
                 setup.myCostume.stat = HeroStat.getInfo(heroCostume.name.ToUpper());
             }
-            setup.setCharacterComponent();
+            setup.CreateCharacterComponent();
             hero.setStat2();
             hero.setSkillHUDPosition2();
         }
         else
         {
-            for (int i = 0; i < HeroCostume.costume.Length; i++)
+            for (int i = 0; i < HeroCostume.Costumes.Length; i++)
             {
-                if (HeroCostume.costume[i].name.ToUpper() == text.ToUpper())
+                if (HeroCostume.Costumes[i].name.ToUpper() == text.ToUpper())
                 {
-                    int num = HeroCostume.costume[i].id;
+                    int num = HeroCostume.Costumes[i].id;
                     if (text.ToUpper() != "AHSS")
                     {
                         num += CheckBoxCostume.costumeSet - 1;
                     }
-                    if (HeroCostume.costume[num].name != HeroCostume.costume[i].name)
+                    if (HeroCostume.Costumes[num].name != HeroCostume.Costumes[i].name)
                     {
-                        num = HeroCostume.costume[i].id + 1;
+                        num = HeroCostume.Costumes[i].id + 1;
                     }
-                    setup.init();
-                    setup.myCostume = HeroCostume.costume[num];
-                    setup.myCostume.stat = HeroStat.getInfo(HeroCostume.costume[num].name.ToUpper());
-                    setup.setCharacterComponent();
+                    setup.Init();
+                    setup.myCostume = HeroCostume.Costumes[num];
+                    setup.myCostume.stat = HeroStat.getInfo(HeroCostume.Costumes[num].name.ToUpper());
+                    setup.CreateCharacterComponent();
                     hero.setStat2();
                     hero.setSkillHUDPosition2();
                     break;
@@ -5821,7 +5801,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             CustomLevelLoaded = false;
         }
-        if (PhotonNetwork.isMasterClient || IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (PhotonNetwork.isMasterClient || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             if (isFirstLoad)
             {
@@ -6375,7 +6355,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             return;
         }
         InstantiateTracker.instance.Dispose();
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.MULTIPLAYER && PhotonNetwork.isMasterClient)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
             updateTime = 1f;
             if (OldScriptLogic != CurrentScriptLogic)
@@ -6410,7 +6390,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         racingSpawnPointSet = false;
         racingDoors = new List<GameObject>();
         allowedToCannon = new Dictionary<int, CannonValues>();
-        if (!Level.Name.StartsWith("Custom") && (int)Settings[2] == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || PhotonNetwork.isMasterClient))
+        if (!Level.Name.StartsWith("Custom") && (int)Settings[2] == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || PhotonNetwork.isMasterClient))
         {
             GameObject gameObject3 = GameObject.Find("aot_supply");
             if (gameObject3 != null && Minimap.Instance != null)
@@ -6461,7 +6441,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     array3[i] = (string)Settings[i + 163];
                 }
             }
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 StartCoroutine(LoadSkinE(text4, text2, text3, array3));
             }
@@ -6494,7 +6474,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     gameObject.renderer.material.mainTexture = ((Material)RCAssets.Load("grass")).mainTexture;
                 }
             }
-            if (!PhotonNetwork.isMasterClient && IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
+            if (!PhotonNetwork.isMasterClient && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
             {
                 return;
             }
@@ -7189,7 +7169,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     [RPC]
     private void customlevelRPC(string[] content, PhotonMessageInfo info)
     {
-        if (info.sender.isMasterClient || IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (info.sender.isMasterClient || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             if (content.Length == 1 && content[0] == "loadcached")
             {
@@ -7218,7 +7198,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     [RPC]
     private void clearlevel(string[] link, int gametype, PhotonMessageInfo info)
     {
-        if (info.sender.isMasterClient || IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (info.sender.isMasterClient || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             switch (gametype)
             {
@@ -7732,7 +7712,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
     public void OnGUI()
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.STOP && Application.loadedLevelName != "characterCreation")
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop && Application.loadedLevelName != "characterCreation")
         {
             if (IsAssetLoaded)
             {
@@ -7910,7 +7890,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         else
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.STOP)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop)
             {
                 return;
             }
@@ -8121,7 +8101,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     {
                         Screen.lockCursor = false;
                         Screen.showCursor = true;
-                        IN_GAME_MAIN_CAMERA.Gametype = GameType.STOP;
+                        IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
                         inputManager.menuOn = false;
                         UnityEngine.Object.Destroy(GameObject.Find("MultiplayerManager"));
                         Application.LoadLevel("menu");
@@ -11276,7 +11256,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 else if (GUI.Button(new Rect(num7 + 565f, num8 + 465f, 75f, 25f), "Continue"))
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         Time.timeScale = 1f;
                     }
@@ -11305,7 +11285,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 else if (GUI.Button(new Rect(num7 + 645f, num8 + 465f, 40f, 25f), "Quit"))
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
                         Time.timeScale = 1f;
                     }
@@ -11315,7 +11295,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     }
                     Screen.lockCursor = false;
                     Screen.showCursor = true;
-                    IN_GAME_MAIN_CAMERA.Gametype = GameType.STOP;
+                    IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
                     gameStart = false;
                     GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = false;
                     DestroyAllExistingCloths();
@@ -11325,7 +11305,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             }
             else
             {
-                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.MULTIPLAYER)
+                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer)
                 {
                     return;
                 }
@@ -11348,7 +11328,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         PhotonNetwork.Disconnect();
                         Screen.lockCursor = false;
                         Screen.showCursor = true;
-                        IN_GAME_MAIN_CAMERA.Gametype = GameType.STOP;
+                        IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
                         this.gameStart = false;
                         GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = false;
                         DestroyAllExistingCloths();
@@ -11360,7 +11340,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
     }
 
-    public void SpawnTitanCustom(string type, int abnormal, int rate, bool punk)
+    public void SpawnTitanCustom(string place, int abnormal, int rate, bool punk)
     {
         int titansToSpawn = rate;
         if (Level.Name.StartsWith("Custom"))
@@ -11431,7 +11411,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 else
                 {
-                    GameObject[] array = GameObject.FindGameObjectsWithTag("titanRespawn");
+                    GameObject[] array = GameObject.FindGameObjectsWithTag(place);
                     if (array.Length > 0)
                     {
                         int num8 = UnityEngine.Random.Range(0, array.Length);
@@ -11493,7 +11473,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 else
                 {
-                    GameObject[] array = GameObject.FindGameObjectsWithTag("titanRespawn");
+                    GameObject[] array = GameObject.FindGameObjectsWithTag(place);
                     if (array.Length > 0)
                     {
                         int num8 = UnityEngine.Random.Range(0, array.Length);
@@ -11513,7 +11493,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         else
         {
-            randomSpawnTitan("titanRespawn", abnormal, titansToSpawn, punk);
+            for (int i = 0; i < titansToSpawn; i++)
+            {
+                SpawnTitanRandom("titanRespawn", abnormal, punk);
+            }
         }
     }
 
@@ -11545,7 +11528,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         for (int i = 0; i < number; i++)
         {
             GameObject titan = SpawnTitanRaw(position, rotation);
-            titan.GetComponent<TITAN>().resetLevel(size);
+            titan.GetComponent<TITAN>().SetLevel(size);
             titan.GetComponent<TITAN>().hasSetLevel = true;
             if ((float)health > 0f)
             {
@@ -11580,7 +11563,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         for (int i = 0; i < number; i++)
         {
             GameObject titan = SpawnTitanRaw(position, rotation);
-            titan.GetComponent<TITAN>().resetLevel(size);
+            titan.GetComponent<TITAN>().SetLevel(size);
             titan.GetComponent<TITAN>().hasSetLevel = true;
             if ((float)health > 0f)
             {
@@ -11620,7 +11603,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     PhotonNetwork.Destroy(titan.gameObject);
                 }
             }
-            SpawnNonAITitan2(myLastHero);
         }
     }
 
@@ -11637,52 +11619,62 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     {
         switch (newTeam)
         {
-            case 0:
+            case 0: // Individual
                 {
                     ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
                     hashtable.Add(PhotonPlayerProperty.RCTeam, 0);
+                    hashtable.Add(PhotonPlayerProperty.Name, LoginFengKAI.Player.Name);
                     PhotonNetwork.player.SetCustomProperties(hashtable);
                     break;
                 }
-            case 1:
+            case 1: // Cyan
                 {
-                    ExitGames.Client.Photon.Hashtable hashtable3 = new ExitGames.Client.Photon.Hashtable();
-                    hashtable3.Add(PhotonPlayerProperty.RCTeam, 1);
-                    PhotonNetwork.player.SetCustomProperties(hashtable3);
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
+                    hashtable.Add(PhotonPlayerProperty.RCTeam, 1);
+                    hashtable.Add(PhotonPlayerProperty.Name, "[00FFFF]" + LoginFengKAI.Player.Name.Uncolored());
+                    PhotonNetwork.player.SetCustomProperties(hashtable);
                     break;
                 }
-            case 2:
+            case 2: // Magenta
                 {
-                    ExitGames.Client.Photon.Hashtable hashtable2 = new ExitGames.Client.Photon.Hashtable();
-                    hashtable2.Add(PhotonPlayerProperty.RCTeam, 2);
-                    PhotonNetwork.player.SetCustomProperties(hashtable2);
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
+                    hashtable.Add(PhotonPlayerProperty.RCTeam, 2);
+                    hashtable.Add(PhotonPlayerProperty.Name, "[FF00FF]" + LoginFengKAI.Player.Name.Uncolored());
+                    PhotonNetwork.player.SetCustomProperties(hashtable);
                     break;
                 }
-            case 3:
+            case 3: // Auto
                 {
-                    int num = 0;
-                    int num2 = 0;
+                    int cyanCount = 0;
+                    int magentaCount = 0;
                     int team = 1;
-                    PhotonPlayer[] array = PhotonNetwork.playerList;
-                    foreach (PhotonPlayer photonPlayer in array)
+                    foreach (PhotonPlayer photonPlayer in PhotonNetwork.playerList)
                     {
                         switch (GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]))
                         {
                             case 1:
-                                num++;
+                                cyanCount++;
                                 break;
                             case 2:
-                                num2++;
+                                magentaCount++;
                                 break;
                         }
                     }
-                    if (num > num2)
+                    if (cyanCount > magentaCount)
                     {
                         team = 2;
                     }
                     SetTeam(team);
                     break;
                 }
+        }
+
+        foreach (HERO hero in GameObject.FindObjectsOfType<HERO>())
+        {
+            if (hero.photonView.isMine)
+            {
+                base.photonView.RPC("labelRPC", PhotonTargets.All, hero.photonView.viewID);
+            }
         }
     }
 

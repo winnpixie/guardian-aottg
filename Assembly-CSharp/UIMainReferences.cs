@@ -52,23 +52,9 @@ public class UIMainReferences : MonoBehaviour
 
     private IEnumerator LoadCustomAssets()
     {
-        string url = Application.dataPath + "/RCAssets.unity3d";
-
-        if (!Application.isPlaying)
-        {
-            url = "file://" + url;
-        }
-
-        while (!Caching.ready)
-        {
-            yield return 0;
-        }
-
-        using (WWW www = WWW.LoadFromCacheOrDownload(url, 1))
-        {
-            yield return www;
-            FengGameManagerMKII.RCAssets = www.assetBundle;
-            FengGameManagerMKII.IsAssetLoaded = true;
-        }
+        AssetBundleCreateRequest abcr = AssetBundle.CreateFromMemory(File.ReadAllBytes(Application.dataPath + "/RCAssets.unity3d"));
+        yield return abcr;
+        FengGameManagerMKII.RCAssets = abcr.assetBundle;
+        FengGameManagerMKII.IsAssetLoaded = true;
     }
 }

@@ -53,7 +53,7 @@ namespace Guardian.AntiAbuse
         // FengGameManager.netShowDamage
         public static bool IsNetShowDamageValid(PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
             {
                 if (info != null && (info.sender.isMasterClient || GameHelper.IsPT(info.sender)))
                 {
@@ -75,7 +75,6 @@ namespace Guardian.AntiAbuse
             if (info != null
                 && (info.sender.isMasterClient
                 || info.sender.isLocal
-                || (GameHelper.IsPT(info.sender) && GameHelper.IsDead(info.sender))
                 || (isKillerTitan && damage == 0)
                 || (isVictimTitan && damage >= 10)
                 || (isKillerTitan == isVictimTitan && damage == 0)))

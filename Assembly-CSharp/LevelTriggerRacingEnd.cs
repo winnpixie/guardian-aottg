@@ -15,9 +15,9 @@ public class LevelTriggerRacingEnd : MonoBehaviour
     {
         if (!disable && other.gameObject.tag == "Player")
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
-                fengGame.gameWin2();
+                fengGame.WinGame();
                 disable = true;
             }
             else if (other.gameObject.GetComponent<HERO>().photonView.isMine)

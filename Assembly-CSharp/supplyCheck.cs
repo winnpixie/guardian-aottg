@@ -21,7 +21,7 @@ public class supplyCheck : MonoBehaviour
             {
                 if (Vector3.Distance(gameObject.transform.position, base.transform.position) < 1.5f)
                 {
-                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE || hero.photonView.isMine)
+                    if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || hero.photonView.isMine)
                     {
                         hero.getSupply();
                     }

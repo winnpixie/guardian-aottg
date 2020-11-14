@@ -16,12 +16,12 @@ public class SpectatorMovement : MonoBehaviour
         if (!disable)
         {
             float num = speed;
-            if (inputManager.isInput[InputCode.jump])
+            if (inputManager.isInput[InputCode.Jump])
             {
                 num *= 3f;
             }
-            float num2 = inputManager.isInput[InputCode.up] ? 1f : ((!inputManager.isInput[InputCode.down]) ? 0f : (-1f));
-            float num3 = inputManager.isInput[InputCode.left] ? (-1f) : ((!inputManager.isInput[InputCode.right]) ? 0f : 1f);
+            float num2 = inputManager.isInput[InputCode.Up] ? 1f : ((!inputManager.isInput[InputCode.Down]) ? 0f : (-1f));
+            float num3 = inputManager.isInput[InputCode.Left] ? (-1f) : ((!inputManager.isInput[InputCode.Right]) ? 0f : 1f);
             Transform transform = base.transform;
             if (num2 > 0f)
             {
@@ -39,11 +39,11 @@ public class SpectatorMovement : MonoBehaviour
             {
                 transform.position -= base.transform.right * num * Time.deltaTime;
             }
-            if (inputManager.isInput[InputCode.leftRope])
+            if (inputManager.isInput[InputCode.HookLeft])
             {
                 transform.position -= base.transform.up * num * Time.deltaTime;
             }
-            else if (inputManager.isInput[InputCode.rightRope])
+            else if (inputManager.isInput[InputCode.HookRight])
             {
                 transform.position += base.transform.up * num * Time.deltaTime;
             }

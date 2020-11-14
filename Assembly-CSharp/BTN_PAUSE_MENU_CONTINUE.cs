@@ -13,7 +13,7 @@ public class BTN_PAUSE_MENU_CONTINUE : MonoBehaviour
 
     private void OnClick()
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.SINGLE)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             Time.timeScale = 1f;
         }

@@ -428,11 +428,10 @@ public class RCAction
                     {
                         case 0:
                             {
-                                int iD2 = photonPlayer.Id;
-                                if (FengGameManagerMKII.HeroHash.ContainsKey(iD2))
+                                if (FengGameManagerMKII.HeroHash.ContainsKey(photonPlayer.Id))
                                 {
-                                    HERO hERO2 = (HERO)FengGameManagerMKII.HeroHash[iD2];
-                                    hERO2.markDie();
+                                    HERO hERO2 = (HERO)FengGameManagerMKII.HeroHash[photonPlayer.Id];
+                                    hERO2.MarkDead();
                                     hERO2.photonView.RPC("netDie2", PhotonTargets.All, -1, parameters[1].returnString(null) + " ");
                                 }
                                 else
@@ -546,13 +545,13 @@ public class RCAction
                 {
                     case 0:
                         {
-                            TITAN tITAN3 = parameters[0].returnTitan(null);
+                            TITAN titanObj = parameters[0].returnTitan(null);
                             object[] array = new object[2]
                             {
                                 parameters[1].returnPlayer(null).Id,
                                 parameters[2].returnInt(null)
                             };
-                            tITAN3.photonView.RPC("titanGetHit", tITAN3.photonView.owner, array);
+                            titanObj.photonView.RPC("titanGetHit", titanObj.photonView.owner, array);
                             break;
                         }
                     case 1:
@@ -563,25 +562,25 @@ public class RCAction
                         break;
                     case 3:
                         {
-                            TITAN tITAN2 = parameters[0].returnTitan(null);
-                            int num = tITAN2.currentHealth = parameters[1].returnInt(null);
-                            if (tITAN2.maxHealth == 0)
+                            TITAN titanObj = parameters[0].returnTitan(null);
+                            int num = titanObj.currentHealth = parameters[1].returnInt(null);
+                            if (titanObj.maxHealth == 0)
                             {
-                                tITAN2.maxHealth = tITAN2.currentHealth;
+                                titanObj.maxHealth = titanObj.currentHealth;
                             }
-                            tITAN2.photonView.RPC("labelRPC", PhotonTargets.AllBuffered, tITAN2.currentHealth, tITAN2.maxHealth);
+                            titanObj.photonView.RPC("labelRPC", PhotonTargets.AllBuffered, titanObj.currentHealth, titanObj.maxHealth);
                             break;
                         }
                     case 4:
                         {
-                            TITAN tITAN = parameters[0].returnTitan(null);
-                            if (tITAN.photonView.isMine)
+                            TITAN titanObj = parameters[0].returnTitan(null);
+                            if (titanObj.photonView.isMine)
                             {
-                                tITAN.moveTo(parameters[1].returnFloat(null), parameters[2].returnFloat(null), parameters[3].returnFloat(null));
+                                titanObj.MoveTo(parameters[1].returnFloat(null), parameters[2].returnFloat(null), parameters[3].returnFloat(null));
                             }
                             else
                             {
-                                tITAN.photonView.RPC("moveToRPC", tITAN.photonView.owner, parameters[1].returnFloat(null), parameters[2].returnFloat(null), parameters[3].returnFloat(null));
+                                titanObj.photonView.RPC("moveToRPC", titanObj.photonView.owner, parameters[1].returnFloat(null), parameters[2].returnFloat(null), parameters[3].returnFloat(null));
                             }
                             break;
                         }
@@ -594,7 +593,7 @@ public class RCAction
                         FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, parameters[0].returnString(null), string.Empty);
                         break;
                     case 2:
-                        FengGameManagerMKII.Instance.gameLose2();
+                        FengGameManagerMKII.Instance.LoseGame();
                         if (parameters[0].returnBool(null))
                         {
                             FengGameManagerMKII.IntVariables.Clear();
@@ -606,7 +605,7 @@ public class RCAction
                         }
                         break;
                     case 1:
-                        FengGameManagerMKII.Instance.gameWin2();
+                        FengGameManagerMKII.Instance.WinGame();
                         if (parameters[0].returnBool(null))
                         {
                             FengGameManagerMKII.IntVariables.Clear();
