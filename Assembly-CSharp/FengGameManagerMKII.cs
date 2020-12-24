@@ -86,7 +86,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     private float _timeTotalServer;
     public float timeTotalServer
     {
-        get { return (PhotonNetwork.isMasterClient && Mod.Properties.InfiniteRoom.Value) ? time - 2 : _timeTotalServer; }
+        get { return (PhotonNetwork.isMasterClient && Mod.Properties.InfiniteRoom.Value) ? time - MathHelper.Abs(time) : _timeTotalServer; }
         set { _timeTotalServer = value; }
     }
     private float maxSpeed;
@@ -148,7 +148,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     public float retryTime;
     public bool isFirstLoad = true;
     public Texture2D textureBackgroundBlack;
-    public Texture2D textureBackgroundBlue;
+    public Texture2D textureBackgroundGray;
 
     public void AddHero(HERO hero)
     {
@@ -316,7 +316,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         ShowHUDInfoCenter("the game has started for 60 seconds.\n please wait for next round.\n Click Right Mouse Key to Enter or Exit the Spectator Mode.");
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
         cam.enabled = true;
-        cam.setMainObject(null);
+        cam.SetMainObject(null);
         cam.SetSpectorMode(val: true);
         cam.gameOver = true;
     }
@@ -333,7 +333,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         ShowHUDInfoCenter("the game has started for 60 seconds.\n please wait for next round.\n Click Right Mouse Key to Enter or Exit the Spectator Mode.");
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
         cam.enabled = true;
-        cam.setMainObject(null);
+        cam.SetMainObject(null);
         cam.SetSpectorMode(val: true);
         cam.gameOver = true;
     }
@@ -345,7 +345,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         GameObject gameObject = array[UnityEngine.Random.Range(0, array.Length)];
         myLastHero = id.ToUpper();
         GameObject gameObject2 = (Level.Mode != GameMode.PVP_CAPTURE) ? PhotonNetwork.Instantiate("TITAN_VER3.1", gameObject.transform.position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
-        mainCam.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObjectASTITAN(gameObject2);
+        mainCam.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObjectTitan(gameObject2);
         gameObject2.GetComponent<TITAN>().nonAI = true;
         gameObject2.GetComponent<TITAN>().speed = 30f;
         gameObject2.GetComponent<TITAN_CONTROLLER>().enabled = true;
@@ -1044,11 +1044,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             textureBackgroundBlack.SetPixel(0, 0, new Color(0f, 0f, 0f, 1f));
             textureBackgroundBlack.Apply();
         }
-        if (textureBackgroundBlue == null)
+        if (textureBackgroundGray == null)
         {
-            textureBackgroundBlue = new Texture2D(1, 1, TextureFormat.ARGB32, mipmap: false);
-            textureBackgroundBlue.SetPixel(0, 0, new Color(0.08f, 0.3f, 0.4f, 1f));
-            textureBackgroundBlue.Apply();
+            textureBackgroundGray = new Texture2D(1, 1, TextureFormat.ARGB32, mipmap: false);
+            textureBackgroundGray.SetPixel(0, 0, new Color(0.25f, 0.25f, 0.25f, 1f)); // new Color(0.08f, 0.3f, 0.4f, 1f) (RC blue)
+            textureBackgroundGray.Apply();
         }
         LoadConfig();
         List<string> list = new List<string>();
@@ -2409,11 +2409,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             {
                 if (IN_GAME_MAIN_CAMERA.SingleCharacter == "TITAN_EREN")
                 {
-                    component.setMainObject((GameObject)UnityEngine.Object.Instantiate(Resources.Load("TITAN_EREN"), pos.transform.position, pos.transform.rotation));
+                    component.SetMainObject((GameObject)UnityEngine.Object.Instantiate(Resources.Load("TITAN_EREN"), pos.transform.position, pos.transform.rotation));
                 }
                 else
                 {
-                    component.setMainObject((GameObject)UnityEngine.Object.Instantiate(Resources.Load("AOTTG_HERO 1"), pos.transform.position, pos.transform.rotation));
+                    component.SetMainObject((GameObject)UnityEngine.Object.Instantiate(Resources.Load("AOTTG_HERO 1"), pos.transform.position, pos.transform.rotation));
                     HERO hero = component.main_object.GetComponent<HERO>();
                     HERO_SETUP setup = hero.GetComponent<HERO_SETUP>();
                     if (IN_GAME_MAIN_CAMERA.SingleCharacter == "SET 1" || IN_GAME_MAIN_CAMERA.SingleCharacter == "SET 2" || IN_GAME_MAIN_CAMERA.SingleCharacter == "SET 3")
@@ -2462,7 +2462,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             }
             else
             {
-                component.setMainObject(PhotonNetwork.Instantiate("AOTTG_HERO 1", position, pos.transform.rotation, 0));
+                component.SetMainObject(PhotonNetwork.Instantiate("AOTTG_HERO 1", position, pos.transform.rotation, 0));
                 HERO hero = component.main_object.GetComponent<HERO>();
                 HERO_SETUP setup = hero.GetComponent<HERO_SETUP>();
                 id = id.ToUpper();
@@ -2552,7 +2552,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             myLastHero = id.ToUpper();
             GameObject theMainCamera = GameObject.Find("MainCamera");
             GameObject gameObject2 = (Level.Mode != GameMode.PVP_CAPTURE) ? PhotonNetwork.Instantiate("TITAN_VER3.1", position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
-            theMainCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObjectASTITAN(gameObject2);
+            theMainCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObjectTitan(gameObject2);
             gameObject2.GetComponent<TITAN>().nonAI = true;
             gameObject2.GetComponent<TITAN>().speed = 30f;
             gameObject2.GetComponent<TITAN_CONTROLLER>().enabled = true;
@@ -2854,11 +2854,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             GameObject gameObject3 = GameObject.FindGameObjectWithTag("Player");
             if (gameObject3 != null && gameObject3.GetComponent<HERO>() != null)
             {
-                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(gameObject3);
+                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(gameObject3);
             }
             else
             {
-                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
+                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
             }
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: false);
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
@@ -2885,7 +2885,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[2], state: false);
             NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[3], state: false);
             needChooseSide = true;
-            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
+            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
         }
@@ -5347,7 +5347,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         Vector3 position = new Vector3(posX, posY, posZ);
         IN_GAME_MAIN_CAMERA component = Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>();
-        component.setMainObject(PhotonNetwork.Instantiate("AOTTG_HERO 1", position, new Quaternion(0f, 0f, 0f, 1f), 0));
+        component.SetMainObject(PhotonNetwork.Instantiate("AOTTG_HERO 1", position, new Quaternion(0f, 0f, 0f, 1f), 0));
         HERO hero = component.main_object.GetComponent<HERO>();
         HERO_SETUP setup = hero.GetComponent<HERO_SETUP>();
         string text = myLastHero;
@@ -5447,7 +5447,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         Screen.showCursor = false;
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
         cam.enabled = true;
-        cam.setMainObject(null);
+        cam.SetMainObject(null);
         cam.SetSpectorMode(val: true);
         cam.gameOver = true;
     }
@@ -5464,7 +5464,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         ShowHUDInfoCenter("Syncing spawn locations...");
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
         cam.enabled = true;
-        cam.setMainObject(null);
+        cam.SetMainObject(null);
         cam.SetSpectorMode(val: true);
         cam.gameOver = true;
     }
@@ -5829,73 +5829,73 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         if (selectedObj != null)
         {
             float d = 0.2f;
-            if (InputRC.isInputLevel(InputCodeRC.levelSlow))
+            if (InputRC.isInputLevel(InputCodeRC.LevelSlow))
             {
                 d = 0.04f;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.levelFast))
+            else if (InputRC.isInputLevel(InputCodeRC.LevelFast))
             {
                 d = 0.6f;
             }
-            if (InputRC.isInputLevel(InputCodeRC.levelForward))
+            if (InputRC.isInputLevel(InputCodeRC.LevelForward))
             {
                 selectedObj.transform.position += d * new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z);
             }
-            else if (InputRC.isInputLevel(InputCodeRC.levelBack))
+            else if (InputRC.isInputLevel(InputCodeRC.LevelBack))
             {
                 selectedObj.transform.position -= d * new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z);
             }
-            if (InputRC.isInputLevel(InputCodeRC.levelLeft))
+            if (InputRC.isInputLevel(InputCodeRC.LevelLeft))
             {
                 selectedObj.transform.position -= d * new Vector3(Camera.main.transform.right.x, 0f, Camera.main.transform.right.z);
             }
-            else if (InputRC.isInputLevel(InputCodeRC.levelRight))
+            else if (InputRC.isInputLevel(InputCodeRC.LevelRight))
             {
                 selectedObj.transform.position += d * new Vector3(Camera.main.transform.right.x, 0f, Camera.main.transform.right.z);
             }
-            if (InputRC.isInputLevel(InputCodeRC.levelDown))
+            if (InputRC.isInputLevel(InputCodeRC.LevelDown))
             {
                 selectedObj.transform.position -= Vector3.up * d;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.levelUp))
+            else if (InputRC.isInputLevel(InputCodeRC.LevelUp))
             {
                 selectedObj.transform.position += Vector3.up * d;
             }
             if (!selectedObj.name.StartsWith("misc,region"))
             {
-                if (InputRC.isInputLevel(InputCodeRC.levelRRight))
+                if (InputRC.isInputLevel(InputCodeRC.LevelRRight))
                 {
                     selectedObj.transform.Rotate(Vector3.up * d);
                 }
-                else if (InputRC.isInputLevel(InputCodeRC.levelRLeft))
+                else if (InputRC.isInputLevel(InputCodeRC.LevelRLeft))
                 {
                     selectedObj.transform.Rotate(Vector3.down * d);
                 }
-                if (InputRC.isInputLevel(InputCodeRC.levelRCCW))
+                if (InputRC.isInputLevel(InputCodeRC.LevelRCCW))
                 {
                     selectedObj.transform.Rotate(Vector3.forward * d);
                 }
-                else if (InputRC.isInputLevel(InputCodeRC.levelRCW))
+                else if (InputRC.isInputLevel(InputCodeRC.LevelRCW))
                 {
                     selectedObj.transform.Rotate(Vector3.back * d);
                 }
-                if (InputRC.isInputLevel(InputCodeRC.levelRBack))
+                if (InputRC.isInputLevel(InputCodeRC.LevelRBack))
                 {
                     selectedObj.transform.Rotate(Vector3.left * d);
                 }
-                else if (InputRC.isInputLevel(InputCodeRC.levelRForward))
+                else if (InputRC.isInputLevel(InputCodeRC.LevelRForward))
                 {
                     selectedObj.transform.Rotate(Vector3.right * d);
                 }
             }
-            if (InputRC.isInputLevel(InputCodeRC.levelPlace))
+            if (InputRC.isInputLevel(InputCodeRC.LevelPlace))
             {
                 LinkHash[3].Add(selectedObj.GetInstanceID(), selectedObj.name + "," + Convert.ToString(selectedObj.transform.position.x) + "," + Convert.ToString(selectedObj.transform.position.y) + "," + Convert.ToString(selectedObj.transform.position.z) + "," + Convert.ToString(selectedObj.transform.rotation.x) + "," + Convert.ToString(selectedObj.transform.rotation.y) + "," + Convert.ToString(selectedObj.transform.rotation.z) + "," + Convert.ToString(selectedObj.transform.rotation.w));
                 selectedObj = null;
                 Camera.main.GetComponent<MouseLook>().enabled = true;
                 Screen.lockCursor = true;
             }
-            if (InputRC.isInputLevel(InputCodeRC.levelDelete))
+            if (InputRC.isInputLevel(InputCodeRC.LevelDelete))
             {
                 UnityEngine.Object.Destroy(selectedObj);
                 selectedObj = null;
@@ -5908,41 +5908,41 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         if (Screen.lockCursor)
         {
             float d2 = 100f;
-            if (InputRC.isInputLevel(InputCodeRC.levelSlow))
+            if (InputRC.isInputLevel(InputCodeRC.LevelSlow))
             {
                 d2 = 20f;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.levelFast))
+            else if (InputRC.isInputLevel(InputCodeRC.LevelFast))
             {
                 d2 = 400f;
             }
             Transform transform = Camera.main.transform;
-            if (InputRC.isInputLevel(InputCodeRC.levelForward))
+            if (InputRC.isInputLevel(InputCodeRC.LevelForward))
             {
                 transform.position += transform.forward * d2 * Time.deltaTime;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.levelBack))
+            else if (InputRC.isInputLevel(InputCodeRC.LevelBack))
             {
                 transform.position -= transform.forward * d2 * Time.deltaTime;
             }
-            if (InputRC.isInputLevel(InputCodeRC.levelLeft))
+            if (InputRC.isInputLevel(InputCodeRC.LevelLeft))
             {
                 transform.position -= transform.right * d2 * Time.deltaTime;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.levelRight))
+            else if (InputRC.isInputLevel(InputCodeRC.LevelRight))
             {
                 transform.position += transform.right * d2 * Time.deltaTime;
             }
-            if (InputRC.isInputLevel(InputCodeRC.levelUp))
+            if (InputRC.isInputLevel(InputCodeRC.LevelUp))
             {
                 transform.position += transform.up * d2 * Time.deltaTime;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.levelDown))
+            else if (InputRC.isInputLevel(InputCodeRC.LevelDown))
             {
                 transform.position -= transform.up * d2 * Time.deltaTime;
             }
         }
-        if (InputRC.isInputLevelDown(InputCodeRC.levelCursor))
+        if (InputRC.isInputLevelDown(InputCodeRC.LevelCursor))
         {
             if (Screen.lockCursor)
             {
@@ -6255,14 +6255,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             null
         };
         InputRC = new InputManagerRC();
-        InputRC.setInputHuman(InputCodeRC.reelin, (string)array[98]);
-        InputRC.setInputHuman(InputCodeRC.reelout, (string)array[99]);
-        InputRC.setInputHuman(InputCodeRC.dash, (string)array[182]);
-        InputRC.setInputHuman(InputCodeRC.mapMaximize, (string)array[232]);
-        InputRC.setInputHuman(InputCodeRC.mapToggle, (string)array[233]);
-        InputRC.setInputHuman(InputCodeRC.mapReset, (string)array[234]);
-        InputRC.setInputHuman(InputCodeRC.chat, (string)array[236]);
-        InputRC.setInputHuman(InputCodeRC.liveCam, (string)array[262]);
+        InputRC.setInputHuman(InputCodeRC.ReelIn, (string)array[98]);
+        InputRC.setInputHuman(InputCodeRC.ReelOut, (string)array[99]);
+        InputRC.setInputHuman(InputCodeRC.Dash, (string)array[182]);
+        InputRC.setInputHuman(InputCodeRC.MapMaximize, (string)array[232]);
+        InputRC.setInputHuman(InputCodeRC.MapToggle, (string)array[233]);
+        InputRC.setInputHuman(InputCodeRC.MapReset, (string)array[234]);
+        InputRC.setInputHuman(InputCodeRC.Chat, (string)array[236]);
+        InputRC.setInputHuman(InputCodeRC.LiveCamera, (string)array[262]);
         if (!Enum.IsDefined(typeof(KeyCode), (string)array[232]))
         {
             array[232] = "None";
@@ -6291,7 +6291,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             InputRC.setInputCannon(i, (string)array[254 + i]);
         }
-        InputRC.setInputLevel(InputCodeRC.levelFast, (string)array[161]);
+        InputRC.setInputLevel(InputCodeRC.LevelFast, (string)array[161]);
         Application.targetFrameRate = -1;
         if (int.TryParse((string)array[184], out int result) && result > 0)
         {
@@ -7738,9 +7738,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     }
                     float num7 = (float)Screen.width / 2f - 85f;
                     float num8 = (float)Screen.height / 2f;
-                    GUI.backgroundColor = new Color(0.08f, 0.3f, 0.4f, 1f);
-                    GUI.DrawTexture(new Rect(12f, 32f, 216f, 146f), textureBackgroundBlue);
-                    GUI.DrawTexture(new Rect(num7 + 2f, 7f, 146f, 101f), textureBackgroundBlue);
+                    GUI.backgroundColor = Color.white; // new Color(0.08f, 0.3f, 0.4f, 1f);
+                    GUI.DrawTexture(new Rect(12f, 32f, 216f, 146f), textureBackgroundGray);
+                    GUI.DrawTexture(new Rect(num7 + 2f, 7f, 146f, 101f), textureBackgroundGray);
                     GUI.Box(new Rect(num7, 5f, 150f, 105f), string.Empty);
                     if (GUI.Button(new Rect(num7 + 11f, 15f, 128f, 25f), "Level Editor"))
                     {
@@ -7897,9 +7897,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if ((int)Settings[64] >= 100)
             {
                 float num11 = (float)Screen.width - 300f;
-                GUI.backgroundColor = new Color(0.08f, 0.3f, 0.4f, 1f);
-                GUI.DrawTexture(new Rect(7f, 7f, 291f, 586f), textureBackgroundBlue);
-                GUI.DrawTexture(new Rect(num11 + 2f, 7f, 291f, 586f), textureBackgroundBlue);
+                GUI.backgroundColor = Color.white; // new Color(0.08f, 0.3f, 0.4f, 1f);
+                GUI.DrawTexture(new Rect(7f, 7f, 291f, 586f), textureBackgroundGray);
+                GUI.DrawTexture(new Rect(num11 + 2f, 7f, 291f, 586f), textureBackgroundGray);
                 bool flag = false;
                 bool flag2 = false;
                 GUI.Box(new Rect(5f, 5f, 295f, 590f), string.Empty);
@@ -8135,7 +8135,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         }
                         float num14 = (float)(Screen.width / 2) - 110.5f;
                         float num15 = (float)(Screen.height / 2) - 250f;
-                        GUI.DrawTexture(new Rect(num14 + 2f, num15 + 2f, 217f, 496f), textureBackgroundBlue);
+                        GUI.DrawTexture(new Rect(num14 + 2f, num15 + 2f, 217f, 496f), textureBackgroundGray);
                         GUI.Box(new Rect(num14, num15, 221f, 500f), string.Empty);
                         if (GUI.Button(new Rect(num14 + 10f, num15 + 460f, 60f, 30f), "Copy"))
                         {
@@ -8393,7 +8393,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                             int num19 = (int)Settings[185];
                             float val = 10f + 104f * (float)(list2[num19].Length / 3 + 1);
                             val = Math.Max(val, 280f);
-                            GUI.DrawTexture(new Rect(num14 + 2f, num15 + 2f, 208f, 446f), textureBackgroundBlue);
+                            GUI.DrawTexture(new Rect(num14 + 2f, num15 + 2f, 208f, 446f), textureBackgroundGray);
                             GUI.Box(new Rect(num14, num15, 212f, 450f), string.Empty);
                             for (int j = 0; j < list2.Count; j++)
                             {
@@ -9177,8 +9177,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 float num7 = (float)Screen.width / 2f - 350f;
                 float num8 = (float)Screen.height / 2f - 250f;
-                GUI.backgroundColor = new Color(0.08f, 0.3f, 0.4f, 1f);
-                GUI.DrawTexture(new Rect(num7 + 2f, num8 + 2f, 696f, 496f), textureBackgroundBlue);
+                GUI.backgroundColor = Color.white; // new Color(0.08f, 0.3f, 0.4f, 1f);
+                GUI.DrawTexture(new Rect(num7 + 2f, num8 + 2f, 696f, 496f), textureBackgroundGray);
                 GUI.Box(new Rect(num7, num8, 700f, 500f), string.Empty);
                 if (GUI.Button(new Rect(num7 + 7f, num8 + 7f, 59f, 25f), "General", "box"))
                 {
@@ -9742,49 +9742,49 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                                         {
                                             Settings[98] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.reelin, text3);
+                                            InputRC.setInputHuman(InputCodeRC.ReelIn, text3);
                                         }
                                         else if ((int)Settings[100] == 99)
                                         {
                                             Settings[99] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.reelout, text3);
+                                            InputRC.setInputHuman(InputCodeRC.ReelOut, text3);
                                         }
                                         else if ((int)Settings[100] == 182)
                                         {
                                             Settings[182] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.dash, text3);
+                                            InputRC.setInputHuman(InputCodeRC.Dash, text3);
                                         }
                                         else if ((int)Settings[100] == 232)
                                         {
                                             Settings[232] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.mapMaximize, text3);
+                                            InputRC.setInputHuman(InputCodeRC.MapMaximize, text3);
                                         }
                                         else if ((int)Settings[100] == 233)
                                         {
                                             Settings[233] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.mapToggle, text3);
+                                            InputRC.setInputHuman(InputCodeRC.MapToggle, text3);
                                         }
                                         else if ((int)Settings[100] == 234)
                                         {
                                             Settings[234] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.mapReset, text3);
+                                            InputRC.setInputHuman(InputCodeRC.MapReset, text3);
                                         }
                                         else if ((int)Settings[100] == 236)
                                         {
                                             Settings[236] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.chat, text3);
+                                            InputRC.setInputHuman(InputCodeRC.Chat, text3);
                                         }
                                         else if ((int)Settings[100] == 262)
                                         {
                                             Settings[262] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.liveCam, text3);
+                                            InputRC.setInputHuman(InputCodeRC.LiveCamera, text3);
                                         }
                                         else
                                         {
@@ -11313,9 +11313,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     float num7 = (float)Screen.width / 2f;
                     float num8 = (float)Screen.height / 2f;
-                    GUI.backgroundColor = new Color(0.08f, 0.3f, 0.4f, 1f);
+                    GUI.backgroundColor = Color.white; // new Color(0.08f, 0.3f, 0.4f, 1f);
                     GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), textureBackgroundBlack);
-                    GUI.DrawTexture(new Rect(num7 - 98f, num8 - 48f, 196f, 146f), textureBackgroundBlue);
+                    GUI.DrawTexture(new Rect(num7 - 98f, num8 - 48f, 196f, 146f), textureBackgroundGray);
                     GUI.Box(new Rect(num7 - 100f, num8 - 50f, 200f, 150f), string.Empty);
                     int ourLength = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.CurrentLevel]).Length;
                     int masterLength = GExtensions.AsString(PhotonNetwork.masterClient.customProperties[PhotonPlayerProperty.CurrentLevel]).Length;

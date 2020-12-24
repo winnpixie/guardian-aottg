@@ -80,7 +80,7 @@ namespace Guardian.Utilities
                     }
                 }
 
-                mods.Add($"[aaff00][Guardian{boostedStats}[-]]");
+                mods.Add($"[0099ff][Guardian{boostedStats}[-]]");
             }
 
             if ((properties.ContainsKey("A.S Guard") && properties["A.S Guard"] is int)
@@ -147,7 +147,7 @@ namespace Guardian.Utilities
                 || properties.ContainsKey("CyanMod")
                 || properties.ContainsKey("CyanModNew"))
             {
-                mods.Add("[ffffff][[00ffff]Cyan Mod[-]]");
+                mods.Add("[00ffff][Cyan Mod]");
             }
 
             // Expedition
@@ -185,7 +185,7 @@ namespace Guardian.Utilities
                 string edition = "[ffffff]";
                 if (properties.ContainsKey("UYoutube"))
                 {
-                    edition += "(You[ff0000]tube[-])";
+                    edition += "(You[ff0000]Tube[-])";
                 }
                 if (properties.ContainsKey("UVip"))
                 {

@@ -552,7 +552,7 @@ public class HERO : Photon.MonoBehaviour
         }
         eren_titan.GetComponent<TITAN_EREN>().realBody = base.gameObject;
         maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().Flash();
-        maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(eren_titan);
+        maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(eren_titan);
         eren_titan.GetComponent<TITAN_EREN>().born();
         eren_titan.rigidbody.velocity = base.rigidbody.velocity;
         base.rigidbody.velocity = Vector3.zero;
@@ -577,7 +577,7 @@ public class HERO : Photon.MonoBehaviour
         Ungrab();
         falseAttack();
         skillCDDuration = skillCDLast;
-        maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(base.gameObject);
+        maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(base.gameObject);
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
         {
             base.photonView.RPC("backToHumanRPC", PhotonTargets.Others);
@@ -1724,12 +1724,12 @@ public class HERO : Photon.MonoBehaviour
             ApplyForce(gameObject4, v);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
             {
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(gameObject2, resetRotation: false);
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(gameObject2, resetRotation: false);
             }
         }
         else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
-            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(gameObject, resetRotation: false);
+            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(gameObject, resetRotation: false);
         }
         ApplyForce(gameObject, v);
         Transform transform = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/shoulder_L/upper_arm_L/forearm_L/hand_L").transform;
@@ -1793,7 +1793,7 @@ public class HERO : Photon.MonoBehaviour
             transform.parent = null;
             transform.GetComponent<AudioSource>().Play();
             meatDie.Play();
-            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
+            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().LoseGame();
             falseAttack();
@@ -2620,7 +2620,7 @@ public class HERO : Photon.MonoBehaviour
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             Vector3 current2 = (bulletRight.transform.position + bulletLeft.transform.position) * 0.5f - baseTransform.position;
             float num10 = 0f;
-            num10 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.reelin)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.reelout)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
+            num10 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
             num10 = Mathf.Clamp(num10, -0.8f, 0.8f);
             float num11 = 1f + num10;
             Vector3 a2 = Vector3.RotateTowards(current2, baseRigidBody.velocity, 1.53938f * num11, 1.53938f * num11);
@@ -2633,7 +2633,7 @@ public class HERO : Photon.MonoBehaviour
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             Vector3 current3 = bulletLeft.transform.position - baseTransform.position;
             float num12 = 0f;
-            num12 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.reelin)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.reelout)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
+            num12 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
             num12 = Mathf.Clamp(num12, -0.8f, 0.8f);
             float num13 = 1f + num12;
             Vector3 a3 = Vector3.RotateTowards(current3, baseRigidBody.velocity, 1.53938f * num13, 1.53938f * num13);
@@ -2646,7 +2646,7 @@ public class HERO : Photon.MonoBehaviour
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             Vector3 current4 = bulletRight.transform.position - baseTransform.position;
             float num14 = 0f;
-            num14 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.reelin)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.reelout)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
+            num14 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
             num14 = Mathf.Clamp(num14, -0.8f, 0.8f);
             float num15 = 1f + num14;
             Vector3 a4 = Vector3.RotateTowards(current4, baseRigidBody.velocity, 1.53938f * num15, 1.53938f * num15);
@@ -3197,7 +3197,7 @@ public class HERO : Photon.MonoBehaviour
         if (myCannonRegion != null)
         {
             FengGameManagerMKII.Instance.ShowHUDInfoCenter("Press 'Cannon Mount' key to use Cannon.");
-            if (FengGameManagerMKII.InputRC.isInputCannonDown(InputCodeRC.cannonMount))
+            if (FengGameManagerMKII.InputRC.isInputCannonDown(InputCodeRC.CannonMount))
             {
                 myCannonRegion.photonView.RPC("RequestControlRPC", PhotonTargets.MasterClient, base.photonView.viewID);
             }
@@ -3326,7 +3326,7 @@ public class HERO : Photon.MonoBehaviour
                     CrossFade("jump", 0.1f);
                     sparks.enableEmission = false;
                 }
-                if (FengGameManagerMKII.InputRC.isInputHorseDown(InputCodeRC.horseMount) && !baseAnimation.IsPlaying("jump") && !baseAnimation.IsPlaying("horse_geton") && myHorse != null && !isMounted && Vector3.Distance(myHorse.transform.position, base.transform.position) < 15f)
+                if (FengGameManagerMKII.InputRC.isInputHorseDown(InputCodeRC.HorseMount) && !baseAnimation.IsPlaying("jump") && !baseAnimation.IsPlaying("horse_geton") && myHorse != null && !isMounted && Vector3.Distance(myHorse.transform.position, base.transform.position) < 15f)
                 {
                     GetOnHorse();
                 }
@@ -3355,7 +3355,7 @@ public class HERO : Photon.MonoBehaviour
                     {
                         Suicide();
                     }
-                    if (myHorse != null && isMounted && FengGameManagerMKII.InputRC.isInputHorseDown(InputCodeRC.horseMount))
+                    if (myHorse != null && isMounted && FengGameManagerMKII.InputRC.isInputHorseDown(InputCodeRC.HorseMount))
                     {
                         GetOffHorse();
                     }
@@ -4516,7 +4516,7 @@ public class HERO : Photon.MonoBehaviour
 
     private void dodge2(bool offTheWall = false)
     {
-        if (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.horseMount) && myHorse != null && !isMounted && Vector3.Distance(myHorse.transform.position, base.transform.position) < 15f)
+        if (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseMount) && myHorse != null && !isMounted && Vector3.Distance(myHorse.transform.position, base.transform.position) < 15f)
         {
             return;
         }
@@ -4566,12 +4566,12 @@ public class HERO : Photon.MonoBehaviour
             ApplyForce(gameObject4, v);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
             {
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(gameObject2, resetRotation: false);
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(gameObject2, resetRotation: false);
             }
         }
         else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
-            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(gameObject, resetRotation: false);
+            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(gameObject, resetRotation: false);
         }
         ApplyForce(gameObject, v);
         Transform transform = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/shoulder_L/upper_arm_L/forearm_L/hand_L").transform;
@@ -4831,7 +4831,7 @@ public class HERO : Photon.MonoBehaviour
         transform.GetComponent<AudioSource>().Play();
         if (base.photonView.isMine)
         {
-            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
+            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             FengGameManagerMKII.Instance.myRespawnTime = 0f;
@@ -4976,7 +4976,7 @@ public class HERO : Photon.MonoBehaviour
             isCannon = true;
             myCannon.GetComponent<Cannon>().myHero = this;
             myCannonRegion = null;
-            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(myCannon.transform.Find("Barrel").Find("FiringPoint").gameObject);
+            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(myCannon.transform.Find("Barrel").Find("FiringPoint").gameObject);
             Camera.main.fieldOfView = 55f;
             base.photonView.RPC("SetMyCannon", PhotonTargets.OthersBuffered, myCannon.GetPhotonView().viewID);
             skillCDLastCannon = skillCDLast;
@@ -5175,7 +5175,7 @@ public class HERO : Photon.MonoBehaviour
 
     private void checkDashRebind()
     {
-        if (FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.dash))
+        if (FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.Dash))
         {
             if (inputManager.isInput[InputCode.Up])
             {

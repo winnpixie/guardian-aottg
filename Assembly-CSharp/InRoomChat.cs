@@ -121,7 +121,7 @@ public class InRoomChat : Photon.MonoBehaviour
         GUILayout.EndArea();
 
         // Sends chat messages
-        KeyCode rcChatKey = FengGameManagerMKII.InputRC.humanKeys[InputCodeRC.chat];
+        KeyCode rcChatKey = FengGameManagerMKII.InputRC.humanKeys[InputCodeRC.Chat];
         if (Event.current.type == EventType.KeyUp && Event.current.keyCode == rcChatKey && rcChatKey != KeyCode.None && !GUI.GetNameOfFocusedControl().Equals(TextFieldName))
         {
             GUI.FocusControl(TextFieldName);

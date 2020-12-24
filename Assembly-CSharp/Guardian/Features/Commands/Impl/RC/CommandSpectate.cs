@@ -18,7 +18,13 @@ namespace Guardian.Features.Commands.Impl.RC
                     {
                         if (!GameHelper.IsDead(player))
                         {
-                            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(GameHelper.IsPT(player) ? GameHelper.GetPT(player).gameObject : GameHelper.GetHero(player).gameObject, true, false);
+                            if (GameHelper.IsPT(player))
+                            {
+                                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObjectTitan(GameHelper.GetPT(player).gameObject);
+                            } else
+                            {
+                                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(GameHelper.GetHero(player).gameObject);
+                            }
                             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(false);
                             irc.AddLine($"Now spectating #{id}.".WithColor("ffcc00"));
                         }

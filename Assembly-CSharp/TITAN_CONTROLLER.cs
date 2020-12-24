@@ -45,8 +45,8 @@ public class TITAN_CONTROLLER : MonoBehaviour
 		float num5;
 		if (isHorse)
 		{
-			num = (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.horseForward) ? 1 : (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.horseBack) ? (-1) : 0));
-			num2 = (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.horseLeft) ? (-1) : (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.horseRight) ? 1 : 0));
+			num = (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseForward) ? 1 : (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseBack) ? (-1) : 0));
+			num2 = (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseLeft) ? (-1) : (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseRight) ? 1 : 0));
 			if (num2 != 0 || num != 0)
 			{
 				float y = currentCamera.transform.rotation.eulerAngles.y;
@@ -69,15 +69,15 @@ public class TITAN_CONTROLLER : MonoBehaviour
 			{
 				num5 -= 360f;
 			}
-			if (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.horseJump))
+			if (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseJump))
 			{
 				isAttackDown = true;
 			}
-			isWALKDown = FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.horseWalk);
+			isWALKDown = FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseWalk);
 			return;
 		}
-		num = (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanForward) ? 1 : (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanBack) ? (-1) : 0));
-		num2 = (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanLeft) ? (-1) : (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanRight) ? 1 : 0));
+		num = (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanForward) ? 1 : (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanBack) ? (-1) : 0));
+		num2 = (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanLeft) ? (-1) : (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanRight) ? 1 : 0));
 		if (num2 != 0 || num != 0)
 		{
 			float y = currentCamera.transform.rotation.eulerAngles.y;
@@ -117,15 +117,15 @@ public class TITAN_CONTROLLER : MonoBehaviour
 		{
 			num5 -= 360f;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanPunch))
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanPunch))
 		{
 			isAttackDown = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanSlam))
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanSlam))
 		{
 			isAttackIIDown = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanJump))
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanJump))
 		{
 			isJumpDown = true;
 		}
@@ -133,35 +133,35 @@ public class TITAN_CONTROLLER : MonoBehaviour
 		{
 			isSuicide = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanCover))
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanCover))
 		{
 			cover = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanSit))
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanSit))
 		{
 			sit = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanGrabFront) && num5 >= 0f)
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabFront) && num5 >= 0f)
 		{
 			grabfrontr = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanGrabFront) && num5 < 0f)
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabFront) && num5 < 0f)
 		{
 			grabfrontl = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanGrabBack) && num5 >= 0f)
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabBack) && num5 >= 0f)
 		{
 			grabbackr = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanGrabBack) && num5 < 0f)
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabBack) && num5 < 0f)
 		{
 			grabbackl = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanGrabNape) && num5 >= 0f)
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabNape) && num5 >= 0f)
 		{
 			grabnaper = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanGrabNape) && num5 < 0f)
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabNape) && num5 < 0f)
 		{
 			grabnapel = true;
 		}
@@ -173,18 +173,18 @@ public class TITAN_CONTROLLER : MonoBehaviour
 		{
 			choptl = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanBite) && num5 > 7.5f)
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanBite) && num5 > 7.5f)
 		{
 			biter = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanBite) && num5 < -7.5f)
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanBite) && num5 < -7.5f)
 		{
 			bitel = true;
 		}
-		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanBite) && num5 >= -7.5f && num5 <= 7.5f)
+		if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanBite) && num5 >= -7.5f && num5 <= 7.5f)
 		{
 			bite = true;
 		}
-		isWALKDown = FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanWalk);
+		isWALKDown = FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanWalk);
 	}
 }

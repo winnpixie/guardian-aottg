@@ -6,6 +6,11 @@ namespace Guardian.Utilities
     {
         private static readonly Random random = new Random();
 
+        public static int Abs(int val)
+        {
+            return val < 0 ? -val : val;
+        }
+
         public static int Ceil(float vIn)
         {
             int vOut = (int)vIn;

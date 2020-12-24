@@ -734,7 +734,7 @@ public class Minimap : MonoBehaviour
             {
                 return;
             }
-            if (FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.mapMaximize))
+            if (FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.MapMaximize))
             {
                 if (!maximized)
                 {
@@ -745,7 +745,7 @@ public class Minimap : MonoBehaviour
             {
                 Minimize();
             }
-            if (FengGameManagerMKII.InputRC.isInputHumanDown(InputCodeRC.mapToggle))
+            if (FengGameManagerMKII.InputRC.isInputHumanDown(InputCodeRC.MapToggle))
             {
                 SetEnabled(!isEnabled);
             }
@@ -754,7 +754,7 @@ public class Minimap : MonoBehaviour
                 return;
             }
             bool flag = false;
-            if (FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.mapReset))
+            if (FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.MapReset))
             {
                 if (initialPreset != null)
                 {

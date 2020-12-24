@@ -864,7 +864,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             if (nonAI)
             {
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
@@ -975,7 +975,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             if (nonAI)
             {
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
@@ -1500,7 +1500,7 @@ public class TITAN : Photon.MonoBehaviour
             hasDie = true;
             if (nonAI)
             {
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().setMainObject(null);
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: true);
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable

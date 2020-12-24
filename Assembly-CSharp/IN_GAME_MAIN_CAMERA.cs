@@ -226,7 +226,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         GameObject.Find("MainCamera").GetComponent<MouseLook>().disable = !val;
     }
 
-    private void cameraMovement()
+    private void MoveCamera()
     {
         distanceOffsetMulti = CameraDistance * (200f - base.camera.fieldOfView) / 150f;
         base.transform.position = ((!(head != null)) ? main_object.transform.position : head.transform.position);
@@ -343,7 +343,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         return result;
     }
 
-    public GameObject setMainObject(GameObject obj, bool resetRotation = true, bool lockAngle = false)
+    public GameObject SetMainObject(GameObject obj, bool resetRotation = true, bool lockAngle = false)
     {
         main_object = obj;
         if (obj == null)
@@ -383,7 +383,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         return obj;
     }
 
-    public GameObject setMainObjectASTITAN(GameObject obj)
+    public GameObject SetMainObjectTitan(GameObject obj)
     {
         main_object = obj;
         if ((bool)main_object.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck/head"))
@@ -634,15 +634,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             }
             if (inputManager.isInputDown[InputCode.Flare1])
             {
-                int num = GameObject.FindGameObjectsWithTag("Player").Length;
-                currentPeekPlayerIndex++;
-                if (currentPeekPlayerIndex >= num)
+                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+                currentPeekPlayerIndex = (currentPeekPlayerIndex + 1) % players.Length;
+                if (players.Length > 0)
                 {
-                    currentPeekPlayerIndex = 0;
-                }
-                if (num > 0)
-                {
-                    setMainObject(GameObject.FindGameObjectsWithTag("Player")[currentPeekPlayerIndex]);
+                    SetMainObject(players[currentPeekPlayerIndex]);
                     SetSpectorMode(val: false);
                     lockAngle = false;
                 }
@@ -650,7 +646,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             if (inputManager.isInputDown[InputCode.Flare2])
             {
                 currentPeekPlayerIndex--;
-                int num2 = GameObject.FindGameObjectsWithTag("Player").Length;
+                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+                int num2 = players.Length;
                 if (currentPeekPlayerIndex >= num2)
                 {
                     currentPeekPlayerIndex = 0;
@@ -661,7 +658,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 }
                 if (num2 > 0)
                 {
-                    setMainObject(GameObject.FindGameObjectsWithTag("Player")[currentPeekPlayerIndex]);
+                    SetMainObject(players[currentPeekPlayerIndex]);
                     SetSpectorMode(val: false);
                     lockAngle = false;
                 }
@@ -766,7 +763,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
         if (gameOver)
         {
-            if (FengGameManagerMKII.InputRC.isInputHumanDown(InputCodeRC.liveCam))
+            if (FengGameManagerMKII.InputRC.isInputHumanDown(InputCodeRC.LiveCamera))
             {
                 if ((int)FengGameManagerMKII.Settings[263] == 0)
                 {
@@ -789,12 +786,12 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             }
             else
             {
-                cameraMovement();
+                MoveCamera();
             }
         }
         else
         {
-            cameraMovement();
+            MoveCamera();
         }
         if (TriggerAutoLock && lockTarget != null)
         {

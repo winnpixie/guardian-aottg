@@ -298,7 +298,7 @@
     <Compile Include="Guardian\Features\Properties\Property.cs" />
     <Compile Include="Guardian\Features\Properties\PropertyManager.cs" />
     <Compile Include="Guardian\Mod.cs" />
-    <Compile Include="Guardian\ModUI.cs" />
+    <Compile Include="Guardian\UI\ModUI.cs" />
     <Compile Include="Guardian\Utilities\DiscordHelper.cs" />
     <Compile Include="Guardian\Utilities\Logger.cs" />
     <Compile Include="Guardian\Networking\PhotonApplication.cs" />

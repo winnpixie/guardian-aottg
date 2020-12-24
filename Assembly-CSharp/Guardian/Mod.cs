@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "11142020";
+        public static string Build = "HH2020";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -26,7 +26,7 @@ namespace Guardian
         public static Logger Logger = new Logger();
         private static bool Initialized = false;
         private static bool FirstJoin = true;
-
+        
         public List<int> Muted = new List<int>();
         public bool IsMultiMap;
 
@@ -87,7 +87,7 @@ namespace Guardian
                 DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
             }
 
-            base.gameObject.AddComponent<ModUI>();
+            base.gameObject.AddComponent<UI.ModUI>();
             base.gameObject.AddComponent<MicEF>();
 
             DiscordHelper.SetPresence(new Discord.Activity
