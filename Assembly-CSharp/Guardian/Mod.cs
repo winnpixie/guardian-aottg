@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "HH2020";
+        public static string Build = "01132021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = "";
@@ -26,7 +26,7 @@ namespace Guardian
         public static Logger Logger = new Logger();
         private static bool Initialized = false;
         private static bool FirstJoin = true;
-        
+
         public List<int> Muted = new List<int>();
         public bool IsMultiMap;
 
@@ -68,7 +68,7 @@ namespace Guardian
                 Properties.Load();
 
                 // Print out debug information
-                Logger.Info($"Guardian Version: {Build}");
+                Logger.Info($"Installed Version: {Build}");
                 Logger.Info($"Unity Version: {Application.unityVersion}");
                 Logger.Info($"OS: {SystemInfo.operatingSystem}");
                 Logger.Info($"Platform: {Application.platform}");
@@ -98,11 +98,13 @@ namespace Guardian
 
         private IEnumerator CheckForUpdate()
         {
-            using (WWW www = new WWW("https://raw.githubusercontent.com/alerithe/guardian/master/BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()))
+            using (WWW www = new WWW("http://lewd.cf/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()))
             {
                 yield return www;
 
-                if (!www.text.Equals(Build))
+                Logger.Info("Latest Version: " + www.text);
+
+                if (!www.text.Split('\n')[0].Equals(Build))
                 {
                     Logger.Error("You are running an outdated build, please update!");
                     UIMainReferences.Version = "outdated";

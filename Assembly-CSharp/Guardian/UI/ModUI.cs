@@ -41,13 +41,16 @@ namespace Guardian.UI
                 }
                 GUILayout.EndScrollView();
 
-                string coords = "";
+                string coords = "N/A";
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
-                    if (!GameHelper.IsPT(PhotonNetwork.player) && !GameHelper.IsDead(PhotonNetwork.player))
+                    if (!GameHelper.IsDead(PhotonNetwork.player))
                     {
-                        HERO hero = GameHelper.GetHero(PhotonNetwork.player);
-                        coords += $"{MathHelper.Floor(hero.transform.position.x)} / {MathHelper.Floor(hero.transform.position.y)} / {MathHelper.Floor(hero.transform.position.z)}";
+                        GameObject go = GameHelper.IsPT(PhotonNetwork.player) ? GameHelper.GetPT(PhotonNetwork.player).gameObject : GameHelper.GetHero(PhotonNetwork.player).gameObject;
+                        if (go != null)
+                        {
+                            coords = $"{MathHelper.Floor(go.transform.position.x)} / {MathHelper.Floor(go.transform.position.y)} / {MathHelper.Floor(go.transform.position.z)}";
+                        }
                     }
                 }
                 GUILayout.Label($"FPS: {MathHelper.Floor(1f / Time.smoothDeltaTime)} X/Y/Z {coords}");
