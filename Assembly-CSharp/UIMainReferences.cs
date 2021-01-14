@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
@@ -26,20 +25,13 @@ public class UIMainReferences : MonoBehaviour
         string rcBuild = "8/12/2015";
 
         NGUITools.SetActive(panelMain, state: true);
-        UILabel versionText = GameObject.Find("VERSION").GetComponent<UILabel>();
-        if (Version.StartsWith("outdated"))
-        {
-            versionText.text = "[ff0000]Mod is outdated![-] Please download the latest build from [0099ff]https://tiny.cc/GuardianMod[-]!";
-        }
-        else
-        {
-            versionText.text = "Client Verified | [9999ff]RC " + rcBuild + "[-] | [ffff00]Guardian " + Guardian.Mod.Build;
-        }
+        GameObject.Find("VERSION").GetComponent<UILabel>().text = "Client Verified | [9999ff]RC " + rcBuild + "[-] | [ffff00]Guardian " + Guardian.Mod.Build;
 
         if (IsFirstLaunch)
         {
-            Version = FengVersion;
             IsFirstLaunch = false;
+
+            Version = FengVersion;
             GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("InputManagerController"));
             gameObject.name = "InputManagerController";
             UnityEngine.Object.DontDestroyOnLoad(gameObject);

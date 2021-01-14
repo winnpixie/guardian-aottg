@@ -69,7 +69,7 @@ public class PanelMultiJoin : MonoBehaviour
             return "[ff0000]Insufficient room data to be playable.";
         }
 
-        string pwd = info[5].Length == 0 ? "" : "[ff0000](Pwd)[-] ";
+        string pwd = info[5].Length == 0 ? string.Empty : "[ff0000](Pwd)[-] ";
 
         string difficulty = info[2];
         if (difficulty.Equals("normal", StringComparison.OrdinalIgnoreCase))
@@ -99,7 +99,7 @@ public class PanelMultiJoin : MonoBehaviour
             daylight = $"[000000]Night[-]";
         }
 
-        string roomMeta = "";
+        string roomMeta = string.Empty;
         if (!room.open || (room.maxPlayers != 0 && room.playerCount >= room.maxPlayers))
         {
             roomMeta = "[ff0000]";

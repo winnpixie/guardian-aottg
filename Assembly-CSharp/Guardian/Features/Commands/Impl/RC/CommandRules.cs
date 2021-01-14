@@ -2,73 +2,82 @@
 {
     class CommandRules : Command
     {
-        public CommandRules() : base("rules", new string[0], "", false) { }
+        public CommandRules() : base("rules", new string[0], string.Empty, false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
             irc.AddLine("Currently activated gamemodes:".WithColor("ffcc00"));
+
+            // Bomb Mode
             if (RCSettings.BombMode > 0)
             {
-                irc.AddLine("Bomb mode is on.".WithColor("ffcc00"));
+                irc.AddLine("PVP Bomb Mode enabled.".WithColor("ffcc00"));
             }
+
+            // Team Mode
             if (RCSettings.TeamMode > 0)
             {
-                if (RCSettings.TeamMode == 1)
+                string str = string.Empty;
+                switch (RCSettings.TeamMode)
                 {
-                    irc.AddLine("Team mode is on (no sort).".WithColor("ffcc00"));
+                    case 1:
+                        str = "No sort";
+                        break;
+                    case 2:
+                        str = "Locked by Size";
+                        break;
+                    case 3:
+                        str = "Locked by Skill";
+                        break;
                 }
-                else if (RCSettings.TeamMode == 2)
-                {
-                    irc.AddLine("Team mode is on (sort by size).".WithColor("ffcc00"));
-                }
-                else if (RCSettings.TeamMode == 3)
-                {
-                    irc.AddLine("Team mode is on (sort by skill).".WithColor("ffcc00"));
-                }
+                irc.AddLine("Team Mode enabled</color> (" + str + ").".WithColor("ffcc00"));
             }
+
+            // Point Limit
             if (RCSettings.PointMode > 0)
             {
-                irc.AddLine($"Point mode is on ({RCSettings.PointMode}).".WithColor("ffcc00"));
+                irc.AddLine($"Point Limit enabled ({RCSettings.PointMode}).".WithColor("ffcc00"));
             }
+
             if (RCSettings.DisableRock > 0)
             {
-                irc.AddLine("Punk Rock-Throwing is disabled.".WithColor("ffcc00"));
+                irc.AddLine("Punk Rock-Throwing disabled.".WithColor("ffcc00"));
             }
             if (RCSettings.SpawnMode > 0)
             {
-                irc.AddLine(("Custom spawn rate is on (" + RCSettings.NormalRate.ToString("F2") + "% Normal, " + RCSettings.AberrantRate.ToString("F2") + "% Abnormal, " + RCSettings.JumperRate.ToString("F2") + "% Jumper, " + RCSettings.CrawlerRate.ToString("F2") + "% Crawler, " + RCSettings.PunkRate.ToString("F2") + "% Punk ").WithColor("ffcc00"));
+                irc.AddLine(("Custom spawn rate enabled (" + RCSettings.NormalRate.ToString("F2") + "% Normal, " + RCSettings.AberrantRate.ToString("F2") + "% Abnormal, " + RCSettings.JumperRate.ToString("F2") + "% Jumper, " + RCSettings.CrawlerRate.ToString("F2") + "% Crawler, " + RCSettings.PunkRate.ToString("F2") + "% Punk ").WithColor("ffcc00"));
             }
             if (RCSettings.ExplodeMode > 0)
             {
-                irc.AddLine($"Titan explode mode is on ({RCSettings.ExplodeMode}).".WithColor("ffcc00"));
+                irc.AddLine($"Titan explode mode enabled ({RCSettings.ExplodeMode}).".WithColor("ffcc00"));
             }
             if (RCSettings.HealthMode > 0)
             {
-                irc.AddLine(("Titan health mode is on (" + RCSettings.HealthLower + "-" + RCSettings.HealthUpper + ").").WithColor("ffcc00"));
+                irc.AddLine(("Titan health mode enabled (" + RCSettings.HealthLower + "-" + RCSettings.HealthUpper + ").").WithColor("ffcc00"));
             }
             if (RCSettings.InfectionMode > 0)
             {
-                irc.AddLine($"Infection mode is on ({RCSettings.InfectionMode}).".WithColor("ffcc00"));
+                irc.AddLine($"Infection mode enabled ({RCSettings.InfectionMode}).".WithColor("ffcc00"));
             }
             if (RCSettings.DamageMode > 0)
             {
-                irc.AddLine($"Minimum nape damage is on ({RCSettings.DamageMode}).".WithColor("ffcc00"));
+                irc.AddLine($"Minimum nape damage enabled ({RCSettings.DamageMode}).".WithColor("ffcc00"));
             }
             if (RCSettings.MoreTitans > 0)
             {
-                irc.AddLine(("Custom titan # is on (" + RCSettings.MoreTitans + ").").WithColor("ffcc00"));
+                irc.AddLine(("Custom titan # enabled (" + RCSettings.MoreTitans + ").").WithColor("ffcc00"));
             }
             if (RCSettings.SizeMode > 0)
             {
-                irc.AddLine(("Custom titan size is on (" + RCSettings.SizeLower.ToString("F2") + "," + RCSettings.SizeUpper.ToString("F2") + ").").WithColor("ffcc00"));
+                irc.AddLine(("Custom titan size enabled (" + RCSettings.SizeLower.ToString("F2") + "," + RCSettings.SizeUpper.ToString("F2") + ").").WithColor("ffcc00"));
             }
             if (RCSettings.BanEren > 0)
             {
-                irc.AddLine("Anti-Eren is on. Using Titan eren will get you kicked.".WithColor("ffcc00"));
+                irc.AddLine("Anti-Eren enabled. Using Titan Eren will get you kicked.".WithColor("ffcc00"));
             }
             if (RCSettings.WaveModeOn == 1)
             {
-                irc.AddLine($"Custom wave mode is on ({RCSettings.WaveModeNum}).".WithColor("ffcc00"));
+                irc.AddLine($"Custom wave mode enabled ({RCSettings.WaveModeNum}).".WithColor("ffcc00"));
             }
             if (RCSettings.FriendlyMode > 0)
             {
@@ -103,7 +112,7 @@
             }
             if (RCSettings.EndlessMode > 0)
             {
-                irc.AddLine($"Endless Respawn is enabled ({RCSettings.EndlessMode} seconds).".WithColor("ffcc00"));
+                irc.AddLine($"Endless Respawn is enabled ({RCSettings.EndlessMode}s).".WithColor("ffcc00"));
             }
             if (RCSettings.GlobalDisableMinimap > 0)
             {
@@ -113,9 +122,11 @@
             {
                 irc.AddLine("Cannons will kill humans.".WithColor("ffcc00"));
             }
+
+            // MOTD
             if (RCSettings.Motd != string.Empty)
             {
-                irc.AddLine(("MOTD: " + RCSettings.Motd).WithColor("ffcc00"));
+                irc.AddLine("MOTD: ".WithColor("ffcc00") + RCSettings.Motd);
             }
         }
     }

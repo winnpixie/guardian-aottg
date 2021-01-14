@@ -11,7 +11,7 @@
                 if (!FengGameManagerMKII.IgnoreList.Contains(id))
                 {
                     FengGameManagerMKII.IgnoreList.Add(id);
-                    irc.AddLine($"Now ignoring data from #{id}.".WithColor("ffcc00"));
+                    irc.AddLine($"Ignoring events from #{id}.".WithColor("ffcc00"));
                 }
             }
         }

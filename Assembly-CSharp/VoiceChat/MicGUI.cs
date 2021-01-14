@@ -298,7 +298,7 @@ public class MicGUI : MonoBehaviour
                     MicEF.AutoMute = GUILayout.Toggle(autoMute, "On");
                     if (autoMute != MicEF.AutoMute)
                     {
-                        PlayerPrefs.SetString("voiceAutoMute", MicEF.AutoMute + "");
+                        PlayerPrefs.SetString("voiceAutoMute", MicEF.AutoMute + string.Empty);
                     }
                     GUILayout.EndHorizontal();
 
@@ -310,7 +310,7 @@ public class MicGUI : MonoBehaviour
                     MicEF.AutoConnect = GUILayout.Toggle(autoConnect, "On");
                     if (autoConnect != MicEF.AutoConnect)
                     {
-                        PlayerPrefs.SetString("voiceAutoConnect", MicEF.AutoConnect + "");
+                        PlayerPrefs.SetString("voiceAutoConnect", MicEF.AutoConnect + string.Empty);
                     }
                     GUILayout.EndHorizontal();
 
@@ -322,7 +322,7 @@ public class MicGUI : MonoBehaviour
                     MicEF.ToggleMic = GUILayout.Toggle(toggleMic, "On");
                     if (toggleMic != MicEF.ToggleMic)
                     {
-                        PlayerPrefs.SetString("voiceToggleMic", MicEF.ToggleMic + "");
+                        PlayerPrefs.SetString("voiceToggleMic", MicEF.ToggleMic + string.Empty);
                     }
                     GUILayout.EndHorizontal();
 
@@ -372,8 +372,8 @@ public class MicGUI : MonoBehaviour
                         PlayerPrefs.SetInt("pushToTalk", (int)KeyCode.V);
                         guiKey = KeyCode.Backslash;
                         PlayerPrefs.SetInt("voiceKey", (int)KeyCode.Backslash);
-                        MicEF.DeviceName = "";
-                        PlayerPrefs.SetString("micDevice", "");
+                        MicEF.DeviceName = string.Empty;
+                        PlayerPrefs.SetString("micDevice", string.Empty);
                         MicEF.VolumeMultiplier = 1f;
                         PlayerPrefs.SetFloat("volumeMultiplier", 1f);
                         MicEF.AutoMute = false;
@@ -453,15 +453,15 @@ public class MicGUI : MonoBehaviour
                 }
                 if (MicEF.Users.Count > 0 || MicEF.ThreadId != -1)
                 {
-                    overlayRect = GUI.Window(1731, overlayRect, this.DrawOverlayGUI, "", overlayStyle);
+                    overlayRect = GUI.Window(1731, overlayRect, this.DrawOverlayGUI, string.Empty, overlayStyle);
                 }
                 if (guiOn)
                 {
                     if (dropDown)
                     {
-                        deviceRect = GUI.Window(1733, deviceRect, this.DrawDeviceList, "", overlayStyle);
+                        deviceRect = GUI.Window(1733, deviceRect, this.DrawDeviceList, string.Empty, overlayStyle);
                     }
-                    micRect = GUI.Window(1732, micRect, this.DrawMainGUI, "", micStyle);
+                    micRect = GUI.Window(1732, micRect, this.DrawMainGUI, string.Empty, micStyle);
                 }
             }
         }

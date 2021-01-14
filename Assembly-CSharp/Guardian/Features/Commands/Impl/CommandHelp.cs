@@ -4,38 +4,53 @@ namespace Guardian.Features.Commands.Impl
 {
     class CommandHelp : Command
     {
-        public CommandHelp() : base("help", new string[] { "?", "commands" }, "[page]", false) { }
+        public CommandHelp() : base("help", new string[] { "?", "commands" }, "[page/command]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            int page = 1;
+            int maxPages = (Mod.Commands.Elements.Count - 1) / 7;
+            int page = 0;
 
-            if (args.Length > 0 && int.TryParse(args[0], out page))
+            if (args.Length > 0)
             {
-                if (page < 1)
+                Command command = Mod.Commands.Find(args[0]);
+
+                if (command != null)
                 {
-                    page = 1;
+                    irc.AddLine($"Help for command '{command.Name}':".WithColor("aaff00").AsBold());
+                    irc.AddLine($"Usage: /{command.Name} {command.Usage}");
+                    irc.AddLine($"Aliases: [{string.Join(", ", command.Aliases)}]");
+                    return;
                 }
-                if (page > Mod.Commands.Pages)
+                else if (int.TryParse(args[0], out int thePage))
                 {
-                    page = Mod.Commands.Pages;
+                    page = thePage;
+                    if (page < 1)
+                    {
+                        page = 1;
+                    }
+                    if (page > maxPages + 1)
+                    {
+                        page = maxPages + 1;
+                    }
+                    page -= 1;
                 }
             }
-            int endIndex = Math.Min(page * Mod.Commands.PerPage, Mod.Commands.Elements.Count);
 
-            irc.AddLine($"Commands (Page {page}/{Mod.Commands.Pages})".WithColor("aaff00").AsBold());
-            irc.AddLine($"<arg> = Required, [arg] = Optional".WithColor("aaaaaa").AsBold());
-            for (int i = (page - 1) * Mod.Commands.PerPage; i < endIndex; i++)
+            int endIndex = Math.Min((page + 1) * 7, Mod.Commands.Elements.Count);
+            irc.AddLine($"Commands (Page {page + 1}/{maxPages + 1})".WithColor("aaff00").AsBold());
+            irc.AddLine("<arg> = Required, [arg] = Optional".WithColor("aaaaaa").AsBold());
+            for (int i = page * 7; i < endIndex; ++i)
             {
                 Command command = Mod.Commands.Elements[i];
-                string msg = "> ".WithColor("00ff00").AsBold() + $"/{command.Name} {command.usage}";
-                if (command.masterClient)
+                string msg = "> ".WithColor("00ff00").AsBold() + $"/{command.Name} {command.Usage}";
+                if (command.MasterClient)
                 {
                     msg += " [MC]".WithColor("ff0000").AsBold();
                 }
                 if (command.GetType().Namespace.EndsWith("Debug"))
                 {
-                    msg += " [Debug]".WithColor("aaaaa").AsBold();
+                    msg += " [DBG]".WithColor("aaaaa").AsBold();
                 }
                 irc.AddLine(msg);
             }

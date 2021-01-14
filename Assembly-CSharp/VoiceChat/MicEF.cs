@@ -24,7 +24,7 @@ public class MicEF : MonoBehaviour
     public static float VolumeMultiplier = 1f;
     public static bool Disconnected;
     public static bool AutoConnect = true;
-    public static string DeviceName = "";
+    public static string DeviceName = string.Empty;
     public static bool AutoMute = false;
     public static bool ToggleMic = false;
     private bool micToggled = false;

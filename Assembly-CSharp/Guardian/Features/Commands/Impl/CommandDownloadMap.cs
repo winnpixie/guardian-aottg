@@ -9,7 +9,7 @@ namespace Guardian.Features.Commands.Impl
         private Regex IllegalPathChars = new Regex("[\\\\/:*?\"<>|]", RegexOptions.IgnoreCase); // According to Windows: \/:*?"<>|
         private string SaveDir = Mod.RootDir + "\\Maps";
 
-        public CommandDownloadMap() : base("dlmap", new string[0], "", false) { }
+        public CommandDownloadMap() : base("downloadmap", new string[] { "dlmap" }, string.Empty, false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
@@ -17,7 +17,7 @@ namespace Guardian.Features.Commands.Impl
             {
                 string[] roomInfo = PhotonNetwork.room.name.Split('`');
                 string roomName = roomInfo[0];
-                roomName = IllegalPathChars.Replace(roomName, "");
+                roomName = IllegalPathChars.Replace(roomName, string.Empty);
                 long now = GameHelper.CurrentTimeMillis();
 
                 GameHelper.TryCreateFile(SaveDir, true);

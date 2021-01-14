@@ -15,19 +15,16 @@ namespace Guardian.Features.Properties
 
         // Player
         public Property<bool> AlternateIdle = new Property<bool>("Player_AHSSIdle", new string[0], false);
-        public Property<bool> InfiniteGas = new Property<bool>("Player_InfiniteGas", new string[0], false);
-        public Property<bool> InfiniteBlades = new Property<bool>("Player_InfiniteBlades", new string[0], false);
-        public Property<bool> InfiniteAhss = new Property<bool>("Player_InfiniteAHSS", new string[0], false);
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
 
         // Chat
-        public Property<string> JoinMessage = new Property<string>("Chat_JoinMessage", new string[0], "");
-        public Property<string> ChatName = new Property<string>("Chat_UserName", new string[0], "");
+        public Property<string> JoinMessage = new Property<string>("Chat_JoinMessage", new string[0], string.Empty);
+        public Property<string> ChatName = new Property<string>("Chat_UserName", new string[0], string.Empty);
         public Property<bool> BoldName = new Property<bool>("Chat_BoldName", new string[0], false);
         public Property<bool> ItalicName = new Property<bool>("Chat_ItalicName", new string[0], false);
-        public Property<string> TextColor = new Property<string>("Chat_TextColor", new string[0], "");
-        public Property<string> TextPrefix = new Property<string>("Chat_TextPrefix", new string[0], "");
-        public Property<string> TextSuffix = new Property<string>("Chat_TextSuffix", new string[0], "");
+        public Property<string> TextColor = new Property<string>("Chat_TextColor", new string[0], string.Empty);
+        public Property<string> TextPrefix = new Property<string>("Chat_TextPrefix", new string[0], string.Empty);
+        public Property<string> TextSuffix = new Property<string>("Chat_TextSuffix", new string[0], string.Empty);
         public Property<bool> BoldText = new Property<bool>("Chat_BoldText", new string[0], false);
         public Property<bool> ItalicText = new Property<bool>("Chat_ItalicText", new string[0], false);
 
@@ -49,9 +46,6 @@ namespace Guardian.Features.Properties
 
             // Player
             base.Add(AlternateIdle);
-            base.Add(InfiniteGas);
-            base.Add(InfiniteBlades);
-            base.Add(InfiniteAhss);
             base.Add(AlternateBurst);
 
             // Chat

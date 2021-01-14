@@ -15,10 +15,10 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "01132021";
+        public static string Build = "01142021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
-        public static string MapData = "";
+        public static string MapData = string.Empty;
         public static CommandManager Commands = new CommandManager();
         public static PropertyManager Properties = new PropertyManager();
         public static List<string> HostWhitelist = new List<string>();
@@ -76,7 +76,6 @@ namespace Guardian
                 // Property whitelist
                 NetworkPatches.PropertyWhitelist.Add("sender");
                 NetworkPatches.PropertyWhitelist.Add("GuardianMod");
-                NetworkPatches.PropertyWhitelist.Add("Stats");
                 foreach (FieldInfo field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
                 {
                     NetworkPatches.PropertyWhitelist.Add((string)field.GetValue(null));
@@ -107,8 +106,13 @@ namespace Guardian
                 if (!www.text.Split('\n')[0].Equals(Build))
                 {
                     Logger.Error("You are running an outdated build, please update!");
-                    UIMainReferences.Version = "outdated";
-                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "[ff0000]Mod is outdated![-] Please download the latest build from [0099ff]https://tiny.cc/GuardianMod[-]!";
+                    Logger.Error("https://tiny.cc/GuardianMod".WithColor("0099ff"));
+
+                    try
+                    {
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[ff0000]Mod is outdated![-] Please download the latest build from [0099ff]https://tiny.cc/GuardianMod[-]!";
+                    }
+                    catch { }
                 }
             }
         }
@@ -138,12 +142,12 @@ namespace Guardian
 
                     if (colors.Length > 1 && colors[0].IsHex() && colors[1].IsHex())
                     {
-                        input = GameHelper.Detagger.Replace(input, "");
+                        input = GameHelper.Detagger.Replace(input, string.Empty);
 
                         Color startColor = NGUIMath.IntToColor(int.Parse(colors[0] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));
                         Color endColor = NGUIMath.IntToColor(int.Parse(colors[1] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));
 
-                        string faded = "";
+                        string faded = string.Empty;
                         for (int i = 0; i < input.Length; i++)
                         {
                             Color color = Color.Lerp(startColor, endColor, (float)i / (float)input.Length);
@@ -313,7 +317,6 @@ namespace Guardian
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
                 { "GuardianMod", 1 },
-                { "Stats", ModifiedStats.ToInt() }
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');
@@ -322,7 +325,7 @@ namespace Guardian
 
                 DiscordHelper.SetPresence(new Discord.Activity
                 {
-                    Details = $"Playing in {(roomInfo[5].Length == 0 ? "" : "[PWD]")} {roomInfo[0].Uncolored()}",
+                    Details = $"Playing in {(roomInfo[5].Length == 0 ? string.Empty : "[PWD]")} {roomInfo[0].Uncolored()}",
                     State = $"({NetworkHelper.GetRegionCode()}) {roomInfo[1]} / {roomInfo[2].ToUpper()}"
                 });
             }
@@ -330,7 +333,7 @@ namespace Guardian
 
         void OnLeftRoom()
         {
-            MapData = "";
+            MapData = string.Empty;
 
             DiscordHelper.SetPresence(new Discord.Activity
             {

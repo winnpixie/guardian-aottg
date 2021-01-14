@@ -15,7 +15,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 if (args[0].Equals("time", StringComparison.OrdinalIgnoreCase) && int.TryParse(args[1], out int time))
                 {
                     FengGameManagerMKII.Instance.AddTime(time);
-                    FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Added {GameHelper.FormatTime(time, false).WithColor("ffffff")} to the clock!".WithColor("ffcc00"), "");
+                    GameHelper.Broadcast($"Added {GameHelper.FormatTime(time, false).WithColor("ffffff")} to the clock!");
                 }
 
                 // Max players
@@ -23,7 +23,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 {
                     PhotonNetwork.room.expectedMaxPlayers = max;
                     PhotonNetwork.room.maxPlayers = PhotonNetwork.room.expectedMaxPlayers;
-                    FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Max players is now {max}!".WithColor("ffcc00"), "");
+                    GameHelper.Broadcast($"Max players is now {max}!");
                 }
 
                 // Allowing joins or not
@@ -31,7 +31,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 {
                     PhotonNetwork.room.expectedJoinability = args[1].Equals("true", StringComparison.OrdinalIgnoreCase);
                     PhotonNetwork.room.open = PhotonNetwork.room.expectedJoinability;
-                    FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Room is {(PhotonNetwork.room.open ? "now" : "no longer")} allowing joins!".WithColor("ffcc00"), "");
+                    GameHelper.Broadcast($"Room is {(PhotonNetwork.room.open ? "now" : "no longer")} allowing joins!");
                 }
 
                 // Visible in lobby or not
@@ -39,7 +39,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 {
                     PhotonNetwork.room.expectedVisibility = args[1].Equals("true", StringComparison.OrdinalIgnoreCase);
                     PhotonNetwork.room.visible = PhotonNetwork.room.expectedVisibility;
-                    FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Room is {(PhotonNetwork.room.visible ? "now" : "no longer")} being shown in the lobby!".WithColor("ffcc00"), "");
+                    GameHelper.Broadcast($"Room is {(PhotonNetwork.room.visible ? "now" : "no longer")} being shown in the lobby!");
                 }
 
                 // Player TTL
@@ -48,7 +48,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     if (PhotonNetwork.player.Id == 1)
                     {
                         PhotonNetwork.room.playerTtl = pttl;
-                        FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Player TTL is now {pttl}ms!".WithColor("ffcc00"), "");
+                        GameHelper.Broadcast($"Player TTL is now {pttl}ms!");
                     }
                     else
                     {
@@ -62,7 +62,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     if (PhotonNetwork.player.Id == 1)
                     {
                         PhotonNetwork.room.emptyRoomTtl = rttl;
-                        FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Room TTL is now {rttl}ms!".WithColor("ffcc00"), "");
+                        GameHelper.Broadcast($"Room TTL is now {rttl}ms!");
                     }
                     else
                     {

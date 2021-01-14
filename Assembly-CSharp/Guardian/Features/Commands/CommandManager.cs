@@ -8,9 +8,6 @@ namespace Guardian.Features.Commands
 {
     class CommandManager : FeatureManager<Command>
     {
-        public int Pages = 1;
-        public int PerPage = 7;
-
         public override void Load()
         {
             // Normal
@@ -21,12 +18,10 @@ namespace Guardian.Features.Commands
             base.Add(new CommandMute());
             base.Add(new CommandRejoin());
             base.Add(new CommandReloadConfig());
-            base.Add(new CommandRevive());
             base.Add(new CommandSay());
             base.Add(new CommandSetGuild());
             base.Add(new CommandSetName());
             base.Add(new CommandSetTime());
-            base.Add(new CommandTeleport());
             base.Add(new CommandTranslate());
             base.Add(new CommandUnignore());
             base.Add(new CommandUnmute());
@@ -37,6 +32,7 @@ namespace Guardian.Features.Commands
             base.Add(new CommandDifficulty());
             base.Add(new CommandKill());
             base.Add(new CommandRestart());
+            base.Add(new CommandRevive());
             base.Add(new CommandRoom());
             base.Add(new CommandScatterTitans());
             base.Add(new CommandSetMap());
@@ -45,8 +41,6 @@ namespace Guardian.Features.Commands
             // Debug
             base.Add(new CommandDrawDistance());
             base.Add(new CommandLogProperties());
-            base.Add(new CommandNoClip());
-            base.Add(new CommandRPC());
 
             // RC
             base.Add(new CommandBan());
@@ -59,8 +53,6 @@ namespace Guardian.Features.Commands
             base.Add(new CommandSpectate());
             base.Add(new CommandTeam());
             base.Add(new CommandUnban());
-
-            Pages = MathHelper.Ceil(base.Elements.Count / (float)PerPage);
         }
 
         public void HandleCommand(InRoomChat irc)
@@ -71,7 +63,7 @@ namespace Guardian.Features.Commands
             Command command = base.Find(args[0]);
             if (command != null)
             {
-                if (!command.masterClient || PhotonNetwork.isMasterClient)
+                if (!command.MasterClient || PhotonNetwork.isMasterClient)
                 {
                     command.Execute(irc, args.Length > 1 ? args.CopyOfRange(1, args.Length) : new string[0]);
                 }

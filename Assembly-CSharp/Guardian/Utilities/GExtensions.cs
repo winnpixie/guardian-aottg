@@ -33,7 +33,7 @@ public static class GExtensions
     // My implementation of NGUI color parsing
     public static string Colored(this string str)
     {
-        string output = "";
+        string output = string.Empty;
         Stack<string> colors = new Stack<string>(); // Thank you to Kevin for telling me to use a Stack
         bool coloring = false;
 
@@ -77,12 +77,12 @@ public static class GExtensions
             output += c;
         }
 
-        return output + (coloring ? "</color>" : "");
+        return output + (coloring ? "</color>" : string.Empty);
     }
 
     public static string Uncolored(this string str)
     {
-        string output = "";
+        string output = string.Empty;
 
         for (int i = 0; i < str.Length; i++)
         {

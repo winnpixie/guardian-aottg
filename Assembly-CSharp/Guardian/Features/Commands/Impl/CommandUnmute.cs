@@ -14,7 +14,7 @@
                     if (Mod.Instance.Muted.Contains(id))
                     {
                         Mod.Instance.Muted.Remove(id);
-                        irc.AddLine($"No longer muting chat messages from #{id}.");
+                        irc.AddLine($"No longer ignoring chat messages from #{id}.");
                     }
                 }
             }

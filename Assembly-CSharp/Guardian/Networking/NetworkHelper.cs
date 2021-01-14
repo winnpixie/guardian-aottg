@@ -23,7 +23,7 @@ namespace Guardian.Networking
                     return "app-asia.exitgamescloud.com";
             }
 
-            return "";
+            return string.Empty;
         }
 
         public static long GetResponseTime(string server, int port)
@@ -50,7 +50,7 @@ namespace Guardian.Networking
         public static string GetBestRegion()
         {
             string[] regions = { "us", "eu", "asia", "jp" };
-            string bestRegion = "";
+            string bestRegion = string.Empty;
             long lowestPing = long.MaxValue;
 
             foreach (string code in regions)

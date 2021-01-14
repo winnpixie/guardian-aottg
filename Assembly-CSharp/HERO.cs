@@ -44,26 +44,8 @@ public class HERO : Photon.MonoBehaviour
     public int myTeam = 1;
     private bool leftGunHasBullet = true;
     private bool rightGunHasBullet = true;
-    // Infinite AHSS
-    private int _leftBulletLeft = 7;
-    private int leftBulletLeft
-    {
-        get
-        {
-            return Guardian.Mod.Properties.InfiniteAhss.Value ? bulletMAX : _leftBulletLeft;
-        }
-        set { _leftBulletLeft = value; }
-    }
-    // Infinite AHSS
-    private int _rightBulletLeft = 7;
-    private int rightBulletLeft
-    {
-        get
-        {
-            return Guardian.Mod.Properties.InfiniteAhss.Value ? bulletMAX : _rightBulletLeft;
-        }
-        set { _rightBulletLeft = value; }
-    }
+    private int leftBulletLeft = 7;
+    private int rightBulletLeft = 7;
     private int bulletMAX = 7;
     public GameObject hookRefL1;
     public GameObject hookRefR1;
@@ -111,39 +93,12 @@ public class HERO : Photon.MonoBehaviour
     private float wallRunTime;
     private bool wallJump;
     public float totalGas = 100f;
-    // Infinite Gas
-    private float _currentGas = 100f;
-    private float currentGas
-    {
-        get
-        {
-            return Guardian.Mod.Properties.InfiniteGas.Value ? totalGas : _currentGas;
-        }
-        set { _currentGas = value; }
-    }
+    private float currentGas = 100f;
     private float useGasSpeed = 0.2f;
     public float totalBladeSta = 100f;
-    // Infinite Blades
-    private float _currentBladeSta = 100f;
-    private float currentBladeSta
-    {
-        get
-        {
-            return Guardian.Mod.Properties.InfiniteBlades.Value ? totalBladeSta : _currentBladeSta;
-        }
-        set { _currentBladeSta = value; }
-    }
+    private float currentBladeSta = 100f;
     private int totalBladeNum = 5;
-    // Infinite Blades
-    private int _currentBladeNum = 5;
-    private int currentBladeNum
-    {
-        get
-        {
-            return Guardian.Mod.Properties.InfiniteBlades.Value ? totalBladeNum : _currentBladeNum;
-        }
-        set { _currentBladeNum = value; }
-    }
+    private int currentBladeNum = 5;
     private bool throwedBlades;
     private float flare1CD;
     private float flare2CD;
@@ -2022,7 +1977,7 @@ public class HERO : Photon.MonoBehaviour
                 }
             }
 
-            string nametagContent = "";
+            string nametagContent = string.Empty;
             UILabel component = myNetWorkName.GetComponent<UILabel>();
             if (base.photonView.owner.customProperties[PhotonPlayerProperty.RCTeam] != null)
             {
@@ -4628,7 +4583,7 @@ public class HERO : Photon.MonoBehaviour
                 }
                 else if (viewID < 0)
                 {
-                    if (titanName == "")
+                    if (titanName == string.Empty)
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + " (possibly valid).</color>");
                         return;
@@ -4769,7 +4724,7 @@ public class HERO : Photon.MonoBehaviour
                 }
                 else if (viewID < 0)
                 {
-                    if (titanName == "")
+                    if (titanName == string.Empty)
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + " (possibly valid).</color>");
                         return;

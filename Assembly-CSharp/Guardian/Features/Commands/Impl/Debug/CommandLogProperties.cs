@@ -20,7 +20,7 @@ namespace Guardian.Features.Commands.Impl.Debug
                 if (player != null)
                 {
                     IEnumerator<DictionaryEntry> ienum = player.customProperties.GetEnumerator();
-                    string output = "";
+                    string output = string.Empty;
                     while (ienum.MoveNext())
                     {
                         DictionaryEntry entry = ienum.Current;

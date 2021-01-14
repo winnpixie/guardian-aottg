@@ -20,8 +20,8 @@ namespace Guardian.Features.Commands.Impl
                 string culture = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
                 for (int i = 0; i < args.Length; i++)
                 {
-                    args[i] = GameHelper.Detagger.Replace(args[i], "");
-                    args[i] = NonLetters.Replace(args[i], "");
+                    args[i] = GameHelper.Detagger.Replace(args[i], string.Empty);
+                    args[i] = NonLetters.Replace(args[i], string.Empty);
                 }
                 string query = Uri.EscapeDataString(string.Join(" ", args));
                 using (WWW www = new WWW($"https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={culture}&dt=t&q={query}"))

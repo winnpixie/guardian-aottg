@@ -4,7 +4,7 @@ namespace Guardian.Features.Commands.Impl
 {
     class CommandRejoin : Command
     {
-        public CommandRejoin() : base("rejoin", new string[] { "relog", "reconnect" }, "", false) { }
+        public CommandRejoin() : base("rejoin", new string[] { "relog", "reconnect" }, string.Empty, false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

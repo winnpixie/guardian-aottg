@@ -453,10 +453,12 @@ public class CustomCharacterManager : MonoBehaviour
                 setup.myCostume.stat.ACL += pt;
                 break;
         }
-        setup.myCostume.stat.SPD = Mathf.Clamp(setup.myCostume.stat.SPD, 50, 140);
-        setup.myCostume.stat.GAS = Mathf.Clamp(setup.myCostume.stat.GAS, 50, 150);
-        setup.myCostume.stat.BLA = Mathf.Clamp(setup.myCostume.stat.BLA, 50, 125);
-        setup.myCostume.stat.ACL = Mathf.Clamp(setup.myCostume.stat.ACL, 50, 150);
+
+        setup.myCostume.stat.SPD = Mathf.Clamp(setup.myCostume.stat.SPD, 75, 125);
+        setup.myCostume.stat.GAS = Mathf.Clamp(setup.myCostume.stat.GAS, 75, 125);
+        setup.myCostume.stat.BLA = Mathf.Clamp(setup.myCostume.stat.BLA, 75, 125);
+        setup.myCostume.stat.ACL = Mathf.Clamp(setup.myCostume.stat.ACL, 75, 125);
+
         freshLabel();
     }
 

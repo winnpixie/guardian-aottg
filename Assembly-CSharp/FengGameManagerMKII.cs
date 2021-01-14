@@ -1261,7 +1261,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             DestroyAllExistingCloths();
             PhotonNetwork.LoadLevel(Level.Map);
-            Mod.MapData = "";
+            Mod.MapData = string.Empty;
         }
         else if (PhotonNetwork.isMasterClient)
         {
@@ -2902,7 +2902,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
     private string GetPlayerTextForList(PhotonPlayer player)
     {
-        string content = "";
+        string content = string.Empty;
         if (IgnoreList.Contains(player.Id))
         {
             content += "[990000][X][-] ";
@@ -6516,7 +6516,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 else
                 {
-                    string[] array5 = Regex.Replace(CurrentScript, "\\s+", "").Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Split(';');
+                    string[] array5 = Regex.Replace(CurrentScript, "\\s+", string.Empty).Replace("\r\n", string.Empty).Replace("\n", string.Empty).Replace("\r", string.Empty).Split(';');
                     for (int i = 0; i < Mathf.FloorToInt((array5.Length - 1) / 100) + 1; i++)
                     {
                         string[] array6;
@@ -7721,162 +7721,151 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     return;
                 }
-                if (UIMainReferences.Version.Equals("outdated"))
+                if (!(GameObject.Find("ButtonCREDITS") != null) || !(GameObject.Find("ButtonCREDITS").transform.parent.gameObject != null) || !NGUITools.GetActive(GameObject.Find("ButtonCREDITS").transform.parent.gameObject))
                 {
-                    GUI.backgroundColor = new Color(0f, 0f, 0f, 1f);
-                    float num5 = (float)(Screen.width / 2) - 115f;
-                    float num6 = (float)(Screen.height / 2) - 45f;
-                    GUI.Box(new Rect(num5, num6, 230f, 90f), string.Empty);
-                    GUI.DrawTexture(new Rect(num5 + 2f, num6 + 2f, 226f, 86f), textureBackgroundBlack);
-                    GUI.Label(new Rect(num5 + 13f, num6 + 20f, 172f, 70f), "Mod is outdated. Please clear your cache or try a different browser.");
+                    return;
                 }
-                else
+                float num7 = (float)Screen.width / 2f - 85f;
+                float num8 = (float)Screen.height / 2f;
+                GUI.backgroundColor = Color.white; // new Color(0.08f, 0.3f, 0.4f, 1f);
+                GUI.DrawTexture(new Rect(12f, 32f, 216f, 146f), textureBackgroundGray);
+                GUI.DrawTexture(new Rect(num7 + 2f, 7f, 146f, 101f), textureBackgroundGray);
+                GUI.Box(new Rect(num7, 5f, 150f, 105f), string.Empty);
+                if (GUI.Button(new Rect(num7 + 11f, 15f, 128f, 25f), "Level Editor"))
                 {
-                    if (!(GameObject.Find("ButtonCREDITS") != null) || !(GameObject.Find("ButtonCREDITS").transform.parent.gameObject != null) || !NGUITools.GetActive(GameObject.Find("ButtonCREDITS").transform.parent.gameObject))
+                    Settings[64] = 101;
+                    Application.LoadLevel(2);
+                }
+                else if (GUI.Button(new Rect(num7 + 11f, 45f, 128f, 25f), $"Server ({Guardian.Networking.NetworkHelper.App.Name})"))
+                {
+                    // MOD
+                    if (Guardian.Networking.NetworkHelper.App is Guardian.Networking.PhotonApplication.Fenglee)
                     {
+                        Guardian.Networking.NetworkHelper.App = new Guardian.Networking.PhotonApplication.AoTTG2();
+                    }
+                    else
+                    {
+                        Guardian.Networking.NetworkHelper.App = new Guardian.Networking.PhotonApplication.Fenglee();
+                    }
+                }
+                else if (GUI.Button(new Rect(num7 + 11f, 75f, 128f, 25f), $"Protocol ({Guardian.Networking.NetworkHelper.Connection.Name})"))
+                {
+                    // MOD
+                    switch (Guardian.Networking.NetworkHelper.Connection.Protocol)
+                    {
+                        case ExitGames.Client.Photon.ConnectionProtocol.Tcp:
+                            Guardian.Networking.NetworkHelper.Connection = new Guardian.Networking.PhotonConnection.UDP();
+                            break;
+                        case ExitGames.Client.Photon.ConnectionProtocol.Udp:
+                            Guardian.Networking.NetworkHelper.Connection = new Guardian.Networking.PhotonConnection.TCP();
+                            break;
+                    }
+                    PhotonNetwork.SwitchToProtocol(Guardian.Networking.NetworkHelper.Connection.Protocol);
+                }
+                GUI.Box(new Rect(10f, 30f, 220f, 150f), string.Empty);
+                if (GUI.Button(new Rect(17.5f, 40f, 40f, 25f), "Login", "box"))
+                {
+                    Settings[187] = 0;
+                }
+                else if (GUI.Button(new Rect(65f, 40f, 95f, 25f), "Custom Name", "box"))
+                {
+                    Settings[187] = 1;
+                }
+                else if (GUI.Button(new Rect(167.5f, 40f, 55f, 25f), "Servers", "box"))
+                {
+                    Settings[187] = 2;
+                }
+                if ((int)Settings[187] == 1)
+                {
+                    if (LoginFengKAI.LoginState == LoginState.LoggedIn)
+                    {
+                        GUI.Label(new Rect(30f, 80f, 180f, 60f), "You're already logged in!", "Label");
                         return;
                     }
-                    float num7 = (float)Screen.width / 2f - 85f;
-                    float num8 = (float)Screen.height / 2f;
-                    GUI.backgroundColor = Color.white; // new Color(0.08f, 0.3f, 0.4f, 1f);
-                    GUI.DrawTexture(new Rect(12f, 32f, 216f, 146f), textureBackgroundGray);
-                    GUI.DrawTexture(new Rect(num7 + 2f, 7f, 146f, 101f), textureBackgroundGray);
-                    GUI.Box(new Rect(num7, 5f, 150f, 105f), string.Empty);
-                    if (GUI.Button(new Rect(num7 + 11f, 15f, 128f, 25f), "Level Editor"))
+                    // Change max from 40 to 255 because why not
+                    GUI.Label(new Rect(20f, 80f, 45f, 20f), "Name:", "Label");
+                    NameField = GUI.TextField(new Rect(65f, 80f, 145f, 20f), NameField, 255);
+                    GUI.Label(new Rect(20f, 105f, 45f, 20f), "Guild:", "Label");
+                    LoginFengKAI.Player.Guild = GUI.TextField(new Rect(65f, 105f, 145f, 20f), LoginFengKAI.Player.Guild, 255);
+                    if (GUI.Button(new Rect(42f, 140f, 50f, 25f), "Save"))
                     {
-                        Settings[64] = 101;
-                        Application.LoadLevel(2);
+                        PlayerPrefs.SetString("name", NameField);
+                        PlayerPrefs.SetString("guildname", LoginFengKAI.Player.Guild);
                     }
-                    else if (GUI.Button(new Rect(num7 + 11f, 45f, 128f, 25f), $"Server ({Guardian.Networking.NetworkHelper.App.Name})"))
+                    else if (GUI.Button(new Rect(128f, 140f, 50f, 25f), "Load"))
                     {
-                        // MOD
-                        if (Guardian.Networking.NetworkHelper.App is Guardian.Networking.PhotonApplication.Fenglee)
-                        {
-                            Guardian.Networking.NetworkHelper.App = new Guardian.Networking.PhotonApplication.AoTTG2();
-                        }
-                        else
-                        {
-                            Guardian.Networking.NetworkHelper.App = new Guardian.Networking.PhotonApplication.Fenglee();
-                        }
-                    }
-                    else if (GUI.Button(new Rect(num7 + 11f, 75f, 128f, 25f), $"Protocol ({Guardian.Networking.NetworkHelper.Connection.Name})"))
-                    {
-                        // MOD
-                        switch (Guardian.Networking.NetworkHelper.Connection.Protocol)
-                        {
-                            case ExitGames.Client.Photon.ConnectionProtocol.Tcp:
-                                Guardian.Networking.NetworkHelper.Connection = new Guardian.Networking.PhotonConnection.UDP();
-                                break;
-                            case ExitGames.Client.Photon.ConnectionProtocol.Udp:
-                                Guardian.Networking.NetworkHelper.Connection = new Guardian.Networking.PhotonConnection.TCP();
-                                break;
-                        }
-                        PhotonNetwork.SwitchToProtocol(Guardian.Networking.NetworkHelper.Connection.Protocol);
-                    }
-                    GUI.Box(new Rect(10f, 30f, 220f, 150f), string.Empty);
-                    if (GUI.Button(new Rect(17.5f, 40f, 40f, 25f), "Login", "box"))
-                    {
-                        Settings[187] = 0;
-                    }
-                    else if (GUI.Button(new Rect(65f, 40f, 95f, 25f), "Custom Name", "box"))
-                    {
-                        Settings[187] = 1;
-                    }
-                    else if (GUI.Button(new Rect(167.5f, 40f, 55f, 25f), "Servers", "box"))
-                    {
-                        Settings[187] = 2;
-                    }
-                    if ((int)Settings[187] == 1)
-                    {
-                        if (LoginFengKAI.LoginState == LoginState.LoggedIn)
-                        {
-                            GUI.Label(new Rect(30f, 80f, 180f, 60f), "You're already logged in!", "Label");
-                            return;
-                        }
-                        // Change max from 40 to 255 because why not
-                        GUI.Label(new Rect(20f, 80f, 45f, 20f), "Name:", "Label");
-                        NameField = GUI.TextField(new Rect(65f, 80f, 145f, 20f), NameField, 255);
-                        GUI.Label(new Rect(20f, 105f, 45f, 20f), "Guild:", "Label");
-                        LoginFengKAI.Player.Guild = GUI.TextField(new Rect(65f, 105f, 145f, 20f), LoginFengKAI.Player.Guild, 255);
-                        if (GUI.Button(new Rect(42f, 140f, 50f, 25f), "Save"))
-                        {
-                            PlayerPrefs.SetString("name", NameField);
-                            PlayerPrefs.SetString("guildname", LoginFengKAI.Player.Guild);
-                        }
-                        else if (GUI.Button(new Rect(128f, 140f, 50f, 25f), "Load"))
-                        {
-                            NameField = PlayerPrefs.GetString("name", string.Empty);
-                            LoginFengKAI.Player.Guild = PlayerPrefs.GetString("guildname", string.Empty);
-                        }
-                    }
-                    else if ((int)Settings[187] == 0)
-                    {
-                        if (LoginFengKAI.LoginState == LoginState.LoggedIn)
-                        {
-                            GUI.Label(new Rect(20f, 80f, 70f, 20f), "Username:", "Label");
-                            GUI.Label(new Rect(90f, 80f, 90f, 20f), LoginFengKAI.Player.Name, "Label");
-                            GUI.Label(new Rect(20f, 105f, 45f, 20f), "Guild:", "Label");
-                            LoginFengKAI.Player.Guild = GUI.TextField(new Rect(65f, 105f, 145f, 20f), LoginFengKAI.Player.Guild, 40);
-                            if (GUI.Button(new Rect(35f, 140f, 70f, 25f), "Set Guild"))
-                            {
-                                StartCoroutine(SetGuildFeng());
-                            }
-                            else if (GUI.Button(new Rect(130f, 140f, 65f, 25f), "Logout"))
-                            {
-                                LoginFengKAI.LoginState = LoginState.LoggedOut;
-                            }
-                            return;
-                        }
-                        GUI.Label(new Rect(20f, 80f, 70f, 20f), "Username:", "Label");
-                        UsernameField = GUI.TextField(new Rect(90f, 80f, 130f, 20f), UsernameField, 40);
-                        GUI.Label(new Rect(20f, 105f, 70f, 20f), "Password:", "Label");
-                        PasswordField = GUI.PasswordField(new Rect(90f, 105f, 130f, 20f), PasswordField, '*', 40);
-                        if (GUI.Button(new Rect(30f, 140f, 50f, 25f), "Login") && LoginFengKAI.LoginState != LoginState.LoggingIn)
-                        {
-                            StartCoroutine(LoginFeng());
-                            LoginFengKAI.LoginState = LoginState.LoggingIn;
-                        }
-                        if (LoginFengKAI.LoginState == LoginState.LoggingIn)
-                        {
-                            GUI.Label(new Rect(100f, 140f, 120f, 25f), "Logging in...", "Label");
-                        }
-                        else if (LoginFengKAI.LoginState == LoginState.Failed)
-                        {
-                            GUI.Label(new Rect(100f, 140f, 120f, 25f), "Login Failed.", "Label");
-                        }
-                    }
-                    else if ((int)Settings[187] == 2)
-                    {
-                        if (UIMainReferences.Version == UIMainReferences.FengVersion)
-                        {
-                            GUI.Label(new Rect(37f, 75f, 190f, 25f), "Connected to public server.", "Label");
-                        }
-                        else if (UIMainReferences.Version == S[0])
-                        {
-                            GUI.Label(new Rect(28f, 75f, 190f, 25f), "Connected to RC private server.", "Label");
-                        }
-                        else
-                        {
-                            GUI.Label(new Rect(37f, 75f, 190f, 25f), "Connected to custom server.", "Label");
-                        }
-                        GUI.Label(new Rect(20f, 100f, 90f, 25f), "Public Server:", "Label");
-                        GUI.Label(new Rect(20f, 125f, 80f, 25f), "RC Private:", "Label");
-                        GUI.Label(new Rect(20f, 150f, 60f, 25f), "Custom:", "Label");
-                        if (GUI.Button(new Rect(160f, 100f, 60f, 20f), "Connect"))
-                        {
-                            UIMainReferences.Version = UIMainReferences.FengVersion;
-                        }
-                        else if (GUI.Button(new Rect(160f, 125f, 60f, 20f), "Connect"))
-                        {
-                            UIMainReferences.Version = S[0];
-                        }
-                        else if (GUI.Button(new Rect(160f, 150f, 60f, 20f), "Connect"))
-                        {
-                            UIMainReferences.Version = PrivateServerField;
-                        }
-                        PrivateServerField = GUI.TextField(new Rect(78f, 153f, 70f, 18f), PrivateServerField, 50);
+                        NameField = PlayerPrefs.GetString("name", string.Empty);
+                        LoginFengKAI.Player.Guild = PlayerPrefs.GetString("guildname", string.Empty);
                     }
                 }
+                else if ((int)Settings[187] == 0)
+                {
+                    if (LoginFengKAI.LoginState == LoginState.LoggedIn)
+                    {
+                        GUI.Label(new Rect(20f, 80f, 70f, 20f), "Username:", "Label");
+                        GUI.Label(new Rect(90f, 80f, 90f, 20f), LoginFengKAI.Player.Name, "Label");
+                        GUI.Label(new Rect(20f, 105f, 45f, 20f), "Guild:", "Label");
+                        LoginFengKAI.Player.Guild = GUI.TextField(new Rect(65f, 105f, 145f, 20f), LoginFengKAI.Player.Guild, 40);
+                        if (GUI.Button(new Rect(35f, 140f, 70f, 25f), "Set Guild"))
+                        {
+                            StartCoroutine(SetGuildFeng());
+                        }
+                        else if (GUI.Button(new Rect(130f, 140f, 65f, 25f), "Logout"))
+                        {
+                            LoginFengKAI.LoginState = LoginState.LoggedOut;
+                        }
+                        return;
+                    }
+                    GUI.Label(new Rect(20f, 80f, 70f, 20f), "Username:", "Label");
+                    UsernameField = GUI.TextField(new Rect(90f, 80f, 130f, 20f), UsernameField, 40);
+                    GUI.Label(new Rect(20f, 105f, 70f, 20f), "Password:", "Label");
+                    PasswordField = GUI.PasswordField(new Rect(90f, 105f, 130f, 20f), PasswordField, '*', 40);
+                    if (GUI.Button(new Rect(30f, 140f, 50f, 25f), "Login") && LoginFengKAI.LoginState != LoginState.LoggingIn)
+                    {
+                        StartCoroutine(LoginFeng());
+                        LoginFengKAI.LoginState = LoginState.LoggingIn;
+                    }
+                    if (LoginFengKAI.LoginState == LoginState.LoggingIn)
+                    {
+                        GUI.Label(new Rect(100f, 140f, 120f, 25f), "Logging in...", "Label");
+                    }
+                    else if (LoginFengKAI.LoginState == LoginState.Failed)
+                    {
+                        GUI.Label(new Rect(100f, 140f, 120f, 25f), "Login Failed.", "Label");
+                    }
+                }
+                else if ((int)Settings[187] == 2)
+                {
+                    if (UIMainReferences.Version == UIMainReferences.FengVersion)
+                    {
+                        GUI.Label(new Rect(37f, 75f, 190f, 25f), "Connected to public server.", "Label");
+                    }
+                    else if (UIMainReferences.Version == S[0])
+                    {
+                        GUI.Label(new Rect(28f, 75f, 190f, 25f), "Connected to RC private server.", "Label");
+                    }
+                    else
+                    {
+                        GUI.Label(new Rect(37f, 75f, 190f, 25f), "Connected to custom server.", "Label");
+                    }
+                    GUI.Label(new Rect(20f, 100f, 90f, 25f), "Public Server:", "Label");
+                    GUI.Label(new Rect(20f, 125f, 80f, 25f), "RC Private:", "Label");
+                    GUI.Label(new Rect(20f, 150f, 60f, 25f), "Custom:", "Label");
+                    if (GUI.Button(new Rect(160f, 100f, 60f, 20f), "Connect"))
+                    {
+                        UIMainReferences.Version = UIMainReferences.FengVersion;
+                    }
+                    else if (GUI.Button(new Rect(160f, 125f, 60f, 20f), "Connect"))
+                    {
+                        UIMainReferences.Version = S[0];
+                    }
+                    else if (GUI.Button(new Rect(160f, 150f, 60f, 20f), "Connect"))
+                    {
+                        UIMainReferences.Version = PrivateServerField;
+                    }
+                    PrivateServerField = GUI.TextField(new Rect(78f, 153f, 70f, 18f), PrivateServerField, 50);
+                }
+
             }
             else
             {
@@ -7943,8 +7932,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         }
                         LinkHash[3].Clear();
                         Settings[186] = 0;
-                        string[] array2 = Regex.Replace((string)Settings[77], "\\s+", "").Replace("\r\n", "").Replace("\n", "")
-                            .Replace("\r", "")
+                        string[] array2 = Regex.Replace((string)Settings[77], "\\s+", string.Empty).Replace("\r\n", string.Empty).Replace("\n", string.Empty)
+                            .Replace("\r", string.Empty)
                             .Split(';');
                         for (int j = 0; j < array2.Length; j++)
                         {
@@ -11700,13 +11689,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.BombMode != (int)settings["bomb"])
             {
                 RCSettings.BombMode = (int)settings["bomb"];
-                chatRoom.AddLine("<color=#ffcc00>PVP Bomb Mode <color=#00ff00>enabled</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>PVP Bomb Mode enabled.</color>");
             }
         }
         else if (RCSettings.BombMode != 0)
         {
             RCSettings.BombMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>PVP Bomb Mode <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>PVP Bomb Mode disabled.</color>");
             if (PhotonNetwork.isMasterClient)
             {
                 restartingBomb = true;
@@ -11719,13 +11708,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.GlobalDisableMinimap != (int)settings["globalDisableMinimap"])
             {
                 RCSettings.GlobalDisableMinimap = (int)settings["globalDisableMinimap"];
-                chatRoom.AddLine("<color=#ffcc00>Minimaps are <color=#ff0000>not allowed</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Minimaps are not allowed.</color>");
             }
         }
         else if (RCSettings.GlobalDisableMinimap != 0)
         {
             RCSettings.GlobalDisableMinimap = 0;
-            chatRoom.AddLine("<color=#ffcc00>Minimaps are <color=#00ff00>allowed</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Minimaps are allowed.</color>");
         }
 
         // Horses
@@ -11734,13 +11723,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.HorseMode != (int)settings["horse"])
             {
                 RCSettings.HorseMode = (int)settings["horse"];
-                chatRoom.AddLine("<color=#ffcc00>Horses <color=#00ff00>enabled</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Horses enabled.</color>");
             }
         }
         else if (RCSettings.HorseMode != 0)
         {
             RCSettings.HorseMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Horses <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Horses disabled.</color>");
             if (PhotonNetwork.isMasterClient)
             {
                 restartingHorse = true;
@@ -11753,28 +11742,28 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.PunkWaves != (int)settings["punkWaves"])
             {
                 RCSettings.PunkWaves = (int)settings["punkWaves"];
-                chatRoom.AddLine("<color=#ffcc00>Punk override every 5 waves <color=#00ff00>enabled</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Punk override every 5 waves enabled.</color>");
             }
         }
         else if (RCSettings.PunkWaves != 0)
         {
             RCSettings.PunkWaves = 0;
-            chatRoom.AddLine("<color=#ffcc00>Punk override every 5 waves <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Punk override every 5 waves disabled.</color>");
         }
 
-        // AHSS air-reload
+        // AHSS Air-Reload
         if (settings.ContainsKey("ahssReload"))
         {
             if (RCSettings.AhssReload != (int)settings["ahssReload"])
             {
                 RCSettings.AhssReload = (int)settings["ahssReload"];
-                chatRoom.AddLine("<color=#ffcc00>AHSS Air-Reload is <color=#ff0000>not allowed</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>AHSS Air-Reload is not allowed.</color>");
             }
         }
         else if (RCSettings.AhssReload != 0)
         {
             RCSettings.AhssReload = 0;
-            chatRoom.AddLine("<color=#ffcc00>AHSS Air-Reload is <color=#00ff00>allowed</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>AHSS Air-Reload is allowed.</color>");
         }
 
         // Team sorting
@@ -11796,7 +11785,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         str = "Locked by Skill";
                         break;
                 }
-                chatRoom.AddLine("<color=#ffcc00>Team Mode <color=#00ff00>enabled</color> (<color=#ffffff>" + str + "</color>).</color>");
+                chatRoom.AddLine("<color=#ffcc00>Team Mode enabled</color> (" + str + ").</color>");
                 if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam]) == 0)
                 {
                     SetTeam(3);
@@ -11807,7 +11796,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             RCSettings.TeamMode = 0;
             SetTeam(0);
-            chatRoom.AddLine("<color=#ffcc00>Team mode <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Team Mode disabled.</color>");
         }
 
         // Point limit
@@ -11816,13 +11805,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.PointMode != (int)settings["point"])
             {
                 RCSettings.PointMode = (int)settings["point"];
-                chatRoom.AddLine("<color=#ffcc00>Point limit <color=#00ff00>enabled</color> (<color=#ffffff>" + Convert.ToString(RCSettings.PointMode) + "</color>).</color>");
+                chatRoom.AddLine("<color=#ffcc00>Point Limit enabled (" + RCSettings.PointMode + ").</color>");
             }
         }
         else if (RCSettings.PointMode != 0)
         {
             RCSettings.PointMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Point limit <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Point limit disabled.</color>");
         }
 
         // Punk rocks
@@ -11831,13 +11820,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.DisableRock != (int)settings["rock"])
             {
                 RCSettings.DisableRock = (int)settings["rock"];
-                chatRoom.AddLine("<color=#ffcc00>Punk rock throwing <color=#ff0000>disabled</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Punk rock throwing disabled.</color>");
             }
         }
         else if (RCSettings.DisableRock != 0)
         {
             RCSettings.DisableRock = 0;
-            chatRoom.AddLine("<color=#ffcc00>Punk rock throwing <color=#00ff00>enabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Punk rock throwing enabled.</color>");
         }
 
         // Titan explode
@@ -11846,13 +11835,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.ExplodeMode != (int)settings["explode"])
             {
                 RCSettings.ExplodeMode = (int)settings["explode"];
-                chatRoom.AddLine("<color=#ffcc00>Titan Explode Mode <color=#00ff00>enabled</color> (Radius <color=#ffffff>" + Convert.ToString(RCSettings.ExplodeMode) + "</color>).</color>");
+                chatRoom.AddLine("<color=#ffcc00>Titan Explode Mode enabled (Radius " + RCSettings.ExplodeMode + ").</color>");
             }
         }
         else if (RCSettings.ExplodeMode != 0)
         {
             RCSettings.ExplodeMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Titan Explode Mode <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Titan Explode Mode disabled.</color>");
         }
 
         // Titan health mode
@@ -11868,7 +11857,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     str = "Scaled";
                 }
-                chatRoom.AddLine("<color=#ffcc00>Titan Health (<color=#ffffff>" + str + ", " + RCSettings.HealthLower + " to " + RCSettings.HealthUpper + "</color>) <color=#00ff00>enabled</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Titan Health (" + str + ", " + RCSettings.HealthLower + " to " + RCSettings.HealthUpper + ") enabled.</color>");
             }
         }
         else if (RCSettings.HealthMode != 0 || RCSettings.HealthLower != 0 || RCSettings.HealthUpper != 0)
@@ -11876,7 +11865,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             RCSettings.HealthMode = 0;
             RCSettings.HealthLower = 0;
             RCSettings.HealthUpper = 0;
-            chatRoom.AddLine("<color=#ffcc00>Titan Health <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Titan Health disabled.</color>");
         }
 
         // Infection mode
@@ -11888,7 +11877,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
                 hashtable.Add(PhotonPlayerProperty.RCTeam, 0);
                 PhotonNetwork.player.SetCustomProperties(hashtable);
-                chatRoom.AddLine("<color=#ffcc00>Infection mode (<color=#ffffff>" + RCSettings.InfectionMode + "</color>) <color=#00ff00>enabled</color>. Make sure your first character is human.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Infection mode (" + RCSettings.InfectionMode + ") enabled. Make sure your first character is human.</color>");
             }
         }
         else if (RCSettings.InfectionMode != 0)
@@ -11897,7 +11886,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
             hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
             PhotonNetwork.player.SetCustomProperties(hashtable);
-            chatRoom.AddLine("<color=#ffcc00>Infection Mode <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Infection Mode disabled.</color>");
             if (PhotonNetwork.isMasterClient)
             {
                 restartingTitan = true;
@@ -11910,7 +11899,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.BanEren != (int)settings["eren"])
             {
                 RCSettings.BanEren = (int)settings["eren"];
-                chatRoom.AddLine("<color=#ffcc00>Anti-Eren <color=#00ff00>enabled</color>. Using Titan Eren will get you kicked.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Anti-Eren enabled. Using Titan Eren will get you kicked.</color>");
                 if (PhotonNetwork.isMasterClient)
                 {
                     restartingEren = true;
@@ -11920,7 +11909,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         else if (RCSettings.BanEren != 0)
         {
             RCSettings.BanEren = 0;
-            chatRoom.AddLine("<color=#ffcc00>Anti-Eren <color=#ff0000>disabled</color>. Titan Eren is allowed.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Anti-Eren disabled. Titan Eren is allowed.</color>");
         }
 
         // Custom titan count
@@ -11929,13 +11918,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.MoreTitans != (int)settings["titanc"])
             {
                 RCSettings.MoreTitans = (int)settings["titanc"];
-                chatRoom.AddLine("<color=#ffcc00><color=#ffffff>" + RCSettings.MoreTitans + "</color> titans will spawn each round.</color>");
+                chatRoom.AddLine("<color=#ffcc00>" + RCSettings.MoreTitans + " titans will spawn each round.</color>");
             }
         }
         else if (RCSettings.MoreTitans != 0)
         {
             RCSettings.MoreTitans = 0;
-            chatRoom.AddLine("<color=#ffcc00>Default titans will spawn each round.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Default titan amount will spawn each round.</color>");
         }
 
         // Minimum damage
@@ -11944,13 +11933,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.DamageMode != (int)settings["damage"])
             {
                 RCSettings.DamageMode = (int)settings["damage"];
-                chatRoom.AddLine("<color=#ffcc00>Minimum nape damage (<color=#ffffff>" + Convert.ToString(RCSettings.DamageMode) + "</color>) <color=#00ff00>enabled</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Minimum nape damage (" + Convert.ToString(RCSettings.DamageMode) + ") enabled.</color>");
             }
         }
         else if (RCSettings.DamageMode != 0)
         {
             RCSettings.DamageMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Minimum nape damage <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Minimum nape damage disabled.</color>");
         }
 
         // Custom titan sizes
@@ -11961,7 +11950,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 RCSettings.SizeMode = (int)settings["sizeMode"];
                 RCSettings.SizeLower = (float)settings["sizeLower"];
                 RCSettings.SizeUpper = (float)settings["sizeUpper"];
-                chatRoom.AddLine("<color=#ffcc00>Custom titan size (<color=#ffffff>" + RCSettings.SizeLower.ToString("F2") + "," + RCSettings.SizeUpper.ToString("F2") + "</color>) <color=#00ff00>enabled</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Custom titan size (" + RCSettings.SizeLower.ToString("F2") + "," + RCSettings.SizeUpper.ToString("F2") + ") enabled.</color>");
             }
         }
         else if (RCSettings.SizeMode != 0 || RCSettings.SizeLower != 0f || RCSettings.SizeUpper != 0f)
@@ -11983,11 +11972,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 RCSettings.JumperRate = (float)settings["jRate"];
                 RCSettings.CrawlerRate = (float)settings["cRate"];
                 RCSettings.PunkRate = (float)settings["pRate"];
-                chatRoom.AddLine("<color=#ffcc00>Custom spawn rate <color=#00ff00>enabled</color> (<color=#ffffff>" + RCSettings.NormalRate.ToString("F2") + "% Normal, "
+                chatRoom.AddLine("<color=#ffcc00>Custom spawn rate enabled (" + RCSettings.NormalRate.ToString("F2") + "% Normal, "
                     + RCSettings.AberrantRate.ToString("F2") + "% Abnormal, "
                     + RCSettings.JumperRate.ToString("F2") + "% Jumper, "
                     + RCSettings.CrawlerRate.ToString("F2") + "% Crawler, "
-                    + RCSettings.PunkRate.ToString("F2") + "% Punk</color>)</color>");
+                    + RCSettings.PunkRate.ToString("F2") + "% Punk)</color>");
             }
         }
         else if (RCSettings.SpawnMode != 0 || RCSettings.NormalRate != 0f || RCSettings.AberrantRate != 0f || RCSettings.JumperRate != 0f || RCSettings.CrawlerRate != 0f || RCSettings.PunkRate != 0f)
@@ -11998,24 +11987,24 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             RCSettings.JumperRate = 0f;
             RCSettings.CrawlerRate = 0f;
             RCSettings.PunkRate = 0f;
-            chatRoom.AddLine("<color=#ffcc00>Custom spawn rate <color=#ff000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Custom spawn rate disabled.</color>");
         }
 
-        // Wave mode (?)
+        // Wave mode (Titan count multiplier?)
         if (settings.ContainsKey("waveModeOn") && settings.ContainsKey("waveModeNum"))
         {
             if (RCSettings.WaveModeOn != (int)settings["waveModeOn"] || RCSettings.WaveModeNum != (int)settings["waveModeNum"])
             {
                 RCSettings.WaveModeOn = (int)settings["waveModeOn"];
                 RCSettings.WaveModeNum = (int)settings["waveModeNum"];
-                chatRoom.AddLine("<color=#ffcc00>Custom Wave Mode (<color=#ffffff>" + RCSettings.WaveModeNum.ToString() + "</color>) <color=#00ff00>enabled</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Custom Wave Mode (" + RCSettings.WaveModeNum.ToString() + ") enabled.</color>");
             }
         }
         else if (RCSettings.WaveModeOn != 0 || RCSettings.WaveModeNum != 0)
         {
             RCSettings.WaveModeOn = 0;
             RCSettings.WaveModeNum = 0;
-            chatRoom.AddLine("<color=#ffcc00>Custom Wave Mode <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Custom Wave Mode disabled.</color>");
         }
 
         // Friendly fire
@@ -12024,16 +12013,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.FriendlyMode != (int)settings["friendly"])
             {
                 RCSettings.FriendlyMode = (int)settings["friendly"];
-                chatRoom.AddLine("<color=#ffcc00>PvP is <color=#ff0000>not allowed</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>PVP is not allowed.</color>");
             }
         }
         else if (RCSettings.FriendlyMode != 0)
         {
             RCSettings.FriendlyMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>PvP is <color=#00ff00>allowed</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>PVP is allowed.</color>");
         }
 
-        // PvP mode
+        // PVP mode
         if (settings.ContainsKey("pvp"))
         {
             if (RCSettings.PvPMode != (int)settings["pvp"])
@@ -12048,13 +12037,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     str = "FFA";
                 }
-                chatRoom.AddLine("<color=#ffcc00>Blade/AHSS PvP <color=#00ff00>enabled</color> (<color=#ffffff>" + str + "</color>).</color>");
+                chatRoom.AddLine("<color=#ffcc00>Blade/AHSS PVP enabled (" + str + ").</color>");
             }
         }
         else if (RCSettings.PvPMode != 0)
         {
             RCSettings.PvPMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Blade/AHSS PvP <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Blade/AHSS PVP disabled.</color>");
         }
 
         // Max Waves
@@ -12063,13 +12052,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.MaxWave != (int)settings["maxwave"])
             {
                 RCSettings.MaxWave = (int)settings["maxwave"];
-                chatRoom.AddLine("<color=#ffcc00>Max Wave is <color=#ffffff>" + RCSettings.MaxWave.ToString() + "</color>.</color>");
+                chatRoom.AddLine("<color=#ffcc00>Max Wave is " + RCSettings.MaxWave + ".</color>");
             }
         }
         else if (RCSettings.MaxWave != 0)
         {
             RCSettings.MaxWave = 0;
-            chatRoom.AddLine("<color=#ffcc00>Max Wave set to default (<color=#ffffff>20</color>).</color>");
+            chatRoom.AddLine("<color=#ffcc00>Max Wave set to default (20).</color>");
         }
 
         // Endless Respawn
@@ -12078,13 +12067,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.EndlessMode != (int)settings["endless"])
             {
                 RCSettings.EndlessMode = (int)settings["endless"];
-                chatRoom.AddLine("<color=#ffcc00>Endless Respawn <color=#00ff00>enabled</color> (<color=#ffffff>" + RCSettings.EndlessMode.ToString() + "s</color>).</color>");
+                chatRoom.AddLine("<color=#ffcc00>Endless Respawn enabled (" + RCSettings.EndlessMode + "s).</color>");
             }
         }
         else if (RCSettings.EndlessMode != 0)
         {
             RCSettings.EndlessMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Endless Respawn <color=#ff0000>disabled</color>.</color>");
+            chatRoom.AddLine("<color=#ffcc00>Endless Respawn disabled.</color>");
         }
 
         // Deadly Cannons
@@ -12123,7 +12112,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.Motd != (string)settings["motd"])
             {
                 RCSettings.Motd = (string)settings["motd"];
-                chatRoom.AddLine("<color=#ffcc00>MOTD:</color> <color=#ffffff>" + RCSettings.Motd + "</color>");
+                chatRoom.AddLine("<color=#ffcc00>MOTD:</color> " + RCSettings.Motd);
             }
         }
         else if (RCSettings.Motd != string.Empty)

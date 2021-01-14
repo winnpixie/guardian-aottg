@@ -40,13 +40,13 @@ public class InRoomChat : Photon.MonoBehaviour
 
     public void AddLine(string message)
     {
-        AddMessage("", message);
+        AddMessage(string.Empty, message);
     }
 
     public void AddMessage(string sender, string text)
     {
-        sender = Mod.BlacklistedTags.Replace(sender, "");
-        text = Mod.BlacklistedTags.Replace(text, "");
+        sender = Mod.BlacklistedTags.Replace(sender, string.Empty);
+        text = Mod.BlacklistedTags.Replace(text, string.Empty);
 
         if (sender.Length != 0 || text.Length != 0)
         {
@@ -169,8 +169,8 @@ public class InRoomChat : Photon.MonoBehaviour
                         }
                     }
 
-                    GUI.FocusControl("");
-                    inputLine = "";
+                    GUI.FocusControl(string.Empty);
+                    inputLine = string.Empty;
                 }
                 else
                 {

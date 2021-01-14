@@ -1,11 +1,11 @@
 ﻿using System;
 using Guardian.Utilities;
 
-namespace Guardian.Features.Commands.Impl
+namespace Guardian.Features.Commands.Impl.MasterClient
 {
     class CommandRevive : Command
     {
-        public CommandRevive() : base("revive", new string[] { "heal", "respawn", "rev", "res" }, "[all/id]", false) { }
+        public CommandRevive() : base("revive", new string[] { "heal", "respawn", "rev", "res" }, "[all/id]", true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
@@ -20,7 +20,8 @@ namespace Guardian.Features.Commands.Impl
                             FengGameManagerMKII.Instance.photonView.RPC("respawnHeroInNewRound", player);
                         }
                     }
-                    irc.AddLine("Revived all players.");
+
+                    GameHelper.Broadcast("All players have been revived.");
                 }
                 else if (int.TryParse(args[0], out int id))
                 {

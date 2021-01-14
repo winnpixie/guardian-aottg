@@ -2,7 +2,7 @@
 {
     class CommandIgnoreList : Command
     {
-        public CommandIgnoreList() : base("ignorelist", new string[] { "ignored" }, "", false) { }
+        public CommandIgnoreList() : base("ignorelist", new string[] { "ignored" }, string.Empty, false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

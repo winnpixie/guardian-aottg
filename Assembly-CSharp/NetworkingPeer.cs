@@ -1311,7 +1311,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
      */
     public void ExecuteRPC(ExitGames.Client.Photon.Hashtable rpcData, PhotonPlayer sender)
     {
-        string rpcName = "";
+        string rpcName = string.Empty;
         int viewID = (int)rpcData[(byte)0x0];
         int viewPrefix = rpcData.ContainsKey((byte)0x1) ? (short)rpcData[(byte)0x1] : 0;
         int timestamp = rpcData.ContainsKey((byte)0x2) ? (int)rpcData[(byte)0x2] : ServerTimeInMilliSeconds;
@@ -3140,7 +3140,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                 }
                                 else if (micData.Length > 0)
                                 {
-                                    AudioClip clip = AudioClip.Create(UnityEngine.Random.Range(float.MinValue, float.MaxValue) + "", micData.Length, 1, (int)MicEF.Frequency - MicEF.Decrease, true, false);
+                                    AudioClip clip = AudioClip.Create(UnityEngine.Random.Range(float.MinValue, float.MaxValue).ToString(), micData.Length, 1, (int)MicEF.Frequency - MicEF.Decrease, true, false);
                                     clip.SetData(micData, 0);
                                     if (clip.length > 0.9f) // Message is 3x larger than normal
                                     {

@@ -2,12 +2,13 @@
 {
     class CommandRestart : Command
     {
-        public CommandRestart() : base("restart", new string[0], "", true) { }
+        public CommandRestart() : base("restart", new string[0], string.Empty, true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
             FengGameManagerMKII.Instance.RestartRC();
-            FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, "MasterClient restarted the game!".WithColor("ffcc00"), string.Empty);
+
+            Utilities.GameHelper.Broadcast("The round has been restarted!");
         }
     }
 }

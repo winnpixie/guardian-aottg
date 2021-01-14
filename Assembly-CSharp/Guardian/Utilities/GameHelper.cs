@@ -152,7 +152,7 @@ namespace Guardian.Utilities
                 return secs > 1 ? secs + " secs" : secs + " sec";
             }
 
-            string output = "";
+            string output = string.Empty;
 
             if (isSeconds)
             {

@@ -226,7 +226,6 @@
     <Compile Include="Guardian\AntiAbuse\NetworkPatches.cs" />
     <Compile Include="Guardian\AntiAbuse\TitanPatches.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandTranslate.cs" />
-    <Compile Include="Guardian\Features\Commands\Impl\Debug\CommandNoClip.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandDifficulty.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandDownloadMap.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandKill.cs" />
@@ -273,13 +272,11 @@
     <Compile Include="Guardian\Features\Commands\Impl\CommandIgnore.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandSetName.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandReloadConfig.cs" />
-    <Compile Include="Guardian\Features\Commands\Impl\CommandRevive.cs" />
-    <Compile Include="Guardian\Features\Commands\Impl\CommandTeleport.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandRevive.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandSetTime.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandUnignore.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandWhois.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\Debug\CommandLogProperties.cs" />
-    <Compile Include="Guardian\Features\Commands\Impl\Debug\CommandRPC.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandAso.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\RC\CommandBan.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\RC\CommandBanlist.cs" />
@@ -308,7 +305,6 @@
     <Compile Include="Guardian\Utilities\GExtensions.cs" />
     <Compile Include="Guardian\Utilities\MathHelper.cs" />
     <Compile Include="Guardian\Utilities\ModDetector.cs" />
-    <Compile Include="Guardian\Utilities\ModifiedStats.cs" />
     <Compile Include="HERO.cs" />
     <Compile Include="HeroCostume.cs" />
     <Compile Include="HeroStat.cs" />

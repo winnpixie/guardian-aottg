@@ -66,21 +66,10 @@ namespace Guardian.Utilities
                 mods.Add("[ffffff][RC83]");
             }
 
-            // Guardian (mine!)
-            if ((properties.ContainsKey("GuardianMod") && properties["GuardianMod"] is int)
-                || (properties.ContainsKey("Stats") && properties["Stats"] is int))
+            // Guardian (mine!!)
+            if (properties.ContainsKey("GuardianMod") && properties["GuardianMod"] is int)
             {
-                string boostedStats = "[ffffff]";
-                if (properties.ContainsKey("Stats"))
-                {
-                    string modifications = ModifiedStats.FromInt(GExtensions.AsInt(properties["Stats"]));
-                    if (modifications.Length > 0)
-                    {
-                        boostedStats += $"(Inf:{modifications})";
-                    }
-                }
-
-                mods.Add($"[0099ff][Guardian{boostedStats}[-]]");
+                mods.Add($"[0099ff][Guardian]");
             }
 
             if ((properties.ContainsKey("A.S Guard") && properties["A.S Guard"] is int)
@@ -180,7 +169,7 @@ namespace Guardian.Utilities
                 || properties.ContainsKey("SUniverse")
                 || properties.ContainsKey("UAdmin")
                 || properties.ContainsKey("coins")
-                || (properties.ContainsKey("") && properties[""] is string))
+                || (properties.ContainsKey(string.Empty) && properties[string.Empty] is string))
             {
                 string edition = "[ffffff]";
                 if (properties.ContainsKey("UYoutube"))
@@ -216,7 +205,7 @@ namespace Guardian.Utilities
             if (player.isRankedRC
                 || properties.ContainsKey("bronze")
                 || properties.ContainsKey("diamond")
-                || (properties.ContainsKey("") && properties[""] is int))
+                || (properties.ContainsKey(string.Empty) && properties[string.Empty] is int))
             {
                 mods.Add("[ffffff][Ranked RC]");
             }
@@ -275,7 +264,7 @@ namespace Guardian.Utilities
             // >48/>40 chars
             if (name.Length > 48 || guild.Length > 40)
             {
-                string lengthFlags = "";
+                string lengthFlags = string.Empty;
 
                 if (name.Length > 48)
                 {

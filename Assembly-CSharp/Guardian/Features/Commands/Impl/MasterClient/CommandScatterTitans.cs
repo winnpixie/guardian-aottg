@@ -5,7 +5,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 {
     class CommandScatterTitans : Command
     {
-        public CommandScatterTitans() : base("scatter", new string[0], "", true) { }
+        public CommandScatterTitans() : base("scatter", new string[0], string.Empty, true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
@@ -18,6 +18,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     titan.transform.rotation = (Quaternion)point[1];
                 }
             }
+
             GameHelper.Broadcast("All titans have been scattered!");
         }
     }

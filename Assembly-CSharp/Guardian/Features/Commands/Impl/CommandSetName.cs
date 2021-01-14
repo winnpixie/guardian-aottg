@@ -8,7 +8,7 @@ namespace Guardian.Features.Commands.Impl
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            string name = "";
+            string name = string.Empty;
             if (args.Length > 0)
             {
                 name = string.Join(" ", args);
