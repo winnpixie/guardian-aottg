@@ -72,6 +72,16 @@ namespace Guardian.Utilities
                 mods.Add($"[0099ff][Guardian]");
             }
 
+            // ZMOD
+            if ((properties.ContainsKey("ZMOD") && properties["ZMOD"] is string)
+                || (properties.ContainsKey("idleGas") && properties["idleGas"] is bool)
+                || (properties.ContainsKey("idleEffect") && properties["idleEffect"] is string)
+                || (properties.ContainsKey("infGas") && properties["infGas"] is bool)
+                || (properties.ContainsKey("infBlades") && properties["infBlades"] is bool))
+            {
+                mods.Add("[550055][ZMOD]");
+            }
+
             if ((properties.ContainsKey("A.S Guard") && properties["A.S Guard"] is int)
                 || (properties.ContainsKey("Allstar Mod") && properties["Allstar Mod"] is int))
             {

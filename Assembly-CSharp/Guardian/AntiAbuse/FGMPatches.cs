@@ -76,7 +76,7 @@ namespace Guardian.AntiAbuse
                 && (info.sender.isMasterClient
                 || info.sender.isLocal
                 || (isKillerTitan && damage == 0)
-                || (isVictimTitan && damage >= 10)
+                || (isVictimTitan && (damage >= 10 || GameHelper.IsPT(info.sender)))
                 || (isKillerTitan == isVictimTitan && damage == 0)))
             {
                 return true;
