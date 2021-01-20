@@ -1448,7 +1448,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         break;
                     case "whoIsMyReinerTitan": // Universe
                     case "whoIsMyAnnieTitan":
+                    case "backToAnnieHumanRPC":
                     case "whoIsMyColossalTitan":
+                    case "SetAnimationSpeed":
+                    case "GoBerserk":
+                    case "SetBerserkTexture":
                     case "CrownRPC":
                         sender.isUniverse = true;
                         break;
@@ -1481,6 +1485,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     case "pairRPC": // ExpMod?
                     case "flareColorRPC":
                     case "EMCustomMapRPC":
+                    case "AniSpeed":
                         sender.isExpedition = true;
                         break;
                     case "TrapJoin": // TRAP

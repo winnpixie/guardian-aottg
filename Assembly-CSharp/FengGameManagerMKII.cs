@@ -254,6 +254,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
             }
         }
+
         if (gameStart)
         {
             foreach (HERO hero in heroes)
@@ -7725,6 +7726,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     return;
                 }
+                // MOD
+                if (GUI.Button(new Rect(10, 190, 220, 150), UIMainReferences.AOT_2_LOGO))
+                {
+                    Application.OpenURL("https://www.patreon.com/aottg2");
+                }
+
                 float num7 = (float)Screen.width / 2f - 85f;
                 float num8 = (float)Screen.height / 2f;
                 GUI.backgroundColor = Color.white; // new Color(0.08f, 0.3f, 0.4f, 1f);

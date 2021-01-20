@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Guardian;
 
 public class TITAN_EREN : Photon.MonoBehaviour
 {
@@ -574,7 +575,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
         else
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer  && !base.photonView.isMine)
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine)
             {
                 return;
             }
@@ -599,11 +600,11 @@ public class TITAN_EREN : Photon.MonoBehaviour
                 }
                 if (base.rigidbody.velocity.magnitude > 50f)
                 {
-                    currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mathf.Min(100f, base.rigidbody.velocity.magnitude), 0.1f);
+                    currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mathf.Min(Mod.Properties.FieldOfView.Value + 50f, base.rigidbody.velocity.magnitude + Mod.Properties.FieldOfView.Value - 50f), 0.1f); // 100
                 }
                 else
                 {
-                    currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, 50f, 0.1f);
+                    currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mod.Properties.FieldOfView.Value, 0.1f); // 50
                 }
                 if (bottomObject.GetComponent<CheckHitGround>().isGrounded)
                 {

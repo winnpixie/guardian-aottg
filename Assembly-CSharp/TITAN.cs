@@ -2307,6 +2307,9 @@ public class TITAN : Photon.MonoBehaviour
                     base.photonView.RPC("setMyTarget", PhotonTargets.Others, myHero.GetPhotonView().viewID);
                 }
             }
+        } else
+        {
+            Camera.main.fieldOfView = Mod.Properties.FieldOfView.Value;
         }
         if (hasDie)
         {

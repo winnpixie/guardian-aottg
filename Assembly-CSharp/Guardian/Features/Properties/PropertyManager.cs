@@ -16,6 +16,7 @@ namespace Guardian.Features.Properties
         // Player
         public Property<bool> AlternateIdle = new Property<bool>("Player_AHSSIdle", new string[0], false);
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
+        public Property<int> FieldOfView = new Property<int>("Player_FOV", new string[0], 50);
 
         // Chat
         public Property<string> JoinMessage = new Property<string>("Chat_JoinMessage", new string[0], string.Empty);
@@ -47,6 +48,7 @@ namespace Guardian.Features.Properties
             // Player
             base.Add(AlternateIdle);
             base.Add(AlternateBurst);
+            base.Add(FieldOfView);
 
             // Chat
             base.Add(JoinMessage);

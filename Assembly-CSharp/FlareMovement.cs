@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class FlareMovement : MonoBehaviour
 {
-    public Color hintColor;
     public GameObject hint;
     private GameObject hero;
     public string color;
@@ -24,13 +23,6 @@ public class FlareMovement : MonoBehaviour
         if (!nohint && hero != null)
         {
             hint = (GameObject)Object.Instantiate(Resources.Load("UI/" + color + "FlareHint"));
-
-            if (hintColor != null)
-            {
-                Material material = new Material(Shader.Find("Transparent/Diffuse"));
-                material.color = hintColor;
-                hint.GetComponent<MeshRenderer>().material = material;
-            }
 
             if (color == "Black")
             {

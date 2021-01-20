@@ -2,7 +2,7 @@
 {
     class CommandRestart : Command
     {
-        public CommandRestart() : base("restart", new string[0], string.Empty, true) { }
+        public CommandRestart() : base("restart", new string[] { "r" }, string.Empty, true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

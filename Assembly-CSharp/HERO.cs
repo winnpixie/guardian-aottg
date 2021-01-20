@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Guardian;
 using Guardian.Utilities;
 using Xft;
 
@@ -22,7 +23,7 @@ public class HERO : Photon.MonoBehaviour
         get
         {
             return (base.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
-                && Guardian.Mod.Properties.AlternateIdle.Value ? "AHSS_stand_gun" : _standAnimation;
+                && Mod.Properties.AlternateIdle.Value ? "AHSS_stand_gun" : _standAnimation;
         }
         set { _standAnimation = value; }
     }
@@ -936,7 +937,7 @@ public class HERO : Photon.MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0f, facingDirection, 0f);
             base.rigidbody.rotation = rotation;
             targetRotation = rotation;
-            if (Guardian.Mod.Properties.AlternateBurst.Value)
+            if (Mod.Properties.AlternateBurst.Value)
             {
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
@@ -2659,11 +2660,11 @@ public class HERO : Photon.MonoBehaviour
         }
         if (currentSpeed > 10f)
         {
-            currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mathf.Min(100f, currentSpeed + 40f), 0.1f);
+            currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mathf.Min(Mod.Properties.FieldOfView.Value + 50f, currentSpeed + Mod.Properties.FieldOfView.Value - 10f), 0.1f); // 100
         }
         else
         {
-            currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, 50f, 0.1f);
+            currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mod.Properties.FieldOfView.Value, 0.1f); // 50
         }
         if (flag)
         {
@@ -4932,7 +4933,7 @@ public class HERO : Photon.MonoBehaviour
             myCannon.GetComponent<Cannon>().myHero = this;
             myCannonRegion = null;
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(myCannon.transform.Find("Barrel").Find("FiringPoint").gameObject);
-            Camera.main.fieldOfView = 55f;
+            Camera.main.fieldOfView = Mod.Properties.FieldOfView.Value + 5f; // 55
             base.photonView.RPC("SetMyCannon", PhotonTargets.OthersBuffered, myCannon.GetPhotonView().viewID);
             skillCDLastCannon = skillCDLast;
             skillCDLast = 3.5f;
