@@ -2,19 +2,20 @@ using System.Collections.Generic;
 
 public class HeroStat
 {
-    public string name;
-    public int SPD;
-    public int GAS;
-    public int BLA;
-    public int ACL;
-    public string skillId = "petra";
     private static bool Init;
-    public static Dictionary<string, HeroStat> stats;
+    public static Dictionary<string, HeroStat> StatCache;
 
-    public static HeroStat getInfo(string name)
+    public string Name;
+    public int Speed;
+    public int Gas;
+    public int Blade;
+    public int Accel;
+    public string SkillId = "petra";
+
+    public static HeroStat GetInfo(string name)
     {
         InitData();
-        return stats[name];
+        return StatCache[name];
     }
 
     private static void InitData()
@@ -25,104 +26,104 @@ public class HeroStat
 
             // Mikasa
             HeroStat mikasa = new HeroStat();
-            mikasa.name = "MIKASA";
-            mikasa.skillId = "mikasa";
-            mikasa.SPD = 125;
-            mikasa.GAS = 75;
-            mikasa.BLA = 75;
-            mikasa.ACL = 135;
+            mikasa.Name = "MIKASA";
+            mikasa.SkillId = "mikasa";
+            mikasa.Speed = 125;
+            mikasa.Gas = 75;
+            mikasa.Blade = 75;
+            mikasa.Accel = 135;
 
             // Levi
             HeroStat levi = new HeroStat();
-            levi.name = "LEVI";
-            levi.skillId = "levi";
-            levi.SPD = 95;
-            levi.GAS = 100;
-            levi.BLA = 100;
-            levi.ACL = 150;
+            levi.Name = "LEVI";
+            levi.SkillId = "levi";
+            levi.Speed = 95;
+            levi.Gas = 100;
+            levi.Blade = 100;
+            levi.Accel = 150;
 
             // Armin
             HeroStat armin = new HeroStat();
-            armin.name = "ARMIN";
-            armin.skillId = "armin";
-            armin.SPD = 75;
-            armin.GAS = 150;
-            armin.BLA = 125;
-            armin.ACL = 85;
+            armin.Name = "ARMIN";
+            armin.SkillId = "armin";
+            armin.Speed = 75;
+            armin.Gas = 150;
+            armin.Blade = 125;
+            armin.Accel = 85;
 
             // Marco
             HeroStat marco = new HeroStat();
-            marco.name = "MARCO";
-            marco.skillId = "marco";
-            marco.SPD = 110;
-            marco.GAS = 100;
-            marco.BLA = 115;
-            marco.ACL = 95;
+            marco.Name = "MARCO";
+            marco.SkillId = "marco";
+            marco.Speed = 110;
+            marco.Gas = 100;
+            marco.Blade = 115;
+            marco.Accel = 95;
 
             // Jean
             HeroStat jean = new HeroStat();
-            jean.name = "JEAN";
-            jean.skillId = "jean";
-            jean.SPD = 100;
-            jean.GAS = 150;
-            jean.BLA = 80;
-            jean.ACL = 100;
+            jean.Name = "JEAN";
+            jean.SkillId = "jean";
+            jean.Speed = 100;
+            jean.Gas = 150;
+            jean.Blade = 80;
+            jean.Accel = 100;
 
             // Eren
             HeroStat eren = new HeroStat();
-            eren.name = "EREN";
-            eren.skillId = "eren";
-            eren.SPD = 100;
-            eren.GAS = 90;
-            eren.BLA = 90;
-            eren.ACL = 100;
+            eren.Name = "EREN";
+            eren.SkillId = "eren";
+            eren.Speed = 100;
+            eren.Gas = 90;
+            eren.Blade = 90;
+            eren.Accel = 100;
 
             // Petra
             HeroStat petra = new HeroStat();
-            petra.name = "PETRA";
-            petra.skillId = "petra";
-            petra.SPD = 80;
-            petra.GAS = 110;
-            petra.BLA = 100;
-            petra.ACL = 140;
+            petra.Name = "PETRA";
+            petra.SkillId = "petra";
+            petra.Speed = 80;
+            petra.Gas = 110;
+            petra.Blade = 100;
+            petra.Accel = 140;
 
             // Sasha
             HeroStat sasha = new HeroStat();
-            sasha.name = "SASHA";
-            sasha.skillId = "sasha";
-            sasha.SPD = 140;
-            sasha.GAS = 100;
-            sasha.BLA = 100;
-            sasha.ACL = 115;
+            sasha.Name = "SASHA";
+            sasha.SkillId = "sasha";
+            sasha.Speed = 140;
+            sasha.Gas = 100;
+            sasha.Blade = 100;
+            sasha.Accel = 115;
 
             // Custom default
             HeroStat customDefault = new HeroStat();
-            customDefault.skillId = "petra";
-            customDefault.SPD = 100;
-            customDefault.GAS = 100;
-            customDefault.BLA = 100;
-            customDefault.ACL = 100;
+            customDefault.SkillId = "petra";
+            customDefault.Speed = 100;
+            customDefault.Gas = 100;
+            customDefault.Blade = 100;
+            customDefault.Accel = 100;
 
             // AHSS default
             HeroStat ahssDefault = new HeroStat();
-            sasha.name = "AHSS";
-            ahssDefault.skillId = "sasha";
-            ahssDefault.SPD = 100;
-            ahssDefault.GAS = 100;
-            ahssDefault.BLA = 100;
-            ahssDefault.ACL = 100;
+            sasha.Name = "AHSS";
+            ahssDefault.SkillId = "sasha";
+            ahssDefault.Speed = 100;
+            ahssDefault.Gas = 100;
+            ahssDefault.Blade = 100;
+            ahssDefault.Accel = 100;
 
-            stats = new Dictionary<string, HeroStat>();
-            stats.Add("MIKASA", mikasa);
-            stats.Add("LEVI", levi);
-            stats.Add("ARMIN", armin);
-            stats.Add("MARCO", marco);
-            stats.Add("JEAN", jean);
-            stats.Add("EREN", eren);
-            stats.Add("PETRA", petra);
-            stats.Add("SASHA", sasha);
-            stats.Add("CUSTOM_DEFAULT", customDefault);
-            stats.Add("AHSS", ahssDefault);
+            StatCache = new Dictionary<string, HeroStat>();
+            StatCache.Add("MIKASA", mikasa);
+            StatCache.Add("LEVI", levi);
+            StatCache.Add("ARMIN", armin);
+            StatCache.Add("MARCO", marco);
+            StatCache.Add("JEAN", jean);
+            StatCache.Add("EREN", eren);
+            StatCache.Add("PETRA", petra);
+            StatCache.Add("SASHA", sasha);
+            StatCache.Add("CUSTOM_DEFAULT", customDefault);
+            StatCache.Add("AHSS", ahssDefault);
         }
     }
 }

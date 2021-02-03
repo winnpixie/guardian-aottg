@@ -235,7 +235,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                 }
                 else
                 {
-                    if (gameObject.GetComponent<TITAN>().abnormalType == AbnormalType.TYPE_CRAWLER)
+                    if (gameObject.GetComponent<TITAN>().abnormalType == TitanClass.Crawler)
                     {
                         return;
                     }
@@ -269,7 +269,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                 GameObject gameObject2 = other.gameObject.transform.root.gameObject;
                 int b9 = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - gameObject2.rigidbody.velocity).magnitude * 10f * scoreMulti);
                 b9 = Mathf.Max(10, b9);
-                if ((bool)gameObject2.GetComponent<TITAN>() && gameObject2.GetComponent<TITAN>().abnormalType != AbnormalType.TYPE_CRAWLER)
+                if ((bool)gameObject2.GetComponent<TITAN>() && gameObject2.GetComponent<TITAN>().abnormalType != TitanClass.Crawler)
                 {
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {

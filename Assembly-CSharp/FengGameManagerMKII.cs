@@ -352,7 +352,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         gameObject2.GetComponent<TITAN_CONTROLLER>().enabled = true;
         if (id == "RANDOM" && UnityEngine.Random.Range(0, 100) < 7)
         {
-            gameObject2.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: true);
+            gameObject2.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
         }
         mainCam.GetComponent<IN_GAME_MAIN_CAMERA>().enabled = true;
         mainCam.GetComponent<SpectatorMovement>().disable = true;
@@ -626,7 +626,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         GameObject gameObject = SpawnTitanRaw(position, rotation);
         if (punk)
         {
-            gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_PUNK, forceCrawler: false);
+            gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
         }
         else if (UnityEngine.Random.Range(0, 100) < rate)
         {
@@ -634,11 +634,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             {
                 if (UnityEngine.Random.Range(0f, 1f) < 0.7f || Level.NoCrawlers)
                 {
-                    gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_JUMPER, forceCrawler: false);
+                    gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                 }
                 else
                 {
-                    gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: false);
+                    gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: false);
                 }
             }
         }
@@ -646,31 +646,31 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             if (UnityEngine.Random.Range(0f, 1f) < 0.7f || Level.NoCrawlers)
             {
-                gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_JUMPER, forceCrawler: false);
+                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
             }
             else
             {
-                gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: false);
+                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: false);
             }
         }
         else if (UnityEngine.Random.Range(0, 100) < rate)
         {
             if (UnityEngine.Random.Range(0f, 1f) < 0.8f || Level.NoCrawlers)
             {
-                gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_I, forceCrawler: false);
+                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
             }
             else
             {
-                gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: false);
+                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: false);
             }
         }
         else if (UnityEngine.Random.Range(0f, 1f) < 0.8f || Level.NoCrawlers)
         {
-            gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_JUMPER, forceCrawler: false);
+            gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
         }
         else
         {
-            gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: false);
+            gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: false);
         }
         GameObject gameObject2 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer) ? PhotonNetwork.Instantiate("FX/FXtitanSpawn", gameObject.transform.position, Quaternion.Euler(-90f, 0f, 0f), 0) : ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/FXtitanSpawn"), gameObject.transform.position, Quaternion.Euler(-90f, 0f, 0f)));
         gameObject2.transform.localScale = gameObject.transform.localScale;
@@ -766,7 +766,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     return;
                 }
                 wave++;
-                if ((Level.RespawnMode == RespawnMode.NEWROUND || (Level.Name.StartsWith("Custom") && RCSettings.GameType == 1)) && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
+                if ((Level.RespawnMode == RespawnMode.NewRound || (Level.Name.StartsWith("Custom") && RCSettings.GameType == 1)) && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     foreach (PhotonPlayer photonPlayer in PhotonNetwork.playerList)
                     {
@@ -1296,6 +1296,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
         ChangeQuality.SetCurrentQuality();
 
+        // difficulty = IN_GAME_MAIN_CAMERA.Difficulty;
+
         foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("titan"))
         {
             if (gameObject.GetPhotonView() == null || !gameObject.GetPhotonView().owner.isMasterClient)
@@ -1454,7 +1456,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         GameObject[] array3 = GameObject.FindGameObjectsWithTag("titanRespawn");
                         for (int j = 0; j < array3.Length; j++)
                         {
-                            SpawnTitanRaw(array3[j].transform.position, array3[j].transform.rotation).GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: true);
+                            SpawnTitanRaw(array3[j].transform.position, array3[j].transform.rotation).GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                         }
                     }
                     break;
@@ -1642,7 +1644,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             IgnoreList.Remove(player.Id);
         }
-        InstantiateTracker.instance.TryRemovePlayer(player.Id);
+        InstantiateTracker.Instance.TryRemovePlayer(player.Id);
         if (PhotonNetwork.isMasterClient)
         {
             base.photonView.RPC("verifyPlayerHasLeft", PhotonTargets.All, player.Id);
@@ -1777,7 +1779,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             GameObject killInfoObj = (GameObject)killInfoGO[i];
             if (killInfoObj != null)
             {
-                killInfoObj.GetComponent<KillInfoComponent>().moveOn();
+                killInfoObj.GetComponent<KillInfoComponent>().MoveOn();
             }
         }
         if (killInfoGO.Count > 4)
@@ -1785,12 +1787,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             GameObject gameObject3 = (GameObject)killInfoGO[0];
             if (gameObject3 != null)
             {
-                gameObject3.GetComponent<KillInfoComponent>().destory();
+                gameObject3.GetComponent<KillInfoComponent>().EndLifeTime();
             }
             killInfoGO.RemoveAt(0);
         }
         infoObj.transform.parent = ui.GetComponent<UIReferArray>().panels[0].transform;
-        infoObj.GetComponent<KillInfoComponent>().show(isKillerTitan, killer, isVictimTitan, victim, damage);
+        infoObj.GetComponent<KillInfoComponent>().Show(isKillerTitan, killer, isVictimTitan, victim, damage);
         killInfoGO.Add(infoObj);
         if ((int)Settings[244] == 1)
         {
@@ -1951,13 +1953,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (Camera.main != null && Level.Mode != GameMode.RACING && Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver && !needChooseSide && (int)Settings[245] == 0)
             {
                 ShowHUDInfoCenter("Press [F7D358]" + inputManager.inputString[InputCode.Flare1] + "[-] to spectate the next player. \nPress [F7D358]" + inputManager.inputString[InputCode.Flare2] + "[-] to spectate the previous player.\nPress [F7D358]" + inputManager.inputString[InputCode.Attack1] + "[-] to enter the spectator mode.\n\n\n\n");
-                if (Level.RespawnMode == RespawnMode.DEATHMATCH || RCSettings.EndlessMode > 0 || ((RCSettings.BombMode == 1 || RCSettings.PvPMode > 0) && RCSettings.PointMode > 0))
+                if (Level.RespawnMode == RespawnMode.Deathmatch || RCSettings.EndlessMode > 0 || ((RCSettings.BombMode == 1 || RCSettings.PvPMode > 0) && RCSettings.PointMode > 0))
                 {
                     myRespawnTime += Time.deltaTime;
-                    int respawnDelay = 5;
+                    int respawnDelay = 10;
                     if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.IsTitan]) == 2)
                     {
-                        respawnDelay = 10;
+                        respawnDelay = 15;
                     }
                     if (RCSettings.EndlessMode > 0)
                     {
@@ -2310,7 +2312,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             killInfoGO.RemoveAt(0);
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || !PhotonNetwork.isMasterClient || (timeTotalServer < (float)time))
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || PhotonNetwork.offlineMode || !PhotonNetwork.isMasterClient || (timeTotalServer < (float)time))
         {
             return;
         }
@@ -2432,7 +2434,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         {
                             heroCostume = HeroCostume.CostumeOptions[3];
                             setup.myCostume = heroCostume;
-                            setup.myCostume.stat = HeroStat.getInfo(heroCostume.name.ToUpper());
+                            setup.myCostume.stat = HeroStat.GetInfo(heroCostume.name.ToUpper());
                         }
                         setup.CreateCharacterComponent();
                         hero.setStat2();
@@ -2444,14 +2446,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         {
                             if (HeroCostume.Costumes[i].name.ToUpper() == IN_GAME_MAIN_CAMERA.SingleCharacter.ToUpper())
                             {
-                                int num = HeroCostume.Costumes[i].id + CheckBoxCostume.costumeSet - 1;
+                                int num = HeroCostume.Costumes[i].id + CheckBoxCostume.CostumeSet - 1;
                                 if (HeroCostume.Costumes[num].name != HeroCostume.Costumes[i].name)
                                 {
                                     num = HeroCostume.Costumes[i].id + 1;
                                 }
                                 setup.Init();
                                 setup.myCostume = HeroCostume.Costumes[num];
-                                setup.myCostume.stat = HeroStat.getInfo(HeroCostume.Costumes[num].name.ToUpper());
+                                setup.myCostume.stat = HeroStat.GetInfo(HeroCostume.Costumes[num].name.ToUpper());
                                 setup.CreateCharacterComponent();
                                 hero.setStat2();
                                 hero.setSkillHUDPosition2();
@@ -2482,7 +2484,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     {
                         heroCostume2 = HeroCostume.CostumeOptions[3];
                         setup.myCostume = heroCostume2;
-                        setup.myCostume.stat = HeroStat.getInfo(heroCostume2.name.ToUpper());
+                        setup.myCostume.stat = HeroStat.GetInfo(heroCostume2.name.ToUpper());
                     }
                     setup.CreateCharacterComponent();
                     hero.setStat2();
@@ -2497,7 +2499,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                             int num2 = HeroCostume.Costumes[j].id;
                             if (id.ToUpper() != "AHSS")
                             {
-                                num2 += CheckBoxCostume.costumeSet - 1;
+                                num2 += CheckBoxCostume.CostumeSet - 1;
                             }
                             if (HeroCostume.Costumes[num2].name != HeroCostume.Costumes[j].name)
                             {
@@ -2505,7 +2507,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                             }
                             setup.Init();
                             setup.myCostume = HeroCostume.Costumes[num2];
-                            setup.myCostume.stat = HeroStat.getInfo(HeroCostume.Costumes[num2].name.ToUpper());
+                            setup.myCostume.stat = HeroStat.GetInfo(HeroCostume.Costumes[num2].name.ToUpper());
                             setup.CreateCharacterComponent();
                             hero.setStat2();
                             hero.setSkillHUDPosition2();
@@ -2559,7 +2561,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             gameObject2.GetComponent<TITAN_CONTROLLER>().enabled = true;
             if (id == "RANDOM" && UnityEngine.Random.Range(0, 100) < 7)
             {
-                gameObject2.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: true);
+                gameObject2.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
             }
             theMainCamera.GetComponent<IN_GAME_MAIN_CAMERA>().enabled = true;
             theMainCamera.GetComponent<SpectatorMovement>().disable = true;
@@ -5368,7 +5370,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             {
                 heroCostume = HeroCostume.CostumeOptions[3];
                 setup.myCostume = heroCostume;
-                setup.myCostume.stat = HeroStat.getInfo(heroCostume.name.ToUpper());
+                setup.myCostume.stat = HeroStat.GetInfo(heroCostume.name.ToUpper());
             }
             setup.CreateCharacterComponent();
             hero.setStat2();
@@ -5383,7 +5385,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     int num = HeroCostume.Costumes[i].id;
                     if (text.ToUpper() != "AHSS")
                     {
-                        num += CheckBoxCostume.costumeSet - 1;
+                        num += CheckBoxCostume.CostumeSet - 1;
                     }
                     if (HeroCostume.Costumes[num].name != HeroCostume.Costumes[i].name)
                     {
@@ -5391,7 +5393,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     }
                     setup.Init();
                     setup.myCostume = HeroCostume.Costumes[num];
-                    setup.myCostume.stat = HeroStat.getInfo(HeroCostume.Costumes[num].name.ToUpper());
+                    setup.myCostume.stat = HeroStat.GetInfo(HeroCostume.Costumes[num].name.ToUpper());
                     setup.CreateCharacterComponent();
                     hero.setStat2();
                     hero.setSkillHUDPosition2();
@@ -5747,16 +5749,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         switch (titanSpawner.name)
                         {
                             case "spawnAbnormal":
-                                gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_I, forceCrawler: false);
+                                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
                                 break;
                             case "spawnJumper":
-                                gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_JUMPER, forceCrawler: false);
+                                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                                 break;
                             case "spawnCrawler":
-                                gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: true);
+                                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                                 break;
                             case "spawnPunk":
-                                gameObject.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_PUNK, forceCrawler: false);
+                                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
                                 break;
                         }
                     }
@@ -5802,7 +5804,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             CustomLevelLoaded = false;
         }
-        if (PhotonNetwork.isMasterClient || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+        if (PhotonNetwork.isMasterClient)
         {
             if (isFirstLoad)
             {
@@ -6355,7 +6357,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             Camera.main.GetComponent<SpectatorMovement>().disable = true;
             return;
         }
-        InstantiateTracker.instance.Dispose();
+        InstantiateTracker.Instance.Dispose();
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
             updateTime = 1f;
@@ -6391,7 +6393,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         racingSpawnPointSet = false;
         racingDoors = new List<GameObject>();
         allowedToCannon = new Dictionary<int, CannonValues>();
-        if (!Level.Name.StartsWith("Custom") && (int)Settings[2] == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || PhotonNetwork.isMasterClient))
+        if (!Level.Name.StartsWith("Custom") && (int)Settings[2] == 1 && PhotonNetwork.isMasterClient)
         {
             GameObject gameObject3 = GameObject.Find("aot_supply");
             if (gameObject3 != null && Minimap.Instance != null)
@@ -6475,7 +6477,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     gameObject.renderer.material.mainTexture = ((Material)RCAssets.Load("grass")).mainTexture;
                 }
             }
-            if (!PhotonNetwork.isMasterClient && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
+            if (!PhotonNetwork.isMasterClient)
             {
                 return;
             }
@@ -7170,7 +7172,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     [RPC]
     private void customlevelRPC(string[] content, PhotonMessageInfo info)
     {
-        if (info.sender.isMasterClient || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+        if (info.sender.isMasterClient)
         {
             if (content.Length == 1 && content[0] == "loadcached")
             {
@@ -7199,7 +7201,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     [RPC]
     private void clearlevel(string[] link, int gametype, PhotonMessageInfo info)
     {
-        if (info.sender.isMasterClient || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+        if (info.sender.isMasterClient)
         {
             switch (gametype)
             {
@@ -11428,27 +11430,27 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     GameObject titan = SpawnTitanRaw(position, rotation);
                     if (rngRate < normalRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.NORMAL, forceCrawler: false);
+                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Normal, forceCrawler: false);
                     }
                     else if (rngRate >= normalRate && rngRate < normalRate + abbyRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_I, forceCrawler: false);
+                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
                     }
                     else if (rngRate >= normalRate + abbyRate && rngRate < normalRate + abbyRate + jumperRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_JUMPER, forceCrawler: false);
+                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                     }
                     else if (rngRate >= normalRate + abbyRate + jumperRate && rngRate < normalRate + abbyRate + jumperRate + crawlerRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: true);
+                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                     }
                     else if (rngRate >= normalRate + abbyRate + jumperRate + crawlerRate && rngRate < normalRate + abbyRate + jumperRate + crawlerRate + punkRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_PUNK, forceCrawler: false);
+                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
                     }
                     else
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.NORMAL, forceCrawler: false);
+                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Normal, forceCrawler: false);
                     }
                 }
                 else
@@ -11534,19 +11536,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             switch (type)
             {
                 case 0:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.NORMAL, forceCrawler: false);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Normal, forceCrawler: false);
                     break;
                 case 1:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_I, forceCrawler: false);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
                     break;
                 case 2:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_JUMPER, forceCrawler: false);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                     break;
                 case 3:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: true);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                     break;
                 case 4:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_PUNK, forceCrawler: false);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
                     break;
             }
         }
@@ -11569,19 +11571,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             switch (type)
             {
                 case 0:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.NORMAL, forceCrawler: false);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Normal, forceCrawler: false);
                     break;
                 case 1:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_I, forceCrawler: false);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
                     break;
                 case 2:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_JUMPER, forceCrawler: false);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                     break;
                 case 3:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_CRAWLER, forceCrawler: true);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                     break;
                 case 4:
-                    titan.GetComponent<TITAN>().setAbnormalType2(AbnormalType.TYPE_PUNK, forceCrawler: false);
+                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
                     break;
             }
         }

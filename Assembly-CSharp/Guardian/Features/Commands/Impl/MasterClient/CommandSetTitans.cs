@@ -10,28 +10,28 @@ namespace Guardian.Features.Commands.Impl.MasterClient
         {
             if (args.Length > 0)
             {
-                AbnormalType? type = null;
+                TitanClass? type = null;
 
                 switch (args[0].ToLower())
                 {
                     case "normal":
-                        type = AbnormalType.NORMAL;
+                        type = TitanClass.Normal;
                         GameHelper.Broadcast("All non-player titans are now of type NORMAL!");
                         break;
                     case "aberrant":
-                        type = AbnormalType.TYPE_I;
+                        type = TitanClass.Aberrant;
                         GameHelper.Broadcast("All non-player titans are now of type ABERRANT!");
                         break;
                     case "jumper":
-                        type = AbnormalType.TYPE_JUMPER;
+                        type = TitanClass.Jumper;
                         GameHelper.Broadcast("All non-player titans are now of type JUMPER!");
                         break;
                     case "crawler":
-                        type = AbnormalType.TYPE_CRAWLER;
+                        type = TitanClass.Crawler;
                         GameHelper.Broadcast("All non-player titans are now of type CRAWLER!");
                         break;
                     case "punk":
-                        type = AbnormalType.TYPE_PUNK;
+                        type = TitanClass.Punk;
                         GameHelper.Broadcast("All non-player titans are now of type PUNK!");
                         break;
                 }
@@ -42,7 +42,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     {
                         if (titan.photonView.isMine && type != titan.abnormalType)
                         {
-                            titan.setAbnormalType2(type ?? titan.abnormalType, type == AbnormalType.TYPE_CRAWLER);
+                            titan.setAbnormalType2(type ?? titan.abnormalType, type == TitanClass.Crawler);
                         }
                     }
                 }

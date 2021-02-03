@@ -4,41 +4,41 @@ public class InstantiateTracker
 {
     public enum GameResource
     {
-        none,
-        shotGun,
-        effect,
-        flare,
-        bladeHit,
-        bloodEffect,
-        general,
-        name,
-        bomb
+        None,
+        GunShot,
+        Effect,
+        Flare,
+        BladeHit,
+        BloodEffect,
+        General,
+        Name,
+        Bomb
     }
 
-    private abstract class ThingToCheck
+    private abstract class ResourceData
     {
         public GameResource type;
 
-        public ThingToCheck()
+        public ResourceData()
         {
-            type = GameResource.none;
+            type = GameResource.None;
         }
 
         public abstract bool KickWorthy();
 
-        public abstract void reset();
+        public abstract void Reset();
     }
 
-    private class BloodEffect : ThingToCheck
+    private class BloodResource : ResourceData
     {
         private float accumTime;
         private float lastHit;
 
-        public BloodEffect()
+        public BloodResource()
         {
             accumTime = 0f;
             lastHit = Time.time;
-            type = GameResource.bloodEffect;
+            type = GameResource.BloodEffect;
         }
 
         public override bool KickWorthy()
@@ -54,21 +54,21 @@ public class InstantiateTracker
             return false;
         }
 
-        public override void reset()
+        public override void Reset()
         {
         }
     }
 
-    private class BladeHitEffect : ThingToCheck
+    private class BladeHitResource : ResourceData
     {
         private float accumTime;
         private float lastHit;
 
-        public BladeHitEffect()
+        public BladeHitResource()
         {
             accumTime = 0f;
             lastHit = Time.time;
-            type = GameResource.bladeHit;
+            type = GameResource.BladeHit;
         }
 
         public override bool KickWorthy()
@@ -84,21 +84,21 @@ public class InstantiateTracker
             return false;
         }
 
-        public override void reset()
+        public override void Reset()
         {
         }
     }
 
-    private class GenerallyExcessive : ThingToCheck
+    private class GeneralResource : ResourceData
     {
         private int count;
         private float lastClear;
 
-        public GenerallyExcessive()
+        public GeneralResource()
         {
             count = 1;
             lastClear = Time.time;
-            type = GameResource.general;
+            type = GameResource.General;
         }
 
         public override bool KickWorthy()
@@ -112,21 +112,21 @@ public class InstantiateTracker
             return count > 35;
         }
 
-        public override void reset()
+        public override void Reset()
         {
         }
     }
 
-    private class AhssShots : ThingToCheck
+    private class GunShotResource : ResourceData
     {
         private int shots;
         private float lastShot;
 
-        public AhssShots()
+        public GunShotResource()
         {
             shots = 1;
             lastShot = Time.time;
-            type = GameResource.shotGun;
+            type = GameResource.GunShot;
         }
 
         public override bool KickWorthy()
@@ -147,12 +147,12 @@ public class InstantiateTracker
             return false;
         }
 
-        public override void reset()
+        public override void Reset()
         {
         }
     }
 
-    private class ExcessiveEffect : ThingToCheck
+    private class ExcessiveEffect : ResourceData
     {
         private int effectCounter;
         private float lastEffectTime;
@@ -161,7 +161,7 @@ public class InstantiateTracker
         {
             effectCounter = 1;
             lastEffectTime = Time.time;
-            type = GameResource.effect;
+            type = GameResource.Effect;
         }
 
         public override bool KickWorthy()
@@ -179,12 +179,12 @@ public class InstantiateTracker
             return false;
         }
 
-        public override void reset()
+        public override void Reset()
         {
         }
     }
 
-    private class ExcessiveFlares : ThingToCheck
+    private class ExcessiveFlares : ResourceData
     {
         private int flares;
 
@@ -194,7 +194,7 @@ public class InstantiateTracker
         {
             flares = 1;
             lastFlare = Time.time;
-            type = GameResource.flare;
+            type = GameResource.Flare;
         }
 
         public override bool KickWorthy()
@@ -212,12 +212,12 @@ public class InstantiateTracker
             return false;
         }
 
-        public override void reset()
+        public override void Reset()
         {
         }
     }
 
-    private class ExcessiveNameChange : ThingToCheck
+    private class ExcessiveNameChange : ResourceData
     {
         private int nameChanges;
 
@@ -227,7 +227,7 @@ public class InstantiateTracker
         {
             nameChanges = 1;
             lastNameChange = Time.time;
-            type = GameResource.name;
+            type = GameResource.Name;
         }
 
         public override bool KickWorthy()
@@ -246,14 +246,14 @@ public class InstantiateTracker
             return false;
         }
 
-        public override void reset()
+        public override void Reset()
         {
             nameChanges = 0;
             lastNameChange = Time.time;
         }
     }
 
-    private class ExcessiveBombs : ThingToCheck
+    private class ExcessiveBombs : ResourceData
     {
         private int count;
 
@@ -263,7 +263,7 @@ public class InstantiateTracker
         {
             count = 1;
             lastClear = Time.time;
-            type = GameResource.bomb;
+            type = GameResource.Bomb;
         }
 
         public override bool KickWorthy()
@@ -277,85 +277,86 @@ public class InstantiateTracker
             return count > 20;
         }
 
-        public override void reset()
+        public override void Reset()
         {
         }
     }
 
     private class Player
     {
-        public int id;
-        private ThingToCheck[] thingsToCheck;
+        public int Id;
+        private ResourceData[] Resources;
 
         public Player(int id)
         {
-            this.id = id;
-            thingsToCheck = new ThingToCheck[0];
+            this.Id = id;
+            Resources = new ResourceData[0];
         }
 
-        private int GetThingToCheck(GameResource type)
+        private int GetResourceData(GameResource type)
         {
-            for (int i = 0; i < thingsToCheck.Length; i++)
+            for (int i = 0; i < Resources.Length; i++)
             {
-                if (thingsToCheck[i].type == type)
+                if (Resources[i].type == type)
                 {
                     return i;
                 }
             }
+
             return -1;
         }
 
-        private ThingToCheck GameResourceToThing(GameResource gr)
+        private ResourceData GameResourceToResourceData(GameResource gr)
         {
             switch (gr)
             {
-                case GameResource.general:
-                    return new GenerallyExcessive();
-                case GameResource.effect:
+                case GameResource.General:
+                    return new GeneralResource();
+                case GameResource.Effect:
                     return new ExcessiveEffect();
-                case GameResource.shotGun:
-                    return new AhssShots();
-                case GameResource.bladeHit:
-                    return new BladeHitEffect();
-                case GameResource.flare:
+                case GameResource.GunShot:
+                    return new GunShotResource();
+                case GameResource.BladeHit:
+                    return new BladeHitResource();
+                case GameResource.Flare:
                     return new ExcessiveFlares();
-                case GameResource.bloodEffect:
-                    return new BloodEffect();
-                case GameResource.name:
+                case GameResource.BloodEffect:
+                    return new BloodResource();
+                case GameResource.Name:
                     return new ExcessiveNameChange();
-                case GameResource.bomb:
+                case GameResource.Bomb:
                     return new ExcessiveBombs();
                 default:
                     return null;
             }
         }
 
-        public bool IsThingExcessive(GameResource gr)
+        public bool IsResourceExcessive(GameResource gr)
         {
-            int thingToCheck = GetThingToCheck(gr);
+            int thingToCheck = GetResourceData(gr);
             if (thingToCheck > -1)
             {
-                return thingsToCheck[thingToCheck].KickWorthy();
+                return Resources[thingToCheck].KickWorthy();
             }
-            RCextensions.Add(ref thingsToCheck, GameResourceToThing(gr));
+            RCextensions.Add(ref Resources, GameResourceToResourceData(gr));
             return false;
         }
 
-        public void resetNameTracking()
+        public void ResetNameTracking()
         {
-            int thingToCheck = GetThingToCheck(GameResource.name);
+            int thingToCheck = GetResourceData(GameResource.Name);
             if (thingToCheck > -1)
             {
-                thingsToCheck[thingToCheck].reset();
+                Resources[thingToCheck].Reset();
             }
         }
     }
 
-    public static readonly InstantiateTracker instance;
+    public static readonly InstantiateTracker Instance;
 
-    private Player[] players = new Player[0];
+    private Player[] Players = new Player[0];
 
-    public bool checkObj(string key, PhotonPlayer photonPlayer, int[] viewIDS)
+    public bool CheckObject(string key, PhotonPlayer photonPlayer, int[] viewIDS)
     {
         if (!photonPlayer.isMasterClient && !photonPlayer.isLocal)
         {
@@ -379,7 +380,7 @@ public class InstantiateTracker
                 case "rcasset/bombexplodemain":
                     if (RCSettings.BombMode > 0)
                     {
-                        return Instantiated(photonPlayer, GameResource.bomb);
+                        return Instantiated(photonPlayer, GameResource.Bomb);
                     }
                     if (PhotonNetwork.isMasterClient && !FengGameManagerMKII.Instance.restartingBomb)
                     {
@@ -388,20 +389,20 @@ public class InstantiateTracker
                     return false;
                 case "hook":
                 case "aottg_hero 1":
-                    return Instantiated(photonPlayer, GameResource.general);
+                    return Instantiated(photonPlayer, GameResource.General);
                 case "hitmeat2":
-                    return Instantiated(photonPlayer, GameResource.bloodEffect);
+                    return Instantiated(photonPlayer, GameResource.BloodEffect);
                 case "hitmeat":
                 case "redcross":
                 case "redcross1":
-                    return Instantiated(photonPlayer, GameResource.bladeHit);
+                    return Instantiated(photonPlayer, GameResource.BladeHit);
                 case "fx/flarebullet1":
                 case "fx/flarebullet2":
                 case "fx/flarebullet3":
-                    return Instantiated(photonPlayer, GameResource.flare);
+                    return Instantiated(photonPlayer, GameResource.Flare);
                 case "fx/shotgun":
                 case "fx/shotgun 1":
-                    return Instantiated(photonPlayer, GameResource.shotGun);
+                    return Instantiated(photonPlayer, GameResource.GunShot);
                 case "fx/fxtitanspawn":
                 case "fx/boom1":
                 case "fx/boom3":
@@ -416,23 +417,23 @@ public class InstantiateTracker
                         }
                         return false;
                     }
-                    return Instantiated(photonPlayer, GameResource.effect);
+                    return Instantiated(photonPlayer, GameResource.Effect);
                 case "fx/boom2":
                 case "fx/boom4":
                 case "fx/fxtitandie":
                 case "fx/fxtitandie1":
                 case "fx/boost_smoke":
                 case "fx/thunder":
-                    return Instantiated(photonPlayer, GameResource.effect);
+                    return Instantiated(photonPlayer, GameResource.Effect);
                 case "rcasset/cannonballobject":
-                    return Instantiated(photonPlayer, GameResource.bomb);
+                    return Instantiated(photonPlayer, GameResource.Bomb);
                 case "rcasset/cannonwall":
                 case "rcasset/cannonground":
                     if (PhotonNetwork.isMasterClient && !FengGameManagerMKII.Instance.allowedToCannon.ContainsKey(photonPlayer.Id) && !FengGameManagerMKII.Instance.restartingMC)
                     {
                         FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: false, "spawning cannon item (" + key + ").");
                     }
-                    return Instantiated(photonPlayer, GameResource.general);
+                    return Instantiated(photonPlayer, GameResource.General);
                 case "rcasset/cannonwallprop":
                 case "rcasset/cannongroundprop":
                     if (PhotonNetwork.isMasterClient)
@@ -457,11 +458,11 @@ public class InstantiateTracker
                         }
                         return false;
                     }
-                    return Instantiated(photonPlayer, GameResource.general);
+                    return Instantiated(photonPlayer, GameResource.General);
                 case "fx/justSmoke":
                 case "bloodexplore":
                 case "bloodsplatter":
-                    return Instantiated(photonPlayer, GameResource.effect);
+                    return Instantiated(photonPlayer, GameResource.Effect);
                 case "hitmeatbig":
                     if (GExtensions.AsString(photonPlayer.customProperties[PhotonPlayerProperty.Character]).ToUpper() != "EREN")
                     {
@@ -479,7 +480,7 @@ public class InstantiateTracker
                         }
                         return false;
                     }
-                    return Instantiated(photonPlayer, GameResource.effect);
+                    return Instantiated(photonPlayer, GameResource.Effect);
                 case "fx/colossal_steam_dmg":
                 case "fx/colossal_steam":
                 case "fx/boom1_ct_kick":
@@ -488,14 +489,14 @@ public class InstantiateTracker
                         FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: true, "spawning colossal effect (" + key + ").");
                         return false;
                     }
-                    return Instantiated(photonPlayer, GameResource.effect);
+                    return Instantiated(photonPlayer, GameResource.Effect);
                 case "rock":
                     if (PhotonNetwork.isMasterClient && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
                     {
                         FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: true, "spawning MC item (" + key + ").");
                         return false;
                     }
-                    return Instantiated(photonPlayer, GameResource.general);
+                    return Instantiated(photonPlayer, GameResource.General);
                 case "horse":
                     if (!FengGameManagerMKII.Level.Horses && RCSettings.HorseMode == 0)
                     {
@@ -505,7 +506,7 @@ public class InstantiateTracker
                         }
                         return false;
                     }
-                    return Instantiated(photonPlayer, GameResource.general);
+                    return Instantiated(photonPlayer, GameResource.General);
                 case "titan_ver3.1":
                     if (PhotonNetwork.isMasterClient)
                     {
@@ -546,7 +547,7 @@ public class InstantiateTracker
                             return false;
                         }
                     }
-                    return Instantiated(photonPlayer, GameResource.general);
+                    return Instantiated(photonPlayer, GameResource.General);
                 case "colossal_titan":
                 case "female_titan":
                 case "titan_eren_trost":
@@ -563,7 +564,7 @@ public class InstantiateTracker
                     {
                         return false;
                     }
-                    return Instantiated(photonPlayer, GameResource.general);
+                    return Instantiated(photonPlayer, GameResource.General);
                 default:
                     return false;
             }
@@ -573,9 +574,9 @@ public class InstantiateTracker
 
     private bool TryGetPlayer(int id, out int result)
     {
-        for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < Players.Length; i++)
         {
-            if (players[i].id == id)
+            if (Players[i].Id == id)
             {
                 result = i;
                 return true;
@@ -589,20 +590,20 @@ public class InstantiateTracker
     {
         if (TryGetPlayer(owner.Id, out int result))
         {
-            if (players[result].IsThingExcessive(type))
+            if (Players[result].IsResourceExcessive(type))
             {
                 if (owner != null && PhotonNetwork.isMasterClient)
                 {
                     FengGameManagerMKII.Instance.KickPlayer(owner, ban: true, "spamming instantiate (" + type.ToString() + ").");
                 }
-                RCextensions.RemoveAt(ref players, result);
+                RCextensions.RemoveAt(ref Players, result);
                 return false;
             }
         }
         else
         {
-            RCextensions.Add(ref players, new Player(owner.Id));
-            players[players.Length - 1].IsThingExcessive(type);
+            RCextensions.Add(ref Players, new Player(owner.Id));
+            Players[Players.Length - 1].IsResourceExcessive(type);
         }
         return true;
     }
@@ -611,24 +612,24 @@ public class InstantiateTracker
     {
         if (TryGetPlayer(owner.Id, out int result))
         {
-            if (players[result].IsThingExcessive(GameResource.name))
+            if (Players[result].IsResourceExcessive(GameResource.Name))
             {
                 return false;
             }
         }
         else
         {
-            RCextensions.Add(ref players, new Player(owner.Id));
-            players[players.Length - 1].IsThingExcessive(GameResource.name);
+            RCextensions.Add(ref Players, new Player(owner.Id));
+            Players[Players.Length - 1].IsResourceExcessive(GameResource.Name);
         }
         return true;
     }
 
-    public void resetPropertyTracking(int ID)
+    public void ResetPropertyTracker(int id)
     {
-        if (TryGetPlayer(ID, out int result))
+        if (TryGetPlayer(id, out int result))
         {
-            players[result].resetNameTracking();
+            Players[result].ResetNameTracking();
         }
     }
 
@@ -637,9 +638,9 @@ public class InstantiateTracker
         int num = 0;
         while (true)
         {
-            if (num < players.Length)
+            if (num < Players.Length)
             {
-                if (players[num].id == playerId)
+                if (Players[num].Id == playerId)
                 {
                     break;
                 }
@@ -648,17 +649,17 @@ public class InstantiateTracker
             }
             return;
         }
-        RCextensions.RemoveAt(ref players, num);
+        RCextensions.RemoveAt(ref Players, num);
     }
 
     public void Dispose()
     {
-        players = null;
-        players = new Player[0];
+        Players = null;
+        Players = new Player[0];
     }
 
     static InstantiateTracker()
     {
-        instance = new InstantiateTracker();
+        Instance = new InstantiateTracker();
     }
 }

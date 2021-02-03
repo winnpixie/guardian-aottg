@@ -1,5 +1,5 @@
 public enum BUFF
 {
-	NoBuff,
-	SpeedUp
+	None,
+	Speed
 }

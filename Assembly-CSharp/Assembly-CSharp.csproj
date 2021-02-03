@@ -75,7 +75,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbnormalType.cs" />
+    <Compile Include="Guardian\Utilities\Translator.cs" />
+    <Compile Include="TitanClass.cs" />
     <Compile Include="ActiveAnimation.cs" />
     <Compile Include="ActorProperties.cs" />
     <Compile Include="Affector.cs" />

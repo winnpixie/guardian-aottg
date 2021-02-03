@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class LoginFengKAI : MonoBehaviour
 {
-    public static string PlayerName = string.Empty;
-    public static string GuildName = string.Empty;
+    public static string Name = string.Empty;
+    public static string Guild = string.Empty;
     public static string Password = string.Empty;
     public static FengPlayer Player;
     public static LoginState LoginState;
@@ -34,7 +34,7 @@ public class LoginFengKAI : MonoBehaviour
             Player.InitAsGuest();
         }
 
-        if (PlayerName != string.Empty)
+        if (Name != string.Empty)
         {
             NGUITools.SetActive(panelLogin, state: false);
             NGUITools.SetActive(panelStatus, state: true);
@@ -74,7 +74,7 @@ public class LoginFengKAI : MonoBehaviour
         {
             NGUITools.SetActive(panelLogin, state: false);
             NGUITools.SetActive(panelStatus, state: true);
-            PlayerName = name;
+            Name = name;
             Password = password;
             StartCoroutine(GetInfo());
         }
@@ -83,7 +83,7 @@ public class LoginFengKAI : MonoBehaviour
     private IEnumerator GetInfo()
     {
         WWWForm form = new WWWForm();
-        form.AddField("userid", PlayerName);
+        form.AddField("userid", Name);
         form.AddField("password", Password);
 
         using (WWW www = new WWW(GetInfoURL, form))
@@ -98,16 +98,16 @@ public class LoginFengKAI : MonoBehaviour
                 NGUITools.SetActive(panelLogin, state: true);
                 NGUITools.SetActive(panelStatus, state: false);
                 output.GetComponent<UILabel>().text = www.text;
-                PlayerName = string.Empty;
+                Name = string.Empty;
                 Password = string.Empty;
             }
             else
             {
                 string[] result = www.text.Split('|');
-                GuildName = result[0];
+                Guild = result[0];
                 output2.GetComponent<UILabel>().text = result[1];
-                Player.Name = PlayerName;
-                Player.Guild = GuildName;
+                Player.Name = Name;
+                Player.Guild = Guild;
             }
         }
     }
@@ -148,7 +148,7 @@ public class LoginFengKAI : MonoBehaviour
 
     public void ChangePassword(string oldpassword, string password, string password2)
     {
-        if (PlayerName == string.Empty)
+        if (Name == string.Empty)
         {
             Logout();
             NGUITools.SetActive(panelChangePassword, state: false);
@@ -164,7 +164,7 @@ public class LoginFengKAI : MonoBehaviour
     private IEnumerator ChangePasswordE(string oldpassword, string password, string password2)
     {
         WWWForm form = new WWWForm();
-        form.AddField("userid", PlayerName);
+        form.AddField("userid", Name);
         form.AddField("old_password", oldpassword);
         form.AddField("password", password);
         form.AddField("password2", password2);
@@ -187,7 +187,7 @@ public class LoginFengKAI : MonoBehaviour
 
     public void ChangeGuild(string name)
     {
-        if (PlayerName == string.Empty)
+        if (Name == string.Empty)
         {
             Logout();
             NGUITools.SetActive(panelChangeGUILDNAME, state: false);
@@ -203,7 +203,7 @@ public class LoginFengKAI : MonoBehaviour
     private IEnumerator ChangeGuildE(string name)
     {
         WWWForm form = new WWWForm();
-        form.AddField("name", PlayerName);
+        form.AddField("name", Name);
         form.AddField("guildname", name);
 
         using (WWW www = new WWW(ChangeGuildURL, form))
@@ -252,7 +252,7 @@ public class LoginFengKAI : MonoBehaviour
 
     private void ClearCookies()
     {
-        PlayerName = string.Empty;
+        Name = string.Empty;
         Password = string.Empty;
         LoginState = LoginState.LoggedOut;
     }

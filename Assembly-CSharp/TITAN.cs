@@ -22,7 +22,7 @@ public class TITAN : Photon.MonoBehaviour
     public static GameObject minusDistanceEnemy;
     public float myLevel = 1f;
     public bool isAlarm;
-    public AbnormalType abnormalType;
+    public TitanClass abnormalType;
     private Vector3 oldCorePosition;
     private int attackCount;
     private float attackEndWait;
@@ -201,37 +201,37 @@ public class TITAN : Photon.MonoBehaviour
         switch (type)
         {
             case 0:
-                abnormalType = AbnormalType.NORMAL;
+                abnormalType = TitanClass.Normal;
                 base.name = "Titan";
                 runAnimation = "run_walk";
                 GetComponent<TITAN_SETUP>().setHair2();
                 break;
             case 1:
-                abnormalType = AbnormalType.TYPE_I;
+                abnormalType = TitanClass.Aberrant;
                 base.name = "Aberrant";
                 runAnimation = "run_abnormal";
                 GetComponent<TITAN_SETUP>().setHair2();
                 break;
             case 2:
-                abnormalType = AbnormalType.TYPE_JUMPER;
+                abnormalType = TitanClass.Jumper;
                 base.name = "Jumper";
                 runAnimation = "run_abnormal";
                 GetComponent<TITAN_SETUP>().setHair2();
                 break;
             case 3:
-                abnormalType = AbnormalType.TYPE_CRAWLER;
+                abnormalType = TitanClass.Crawler;
                 base.name = "Crawler";
                 runAnimation = "crawler_run";
                 GetComponent<TITAN_SETUP>().setHair2();
                 break;
             case 4:
-                abnormalType = AbnormalType.TYPE_PUNK;
+                abnormalType = TitanClass.Punk;
                 base.name = "Punk";
                 runAnimation = "run_abnormal_1";
                 GetComponent<TITAN_SETUP>().setHair2();
                 break;
         }
-        if (abnormalType == AbnormalType.TYPE_I || abnormalType == AbnormalType.TYPE_JUMPER || abnormalType == AbnormalType.TYPE_PUNK)
+        if (abnormalType == TitanClass.Aberrant || abnormalType == TitanClass.Jumper || abnormalType == TitanClass.Punk)
         {
             speed = 18f;
             if (myLevel > 1f)
@@ -249,7 +249,7 @@ public class TITAN : Photon.MonoBehaviour
             baseAnimation["turnaround1"].speed = 2f;
             baseAnimation["turnaround2"].speed = 2f;
         }
-        if (abnormalType == AbnormalType.TYPE_CRAWLER)
+        if (abnormalType == TitanClass.Crawler)
         {
             chaseDistance += 50f;
             speed = 25f;
@@ -272,7 +272,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         if (nonAI)
         {
-            if (abnormalType == AbnormalType.TYPE_CRAWLER)
+            if (abnormalType == TitanClass.Crawler)
             {
                 speed = Mathf.Min(70f, speed);
             }
@@ -416,13 +416,13 @@ public class TITAN : Photon.MonoBehaviour
 
     public void beLaughAttacked()
     {
-        if (!hasDie && abnormalType != AbnormalType.TYPE_CRAWLER)
+        if (!hasDie && abnormalType != TitanClass.Crawler)
         {
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
             {
                 base.photonView.RPC("laugh", PhotonTargets.All, 0f);
             }
-            else if (state == TitanState.idle || state == TitanState.turn || state == TitanState.chase)
+            else if (state == TitanState.Idle || state == TitanState.Turn || state == TitanState.Chase)
             {
                 laugh();
             }
@@ -432,10 +432,10 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void laugh(float sbtime = 0f)
     {
-        if (state == TitanState.idle || state == TitanState.turn || state == TitanState.chase)
+        if (state == TitanState.Idle || state == TitanState.Turn || state == TitanState.Chase)
         {
             this.sbtime = sbtime;
-            state = TitanState.laugh;
+            state = TitanState.Laughing;
             crossFade("laugh", 0.2f);
         }
     }
@@ -528,8 +528,8 @@ public class TITAN : Photon.MonoBehaviour
             {
                 switch (abnormalType)
                 {
-                    case AbnormalType.NORMAL:
-                    case AbnormalType.TYPE_PUNK:
+                    case TitanClass.Normal:
+                    case TitanClass.Punk:
                         if ((myDifficulty > 0 || UnityEngine.Random.Range(0, 1000) < 3) && Mathf.Abs(between2) < 60f)
                         {
                             array = new string[1]
@@ -538,8 +538,8 @@ public class TITAN : Photon.MonoBehaviour
                             };
                         }
                         break;
-                    case AbnormalType.TYPE_I:
-                    case AbnormalType.TYPE_JUMPER:
+                    case TitanClass.Aberrant:
+                    case TitanClass.Jumper:
                         if (myDifficulty > 0 || UnityEngine.Random.Range(0, 100) < 50)
                         {
                             array = new string[1]
@@ -556,7 +556,7 @@ public class TITAN : Photon.MonoBehaviour
             switch ((Mathf.Abs(between2) < 90f) ? ((between2 > 0f) ? 1 : 2) : ((!(between2 > 0f)) ? 3 : 4))
             {
                 case 2:
-                    array = ((!(myDistance < attackDistance * 0.25f)) ? ((!(myDistance < attackDistance * 0.5f)) ? ((abnormalType != AbnormalType.TYPE_PUNK) ? ((abnormalType != 0) ? new string[1]
+                    array = ((!(myDistance < attackDistance * 0.25f)) ? ((!(myDistance < attackDistance * 0.5f)) ? ((abnormalType != TitanClass.Punk) ? ((abnormalType != 0) ? new string[1]
                     {
                     "attack_abnormal_jump"
                     } : ((myDifficulty <= 0) ? new string[5]
@@ -576,7 +576,7 @@ public class TITAN : Photon.MonoBehaviour
                     "attack_combo",
                     "attack_combo",
                     "attack_abnormal_jump"
-                    }) : ((abnormalType != AbnormalType.TYPE_PUNK) ? ((abnormalType != 0) ? new string[3]
+                    }) : ((abnormalType != TitanClass.Punk) ? ((abnormalType != 0) ? new string[3]
                     {
                     "grab_ground_front_l",
                     "grab_ground_front_l",
@@ -591,7 +591,7 @@ public class TITAN : Photon.MonoBehaviour
                     "grab_ground_front_l",
                     "grab_ground_front_l",
                     "attack_abnormal_jump"
-                    })) : ((abnormalType != AbnormalType.TYPE_PUNK) ? ((abnormalType != 0) ? new string[1]
+                    })) : ((abnormalType != TitanClass.Punk) ? ((abnormalType != 0) ? new string[1]
                     {
                     "attack_kick"
                     } : new string[2]
@@ -605,7 +605,7 @@ public class TITAN : Photon.MonoBehaviour
                     }));
                     break;
                 case 1:
-                    array = ((!(myDistance < attackDistance * 0.25f)) ? ((!(myDistance < attackDistance * 0.5f)) ? ((abnormalType != AbnormalType.TYPE_PUNK) ? ((abnormalType != 0) ? new string[1]
+                    array = ((!(myDistance < attackDistance * 0.25f)) ? ((!(myDistance < attackDistance * 0.5f)) ? ((abnormalType != TitanClass.Punk) ? ((abnormalType != 0) ? new string[1]
                     {
                     "attack_abnormal_jump"
                     } : ((myDifficulty <= 0) ? new string[5]
@@ -625,7 +625,7 @@ public class TITAN : Photon.MonoBehaviour
                     "attack_combo",
                     "attack_combo",
                     "attack_abnormal_jump"
-                    }) : ((abnormalType != AbnormalType.TYPE_PUNK) ? ((abnormalType != 0) ? new string[3]
+                    }) : ((abnormalType != TitanClass.Punk) ? ((abnormalType != 0) ? new string[3]
                     {
                     "grab_ground_front_r",
                     "grab_ground_front_r",
@@ -640,7 +640,7 @@ public class TITAN : Photon.MonoBehaviour
                     "grab_ground_front_r",
                     "grab_ground_front_r",
                     "attack_abnormal_jump"
-                    })) : ((abnormalType != AbnormalType.TYPE_PUNK) ? ((abnormalType != 0) ? new string[1]
+                    })) : ((abnormalType != TitanClass.Punk) ? ((abnormalType != 0) ? new string[1]
                     {
                     "attack_kick"
                     } : new string[2]
@@ -713,7 +713,7 @@ public class TITAN : Photon.MonoBehaviour
 
     public void toCheckPoint(Vector3 targetPt, float r)
     {
-        state = TitanState.to_check_point;
+        state = TitanState.ToCheckPoint;
         targetCheckPt = targetPt;
         targetR = r;
         crossFade(runAnimation, 0.5f);
@@ -721,7 +721,7 @@ public class TITAN : Photon.MonoBehaviour
 
     public void randomRun(Vector3 targetPt, float r)
     {
-        state = TitanState.random_run;
+        state = TitanState.RandomRun;
         targetCheckPt = targetPt;
         targetR = r;
         random_run_time = UnityEngine.Random.Range(1f, 2f);
@@ -730,7 +730,7 @@ public class TITAN : Photon.MonoBehaviour
 
     public void toPVPCheckPoint(Vector3 targetPt, float r)
     {
-        state = TitanState.to_pvp_pt;
+        state = TitanState.ToPVPPoint;
         targetCheckPt = targetPt;
         targetR = r;
         crossFade(runAnimation, 0.5f);
@@ -738,7 +738,7 @@ public class TITAN : Photon.MonoBehaviour
 
     public void hitL(Vector3 attacker, float hitPauseTime)
     {
-        if (abnormalType != AbnormalType.TYPE_CRAWLER)
+        if (abnormalType != TitanClass.Crawler)
         {
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
@@ -766,7 +766,7 @@ public class TITAN : Photon.MonoBehaviour
 
     private void hit(string animationName, Vector3 attacker, float hitPauseTime)
     {
-        state = TitanState.hit;
+        state = TitanState.Hit;
         hitAnimation = animationName;
         hitPause = hitPauseTime;
         playAnimation(hitAnimation);
@@ -784,7 +784,7 @@ public class TITAN : Photon.MonoBehaviour
 
     public void hitR(Vector3 attacker, float hitPauseTime)
     {
-        if (abnormalType != AbnormalType.TYPE_CRAWLER)
+        if (abnormalType != TitanClass.Crawler)
         {
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
@@ -878,7 +878,7 @@ public class TITAN : Photon.MonoBehaviour
 
     public void dieHeadBlow(Vector3 attacker, float hitPauseTime)
     {
-        if (abnormalType == AbnormalType.TYPE_CRAWLER)
+        if (abnormalType == TitanClass.Crawler)
         {
             return;
         }
@@ -1028,7 +1028,7 @@ public class TITAN : Photon.MonoBehaviour
 
     private void grab(string type)
     {
-        state = TitanState.grab;
+        state = TitanState.Grabbing;
         attacked = false;
         isAlarm = true;
         attackAnimation = type;
@@ -1086,7 +1086,7 @@ public class TITAN : Photon.MonoBehaviour
 
     private void eat()
     {
-        state = TitanState.eat;
+        state = TitanState.Eating;
         attacked = false;
         if (isGrabHandLeft)
         {
@@ -1102,7 +1102,7 @@ public class TITAN : Photon.MonoBehaviour
 
     private void chase()
     {
-        state = TitanState.chase;
+        state = TitanState.Chase;
         isAlarm = true;
         crossFade(runAnimation, 0.5f);
     }
@@ -1111,7 +1111,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         stuck = false;
         this.sbtime = sbtime;
-        if (myDifficulty == 2 && (abnormalType == AbnormalType.TYPE_JUMPER || abnormalType == AbnormalType.TYPE_I))
+        if (myDifficulty == 2 && (abnormalType == TitanClass.Jumper || abnormalType == TitanClass.Aberrant))
         {
             this.sbtime = UnityEngine.Random.Range(0f, 1.5f);
         }
@@ -1120,7 +1120,7 @@ public class TITAN : Photon.MonoBehaviour
             this.sbtime = 0f;
         }
         this.sbtime = Mathf.Max(0.5f, this.sbtime);
-        if (abnormalType == AbnormalType.TYPE_PUNK)
+        if (abnormalType == TitanClass.Punk)
         {
             this.sbtime = 0.1f;
             if (myDifficulty == 1)
@@ -1128,8 +1128,8 @@ public class TITAN : Photon.MonoBehaviour
                 this.sbtime += 0.4f;
             }
         }
-        state = TitanState.idle;
-        if (abnormalType == AbnormalType.TYPE_CRAWLER)
+        state = TitanState.Idle;
+        if (abnormalType == TitanClass.Crawler)
         {
             crossFade("crawler_idle", 0.2f);
         }
@@ -1141,13 +1141,13 @@ public class TITAN : Photon.MonoBehaviour
 
     private void wander(float sbtime = 0f)
     {
-        state = TitanState.wander;
+        state = TitanState.Wander;
         crossFade(runAnimation, 0.5f);
     }
 
     private void turn(float d)
     {
-        if (abnormalType == AbnormalType.TYPE_CRAWLER)
+        if (abnormalType == TitanClass.Crawler)
         {
             if (d > 0f)
             {
@@ -1172,7 +1172,7 @@ public class TITAN : Photon.MonoBehaviour
         turnDeg = d;
         Vector3 eulerAngles = base.gameObject.transform.rotation.eulerAngles;
         desDeg = eulerAngles.y + turnDeg;
-        state = TitanState.turn;
+        state = TitanState.Turn;
     }
 
     private void eatSet(GameObject grabTarget)
@@ -1269,19 +1269,19 @@ public class TITAN : Photon.MonoBehaviour
 
     private void justHitEye()
     {
-        if (state != TitanState.hit_eye)
+        if (state != TitanState.EyeHit)
         {
             switch (state)
             {
-                case TitanState.down:
-                case TitanState.sit:
+                case TitanState.Down:
+                case TitanState.Sitting:
                     playAnimation("sit_hit_eye");
                     break;
                 default:
                     playAnimation("hit_eye");
                     break;
             }
-            state = TitanState.hit_eye;
+            state = TitanState.EyeHit;
         }
     }
 
@@ -1316,7 +1316,7 @@ public class TITAN : Photon.MonoBehaviour
 
     private void getDown()
     {
-        state = TitanState.down;
+        state = TitanState.Down;
         isAlarm = true;
         playAnimation("sit_hunt_down");
         getdownTime = UnityEngine.Random.Range(3f, 5f);
@@ -1324,28 +1324,28 @@ public class TITAN : Photon.MonoBehaviour
 
     private void sitdown()
     {
-        state = TitanState.sit;
+        state = TitanState.Sitting;
         playAnimation("sit_down");
         getdownTime = UnityEngine.Random.Range(10f, 30f);
     }
 
     private void remainSitdown()
     {
-        state = TitanState.sit;
+        state = TitanState.Sitting;
         playAnimation("sit_idle");
         getdownTime = UnityEngine.Random.Range(10f, 30f);
     }
 
     private void recover()
     {
-        state = TitanState.recover;
+        state = TitanState.Recovering;
         playAnimation("idle_recovery");
         getdownTime = UnityEngine.Random.Range(2f, 5f);
     }
 
     public void hitAnkle()
     {
-        if (!hasDie && state != TitanState.down)
+        if (!hasDie && state != TitanState.Down)
         {
             if (grabbedTarget != null)
             {
@@ -1358,7 +1358,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     public void hitAnkleRPC(int viewID)
     {
-        if (hasDie || state == TitanState.down)
+        if (hasDie || state == TitanState.Down)
         {
             return;
         }
@@ -1395,8 +1395,8 @@ public class TITAN : Photon.MonoBehaviour
         yield return new WaitForSeconds(4.5f);
         object[] respawnPoint = Guardian.Utilities.GameHelper.GetRandomTitanRespawnPoint();
         GameObject go = FengGameManagerMKII.Instance.SpawnTitanRaw((Vector3)respawnPoint[0], (Quaternion)respawnPoint[1]);
-        AbnormalType type = this.abnormalType;
-        go.GetComponent<TITAN>().setAbnormalType2(type, type.Equals(AbnormalType.TYPE_CRAWLER));
+        TitanClass type = this.abnormalType;
+        go.GetComponent<TITAN>().setAbnormalType2(type, type.Equals(TitanClass.Crawler));
     }
 
     private IEnumerator DoDeathLaugh()
@@ -1429,11 +1429,11 @@ public class TITAN : Photon.MonoBehaviour
         {
             crossFade("sit_die", 0.1f);
         }
-        else if (abnormalType == AbnormalType.TYPE_CRAWLER)
+        else if (abnormalType == TitanClass.Crawler)
         {
             crossFade("crawler_die", 0.2f);
         }
-        else if (abnormalType == AbnormalType.NORMAL)
+        else if (abnormalType == TitanClass.Normal)
         {
             crossFade("die_front", 0.05f);
         }
@@ -1456,7 +1456,7 @@ public class TITAN : Photon.MonoBehaviour
             return;
         }
         healthTime = Time.time;
-        if (speed >= RCSettings.DamageMode || abnormalType == AbnormalType.TYPE_CRAWLER)
+        if (speed >= RCSettings.DamageMode || abnormalType == TitanClass.Crawler)
         {
             currentHealth -= speed;
         }
@@ -1699,7 +1699,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             oldCorePosition = baseTransform.position - baseTransform.Find("Amarture/Core").position;
         }
-        else if ((state == TitanState.attack && isAttackMoveByCore) || state == TitanState.hit)
+        else if ((state == TitanState.Attack && isAttackMoveByCore) || state == TitanState.Hit)
         {
             Vector3 a2 = baseTransform.position - baseTransform.Find("Amarture/Core").position - oldCorePosition;
             baseRigidBody.velocity = a2 / Time.deltaTime + Vector3.up * baseRigidBody.velocity.y;
@@ -1733,7 +1733,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             return;
         }
-        if (nonAI && !IN_GAME_MAIN_CAMERA.IsPausing && (state == TitanState.idle || (state == TitanState.attack && attackAnimation == "jumper_1")))
+        if (nonAI && !IN_GAME_MAIN_CAMERA.IsPausing && (state == TitanState.Idle || (state == TitanState.Attack && attackAnimation == "jumper_1")))
         {
             Vector3 a3 = Vector3.zero;
             if (controller.targetDirection != -874f)
@@ -1749,11 +1749,11 @@ public class TITAN : Photon.MonoBehaviour
                 }
                 a3 = ((!controller.isWALKDown && !flag) ? (baseTransform.forward * speed * Mathf.Sqrt(myLevel)) : (baseTransform.forward * speed * Mathf.Sqrt(myLevel) * 0.2f));
                 baseGameObjectTransform.rotation = Quaternion.Lerp(baseGameObjectTransform.rotation, Quaternion.Euler(0f, controller.targetDirection, 0f), speed * 0.15f * Time.deltaTime);
-                if (state == TitanState.idle)
+                if (state == TitanState.Idle)
                 {
                     if (controller.isWALKDown || flag)
                     {
-                        if (abnormalType == AbnormalType.TYPE_CRAWLER)
+                        if (abnormalType == TitanClass.Crawler)
                         {
                             if (!baseAnimation.IsPlaying("crawler_run"))
                             {
@@ -1765,7 +1765,7 @@ public class TITAN : Photon.MonoBehaviour
                             crossFade("run_walk", 0.1f);
                         }
                     }
-                    else if (abnormalType == AbnormalType.TYPE_CRAWLER)
+                    else if (abnormalType == TitanClass.Crawler)
                     {
                         if (!baseAnimation.IsPlaying("crawler_run"))
                         {
@@ -1800,9 +1800,9 @@ public class TITAN : Photon.MonoBehaviour
                     }
                 }
             }
-            else if (state == TitanState.idle)
+            else if (state == TitanState.Idle)
             {
-                if (abnormalType == AbnormalType.TYPE_CRAWLER)
+                if (abnormalType == TitanClass.Crawler)
                 {
                     if (!baseAnimation.IsPlaying("crawler_idle"))
                     {
@@ -1815,7 +1815,7 @@ public class TITAN : Photon.MonoBehaviour
                 }
                 a3 = Vector3.zero;
             }
-            if (state == TitanState.idle)
+            if (state == TitanState.Idle)
             {
                 Vector3 velocity = baseRigidBody.velocity;
                 Vector3 force = a3 - velocity;
@@ -1824,7 +1824,7 @@ public class TITAN : Photon.MonoBehaviour
                 force.y = 0f;
                 baseRigidBody.AddForce(force, ForceMode.VelocityChange);
             }
-            else if (state == TitanState.attack && attackAnimation == "jumper_0")
+            else if (state == TitanState.Attack && attackAnimation == "jumper_0")
             {
                 Vector3 velocity2 = baseRigidBody.velocity;
                 Vector3 force2 = a3 * 0.8f - velocity2;
@@ -1834,7 +1834,7 @@ public class TITAN : Photon.MonoBehaviour
                 baseRigidBody.AddForce(force2, ForceMode.VelocityChange);
             }
         }
-        if ((abnormalType == AbnormalType.TYPE_I || abnormalType == AbnormalType.TYPE_JUMPER) && !nonAI && state == TitanState.attack && attackAnimation == "jumper_0")
+        if ((abnormalType == TitanClass.Aberrant || abnormalType == TitanClass.Jumper) && !nonAI && state == TitanState.Attack && attackAnimation == "jumper_0")
         {
             Vector3 a4 = baseTransform.forward * speed * myLevel * 0.5f;
             Vector3 velocity3 = baseRigidBody.velocity;
@@ -1848,7 +1848,7 @@ public class TITAN : Photon.MonoBehaviour
             force3.y = 0f;
             baseRigidBody.AddForce(force3, ForceMode.VelocityChange);
         }
-        if (state != TitanState.chase && state != TitanState.wander && state != TitanState.to_check_point && state != TitanState.to_pvp_pt && state != TitanState.random_run)
+        if (state != TitanState.Chase && state != TitanState.Wander && state != TitanState.ToCheckPoint && state != TitanState.ToPVPPoint && state != TitanState.RandomRun)
         {
             return;
         }
@@ -1859,7 +1859,7 @@ public class TITAN : Photon.MonoBehaviour
         force4.z = Mathf.Clamp(force4.z, 0f - maxVelocityChange, maxVelocityChange);
         force4.y = 0f;
         baseRigidBody.AddForce(force4, ForceMode.VelocityChange);
-        if (!stuck && abnormalType != AbnormalType.TYPE_CRAWLER && !nonAI)
+        if (!stuck && abnormalType != TitanClass.Crawler && !nonAI)
         {
             if (baseAnimation.IsPlaying(runAnimation) && baseRigidBody.velocity.magnitude < speed * 0.5f)
             {
@@ -1867,7 +1867,7 @@ public class TITAN : Photon.MonoBehaviour
                 stuckTime = 2f;
                 stuckTurnAngle = (float)UnityEngine.Random.Range(0, 2) * 140f - 70f;
             }
-            if (state == TitanState.chase && myHero != null && myDistance > attackDistance && myDistance < 150f)
+            if (state == TitanState.Chase && myHero != null && myDistance > attackDistance && myDistance < 150f)
             {
                 float num = 0.05f;
                 if (myDifficulty > 1)
@@ -1890,12 +1890,12 @@ public class TITAN : Photon.MonoBehaviour
         float num3 = 0f;
         switch (state)
         {
-            case TitanState.wander:
+            case TitanState.Wander:
                 num3 = baseTransform.rotation.eulerAngles.y - 90f;
                 break;
-            case TitanState.to_check_point:
-            case TitanState.to_pvp_pt:
-            case TitanState.random_run:
+            case TitanState.ToCheckPoint:
+            case TitanState.ToPVPPoint:
+            case TitanState.RandomRun:
                 Vector3 vector = targetCheckPt - baseTransform.position;
                 num3 = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
                 break;
@@ -1926,7 +1926,7 @@ public class TITAN : Photon.MonoBehaviour
             num3 += stuckTurnAngle;
         }
         float num4 = 0f - Mathf.DeltaAngle(num3, baseGameObjectTransform.rotation.eulerAngles.y - 90f);
-        if (abnormalType == AbnormalType.TYPE_CRAWLER)
+        if (abnormalType == TitanClass.Crawler)
         {
             baseGameObjectTransform.rotation = Quaternion.Lerp(baseGameObjectTransform.rotation, Quaternion.Euler(0f, baseGameObjectTransform.rotation.eulerAngles.y + num4, 0f), speed * 0.3f * Time.deltaTime / myLevel);
         }
@@ -1938,7 +1938,7 @@ public class TITAN : Photon.MonoBehaviour
 
     private void attack2(string type)
     {
-        state = TitanState.attack;
+        state = TitanState.Attack;
         attacked = false;
         isAlarm = true;
         if (attackAnimation == type)
@@ -1988,7 +1988,7 @@ public class TITAN : Photon.MonoBehaviour
                 leftHandAttack = false;
                 break;
             case "combo_2":
-                if (abnormalType != AbnormalType.TYPE_PUNK && !nonAI)
+                if (abnormalType != TitanClass.Punk && !nonAI)
                 {
                     nextAttackAnimation = "combo_3";
                 }
@@ -2146,7 +2146,7 @@ public class TITAN : Photon.MonoBehaviour
 
     private bool longRangeAttackCheck2()
     {
-        if (abnormalType == AbnormalType.TYPE_PUNK && myHero != null)
+        if (abnormalType == TitanClass.Punk && myHero != null)
         {
             Vector3 vector = myHero.rigidbody.velocity * Time.deltaTime * 30f;
             if (vector.sqrMagnitude > 10f)
@@ -2280,7 +2280,7 @@ public class TITAN : Photon.MonoBehaviour
         explode();
         if (!nonAI)
         {
-            if (activeRad < int.MaxValue && (state == TitanState.idle || state == TitanState.wander || state == TitanState.chase))
+            if (activeRad < int.MaxValue && (state == TitanState.Idle || state == TitanState.Wander || state == TitanState.Chase))
             {
                 if (checkPoints.Count > 1)
                 {
@@ -2307,9 +2307,6 @@ public class TITAN : Photon.MonoBehaviour
                     base.photonView.RPC("setMyTarget", PhotonTargets.Others, myHero.GetPhotonView().viewID);
                 }
             }
-        } else
-        {
-            Camera.main.fieldOfView = Mod.Properties.FieldOfView.Value;
         }
         if (hasDie)
         {
@@ -2346,7 +2343,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             return;
         }
-        if (state == TitanState.hit)
+        if (state == TitanState.Hit)
         {
             if (hitPause > 0f)
             {
@@ -2368,7 +2365,7 @@ public class TITAN : Photon.MonoBehaviour
             {
                 findNearestHero2();
             }
-            if ((state == TitanState.idle || state == TitanState.chase || state == TitanState.wander) && whoHasTauntMe == null && UnityEngine.Random.Range(0, 100) < 10)
+            if ((state == TitanState.Idle || state == TitanState.Chase || state == TitanState.Wander) && whoHasTauntMe == null && UnityEngine.Random.Range(0, 100) < 10)
             {
                 findNearestFacingHero2();
             }
@@ -2417,13 +2414,13 @@ public class TITAN : Photon.MonoBehaviour
         }
         switch (state)
         {
-            case TitanState.laugh:
+            case TitanState.Laughing:
                 if (baseAnimation["laugh"].normalizedTime >= 1f)
                 {
                     idle(2f);
                 }
                 break;
-            case TitanState.idle:
+            case TitanState.Idle:
                 if (nonAI)
                 {
                     if (IN_GAME_MAIN_CAMERA.IsPausing)
@@ -2431,7 +2428,7 @@ public class TITAN : Photon.MonoBehaviour
                         return;
                     }
                     HandlePTInput();
-                    if (abnormalType != AbnormalType.TYPE_CRAWLER)
+                    if (abnormalType != TitanClass.Crawler)
                     {
                         if (controller.isAttackDown && stamina > 25f)
                         {
@@ -2468,7 +2465,7 @@ public class TITAN : Photon.MonoBehaviour
                 if (!isAlarm)
                 {
                     float rng = UnityEngine.Random.Range(0f, 1f);
-                    if (abnormalType != AbnormalType.TYPE_PUNK && abnormalType != AbnormalType.TYPE_CRAWLER && rng < 0.005f)
+                    if (abnormalType != TitanClass.Punk && abnormalType != TitanClass.Crawler && rng < 0.005f)
                     {
                         sitdown();
                         return;
@@ -2511,18 +2508,18 @@ public class TITAN : Photon.MonoBehaviour
                 }
                 if (myDistance < chaseDistance)
                 {
-                    if (abnormalType == AbnormalType.TYPE_JUMPER && (myDistance > attackDistance || myHero.transform.position.y > head.position.y + 4f * myLevel) && Mathf.Abs(between2) < 120f && Vector3.Distance(baseTransform.position, myHero.transform.position) < 1.5f * myHero.transform.position.y)
+                    if (abnormalType == TitanClass.Jumper && (myDistance > attackDistance || myHero.transform.position.y > head.position.y + 4f * myLevel) && Mathf.Abs(between2) < 120f && Vector3.Distance(baseTransform.position, myHero.transform.position) < 1.5f * myHero.transform.position.y)
                     {
                         attack2("jumper_0");
                         return;
                     }
-                    if (abnormalType == AbnormalType.TYPE_CRAWLER && myDistance < attackDistance * 3f && Mathf.Abs(between2) < 90f && myHero.transform.position.y < neck.position.y + 30f * myLevel && myHero.transform.position.y > neck.position.y + 10f * myLevel)
+                    if (abnormalType == TitanClass.Crawler && myDistance < attackDistance * 3f && Mathf.Abs(between2) < 90f && myHero.transform.position.y < neck.position.y + 30f * myLevel && myHero.transform.position.y > neck.position.y + 10f * myLevel)
                     {
                         attack2("crawler_jump_0");
                         return;
                     }
                 }
-                if (abnormalType == AbnormalType.TYPE_PUNK && myDistance < 90f && Mathf.Abs(between2) > 90f)
+                if (abnormalType == TitanClass.Punk && myDistance < 90f && Mathf.Abs(between2) > 90f)
                 {
                     float rng = UnityEngine.Random.Range(0f, 1f);
                     if (rng < 0.4f)
@@ -2545,7 +2542,7 @@ public class TITAN : Photon.MonoBehaviour
                 }
                 if (myDistance < attackDistance)
                 {
-                    if (abnormalType == AbnormalType.TYPE_CRAWLER)
+                    if (abnormalType == TitanClass.Crawler)
                     {
                         if (myHero.transform.position.y + 3f <= neck.position.y + 20f * myLevel && UnityEngine.Random.Range(0f, 1f) < 0.1f)
                         {
@@ -2559,7 +2556,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         text = attackStrategy[UnityEngine.Random.Range(0, attackStrategy.Length)];
                     }
-                    if ((abnormalType == AbnormalType.TYPE_JUMPER || abnormalType == AbnormalType.TYPE_I) && Mathf.Abs(between2) > 40f)
+                    if ((abnormalType == TitanClass.Jumper || abnormalType == TitanClass.Aberrant) && Mathf.Abs(between2) > 40f)
                     {
                         if (text.Contains("grab") || text.Contains("kick") || text.Contains("slap") || text.Contains("bite"))
                         {
@@ -2579,7 +2576,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         return;
                     }
-                    if (abnormalType == AbnormalType.NORMAL)
+                    if (abnormalType == TitanClass.Normal)
                     {
                         if (UnityEngine.Random.Range(0, 100) < 30 && Mathf.Abs(between2) > 45f)
                         {
@@ -2623,7 +2620,7 @@ public class TITAN : Photon.MonoBehaviour
                     toPVPCheckPoint(PVPfromCheckPt.transform.position, 5 + UnityEngine.Random.Range(0, 10));
                 }
                 break;
-            case TitanState.attack:
+            case TitanState.Attack:
                 if (attackAnimation == "combo")
                 {
                     if (nonAI)
@@ -2843,7 +2840,7 @@ public class TITAN : Photon.MonoBehaviour
                                 {
                                     float d = 120f;
                                     Vector3 velocity = baseTransform.forward * speed + Vector3.up * d;
-                                    if (nonAI && abnormalType == AbnormalType.TYPE_CRAWLER)
+                                    if (nonAI && abnormalType == TitanClass.Crawler)
                                     {
                                         d = 100f;
                                         float a = speed * 2.5f;
@@ -2919,7 +2916,7 @@ public class TITAN : Photon.MonoBehaviour
                                 };
                                 gameObject8.GetComponent<HERO>().photonView.RPC("netDie", PhotonTargets.All, parameters7);
                             }
-                            if (abnormalType == AbnormalType.TYPE_CRAWLER)
+                            if (abnormalType == TitanClass.Crawler)
                             {
                                 attackAnimation = "crawler_jump_1";
                             }
@@ -2931,7 +2928,7 @@ public class TITAN : Photon.MonoBehaviour
                         }
                         if (Mathf.Abs(baseRigidBody.velocity.y) < 0.5f || baseRigidBody.velocity.y < 0f || IsGrounded())
                         {
-                            if (abnormalType == AbnormalType.TYPE_CRAWLER)
+                            if (abnormalType == TitanClass.Crawler)
                             {
                                 attackAnimation = "crawler_jump_1";
                             }
@@ -2946,7 +2943,7 @@ public class TITAN : Photon.MonoBehaviour
                     case "crawler_jump_1":
                         if (baseAnimation["attack_" + attackAnimation].normalizedTime >= 1f && grounded)
                         {
-                            if (abnormalType == AbnormalType.TYPE_CRAWLER)
+                            if (abnormalType == TitanClass.Crawler)
                             {
                                 attackAnimation = "crawler_jump_2";
                             }
@@ -2994,7 +2991,7 @@ public class TITAN : Photon.MonoBehaviour
                                 idle(UnityEngine.Random.Range(0.5f, 1f));
                                 playAnimation("idle");
                             }
-                            else if (abnormalType == AbnormalType.TYPE_I || abnormalType == AbnormalType.TYPE_JUMPER)
+                            else if (abnormalType == TitanClass.Aberrant || abnormalType == TitanClass.Jumper)
                             {
                                 attackCount++;
                                 if (attackCount > 3 && attackAnimation == "abnormal_getup")
@@ -3015,7 +3012,7 @@ public class TITAN : Photon.MonoBehaviour
                         break;
                 }
                 break;
-            case TitanState.grab:
+            case TitanState.Grabbing:
                 if (baseAnimation["grab_" + attackAnimation].normalizedTime >= attackCheckTimeA && baseAnimation["grab_" + attackAnimation].normalizedTime <= attackCheckTimeB && grabbedTarget == null)
                 {
                     GameObject gameObject10 = checkIfHitHand(currentGrabHand);
@@ -3045,7 +3042,7 @@ public class TITAN : Photon.MonoBehaviour
                     }
                 }
                 break;
-            case TitanState.eat:
+            case TitanState.Eating:
                 if (!attacked && baseAnimation[attackAnimation].normalizedTime >= 0.48f)
                 {
                     attacked = true;
@@ -3056,7 +3053,7 @@ public class TITAN : Photon.MonoBehaviour
                     idle();
                 }
                 break;
-            case TitanState.chase:
+            case TitanState.Chase:
                 if (myHero == null)
                 {
                     idle();
@@ -3071,7 +3068,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         idle();
                     }
-                    else if (abnormalType == AbnormalType.TYPE_CRAWLER)
+                    else if (abnormalType == TitanClass.Crawler)
                     {
                         Vector3 vector4 = myHero.transform.position - baseTransform.position;
                         float current = (0f - Mathf.Atan2(vector4.z, vector4.x)) * 57.29578f;
@@ -3115,7 +3112,7 @@ public class TITAN : Photon.MonoBehaviour
                             idle(UnityEngine.Random.Range(0.05f, 0.2f));
                         }
                     }
-                    else if (abnormalType == AbnormalType.TYPE_JUMPER && ((myDistance > attackDistance && myHero.transform.position.y > head.position.y + 4f * myLevel) || myHero.transform.position.y > head.position.y + 4f * myLevel) && Vector3.Distance(baseTransform.position, myHero.transform.position) < 1.5f * myHero.transform.position.y)
+                    else if (abnormalType == TitanClass.Jumper && ((myDistance > attackDistance && myHero.transform.position.y > head.position.y + 4f * myLevel) || myHero.transform.position.y > head.position.y + 4f * myLevel) && Vector3.Distance(baseTransform.position, myHero.transform.position) < 1.5f * myHero.transform.position.y)
                     {
                         attack2("jumper_0");
                     }
@@ -3125,7 +3122,7 @@ public class TITAN : Photon.MonoBehaviour
                     }
                 }
                 break;
-            case TitanState.wander:
+            case TitanState.Wander:
                 if (myDistance < chaseDistance || whoHasTauntMe != null)
                 {
                     Vector3 vector5 = myHero.transform.position - baseTransform.position;
@@ -3147,14 +3144,14 @@ public class TITAN : Photon.MonoBehaviour
                     idle();
                 }
                 break;
-            case TitanState.turn:
+            case TitanState.Turn:
                 baseGameObjectTransform.rotation = Quaternion.Lerp(baseGameObjectTransform.rotation, Quaternion.Euler(0f, desDeg, 0f), Time.deltaTime * Mathf.Abs(turnDeg) * 0.015f);
                 if (baseAnimation[turnAnimation].normalizedTime >= 1f)
                 {
                     idle();
                 }
                 break;
-            case TitanState.hit_eye:
+            case TitanState.EyeHit:
                 if (baseAnimation.IsPlaying("sit_hit_eye") && baseAnimation["sit_hit_eye"].normalizedTime >= 1f)
                 {
                     remainSitdown();
@@ -3171,7 +3168,7 @@ public class TITAN : Photon.MonoBehaviour
                     }
                 }
                 break;
-            case TitanState.to_check_point:
+            case TitanState.ToCheckPoint:
                 if (checkPoints.Count <= 0 && myDistance < attackDistance)
                 {
                     string decidedAction = string.Empty;
@@ -3215,7 +3212,7 @@ public class TITAN : Photon.MonoBehaviour
                     }
                 }
                 break;
-            case TitanState.to_pvp_pt:
+            case TitanState.ToPVPPoint:
                 if (myDistance < chaseDistance * 0.7f)
                 {
                     chase();
@@ -3225,14 +3222,14 @@ public class TITAN : Photon.MonoBehaviour
                     idle();
                 }
                 break;
-            case TitanState.random_run:
+            case TitanState.RandomRun:
                 random_run_time -= Time.deltaTime;
                 if (Vector3.Distance(baseTransform.position, targetCheckPt) < targetR || random_run_time <= 0f)
                 {
                     idle();
                 }
                 break;
-            case TitanState.down:
+            case TitanState.Down:
                 getdownTime -= Time.deltaTime;
                 if (baseAnimation.IsPlaying("sit_hunt_down") && baseAnimation["sit_hunt_down"].normalizedTime >= 1f)
                 {
@@ -3247,7 +3244,7 @@ public class TITAN : Photon.MonoBehaviour
                     idle();
                 }
                 break;
-            case TitanState.sit:
+            case TitanState.Sitting:
                 getdownTime -= Time.deltaTime;
                 angle = 0f;
                 between2 = 0f;
@@ -3281,7 +3278,7 @@ public class TITAN : Photon.MonoBehaviour
                     idle();
                 }
                 break;
-            case TitanState.recover:
+            case TitanState.Recovering:
                 getdownTime -= Time.deltaTime;
                 if (getdownTime <= 0f)
                 {
@@ -3295,7 +3292,7 @@ public class TITAN : Photon.MonoBehaviour
         }
     }
 
-    public void setAbnormalType2(AbnormalType type, bool forceCrawler)
+    public void setAbnormalType2(TitanClass type, bool forceCrawler)
     {
         bool flag = false;
         if (RCSettings.SpawnMode > 0 || ((int)FengGameManagerMKII.Settings[91] == 1 && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient))
@@ -3314,28 +3311,28 @@ public class TITAN : Photon.MonoBehaviour
         }
         switch (type)
         {
-            case AbnormalType.NORMAL:
+            case TitanClass.Normal:
                 num = ((UnityEngine.Random.Range(0f, 1f) < num2) ? 4 : 0);
                 if (flag)
                 {
                     num = 0;
                 }
                 break;
-            case AbnormalType.TYPE_I:
+            case TitanClass.Aberrant:
                 num = ((!(UnityEngine.Random.Range(0f, 1f) < num2)) ? 1 : 4);
                 if (flag)
                 {
                     num = 1;
                 }
                 break;
-            case AbnormalType.TYPE_JUMPER:
+            case TitanClass.Jumper:
                 num = ((!(UnityEngine.Random.Range(0f, 1f) < num2)) ? 2 : 4);
                 if (flag)
                 {
                     num = 2;
                 }
                 break;
-            case AbnormalType.TYPE_CRAWLER:
+            case TitanClass.Crawler:
                 num = 3;
                 if (GameObject.Find("Crawler") != null && UnityEngine.Random.Range(0, 1000) > 5)
                 {
@@ -3346,7 +3343,7 @@ public class TITAN : Photon.MonoBehaviour
                     num = 3;
                 }
                 break;
-            case AbnormalType.TYPE_PUNK:
+            case TitanClass.Punk:
                 num = 4;
                 break;
         }
@@ -3485,7 +3482,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         if (nonAI)
         {
-            if (abnormalType == AbnormalType.TYPE_CRAWLER)
+            if (abnormalType == TitanClass.Crawler)
             {
                 speed = Mathf.Min(70f, speed);
             }
@@ -3507,7 +3504,7 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     targetHeadRotation = head.rotation;
                     bool flag = false;
-                    if (abnormalType != AbnormalType.TYPE_CRAWLER && state != TitanState.attack && state != TitanState.down && state != TitanState.hit && state != TitanState.recover && state != TitanState.eat && state != TitanState.hit_eye && !hasDie && myDistance < 100f && myHero != null)
+                    if (abnormalType != TitanClass.Crawler && state != TitanState.Attack && state != TitanState.Down && state != TitanState.Hit && state != TitanState.Recovering && state != TitanState.Eating && state != TitanState.EyeHit && !hasDie && myDistance < 100f && myHero != null)
                     {
                         Vector3 vector = myHero.transform.position - base.transform.position;
                         angle = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
@@ -3529,7 +3526,7 @@ public class TITAN : Photon.MonoBehaviour
                         asClientLookTarget = false;
                         base.photonView.RPC("setIfLookTarget", PhotonTargets.Others, false);
                     }
-                    if (state == TitanState.attack || state == TitanState.hit || state == TitanState.hit_eye)
+                    if (state == TitanState.Attack || state == TitanState.Hit || state == TitanState.EyeHit)
                     {
                         oldHeadRotation = Quaternion.Lerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 20f);
                     }
@@ -3570,7 +3567,7 @@ public class TITAN : Photon.MonoBehaviour
             else
             {
                 targetHeadRotation = head.rotation;
-                if (abnormalType != AbnormalType.TYPE_CRAWLER && state != TitanState.attack && state != TitanState.down && state != TitanState.hit && state != TitanState.recover && state != TitanState.hit_eye && !hasDie && myDistance < 100f && myHero != null)
+                if (abnormalType != TitanClass.Crawler && state != TitanState.Attack && state != TitanState.Down && state != TitanState.Hit && state != TitanState.Recovering && state != TitanState.EyeHit && !hasDie && myDistance < 100f && myHero != null)
                 {
                     Vector3 vector3 = myHero.transform.position - base.transform.position;
                     angle = (0f - Mathf.Atan2(vector3.z, vector3.x)) * 57.29578f;
@@ -3581,7 +3578,7 @@ public class TITAN : Photon.MonoBehaviour
                     value6 = Mathf.Clamp(value6, -40f, 30f);
                     targetHeadRotation = Quaternion.Euler(head.rotation.eulerAngles.x + value6, head.rotation.eulerAngles.y + value5, head.rotation.eulerAngles.z);
                 }
-                if (state == TitanState.attack || state == TitanState.hit || state == TitanState.hit_eye)
+                if (state == TitanState.Attack || state == TitanState.Hit || state == TitanState.EyeHit)
                 {
                     oldHeadRotation = Quaternion.Lerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 20f);
                 }
@@ -3761,7 +3758,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         int num = 0;
         float d = myLevel * 10f;
-        if (abnormalType == AbnormalType.TYPE_CRAWLER)
+        if (abnormalType == TitanClass.Crawler)
         {
             if (dieTime >= 2f)
             {
@@ -3867,7 +3864,7 @@ public class TITAN : Photon.MonoBehaviour
             healthLabel.name = "LabelNameOverHead";
             healthLabel.transform.parent = base.transform;
             healthLabel.transform.localPosition = new Vector3(0f, 20f + 1f / myLevel, 0f);
-            if (abnormalType == AbnormalType.TYPE_CRAWLER)
+            if (abnormalType == TitanClass.Crawler)
             {
                 healthLabel.transform.localPosition = new Vector3(0f, 10f + 1f / myLevel, 0f);
             }
@@ -4053,7 +4050,7 @@ public class TITAN : Photon.MonoBehaviour
 
     private void RecoverPT()
     {
-        state = TitanState.recover;
+        state = TitanState.Recovering;
         playAnimation("idle_recovery");
         getdownTime = UnityEngine.Random.Range(1.8f, 2.5f);
     }

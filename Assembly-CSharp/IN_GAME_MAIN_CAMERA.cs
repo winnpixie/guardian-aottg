@@ -894,11 +894,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         float magnitude = hero.rigidbody.velocity.magnitude;
         if (magnitude > 10f)
         {
-            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, Mathf.Min(Mod.Properties.FieldOfView.Value + 50f, magnitude + Mod.Properties.FieldOfView.Value - 10f), 0.1f); // 100
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, Mathf.Min(100f, magnitude + 40f), 0.1f);
         }
         else
         {
-            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, Mod.Properties.FieldOfView.Value, 0.1f); // 50
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, 50f, 0.1f);
         }
         float d = hero.CameraMultiplier * (200f - Camera.main.fieldOfView) / 150f;
         base.transform.position = head.transform.position + Vector3.up * heightMulti - Vector3.up * (0.6f - CameraDistance) * 2f;

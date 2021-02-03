@@ -217,7 +217,7 @@ namespace Guardian.Utilities
                 || properties.ContainsKey("diamond")
                 || (properties.ContainsKey(string.Empty) && properties[string.Empty] is int))
             {
-                mods.Add("[ffffff][Ranked RC]");
+                mods.Add("[ffffff][RRC]");
             }
 
             // DeadInside

@@ -1,37 +1,28 @@
 ﻿using Guardian.Utilities;
-using SimpleJSON;
-using System;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using UnityEngine;
 
 namespace Guardian.Features.Commands.Impl
 {
     class CommandTranslate : Command
     {
-        private Regex NonLetters = new Regex("[~!@#$%^&*()_+`\\-=\\[\\]{}\\|;:'\",<.>\\/?]+", RegexOptions.IgnoreCase);
+        private Translator translator = new Translator();
 
-        public CommandTranslate() : base("translate", new string[0], "<message>", false) { }
+        public CommandTranslate() : base("translate", new string[0], "<langfrom> <langto> <message>", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            if (args.Length > 0)
+            if (args.Length > 2)
             {
-                string culture = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-                for (int i = 0; i < args.Length; i++)
+                translator.LanguageFrom = args[0];
+                translator.LanguageTo = args[1];
+                translator.OriginalText = string.Join(" ", args.CopyOfRange(2, args.Length));
+
+                if (translator.Get())
                 {
-                    args[i] = GameHelper.Detagger.Replace(args[i], string.Empty);
-                    args[i] = NonLetters.Replace(args[i], string.Empty);
+                    irc.AddMessage("Translation ".WithColor("ffcc00") + $"({translator.LanguageFrom} -> {translator.LanguageTo})", translator.TranslatedText);
                 }
-                string query = Uri.EscapeDataString(string.Join(" ", args));
-                using (WWW www = new WWW($"https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={culture}&dt=t&q={query}"))
+                else
                 {
-                    while (!www.isDone) { }
-                    JSONArray array = JSONNode.Parse(www.text).AsArray;
-                    JSONArray dataArray = array[0].AsArray;
-                    string detectedLanguage = array[2].Value;
-                    string message = dataArray[0].AsArray[0].Value;
-                    irc.AddLine($"<color=#ffcc00>Translation</color> ({detectedLanguage.ToUpper()} -> {culture.ToUpper()}): {message}");
+                    irc.AddLine("An error occured trying to retrieve the translation.".WithColor("ff0000"));
                 }
             }
         }

@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class ChangeQuality : MonoBehaviour
 {
-    private bool init;
+    private bool Initialized;
     public static bool TiltShift;
 
     private void OnSliderChange()
     {
-        if (!init)
+        if (!Initialized)
         {
-            init = true;
+            Initialized = true;
             if (PlayerPrefs.HasKey("GameQuality"))
             {
                 base.gameObject.GetComponent<UISlider>().sliderValue = PlayerPrefs.GetFloat("GameQuality");

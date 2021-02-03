@@ -33,11 +33,11 @@ public class KillInfoComponent : MonoBehaviour
         base.transform.localPosition = new Vector3(0f, -100f + (float)Screen.height * 0.5f, 0f);
     }
 
-    public void show(bool isTitan1, string name1, bool isTitan2, string name2, int dmg = 0)
+    public void Show(bool isKillerTitan, string killer, bool isVictimTitan, string victim, int damage = 0)
     {
         groupBig.SetActive(value: true);
         groupSmall.SetActive(value: true);
-        if (!isTitan1)
+        if (!isKillerTitan)
         {
             leftTitan.SetActive(value: false);
             spriteSkeleton.SetActive(value: false);
@@ -53,25 +53,26 @@ public class KillInfoComponent : MonoBehaviour
             labelNameRight.transform.position -= new Vector3(18f, 0f, 0f);
             slabelNameRight.transform.position -= new Vector3(16f, 0f, 0f);
         }
-        if (!isTitan2)
+        if (!isVictimTitan)
         {
             rightTitan.SetActive(value: false);
             srightTitan.SetActive(value: false);
         }
-        labelNameLeft.GetComponent<UILabel>().text = name1;
-        labelNameRight.GetComponent<UILabel>().text = name2;
-        slabelNameLeft.GetComponent<UILabel>().text = name1;
-        slabelNameRight.GetComponent<UILabel>().text = name2;
-        if (dmg == 0)
+        labelNameLeft.GetComponent<UILabel>().text = killer;
+        labelNameRight.GetComponent<UILabel>().text = victim;
+        slabelNameLeft.GetComponent<UILabel>().text = killer;
+        slabelNameRight.GetComponent<UILabel>().text = victim;
+        if (damage == 0)
         {
             labelScore.GetComponent<UILabel>().text = string.Empty;
             slabelScore.GetComponent<UILabel>().text = string.Empty;
         }
         else
         {
-            labelScore.GetComponent<UILabel>().text = dmg.ToString();
-            slabelScore.GetComponent<UILabel>().text = dmg.ToString();
-            if (dmg >= 1000)
+            labelScore.GetComponent<UILabel>().text = damage.ToString();
+            slabelScore.GetComponent<UILabel>().text = damage.ToString();
+
+            if (damage >= 1000)
             {
                 labelScore.GetComponent<UILabel>().color = Color.red;
                 slabelScore.GetComponent<UILabel>().color = Color.red;
@@ -80,7 +81,7 @@ public class KillInfoComponent : MonoBehaviour
         groupSmall.SetActive(value: false);
     }
 
-    public void moveOn()
+    public void MoveOn()
     {
         col++;
         if (col > 4)
@@ -91,7 +92,7 @@ public class KillInfoComponent : MonoBehaviour
         groupSmall.SetActive(value: true);
     }
 
-    public void destory()
+    public void EndLifeTime()
     {
         timeElapsed = lifeTime;
     }
@@ -113,7 +114,7 @@ public class KillInfoComponent : MonoBehaviour
             {
                 base.transform.position = base.transform.position + new Vector3(0f, Time.deltaTime * 0.15f, 0f);
                 alpha = 1f - Time.deltaTime * 45f + lifeTime - timeElapsed;
-                setAlpha(alpha);
+                SetAlpha(alpha);
             }
             else
             {
@@ -127,7 +128,7 @@ public class KillInfoComponent : MonoBehaviour
         }
     }
 
-    private void setAlpha(float alpha)
+    private void SetAlpha(float alpha)
     {
         if (groupBig.activeInHierarchy)
         {

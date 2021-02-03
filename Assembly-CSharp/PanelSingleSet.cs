@@ -19,15 +19,6 @@ public class PanelSingleSet : MonoBehaviour
     private void OnEnable()
     {
         UIPopupList list = GameObject.Find("PopupListMap").GetComponent<UIPopupList>();
-
-        if(!list.items.Contains("Custom"))
-        {
-            list.items.Add("Custom");
-        }
-        if (!list.items.Contains("Custom (No PT)"))
-        {
-            list.items.Add("Custom (No PT)");
-        }
     }
 
     private void Update()

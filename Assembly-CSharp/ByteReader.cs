@@ -6,9 +6,7 @@ using UnityEngine;
 public class ByteReader
 {
 	private byte[] mBuffer;
-
 	private int mOffset;
-
 	public bool canRead => mBuffer != null && mOffset < mBuffer.Length;
 
 	public ByteReader(byte[] bytes)

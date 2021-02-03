@@ -50,7 +50,7 @@ public class LevelInfo
                     Description = "Learn the basic functionality of AoTTG.",
                     Enemies = 1,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     Hints = true,
                     Punks = false
@@ -62,7 +62,7 @@ public class LevelInfo
                     Description = "Basic offensive training course.",
                     Enemies = 7,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     Punks = false
                 },
@@ -73,7 +73,7 @@ public class LevelInfo
                     Description = "Kill all 15 titans invading the city!",
                     Enemies = 15,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true
                 },
                 new LevelInfo
@@ -83,7 +83,7 @@ public class LevelInfo
                     Description = "Survive 20 waves.",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                 },
                 new LevelInfo
@@ -93,7 +93,7 @@ public class LevelInfo
                     Description = "Kill all 15 titans!",
                     Enemies = 15,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true
                 },
                 new LevelInfo
@@ -103,7 +103,7 @@ public class LevelInfo
                     Description = "Survive all 20 waves. (No crawlers)",
                     Enemies = 3,
                     Mode= GameMode.SURVIVE_MODE,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     NoCrawlers = true,
                 },
@@ -114,7 +114,7 @@ public class LevelInfo
                     Description = "Survive all 20 waves. (No crawlers, no punks)",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     NoCrawlers =true,
                     Punks = false
@@ -126,7 +126,7 @@ public class LevelInfo
                     Description = "Test your speed!",
                     Enemies = 0,
                     Mode = GameMode.RACING,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = false,
                     MinimapPreset = new Minimap.Preset(new Vector3(443.2f, 0f, 1912.6f), 1929.042f)
                 },
@@ -139,7 +139,7 @@ public class LevelInfo
                     Description = "Kill all 10 titans invading the city! (Player titans, PvP, no respawns)",
                     Enemies = 10,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     PlayerTitans = true,
                     PVP = true,
@@ -152,7 +152,7 @@ public class LevelInfo
                     Description = "Kill all 10 titans invading the city! (Player titans, PvP, 10s respawn)",
                     Enemies = 10,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.DEATHMATCH,
+                    RespawnMode = RespawnMode.Deathmatch,
                     HasSupply = true,
                     PlayerTitans = true,
                     PVP = true
@@ -164,6 +164,7 @@ public class LevelInfo
                     Description = "Capture each checkpoint to win!",
                     Enemies = 0,
                     Mode = GameMode.PVP_CAPTURE,
+                    RespawnMode = RespawnMode.Deathmatch,
                     HasSupply = true,
                     PlayerTitans = true,
                     MinimapPreset = new Minimap.Preset(new Vector3(22.6f, 0f, 13f), 734.9738f)
@@ -175,7 +176,7 @@ public class LevelInfo
                     Description = "Survive all 20 waves. (No respawns)",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                 },
                 new LevelInfo
@@ -185,7 +186,7 @@ public class LevelInfo
                     Description = "Survive all 20 waves. (Respawn on each new wave)",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
-                    RespawnMode = RespawnMode.NEWROUND,
+                    RespawnMode = RespawnMode.NewRound,
                     HasSupply = true,
                 },
                 // Forest
@@ -196,7 +197,7 @@ public class LevelInfo
                     Description = "The Forest of Giant Trees. (Player titans, PvP, no respawns)",
                     Enemies = 10,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     PlayerTitans = true,
                     PVP = true
@@ -208,7 +209,7 @@ public class LevelInfo
                     Description = "Survive all 20 waves. (No respawns)",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                 },
                 new LevelInfo
@@ -218,7 +219,7 @@ public class LevelInfo
                     Description = "Survive all 20 waves. (Respawn on each new wave)",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
-                    RespawnMode = RespawnMode.NEWROUND,
+                    RespawnMode = RespawnMode.NewRound,
                     HasSupply = true,
                 },
                 new LevelInfo
@@ -228,7 +229,7 @@ public class LevelInfo
                     Description = "The floor is LAVA!\nSurvive all 20 waves WITHOUT touching the ground. (Respawn on each new wave, no crawlers)",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
-                    RespawnMode = RespawnMode.NEWROUND,
+                    RespawnMode = RespawnMode.NewRound,
                     HasSupply = true,
                     NoCrawlers = true,
                     Lava = true
@@ -241,7 +242,7 @@ public class LevelInfo
                     Description ="Capture each checkpoint to win! (Player titans, 10s respawn)",
                     Enemies = 0,
                     Mode = GameMode.PVP_CAPTURE,
-                    RespawnMode = RespawnMode.DEATHMATCH,
+                    RespawnMode = RespawnMode.Deathmatch,
                     HasSupply = true,
                     Horses = true,
                     PlayerTitans = true,
@@ -255,7 +256,7 @@ public class LevelInfo
                     Description = "Test your speed!",
                     Enemies = 0,
                     Mode = GameMode.RACING,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = false,
                     PVP = true,
                     MinimapPreset = new Minimap.Preset(new Vector3(443.2f, 0f, 1912.6f), 1929.042f)
@@ -269,7 +270,7 @@ public class LevelInfo
                     Description = "Nape Armor/Ankle Armor:\nNormal:1000/50\nHard:2500/100\nAbnormal:4000/200\nYou only have 1 life. Be careful soldier!",
                     Enemies = 15,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     Punks = false,
                     PVP = true
                 },
@@ -280,7 +281,7 @@ public class LevelInfo
                     Description = "Nape Armor/Ankle Armor:\nNormal:1000/50\nHard:2500/100\nAbnormal:4000/200\n(10s respawn)",
                     Enemies = 15,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.DEATHMATCH,
+                    RespawnMode = RespawnMode.Deathmatch,
                     Punks = false,
                     PVP = true
                 },
@@ -292,7 +293,7 @@ public class LevelInfo
                     Description = "Defeat the Colossal Titan.\nPrevent the abnormal titan from running to the north gate.\nNape Armor:\nNormal:2000\nHard:3500\nAbnormal:5000\nYou only have 1 life. Be careful soldier!",
                     Enemies = 2,
                     Mode = GameMode.BOSS_FIGHT_CT,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     MinimapPreset = new Minimap.Preset(new Vector3(8.8f, 0f, 65f), 765.5751f)
                 },
                 new LevelInfo
@@ -302,7 +303,7 @@ public class LevelInfo
                     Description = "Defeat the Colossal Titan.\nPrevent the abnormal titan from running to the north gate.\nNape Armor:\n Normal:5000\nHard:8000\nAbnormal:12000\n(10s respawn)",
                     Enemies = 2,
                     Mode = GameMode.BOSS_FIGHT_CT,
-                    RespawnMode = RespawnMode.DEATHMATCH,
+                    RespawnMode = RespawnMode.Deathmatch,
                     MinimapPreset = new Minimap.Preset(new Vector3(8.8f, 0f, 65f), 765.5751f)
                 },
                 // Trost
@@ -313,7 +314,7 @@ public class LevelInfo
                     Description = "Escort Titan Eren to seal the hole in the wall! (No respawns)",
                     Enemies = 2,
                     Mode = GameMode.TROST,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     Punks = false
                 },
                 new LevelInfo
@@ -323,7 +324,7 @@ public class LevelInfo
                     Description = "Escort Titan Eren to seal the hole in the wall! (10s respawn)",
                     Enemies = 2,
                     Mode = GameMode.TROST,
-                    RespawnMode = RespawnMode.DEATHMATCH,
+                    RespawnMode = RespawnMode.Deathmatch,
                     Punks = false
                 },
                 // PvP
@@ -335,7 +336,7 @@ public class LevelInfo
                     Description = "2 Players in cages, each kill spawns 1 or more titans in the opposing cage.",
                     Enemies = 1,
                     Mode = GameMode.CAGE_FIGHT,
-                    RespawnMode = RespawnMode.NEVER
+                    RespawnMode = RespawnMode.Never
                 },
                 // Cave Fight
                 new LevelInfo
@@ -345,7 +346,7 @@ public class LevelInfo
                     Description = "***SPOILER ALERT***",
                     Enemies = 0,
                     Mode =GameMode.PVP_AHSS,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     PlayerTitans = true,
                     PVP = true
@@ -358,7 +359,7 @@ public class LevelInfo
                     Description = "***SPOILER ALERT***",
                     Enemies = 0,
                     Mode =GameMode.PVP_AHSS,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     PlayerTitans = true,
                     PVP = true
@@ -371,7 +372,7 @@ public class LevelInfo
                     Description = "RC Custom Maps (Player titans allowed)",
                     Enemies = 1,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     PVP = true,
                     Punks = true,
                     HasSupply = true,
@@ -384,7 +385,7 @@ public class LevelInfo
                     Description = "RC Custom Maps (No player titans)",
                     Enemies = 1,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     PVP = true,
                     Punks = true,
                     HasSupply = true,
@@ -398,7 +399,7 @@ public class LevelInfo
                     Description = "Play any map at any point during the game.",
                     Enemies = 10,
                     Mode = GameMode.KILL_TITAN,
-                    RespawnMode = RespawnMode.NEVER,
+                    RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     PlayerTitans = true,
                     PVP = true,

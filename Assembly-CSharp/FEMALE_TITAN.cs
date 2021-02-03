@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class FEMALE_TITAN : Photon.MonoBehaviour
 {
+    public static float minusDistance = 99999f;
+    public static GameObject minusDistanceEnemy;
+
     public bool hasDie;
     public GameObject myHero;
     private string state = "idle";
@@ -18,8 +21,6 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     public float attackDistance = 13f;
     public float attackWait = 1f;
     public float myDistance;
-    public static float minusDistance = 99999f;
-    public static GameObject minusDistanceEnemy;
     private Vector3 oldCorePosition;
     public GameObject bottomObject;
     public GameObject grabTF;
@@ -103,22 +104,31 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     }
 
     [RPC]
-    private void netPlayAnimation(string aniName)
+    private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        base.animation.Play(aniName);
+        if (Guardian.AntiAbuse.AnniePatches.IsAnimationPlayValid(this, info))
+        {
+            base.animation.Play(aniName);
+        }
     }
 
     [RPC]
-    private void netPlayAnimationAt(string aniName, float normalizedTime)
+    private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
+        if (Guardian.AntiAbuse.AnniePatches.IsAnimationSeekedPlayValid(this, info))
+        {
+            base.animation.Play(aniName);
+            base.animation[aniName].normalizedTime = normalizedTime;
+        }
     }
 
     [RPC]
-    private void netCrossFade(string aniName, float time)
+    private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        base.animation.CrossFade(aniName, time);
+        if (Guardian.AntiAbuse.AnniePatches.IsCrossFadeValid(this, info))
+        {
+            base.animation.CrossFade(aniName, time);
+        }
     }
 
     private void OnDestroy()
@@ -152,7 +162,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         AnkleLHPMAX = 50;
         AnkleRHPMAX = 50;
         bool flag = false;
-        if (FengGameManagerMKII.Level.RespawnMode == RespawnMode.NEVER)
+        if (FengGameManagerMKII.Level.RespawnMode == RespawnMode.Never)
         {
             flag = true;
         }

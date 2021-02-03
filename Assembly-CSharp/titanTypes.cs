@@ -1,11 +1,11 @@
 public enum titanTypes
 {
-    normal,
-    aberrant,
-    jumper,
-    crawler,
-    punk,
-    annie,
-    colossal,
-    playerTitan
+    Normal,
+    Aberrant,
+    Jumper,
+    Crawler,
+    Punk,
+    Annie,
+    Colossal,
+    PlayerTitan
 }

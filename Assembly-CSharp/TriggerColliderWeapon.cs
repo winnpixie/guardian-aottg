@@ -212,7 +212,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                 }
                 else
                 {
-                    if (gameObject2.GetComponent<TITAN>().abnormalType == AbnormalType.TYPE_CRAWLER)
+                    if (gameObject2.GetComponent<TITAN>().abnormalType == TitanClass.Crawler)
                     {
                         return;
                     }
@@ -246,7 +246,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                 GameObject gameObject3 = other.gameObject.transform.root.gameObject;
                 int b9 = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - gameObject3.rigidbody.velocity).magnitude * 10f * scoreMulti);
                 b9 = Mathf.Max(10, b9);
-                if ((bool)gameObject3.GetComponent<TITAN>() && gameObject3.GetComponent<TITAN>().abnormalType != AbnormalType.TYPE_CRAWLER)
+                if ((bool)gameObject3.GetComponent<TITAN>() && gameObject3.GetComponent<TITAN>().abnormalType != TitanClass.Crawler)
                 {
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {

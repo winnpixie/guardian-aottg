@@ -171,7 +171,7 @@ public class Horse : Photon.MonoBehaviour
                         base.photonView.RPC("setDust", PhotonTargets.Others, false);
                     }
                 }
-                float horizontalAngle = FengMath.getHorizontalAngle(base.transform.position, setPoint);
+                float horizontalAngle = FengMath.GetHorizontalAngle(base.transform.position, setPoint);
                 Vector3 eulerAngles = base.gameObject.transform.rotation.eulerAngles;
                 float num = 0f - Mathf.DeltaAngle(horizontalAngle, eulerAngles.y - 90f);
                 Transform transform = base.gameObject.transform;
@@ -354,21 +354,30 @@ public class Horse : Photon.MonoBehaviour
     }
 
     [RPC]
-    private void netPlayAnimation(string aniName)
+    private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        base.animation.Play(aniName);
+        if (Guardian.AntiAbuse.HorsePatches.IsAnimationPlayValid(this, info))
+        {
+            base.animation.Play(aniName);
+        }
     }
 
     [RPC]
-    private void netPlayAnimationAt(string aniName, float normalizedTime)
+    private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
+        if (Guardian.AntiAbuse.HorsePatches.IsAnimationSeekedPlayValid(this, info))
+        {
+            base.animation.Play(aniName);
+            base.animation[aniName].normalizedTime = normalizedTime;
+        }
     }
 
     [RPC]
-    private void netCrossFade(string aniName, float time)
+    private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        base.animation.CrossFade(aniName, time);
+        if (Guardian.AntiAbuse.HorsePatches.IsCrossFadeValid(this, info))
+        {
+            base.animation.CrossFade(aniName, time);
+        }
     }
 }

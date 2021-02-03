@@ -40,7 +40,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
     public void setPunkHair()
     {
         Object.Destroy(part_hair);
-        hair = CostumeHair.hairsM[3];
+        hair = CostumeHair.MaleHairs[3];
         hairType = 3;
         GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.hair));
         gameObject.transform.parent = hair_go_ref.transform.parent;
@@ -86,7 +86,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
     private void setHairPRC(int type, int eye_type, float c1, float c2, float c3)
     {
         Object.Destroy(part_hair);
-        hair = CostumeHair.hairsM[type];
+        hair = CostumeHair.MaleHairs[type];
         hairType = type;
         if (hair.hair != string.Empty)
         {
@@ -170,17 +170,17 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         }
         else
         {
-            int num = Random.Range(0, CostumeHair.hairsM.Length);
+            int num = Random.Range(0, CostumeHair.MaleHairs.Length);
             if (num == 3)
             {
                 num = 9;
             }
             Object.Destroy(part_hair);
             hairType = num;
-            hair = CostumeHair.hairsM[num];
+            hair = CostumeHair.MaleHairs[num];
             if (hair.hair == string.Empty)
             {
-                hair = CostumeHair.hairsM[9];
+                hair = CostumeHair.MaleHairs[9];
                 hairType = 9;
             }
             part_hair = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.hair));
@@ -221,7 +221,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
     {
         bool unload = false;
         Object.Destroy(part_hair);
-        this.hair = CostumeHair.hairsM[hair];
+        this.hair = CostumeHair.MaleHairs[hair];
         hairType = hair;
         if (this.hair.hair != string.Empty)
         {

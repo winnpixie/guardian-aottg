@@ -58,8 +58,8 @@ public class CustomCharacterManager : MonoBehaviour
         setup.CreateCharacterComponent();
         sexOption = new Sex[2]
         {
-            Sex.MALE,
-            Sex.FEMALE
+            Sex.Male,
+            Sex.Female
         };
         eyeOption = new int[28];
         for (int i = 0; i < 28; i++)
@@ -208,20 +208,20 @@ public class CustomCharacterManager : MonoBehaviour
         if (init)
         {
             to.stat = new HeroStat();
-            to.stat.ACL = 100;
-            to.stat.SPD = 100;
-            to.stat.GAS = 100;
-            to.stat.BLA = 100;
-            to.stat.skillId = "mikasa";
+            to.stat.Accel = 100;
+            to.stat.Speed = 100;
+            to.stat.Gas = 100;
+            to.stat.Blade = 100;
+            to.stat.SkillId = "mikasa";
         }
         else
         {
             to.stat = new HeroStat();
-            to.stat.ACL = from.stat.ACL;
-            to.stat.SPD = from.stat.SPD;
-            to.stat.GAS = from.stat.GAS;
-            to.stat.BLA = from.stat.BLA;
-            to.stat.skillId = from.stat.skillId;
+            to.stat.Accel = from.stat.Accel;
+            to.stat.Speed = from.stat.Speed;
+            to.stat.Gas = from.stat.Gas;
+            to.stat.Blade = from.stat.Blade;
+            to.stat.SkillId = from.stat.SkillId;
         }
     }
 
@@ -306,11 +306,11 @@ public class CustomCharacterManager : MonoBehaviour
         labelCape.GetComponent<UILabel>().text = "cape_" + capeId.ToString();
         labelDivision.GetComponent<UILabel>().text = divisionOption[divisionId].ToString();
         labelPOINT.GetComponent<UILabel>().text = "Points: " + (400 - calTotalPoints()).ToString();
-        labelSPD.GetComponent<UILabel>().text = "SPD " + setup.myCostume.stat.SPD.ToString();
-        labelGAS.GetComponent<UILabel>().text = "GAS " + setup.myCostume.stat.GAS.ToString();
-        labelBLA.GetComponent<UILabel>().text = "BLA " + setup.myCostume.stat.BLA.ToString();
-        labelACL.GetComponent<UILabel>().text = "ACL " + setup.myCostume.stat.ACL.ToString();
-        labelSKILL.GetComponent<UILabel>().text = "SKILL " + setup.myCostume.stat.skillId.ToString();
+        labelSPD.GetComponent<UILabel>().text = "SPD " + setup.myCostume.stat.Speed.ToString();
+        labelGAS.GetComponent<UILabel>().text = "GAS " + setup.myCostume.stat.Gas.ToString();
+        labelBLA.GetComponent<UILabel>().text = "BLA " + setup.myCostume.stat.Blade.ToString();
+        labelACL.GetComponent<UILabel>().text = "ACL " + setup.myCostume.stat.Accel.ToString();
+        labelSKILL.GetComponent<UILabel>().text = "SKILL " + setup.myCostume.stat.SkillId.ToString();
     }
 
     private void CostumeDataToMyID()
@@ -394,7 +394,7 @@ public class CustomCharacterManager : MonoBehaviour
         {
             if (num < skillOption.Length)
             {
-                if (skillOption[num] == setup.myCostume.stat.skillId)
+                if (skillOption[num] == setup.myCostume.stat.SkillId)
                 {
                     break;
                 }
@@ -411,8 +411,8 @@ public class CustomCharacterManager : MonoBehaviour
         if (type == CreateStat.Skill)
         {
             skillId = toNext(skillId, skillOption.Length);
-            setup.myCostume.stat.skillId = skillOption[skillId];
-            character.GetComponent<CharacterCreateAnimationControl>().playAttack(setup.myCostume.stat.skillId);
+            setup.myCostume.stat.SkillId = skillOption[skillId];
+            character.GetComponent<CharacterCreateAnimationControl>().playAttack(setup.myCostume.stat.SkillId);
             freshLabel();
         }
         else if (calTotalPoints() < 400)
@@ -426,8 +426,8 @@ public class CustomCharacterManager : MonoBehaviour
         if (type == CreateStat.Skill)
         {
             skillId = toPrev(skillId, skillOption.Length);
-            setup.myCostume.stat.skillId = skillOption[skillId];
-            character.GetComponent<CharacterCreateAnimationControl>().playAttack(setup.myCostume.stat.skillId);
+            setup.myCostume.stat.SkillId = skillOption[skillId];
+            character.GetComponent<CharacterCreateAnimationControl>().playAttack(setup.myCostume.stat.SkillId);
             freshLabel();
         }
         else
@@ -441,23 +441,23 @@ public class CustomCharacterManager : MonoBehaviour
         switch (type)
         {
             case CreateStat.SPD:
-                setup.myCostume.stat.SPD += pt;
+                setup.myCostume.stat.Speed += pt;
                 break;
             case CreateStat.GAS:
-                setup.myCostume.stat.GAS += pt;
+                setup.myCostume.stat.Gas += pt;
                 break;
             case CreateStat.BLA:
-                setup.myCostume.stat.BLA += pt;
+                setup.myCostume.stat.Blade += pt;
                 break;
             case CreateStat.ACL:
-                setup.myCostume.stat.ACL += pt;
+                setup.myCostume.stat.Accel += pt;
                 break;
         }
 
-        setup.myCostume.stat.SPD = Mathf.Clamp(setup.myCostume.stat.SPD, 75, 125);
-        setup.myCostume.stat.GAS = Mathf.Clamp(setup.myCostume.stat.GAS, 75, 125);
-        setup.myCostume.stat.BLA = Mathf.Clamp(setup.myCostume.stat.BLA, 75, 125);
-        setup.myCostume.stat.ACL = Mathf.Clamp(setup.myCostume.stat.ACL, 75, 125);
+        setup.myCostume.stat.Speed = Mathf.Clamp(setup.myCostume.stat.Speed, 75, 125);
+        setup.myCostume.stat.Gas = Mathf.Clamp(setup.myCostume.stat.Gas, 75, 125);
+        setup.myCostume.stat.Blade = Mathf.Clamp(setup.myCostume.stat.Blade, 75, 125);
+        setup.myCostume.stat.Accel = Mathf.Clamp(setup.myCostume.stat.Accel, 75, 125);
 
         freshLabel();
     }
@@ -467,10 +467,10 @@ public class CustomCharacterManager : MonoBehaviour
         if (setup.myCostume != null)
         {
             int num = 0;
-            num += setup.myCostume.stat.SPD;
-            num += setup.myCostume.stat.GAS;
-            num += setup.myCostume.stat.BLA;
-            return num + setup.myCostume.stat.ACL;
+            num += setup.myCostume.stat.Speed;
+            num += setup.myCostume.stat.Gas;
+            num += setup.myCostume.stat.Blade;
+            return num + setup.myCostume.stat.Accel;
         }
         return 400;
     }
@@ -546,15 +546,15 @@ public class CustomCharacterManager : MonoBehaviour
                 hairId = ((!next) ? toPrev(hairId, hairOption.Length) : toNext(hairId, hairOption.Length));
                 if (sexId != 0)
                 {
-                    setup.myCostume.hair_mesh = CostumeHair.hairsF[hairOption[hairId]].hair;
-                    setup.myCostume.hair_1_mesh = CostumeHair.hairsF[hairOption[hairId]].hair_1;
-                    setup.myCostume.hairInfo = CostumeHair.hairsF[hairOption[hairId]];
+                    setup.myCostume.hair_mesh = CostumeHair.FemaleHairs[hairOption[hairId]].hair;
+                    setup.myCostume.hair_1_mesh = CostumeHair.FemaleHairs[hairOption[hairId]].hair_1;
+                    setup.myCostume.hairInfo = CostumeHair.FemaleHairs[hairOption[hairId]];
                 }
                 else
                 {
-                    setup.myCostume.hair_mesh = CostumeHair.hairsM[hairOption[hairId]].hair;
-                    setup.myCostume.hair_1_mesh = CostumeHair.hairsM[hairOption[hairId]].hair_1;
-                    setup.myCostume.hairInfo = CostumeHair.hairsM[hairOption[hairId]];
+                    setup.myCostume.hair_mesh = CostumeHair.MaleHairs[hairOption[hairId]].hair;
+                    setup.myCostume.hair_1_mesh = CostumeHair.MaleHairs[hairOption[hairId]].hair_1;
+                    setup.myCostume.hairInfo = CostumeHair.MaleHairs[hairOption[hairId]];
                 }
                 setup.CreateHair();
                 setHairColor();

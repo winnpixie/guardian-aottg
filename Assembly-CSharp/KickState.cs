@@ -1,28 +1,28 @@
 public class KickState
 {
-    public string name;
-    public int id;
-    private string kickers;
-    private int kickCount;
+    public string Name;
+    public int Id;
+    private string Kickers;
+    private int KickCount;
 
-    public void init(string n)
+    public void Init(string n)
     {
-        name = n;
-        kickers = string.Empty;
-        kickCount = 0;
+        Name = n;
+        Kickers = string.Empty;
+        KickCount = 0;
     }
 
-    public void addKicker(string n)
+    public void AddKicker(string n)
     {
-        if (!kickers.Contains(n))
+        if (!Kickers.Contains(n))
         {
-            kickers += n;
-            kickCount++;
+            Kickers += n;
+            KickCount++;
         }
     }
 
-    public int getKickCount()
+    public int GetKickCount()
     {
-        return kickCount;
+        return KickCount;
     }
 }

@@ -411,7 +411,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
                             case "attack_kick":
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(3f, 0.1f);
                                 hitPause = 0.2f;
-                                if (array[i].gameObject.transform.root.GetComponent<TITAN>().abnormalType == AbnormalType.TYPE_CRAWLER)
+                                if (array[i].gameObject.transform.root.GetComponent<TITAN>().abnormalType == TitanClass.Crawler)
                                 {
                                     array[i].gameObject.transform.root.GetComponent<TITAN>().dieBlow(base.transform.position, hitPause);
                                 }
@@ -600,11 +600,11 @@ public class TITAN_EREN : Photon.MonoBehaviour
                 }
                 if (base.rigidbody.velocity.magnitude > 50f)
                 {
-                    currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mathf.Min(Mod.Properties.FieldOfView.Value + 50f, base.rigidbody.velocity.magnitude + Mod.Properties.FieldOfView.Value - 50f), 0.1f); // 100
+                    currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mathf.Min(100f, base.rigidbody.velocity.magnitude), 0.1f);
                 }
                 else
                 {
-                    currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mod.Properties.FieldOfView.Value, 0.1f); // 50
+                    currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, 50f, 0.1f);
                 }
                 if (bottomObject.GetComponent<CheckHitGround>().isGrounded)
                 {

@@ -841,11 +841,11 @@ public class HERO : Photon.MonoBehaviour
         if (buffTime <= 0f)
         {
             buffTime = 0f;
-            if (currentBuff == BUFF.SpeedUp && base.animation.IsPlaying("run_sasha"))
+            if (currentBuff == BUFF.Speed && base.animation.IsPlaying("run_sasha"))
             {
                 CrossFade("run", 0.1f);
             }
-            currentBuff = BUFF.NoBuff;
+            currentBuff = BUFF.None;
         }
     }
 
@@ -2300,7 +2300,7 @@ public class HERO : Photon.MonoBehaviour
                     float num4 = (!(vector5.magnitude <= 0.95f)) ? 1f : ((vector5.magnitude >= 0.25f) ? vector5.magnitude : 0f);
                     a *= num4;
                     a *= speed;
-                    if (buffTime > 0f && currentBuff == BUFF.SpeedUp)
+                    if (buffTime > 0f && currentBuff == BUFF.Speed)
                     {
                         a *= 4f;
                     }
@@ -2308,7 +2308,7 @@ public class HERO : Photon.MonoBehaviour
                     {
                         if (!baseAnimation.IsPlaying("run") && !baseAnimation.IsPlaying("jump") && !baseAnimation.IsPlaying("run_sasha") && (!baseAnimation.IsPlaying("horse_geton") || baseAnimation["horse_geton"].normalizedTime >= 0.5f))
                         {
-                            if (buffTime > 0f && currentBuff == BUFF.SpeedUp)
+                            if (buffTime > 0f && currentBuff == BUFF.Speed)
                             {
                                 CrossFade("run_sasha", 0.1f);
                             }
@@ -2538,7 +2538,7 @@ public class HERO : Photon.MonoBehaviour
                 Vector3 globaleFacingVector = GetGlobalFacingVector(num8);
                 float num9 = (!(vector6.magnitude <= 0.95f)) ? 1f : ((vector6.magnitude >= 0.25f) ? vector6.magnitude : 0f);
                 globaleFacingVector *= num9;
-                globaleFacingVector *= (float)setup.myCostume.stat.ACL / 10f * 2f;
+                globaleFacingVector *= (float)setup.myCostume.stat.Accel / 10f * 2f;
                 if (num == 0f && num2 == 0f)
                 {
                     if (state == HERO_STATE.Attack)
@@ -2660,11 +2660,11 @@ public class HERO : Photon.MonoBehaviour
         }
         if (currentSpeed > 10f)
         {
-            currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mathf.Min(Mod.Properties.FieldOfView.Value + 50f, currentSpeed + Mod.Properties.FieldOfView.Value - 10f), 0.1f); // 100
+            currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mathf.Min(100f, currentSpeed + 40f), 0.1f);
         }
         else
         {
-            currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, Mod.Properties.FieldOfView.Value, 0.1f); // 50
+            currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, 50f, 0.1f);
         }
         if (flag)
         {
@@ -3371,7 +3371,7 @@ public class HERO : Photon.MonoBehaviour
                                         {
                                             attackAnimation = "special_sasha";
                                             PlayAnimation("special_sasha");
-                                            currentBuff = BUFF.SpeedUp;
+                                            currentBuff = BUFF.Speed;
                                             buffTime = 10f;
                                         }
                                         else
@@ -4231,7 +4231,7 @@ public class HERO : Photon.MonoBehaviour
     public void setStat2()
     {
         skillCDLast = 1.5f;
-        skillId = setup.myCostume.stat.skillId;
+        skillId = setup.myCostume.stat.SkillId;
         customAnimationSpeed();
         switch (skillId)
         {
@@ -4279,10 +4279,10 @@ public class HERO : Photon.MonoBehaviour
                 break;
         }
         bombInit();
-        speed = (float)setup.myCostume.stat.SPD / 10f;
-        totalGas = (currentGas = setup.myCostume.stat.GAS);
-        totalBladeSta = (currentBladeSta = setup.myCostume.stat.BLA);
-        baseRigidBody.mass = 0.5f - (float)(setup.myCostume.stat.ACL - 100) * 0.001f;
+        speed = (float)setup.myCostume.stat.Speed / 10f;
+        totalGas = (currentGas = setup.myCostume.stat.Gas);
+        totalBladeSta = (currentBladeSta = setup.myCostume.stat.Blade);
+        baseRigidBody.mass = 0.5f - (float)(setup.myCostume.stat.Accel - 100) * 0.001f;
 
         GameObject skillCdBottom = GameObject.Find("skill_cd_bottom");
         skillCdBottom.transform.localPosition = new Vector3(0f, (float)(-Screen.height) * 0.5f + 5f, 0f);
@@ -4354,7 +4354,7 @@ public class HERO : Photon.MonoBehaviour
                 }
             }
         }
-        else if (setup.myCostume.sex == Sex.FEMALE)
+        else if (setup.myCostume.sex == Sex.Female)
         {
             standAnimation = "stand";
             setTeam2(1);
@@ -4721,25 +4721,21 @@ public class HERO : Photon.MonoBehaviour
                 if (info.sender.customProperties[PhotonPlayerProperty.Name] == null || info.sender.customProperties[PhotonPlayerProperty.IsTitan] == null)
                 {
                     FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
-                    return;
                 }
                 else if (viewID < 0)
                 {
                     if (titanName == string.Empty)
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + " (possibly valid).</color>");
-                        return;
                     }
                     else if (RCSettings.BombMode == 0 && RCSettings.DeadlyCannons == 0)
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
-                        return;
                     }
                 }
                 else if (PhotonView.Find(viewID) == null)
                 {
                     FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
-                    return;
                 }
                 else
                 {
@@ -4747,7 +4743,6 @@ public class HERO : Photon.MonoBehaviour
                     if (photonView.owner.Id != info.sender.Id)
                     {
                         FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
-                        return;
                     }
                 }
             }
@@ -4933,7 +4928,7 @@ public class HERO : Photon.MonoBehaviour
             myCannon.GetComponent<Cannon>().myHero = this;
             myCannonRegion = null;
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(myCannon.transform.Find("Barrel").Find("FiringPoint").gameObject);
-            Camera.main.fieldOfView = Mod.Properties.FieldOfView.Value + 5f; // 55
+            Camera.main.fieldOfView = 55f;
             base.photonView.RPC("SetMyCannon", PhotonTargets.OthersBuffered, myCannon.GetPhotonView().viewID);
             skillCDLastCannon = skillCDLast;
             skillCDLast = 3.5f;

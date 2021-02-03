@@ -64,11 +64,9 @@ public static class RCextensions
     public static void Add<T>(ref T[] source, T value)
     {
         T[] array = new T[source.Length + 1];
-        for (int i = 0; i < source.Length; i++)
-        {
-            array[i] = source[i];
-        }
+        Array.Copy(source, array, source.Length);
         array[array.Length - 1] = value;
+
         source = array;
     }
 

@@ -1,6 +1,6 @@
 public enum RespawnMode
 {
-    NEVER,
-    DEATHMATCH,
-    NEWROUND
+    Never,
+    Deathmatch,
+    NewRound
 }

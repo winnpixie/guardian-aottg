@@ -19,11 +19,11 @@ public class CostumeConverter
         PlayerPrefs.SetFloat(slot + PhotonPlayerProperty.HairColor2, costume.hair_color.g);
         PlayerPrefs.SetFloat(slot + PhotonPlayerProperty.HairColor3, costume.hair_color.b);
         PlayerPrefs.SetInt(slot + PhotonPlayerProperty.Division, (int)costume.division);
-        PlayerPrefs.SetInt(slot + PhotonPlayerProperty.StatSpd, costume.stat.SPD);
-        PlayerPrefs.SetInt(slot + PhotonPlayerProperty.StatGas, costume.stat.GAS);
-        PlayerPrefs.SetInt(slot + PhotonPlayerProperty.StatBla, costume.stat.BLA);
-        PlayerPrefs.SetInt(slot + PhotonPlayerProperty.StatAcl, costume.stat.ACL);
-        PlayerPrefs.SetString(slot + PhotonPlayerProperty.StatSkill, costume.stat.skillId);
+        PlayerPrefs.SetInt(slot + PhotonPlayerProperty.StatSpd, costume.stat.Speed);
+        PlayerPrefs.SetInt(slot + PhotonPlayerProperty.StatGas, costume.stat.Gas);
+        PlayerPrefs.SetInt(slot + PhotonPlayerProperty.StatBla, costume.stat.Blade);
+        PlayerPrefs.SetInt(slot + PhotonPlayerProperty.StatAcl, costume.stat.Accel);
+        PlayerPrefs.SetString(slot + PhotonPlayerProperty.StatSkill, costume.stat.SkillId);
     }
 
     public static HeroCostume FromLocalData(string slot)
@@ -39,7 +39,7 @@ public class CostumeConverter
         costume.id = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.HeroCostumeId);
         costume.costumeId = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.CostumeId);
         costume.cape = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.Cape) == 1;
-        costume.hairInfo = ((costume.sex != Sex.MALE) ? CostumeHair.hairsF[PlayerPrefs.GetInt(slot + PhotonPlayerProperty.HairInfo)] : CostumeHair.hairsM[PlayerPrefs.GetInt(slot + PhotonPlayerProperty.HairInfo)]);
+        costume.hairInfo = ((costume.sex != Sex.Male) ? CostumeHair.FemaleHairs[PlayerPrefs.GetInt(slot + PhotonPlayerProperty.HairInfo)] : CostumeHair.MaleHairs[PlayerPrefs.GetInt(slot + PhotonPlayerProperty.HairInfo)]);
         costume.eye_texture_id = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.EyeTextureId);
         costume.beard_texture_id = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.BeardTextureId);
         costume.glass_texture_id = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.GlassTextureId);
@@ -49,11 +49,11 @@ public class CostumeConverter
 
         // Stats
         costume.stat = new HeroStat();
-        costume.stat.SPD = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.StatSpd);
-        costume.stat.GAS = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.StatGas);
-        costume.stat.BLA = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.StatBla);
-        costume.stat.ACL = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.StatAcl);
-        costume.stat.skillId = PlayerPrefs.GetString(slot + PhotonPlayerProperty.StatSkill);
+        costume.stat.Speed = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.StatSpd);
+        costume.stat.Gas = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.StatGas);
+        costume.stat.Blade = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.StatBla);
+        costume.stat.Accel = PlayerPrefs.GetInt(slot + PhotonPlayerProperty.StatAcl);
+        costume.stat.SkillId = PlayerPrefs.GetString(slot + PhotonPlayerProperty.StatSkill);
         costume.setBodyByCostumeId();
         costume.SetMesh();
         costume.setTexture();
@@ -76,11 +76,11 @@ public class CostumeConverter
         properties.Add(PhotonPlayerProperty.HairColor2, costume.hair_color.g);
         properties.Add(PhotonPlayerProperty.HairColor3, costume.hair_color.b);
         properties.Add(PhotonPlayerProperty.Division, (int)costume.division);
-        properties.Add(PhotonPlayerProperty.StatSpd, costume.stat.SPD);
-        properties.Add(PhotonPlayerProperty.StatGas, costume.stat.GAS);
-        properties.Add(PhotonPlayerProperty.StatBla, costume.stat.BLA);
-        properties.Add(PhotonPlayerProperty.StatAcl, costume.stat.ACL);
-        properties.Add(PhotonPlayerProperty.StatSkill, costume.stat.skillId);
+        properties.Add(PhotonPlayerProperty.StatSpd, costume.stat.Speed);
+        properties.Add(PhotonPlayerProperty.StatGas, costume.stat.Gas);
+        properties.Add(PhotonPlayerProperty.StatBla, costume.stat.Blade);
+        properties.Add(PhotonPlayerProperty.StatAcl, costume.stat.Accel);
+        properties.Add(PhotonPlayerProperty.StatSkill, costume.stat.SkillId);
         player.SetCustomProperties(properties);
     }
 
@@ -93,7 +93,7 @@ public class CostumeConverter
         heroCostume.costumeId = (int)player.customProperties[PhotonPlayerProperty.CostumeId];
         heroCostume.id = (int)player.customProperties[PhotonPlayerProperty.HeroCostumeId];
         heroCostume.cape = (bool)player.customProperties[PhotonPlayerProperty.Cape];
-        heroCostume.hairInfo = ((sex != Sex.MALE) ? CostumeHair.hairsF[(int)player.customProperties[PhotonPlayerProperty.HairInfo]] : CostumeHair.hairsM[(int)player.customProperties[PhotonPlayerProperty.HairInfo]]);
+        heroCostume.hairInfo = ((sex != Sex.Male) ? CostumeHair.FemaleHairs[(int)player.customProperties[PhotonPlayerProperty.HairInfo]] : CostumeHair.MaleHairs[(int)player.customProperties[PhotonPlayerProperty.HairInfo]]);
         heroCostume.eye_texture_id = (int)player.customProperties[PhotonPlayerProperty.EyeTextureId];
         heroCostume.beard_texture_id = (int)player.customProperties[PhotonPlayerProperty.BeardTextureId];
         heroCostume.glass_texture_id = (int)player.customProperties[PhotonPlayerProperty.GlassTextureId];
@@ -101,11 +101,11 @@ public class CostumeConverter
         heroCostume.hair_color = new Color((float)player.customProperties[PhotonPlayerProperty.HairColor1], (float)player.customProperties[PhotonPlayerProperty.HairColor2], (float)player.customProperties[PhotonPlayerProperty.HairColor3]);
         heroCostume.division = (Division)(int)player.customProperties[PhotonPlayerProperty.Division];
         heroCostume.stat = new HeroStat();
-        heroCostume.stat.SPD = (int)player.customProperties[PhotonPlayerProperty.StatSpd];
-        heroCostume.stat.GAS = (int)player.customProperties[PhotonPlayerProperty.StatGas];
-        heroCostume.stat.BLA = (int)player.customProperties[PhotonPlayerProperty.StatBla];
-        heroCostume.stat.ACL = (int)player.customProperties[PhotonPlayerProperty.StatAcl];
-        heroCostume.stat.skillId = (string)player.customProperties[PhotonPlayerProperty.StatSkill];
+        heroCostume.stat.Speed = (int)player.customProperties[PhotonPlayerProperty.StatSpd];
+        heroCostume.stat.Gas = (int)player.customProperties[PhotonPlayerProperty.StatGas];
+        heroCostume.stat.Blade = (int)player.customProperties[PhotonPlayerProperty.StatBla];
+        heroCostume.stat.Accel = (int)player.customProperties[PhotonPlayerProperty.StatAcl];
+        heroCostume.stat.SkillId = (string)player.customProperties[PhotonPlayerProperty.StatSkill];
         heroCostume.setBodyByCostumeId();
         heroCostume.SetMesh();
         heroCostume.setTexture();

@@ -22,6 +22,15 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     GameHelper.Broadcast($"The map in play is now {levelInfo.Name}!");
                 }
             }
+            else
+            {
+                irc.AddLine("Available Maps:".WithColor("aaff00"));
+
+                foreach (LevelInfo level in LevelInfo.Levels)
+                {
+                    irc.AddLine("> ".WithColor("00ff00").AsBold() + level.Name);
+                }
+            }
         }
     }
 }

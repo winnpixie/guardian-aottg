@@ -3225,7 +3225,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         {
             instantiationId
         } : ((int[])evData[(byte)4]);
-        if (!InstantiateTracker.instance.checkObj(text, photonPlayer, array))
+        if (!InstantiateTracker.Instance.CheckObject(text, photonPlayer, array))
         {
             return null;
         }

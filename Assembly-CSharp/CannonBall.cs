@@ -88,7 +88,7 @@ public class CannonBall : Photon.MonoBehaviour
                 {
                     continue;
                 }
-                if (component2.abnormalType == AbnormalType.TYPE_CRAWLER)
+                if (component2.abnormalType == TitanClass.Crawler)
                 {
                     if (gameObject.name == "head")
                     {

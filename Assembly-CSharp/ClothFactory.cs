@@ -3,18 +3,18 @@ using UnityEngine;
 
 public static class ClothFactory
 {
-    private static Dictionary<string, List<GameObject>> clothCache;
+    private static Dictionary<string, List<GameObject>> ClothCache;
 
     static ClothFactory()
     {
-        clothCache = new Dictionary<string, List<GameObject>>(CostumeHair.hairsF.Length);
+        ClothCache = new Dictionary<string, List<GameObject>>(CostumeHair.FemaleHairs.Length);
     }
 
     public static GameObject GetHair(GameObject reference, string name, Material material, Color color)
     {
         GameObject gameObject2;
         ParentFollow parentFollow;
-        if (clothCache.TryGetValue(name, out List<GameObject> value))
+        if (ClothCache.TryGetValue(name, out List<GameObject> value))
         {
             for (int i = 0; i < value.Count; i++)
             {
@@ -44,7 +44,7 @@ public static class ClothFactory
             parentFollow = gameObject2.AddComponent<ParentFollow>();
             parentFollow.SetParent(reference.transform);
             value.Add(gameObject2);
-            clothCache[name] = value;
+            ClothCache[name] = value;
             return gameObject2;
         }
         gameObject2 = GenerateCloth(reference, name);
@@ -54,7 +54,7 @@ public static class ClothFactory
         parentFollow.SetParent(reference.transform);
         value = new List<GameObject>();
         value.Add(gameObject2);
-        clothCache.Add(name, value);
+        ClothCache.Add(name, value);
         return gameObject2;
     }
 
@@ -62,7 +62,7 @@ public static class ClothFactory
     {
         GameObject gameObject2;
         ParentFollow parentFollow;
-        if (clothCache.TryGetValue(name, out List<GameObject> value))
+        if (ClothCache.TryGetValue(name, out List<GameObject> value))
         {
             for (int i = 0; i < value.Count; i++)
             {
@@ -90,7 +90,7 @@ public static class ClothFactory
             parentFollow = gameObject2.AddComponent<ParentFollow>();
             parentFollow.SetParent(reference.transform);
             value.Add(gameObject2);
-            clothCache[name] = value;
+            ClothCache[name] = value;
             return gameObject2;
         }
         gameObject2 = GenerateCloth(reference, name);
@@ -99,7 +99,7 @@ public static class ClothFactory
         parentFollow.SetParent(reference.transform);
         value = new List<GameObject>();
         value.Add(gameObject2);
-        clothCache.Add(name, value);
+        ClothCache.Add(name, value);
         return gameObject2;
     }
 
@@ -130,9 +130,9 @@ public static class ClothFactory
     public static string GetDebugInfo()
     {
         int num = 0;
-        foreach (KeyValuePair<string, List<GameObject>> item in clothCache)
+        foreach (KeyValuePair<string, List<GameObject>> item in ClothCache)
         {
-            num += clothCache[item.Key].Count;
+            num += ClothCache[item.Key].Count;
         }
         int num2 = 0;
         Cloth[] array = Object.FindObjectsOfType<Cloth>();
@@ -143,7 +143,7 @@ public static class ClothFactory
                 num2++;
             }
         }
-        return $"{num} cached cloths, {num2} active cloths, {clothCache.Keys.Count} types cached";
+        return $"{num} cached cloths, {num2} active cloths, {ClothCache.Keys.Count} types cached";
     }
 
     private static GameObject GenerateCloth(GameObject go, string res)
@@ -171,6 +171,6 @@ public static class ClothFactory
 
     public static void ClearClothCache()
     {
-        clothCache.Clear();
+        ClothCache.Clear();
     }
 }

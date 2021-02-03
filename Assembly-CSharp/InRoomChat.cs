@@ -103,7 +103,16 @@ public class InRoomChat : Photon.MonoBehaviour
                 {
                     if (Input.GetMouseButtonDown(0)) // Mouse1/Left Click
                     {
-                        Mod.Commands.Find("translate").Execute(this, message.Content.Split(' '));
+                        string text = message.Content;
+
+                        text = GameHelper.Detagger.Replace(text, string.Empty);
+                        text = GameHelper.SpecialChars.Replace(text, string.Empty);
+
+                        Mod.Commands.Find("translate").Execute(this, new string[] {
+                            "auto",
+                            System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName,
+                            text
+                        });
                     }
                     else if (Input.GetMouseButtonDown(1)) // Mouse2/Right Click
                     {
