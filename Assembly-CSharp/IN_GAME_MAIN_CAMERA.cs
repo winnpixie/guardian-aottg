@@ -21,7 +21,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public static int InvertY = 1;
     public static int CameraTilt = 1;
     public static STEREO_3D_TYPE StereoType;
-    public static DayLight Time = DayLight.Dawn;
+    public static DayLight Lighting = DayLight.Dawn;
     public FengCustomInputs inputManager;
     public RotationAxes axes;
     public float minimumX = -360f;
@@ -83,7 +83,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         SensitivityMulti = PlayerPrefs.GetFloat("MouseSensitivity");
         InvertY = PlayerPrefs.GetInt("invertMouseY");
         inputManager = GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>();
-        setDayLight(Time);
+        setDayLight(Lighting);
         locker = GameObject.Find("locker");
         if (PlayerPrefs.HasKey("cameraTilt"))
         {
@@ -102,8 +102,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     public void setDayLight(DayLight val)
     {
-        Time = val;
-        switch (Time)
+        Lighting = val;
+        switch (Lighting)
         {
             case DayLight.Day:
                 RenderSettings.ambientLight = FengColor.AmbientDay;

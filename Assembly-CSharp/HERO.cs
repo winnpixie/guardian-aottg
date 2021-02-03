@@ -2035,7 +2035,7 @@ public class HERO : Photon.MonoBehaviour
         }
 
         // TODO: Flashlight Fix?
-        if (IN_GAME_MAIN_CAMERA.Time == DayLight.Night)
+        if (IN_GAME_MAIN_CAMERA.Lighting == DayLight.Night)
         {
             myFlashlight = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("flashlight"));
 

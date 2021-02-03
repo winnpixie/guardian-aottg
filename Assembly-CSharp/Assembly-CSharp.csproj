@@ -274,7 +274,7 @@
     <Compile Include="Guardian\Features\Commands\Impl\CommandSetName.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandReloadConfig.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandRevive.cs" />
-    <Compile Include="Guardian\Features\Commands\Impl\CommandSetTime.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\CommandSetLighting.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandUnignore.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandWhois.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\Debug\CommandLogProperties.cs" />

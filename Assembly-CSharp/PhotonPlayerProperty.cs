@@ -31,10 +31,10 @@ public class PhotonPlayerProperty
     public static string HairColor2 = "hair_color2";
     public static string HairColor3 = "hair_color3";
     public static string Division = "division";
-    public static string StatSpd = "statSPD";
+    public static string StatSpeed = "statSPD";
     public static string StatGas = "statGAS";
-    public static string StatBla = "statBLA";
-    public static string StatAcl = "statACL";
+    public static string StatBlade = "statBLA";
+    public static string StatAccel = "statACL";
     public static string StatSkill = "statSKILL";
     public static string RCTeam = "RCteam";
     public static string CurrentLevel = "currentLevel";

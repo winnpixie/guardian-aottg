@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "02032021";
+        public static string Build = "02032021-1";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = string.Empty;
@@ -287,9 +287,9 @@ namespace Guardian
                     }
                 }
 
-                if (propertiesThatChanged.ContainsKey("Time") && propertiesThatChanged["Time"] is string)
+                if (propertiesThatChanged.ContainsKey("Lighting") && propertiesThatChanged["Lighting"] is string)
                 {
-                    if (GExtensions.TryParseEnum((string)propertiesThatChanged["Time"], out DayLight time))
+                    if (GExtensions.TryParseEnum((string)propertiesThatChanged["Lighting"], out DayLight time))
                     {
                         Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(time);
                     }

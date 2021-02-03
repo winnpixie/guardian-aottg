@@ -2,7 +2,6 @@
 using Guardian.Features.Commands.Impl.MasterClient;
 using Guardian.Features.Commands.Impl.Debug;
 using Guardian.Features.Commands.Impl.RC;
-using Guardian.Utilities;
 
 namespace Guardian.Features.Commands
 {
@@ -20,8 +19,8 @@ namespace Guardian.Features.Commands
             base.Add(new CommandReloadConfig());
             base.Add(new CommandSay());
             base.Add(new CommandSetGuild());
+            base.Add(new CommandSetLighting());
             base.Add(new CommandSetName());
-            base.Add(new CommandSetTime());
             base.Add(new CommandTranslate());
             base.Add(new CommandUnignore());
             base.Add(new CommandUnmute());

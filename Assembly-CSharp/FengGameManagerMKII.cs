@@ -1121,15 +1121,15 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
         if (GExtensions.TryParseEnum(roomInfo[4], out DayLight dayLight))
         {
-            IN_GAME_MAIN_CAMERA.Time = dayLight;
+            IN_GAME_MAIN_CAMERA.Lighting = dayLight;
         }
 
-        if (PhotonNetwork.room.customProperties.ContainsKey("DayLight")
-            && PhotonNetwork.room.customProperties["DayLight"] is string)
+        if (PhotonNetwork.room.customProperties.ContainsKey("Lighting")
+            && PhotonNetwork.room.customProperties["Lighting"] is string)
         {
-            if (GExtensions.TryParseEnum((string)PhotonNetwork.room.customProperties["DayLight"], out DayLight customDayLight))
+            if (GExtensions.TryParseEnum((string)PhotonNetwork.room.customProperties["Lighting"], out DayLight customDayLight))
             {
-                IN_GAME_MAIN_CAMERA.Time = customDayLight;
+                IN_GAME_MAIN_CAMERA.Lighting = customDayLight;
             }
         }
 
@@ -1328,7 +1328,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         LoadSkin();
 
         Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setHUDposition();
-        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(IN_GAME_MAIN_CAMERA.Time);
+        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(IN_GAME_MAIN_CAMERA.Lighting);
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
@@ -1494,10 +1494,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             }
             else
             {
-                int acl = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatAcl]);
-                int bla = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatBla]);
+                int acl = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatAccel]);
+                int bla = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatBlade]);
                 int gas = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatGas]);
-                int spd = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatSpd]);
+                int spd = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatSpeed]);
                 if (acl > 150 || bla > 125 || gas > 150 || spd > 140)
                 {
                     KickPlayer(player, ban: true, "Excessive stats.");
@@ -1694,17 +1694,17 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
             if (properties.ContainsKey("statACL") || properties.ContainsKey("statBLA") || properties.ContainsKey("statGAS") || properties.ContainsKey("statSPD"))
             {
-                int acl = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatAcl]);
-                int bla = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatBla]);
+                int acl = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatAccel]);
+                int bla = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatBlade]);
                 int gas = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatGas]);
-                int spd = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatSpd]);
+                int spd = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.StatSpeed]);
                 if (acl > 150)
                 {
-                    restored.Add(PhotonPlayerProperty.StatAcl, 100);
+                    restored.Add(PhotonPlayerProperty.StatAccel, 100);
                 }
                 if (bla > 125)
                 {
-                    restored.Add(PhotonPlayerProperty.StatBla, 100);
+                    restored.Add(PhotonPlayerProperty.StatBlade, 100);
                 }
                 if (gas > 150)
                 {
@@ -1712,7 +1712,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 if (spd > 140)
                 {
-                    restored.Add(PhotonPlayerProperty.StatSpd, 100);
+                    restored.Add(PhotonPlayerProperty.StatSpeed, 100);
                 }
             }
 
@@ -5641,10 +5641,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             TitanVariables.Clear();
             RCRegionTriggers.Clear();
             CurrentScriptLogic = string.Empty;
-            hashtable.Add(PhotonPlayerProperty.StatAcl, 100);
-            hashtable.Add(PhotonPlayerProperty.StatBla, 100);
+            hashtable.Add(PhotonPlayerProperty.StatAccel, 100);
+            hashtable.Add(PhotonPlayerProperty.StatBlade, 100);
             hashtable.Add(PhotonPlayerProperty.StatGas, 100);
-            hashtable.Add(PhotonPlayerProperty.StatSpd, 100);
+            hashtable.Add(PhotonPlayerProperty.StatSpeed, 100);
             restartingTitan = false;
             restartingMC = false;
             restartingHorse = false;
