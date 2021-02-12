@@ -341,7 +341,7 @@ public class UIScrollBar : MonoBehaviour
 	public void ForceUpdate()
 	{
 		mIsDirty = false;
-		if (!(mBG != null) || !(mFG != null))
+		if (mBG == null || mFG == null)
 		{
 			return;
 		}

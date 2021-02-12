@@ -21,9 +21,18 @@ namespace Guardian.UI
                 }
 
                 GUI.SetNextControlName(string.Empty);
-                GUILayout.BeginArea(new Rect(Screen.width - 331f, Screen.height - 255f, 330f, 225f), boxStyle);
+
+                if (Mod.Properties.LogBackground.Value)
+                {
+                    GUILayout.BeginArea(new Rect(Screen.width - 331f, Screen.height - 255f, 330f, 225f), boxStyle);
+                }
+                else
+                {
+                    GUILayout.BeginArea(new Rect(Screen.width - 331f, Screen.height - 255f, 330f, 225f));
+                }
                 GUILayout.FlexibleSpace();
                 Mod.Logger.ScrollPosition = GUILayout.BeginScrollView(Mod.Logger.ScrollPosition);
+
                 GUIStyle labelStyle = new GUIStyle(GUI.skin.label)
                 {
                     margin = new RectOffset(0, 0, 0, 0),
@@ -46,10 +55,11 @@ namespace Guardian.UI
                 {
                     if (!GameHelper.IsDead(PhotonNetwork.player))
                     {
-                        GameObject go = GameHelper.IsPT(PhotonNetwork.player) ? GameHelper.GetPT(PhotonNetwork.player).gameObject : GameHelper.GetHero(PhotonNetwork.player).gameObject;
-                        if (go != null)
+                        Photon.MonoBehaviour mb = GameHelper.IsPT(PhotonNetwork.player) ? (Photon.MonoBehaviour)GameHelper.GetPT(PhotonNetwork.player)
+                            : (Photon.MonoBehaviour)GameHelper.GetHero(PhotonNetwork.player);
+                        if (mb != null)
                         {
-                            coords = $"{MathHelper.Floor(go.transform.position.x)} / {MathHelper.Floor(go.transform.position.y)} / {MathHelper.Floor(go.transform.position.z)}";
+                            coords = $"{MathHelper.Floor(mb.transform.position.x)} / {MathHelper.Floor(mb.transform.position.y)} / {MathHelper.Floor(mb.transform.position.z)}";
                         }
                     }
                 }

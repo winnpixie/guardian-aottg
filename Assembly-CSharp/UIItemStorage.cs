@@ -50,7 +50,7 @@ public class UIItemStorage : MonoBehaviour
 
 	private void Start()
 	{
-		if (!(template != null))
+		if (template == null)
 		{
 			return;
 		}

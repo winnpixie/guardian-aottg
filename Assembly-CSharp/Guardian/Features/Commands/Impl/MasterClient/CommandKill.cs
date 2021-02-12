@@ -26,7 +26,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                         HERO hero = GameHelper.GetHero(player);
                         if (hero != null)
                         {
-                            hero.photonView.RPC("netDie", PhotonTargets.All, hero.transform.position, false, -1, "[ff0000]Server", true);
+                            hero.photonView.RPC("netDie", PhotonTargets.All, hero.transform.position, false, -1, "[FF0000]Server", true);
                         }
                     }
                 }

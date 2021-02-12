@@ -15,7 +15,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 if (args[0].Equals("time", StringComparison.OrdinalIgnoreCase) && int.TryParse(args[1], out int time))
                 {
                     FengGameManagerMKII.Instance.AddTime(time);
-                    GameHelper.Broadcast($"Added {GameHelper.FormatTime(time, false).WithColor("ffffff")} to the clock!");
+                    GameHelper.Broadcast($"Added {GameHelper.FormatTime(time, false).WithColor("FFFFFF")} to the clock!");
                 }
 
                 // Max players
@@ -52,7 +52,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     }
                     else
                     {
-                        irc.AddLine("You must be the room creator to execute this.".WithColor("ff0000"));
+                        irc.AddLine("You must be the room creator to execute this!".WithColor("FF0000"));
                     }
                 }
 
@@ -66,7 +66,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     }
                     else
                     {
-                        irc.AddLine("You must be the room creator to execute this.".WithColor("ff0000"));
+                        irc.AddLine("You must be the room creator to execute this!".WithColor("FF0000"));
                     }
                 }
             }

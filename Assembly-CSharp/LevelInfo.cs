@@ -46,7 +46,7 @@ public class LevelInfo
                 new LevelInfo
                 {
                     Name = "[S]Tutorial",
-                    Map= "tutorial",
+                    Map = "tutorial",
                     Description = "Learn the basic functionality of AoTTG.",
                     Enemies = 1,
                     Mode = GameMode.KILL_TITAN,
@@ -382,7 +382,7 @@ public class LevelInfo
                 {
                     Name = "Custom (No PT)",
                     Map = "The Forest",
-                    Description = "RC Custom Maps (No player titans)",
+                    Description = "RC Custom Maps (No Player Titans)",
                     Enemies = 1,
                     Mode = GameMode.KILL_TITAN,
                     RespawnMode = RespawnMode.Never,
@@ -404,6 +404,19 @@ public class LevelInfo
                     PlayerTitans = true,
                     PVP = true,
                     Punks = true
+                },
+                // Anarchy
+                new LevelInfo
+                {
+                    Name = "Custom-Anarchy (No PT)",
+                    Map = "The Forest",
+                    Description = "Custom Maps with Anarchy Mod Scripts (No Player Titans)",
+                    Enemies = 1,
+                    Mode = GameMode.KILL_TITAN,
+                    RespawnMode = RespawnMode.Never,
+                    PVP = true,
+                    HasSupply = true,
+                    PlayerTitans = false
                 }
             };
         }

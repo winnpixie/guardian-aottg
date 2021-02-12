@@ -85,7 +85,7 @@ public class RCAction
 
     public void CallException(string str)
     {
-        FengGameManagerMKII.Instance.chatRoom.AddLine(str);
+        InRoomChat.Instance.AddLine(str);
     }
 
     public void DoAction()
@@ -98,7 +98,7 @@ public class RCAction
             case 1:
                 {
                     string text5 = parameters[0].returnString(null);
-                    int num3 = parameters[1].returnInt(null);
+                    int num3 = parameters[1].ReturnInt(null);
                     switch (actionType)
                     {
                         case 7:
@@ -180,11 +180,11 @@ public class RCAction
                         case 12:
                             if (!FengGameManagerMKII.IntVariables.ContainsKey(text5))
                             {
-                                FengGameManagerMKII.IntVariables.Add(text5, UnityEngine.Random.Range(num3, parameters[2].returnInt(null)));
+                                FengGameManagerMKII.IntVariables.Add(text5, UnityEngine.Random.Range(num3, parameters[2].ReturnInt(null)));
                             }
                             else
                             {
-                                FengGameManagerMKII.IntVariables[text5] = UnityEngine.Random.Range(num3, parameters[2].returnInt(null));
+                                FengGameManagerMKII.IntVariables[text5] = UnityEngine.Random.Range(num3, parameters[2].ReturnInt(null));
                             }
                             break;
                     }
@@ -463,28 +463,28 @@ public class RCAction
                         case 4:
                             {
                                 Hashtable hashtable11 = new Hashtable();
-                                hashtable11.Add(PhotonPlayerProperty.Kills, parameters[1].returnInt(null));
+                                hashtable11.Add(PhotonPlayerProperty.Kills, parameters[1].ReturnInt(null));
                                 photonPlayer.SetCustomProperties(hashtable11);
                                 break;
                             }
                         case 5:
                             {
                                 Hashtable hashtable10 = new Hashtable();
-                                hashtable10.Add(PhotonPlayerProperty.Deaths, parameters[1].returnInt(null));
+                                hashtable10.Add(PhotonPlayerProperty.Deaths, parameters[1].ReturnInt(null));
                                 photonPlayer.SetCustomProperties(hashtable10);
                                 break;
                             }
                         case 6:
                             {
                                 Hashtable hashtable9 = new Hashtable();
-                                hashtable9.Add(PhotonPlayerProperty.MaxDamage, parameters[1].returnInt(null));
+                                hashtable9.Add(PhotonPlayerProperty.MaxDamage, parameters[1].ReturnInt(null));
                                 photonPlayer.SetCustomProperties(hashtable9);
                                 break;
                             }
                         case 7:
                             {
                                 Hashtable hashtable8 = new Hashtable();
-                                hashtable8.Add(PhotonPlayerProperty.TotalDamage, parameters[1].returnInt(null));
+                                hashtable8.Add(PhotonPlayerProperty.TotalDamage, parameters[1].ReturnInt(null));
                                 photonPlayer.SetCustomProperties(hashtable8);
                                 break;
                             }
@@ -505,14 +505,14 @@ public class RCAction
                         case 10:
                             {
                                 Hashtable hashtable5 = new Hashtable();
-                                hashtable5.Add(PhotonPlayerProperty.RCTeam, parameters[1].returnInt(null));
+                                hashtable5.Add(PhotonPlayerProperty.RCTeam, parameters[1].ReturnInt(null));
                                 photonPlayer.SetCustomProperties(hashtable5);
                                 break;
                             }
                         case 11:
                             {
                                 Hashtable hashtable4 = new Hashtable();
-                                hashtable4.Add(PhotonPlayerProperty.CustomInt, parameters[1].returnInt(null));
+                                hashtable4.Add(PhotonPlayerProperty.CustomInt, parameters[1].ReturnInt(null));
                                 photonPlayer.SetCustomProperties(hashtable4);
                                 break;
                             }
@@ -549,21 +549,21 @@ public class RCAction
                             object[] array = new object[2]
                             {
                                 parameters[1].returnPlayer(null).Id,
-                                parameters[2].returnInt(null)
+                                parameters[2].ReturnInt(null)
                             };
                             titanObj.photonView.RPC("titanGetHit", titanObj.photonView.owner, array);
                             break;
                         }
                     case 1:
-                        FengGameManagerMKII.Instance.SpawnTitanAction(parameters[0].returnInt(null), parameters[1].returnFloat(null), parameters[2].returnInt(null), parameters[3].returnInt(null));
+                        FengGameManagerMKII.Instance.SpawnTitanAction(parameters[0].ReturnInt(null), parameters[1].returnFloat(null), parameters[2].ReturnInt(null), parameters[3].ReturnInt(null));
                         break;
                     case 2:
-                        FengGameManagerMKII.Instance.SpawnTitanAtAction(parameters[0].returnInt(null), parameters[1].returnFloat(null), parameters[2].returnInt(null), parameters[3].returnInt(null), parameters[4].returnFloat(null), parameters[5].returnFloat(null), parameters[6].returnFloat(null));
+                        FengGameManagerMKII.Instance.SpawnTitanAtAction(parameters[0].ReturnInt(null), parameters[1].returnFloat(null), parameters[2].ReturnInt(null), parameters[3].ReturnInt(null), parameters[4].returnFloat(null), parameters[5].returnFloat(null), parameters[6].returnFloat(null));
                         break;
                     case 3:
                         {
                             TITAN titanObj = parameters[0].returnTitan(null);
-                            int num = titanObj.currentHealth = parameters[1].returnInt(null);
+                            int num = titanObj.currentHealth = parameters[1].ReturnInt(null);
                             if (titanObj.maxHealth == 0)
                             {
                                 titanObj.maxHealth = titanObj.currentHealth;

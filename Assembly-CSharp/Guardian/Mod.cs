@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "02032021-1";
+        public static string Build = "02122021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = string.Empty;
@@ -84,6 +84,7 @@ namespace Guardian
                 Initialized = true;
 
                 DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
+
             }
 
             base.gameObject.AddComponent<UI.ModUI>();
@@ -106,11 +107,11 @@ namespace Guardian
                 if (!www.text.Split('\n')[0].Equals(Build))
                 {
                     Logger.Error("You are running an outdated build, please update!");
-                    Logger.Error("https://tiny.cc/GuardianMod".WithColor("0099ff"));
+                    Logger.Error("https://tiny.cc/GuardianMod".WithColor("0099FF"));
 
                     try
                     {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[ff0000]Mod is outdated![-] Please download the latest build from [0099ff]https://tiny.cc/GuardianMod[-]!";
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Mod is outdated![-] Please download the latest build from [0099FF]https://tiny.cc/GuardianMod[-]!";
                     }
                     catch { }
                 }
@@ -122,76 +123,8 @@ namespace Guardian
             HostWhitelist = new List<string>(File.ReadAllLines(HostWhitelistPath));
         }
 
-        public static object[] HandleChat(string input, string name)
-        {
-            // Emotes
-            input = input.Replace("<3", "\u2665");
-            input = input.Replace(":lenny:", "( ͡° ͜ʖ ͡°)");
-
-            // Color and fading
-            string chatColor = Properties.TextColor.Value;
-            if (chatColor.Length != 0)
-            {
-                if (!chatColor.Contains(","))
-                {
-                    input = input.WithColor(chatColor);
-                }
-                else
-                {
-                    string[] colors = chatColor.Split(new char[] { ',' }, 2);
-
-                    if (colors.Length > 1 && colors[0].IsHex() && colors[1].IsHex())
-                    {
-                        input = GameHelper.Detagger.Replace(input, string.Empty);
-
-                        Color startColor = NGUIMath.IntToColor(int.Parse(colors[0] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));
-                        Color endColor = NGUIMath.IntToColor(int.Parse(colors[1] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));
-
-                        string faded = string.Empty;
-                        for (int i = 0; i < input.Length; i++)
-                        {
-                            Color color = Color.Lerp(startColor, endColor, (float)i / (float)input.Length);
-                            faded += $"<color=#{color.ToHex()}>{input[i]}</color>";
-                        }
-                        input = faded;
-                    }
-                }
-            }
-
-            // Bold chat
-            if (Properties.BoldText.Value)
-            {
-                input = input.AsBold();
-            }
-            // Italic chat
-            if (Properties.ItalicText.Value)
-            {
-                input = input.AsItalic();
-            }
-
-            // Custom name
-            string customName = Properties.ChatName.Value;
-            if (customName.Length != 0)
-            {
-                name = customName.Colored();
-            }
-            // Bold name
-            if (Properties.BoldName.Value)
-            {
-                name = name.AsBold();
-            }
-            // Italic name
-            if (Properties.ItalicName.Value)
-            {
-                name = name.AsItalic();
-            }
-
-            return new object[] { $"{Properties.TextPrefix.Value}{input}{Properties.TextSuffix.Value}", name };
-        }
-
         void OnLevelWasLoaded(int level)
         {
-            RenderSettings.haloStrength = 100;
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 string difficulty = "Training";
@@ -225,24 +158,19 @@ namespace Guardian
                 }
                 if (joinMessage.Length > 0)
                 {
-                    string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored();
-                    if (name.Uncolored().Length <= 0)
-                    {
-                        name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
-                    }
-                    FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, HandleChat(joinMessage, name));
+                    Commands.Find("say").Execute(InRoomChat.Instance, joinMessage.Split(' '));
                 }
             }
         }
 
         void OnPhotonPlayerConnected(PhotonPlayer player)
         {
-            Logger.Info($"[{player.Id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00ff00"));
+            Logger.Info($"[{player.Id}] ".WithColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00FF00"));
         }
 
         void OnPhotonPlayerDisconnected(PhotonPlayer player)
         {
-            Logger.Info($"[{player.Id}] ".WithColor("ffcc00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("ff0000"));
+            Logger.Info($"[{player.Id}] ".WithColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("FF0000"));
         }
 
         void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
@@ -260,6 +188,7 @@ namespace Guardian
                 player.isNekoOwner = properties.ContainsValue("N_owner");
             }
 
+            // FoxMod detection
             if (properties.ContainsKey("FoxMod"))
             {
                 player.isFoxMod = true;

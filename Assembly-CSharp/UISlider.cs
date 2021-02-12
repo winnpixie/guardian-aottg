@@ -87,7 +87,7 @@ public class UISlider : IgnoreTimeScale
 		if (foreground != null)
 		{
 			mFGWidget = foreground.GetComponent<UIWidget>();
-			mFGFilled = ((!(mFGWidget != null)) ? null : (mFGWidget as UISprite));
+			mFGFilled = (mFGWidget == null ? null : (mFGWidget as UISprite));
 			mFGTrans = foreground.transform;
 			if (mSize == Vector2.zero)
 			{

@@ -808,7 +808,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             {
                 crossFade("die", 0.1f);
                 isHitWhileCarryingRock = true;
-                GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().LoseGame();
+                FengGameManagerMKII.Instance.LoseGame();
                 base.photonView.RPC("rockPlayAnimation", PhotonTargets.All, "set");
             }
             else
@@ -1002,9 +1002,9 @@ public class TITAN_EREN : Photon.MonoBehaviour
                                 {
                                     if (gameObject2.transform.parent.gameObject == gameObject)
                                     {
-                                        GameObject gameObject3 = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().SpawnTitan(70, gameObject2.transform.position, gameObject2.transform.rotation);
-                                        gameObject3.GetComponent<TITAN>().isAlarm = true;
-                                        gameObject3.GetComponent<TITAN>().chaseDistance = 999999f;
+                                        TITAN gameObject3 = FengGameManagerMKII.Instance.SpawnTitan(70, gameObject2.transform.position, gameObject2.transform.rotation).GetComponent<TITAN>();
+                                        gameObject3.isAlarm = true;
+                                        gameObject3.chaseDistance = 999999f;
                                     }
                                 }
                             }
@@ -1029,9 +1029,9 @@ public class TITAN_EREN : Photon.MonoBehaviour
                         d = point.y;
                     }
                     vector2 += Vector3.up * d;
-                    GameObject gameObject4 = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().SpawnTitan(70, vector2, base.transform.rotation);
-                    gameObject4.GetComponent<TITAN>().isAlarm = true;
-                    gameObject4.GetComponent<TITAN>().chaseDistance = 999999f;
+                    TITAN gameObject4 = FengGameManagerMKII.Instance.SpawnTitan(70, vector2, base.transform.rotation).GetComponent<TITAN>();
+                    gameObject4.isAlarm = true;
+                    gameObject4.chaseDistance = 999999f;
                 }
                 Vector3 a2 = base.transform.forward * 6f;
                 Vector3 velocity2 = base.rigidbody.velocity;
@@ -1066,7 +1066,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
                 {
                     crossFade("die", 0.1f);
                     rockPhase++;
-                    GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().WinGame();
+                    FengGameManagerMKII.Instance.WinGame();
                 }
                 if (base.animation["rock_fix_hole"].normalizedTime >= 0.62f && !rockHitGround)
                 {

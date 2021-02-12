@@ -101,7 +101,7 @@ public class UIButtonPlayAnimation : MonoBehaviour
 		{
 			target = GetComponentInChildren<Animation>();
 		}
-		if (!(target != null))
+		if (target == null)
 		{
 			return;
 		}

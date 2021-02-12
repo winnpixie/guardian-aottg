@@ -17,7 +17,7 @@ namespace Guardian.Features.Commands.Impl
 
                 if (command != null)
                 {
-                    irc.AddLine($"Help for command '{command.Name}':".WithColor("aaff00").AsBold());
+                    irc.AddLine($"Help for command '{command.Name}':".WithColor("AAFF00").AsBold());
                     irc.AddLine($"Usage: /{command.Name} {command.Usage}");
                     irc.AddLine($"Aliases: [{string.Join(", ", command.Aliases)}]");
                     return;
@@ -38,19 +38,19 @@ namespace Guardian.Features.Commands.Impl
             }
 
             int endIndex = Math.Min((page + 1) * 7, Mod.Commands.Elements.Count);
-            irc.AddLine($"Commands (Page {page + 1}/{maxPages + 1})".WithColor("aaff00").AsBold());
-            irc.AddLine("<arg> = Required, [arg] = Optional".WithColor("aaaaaa").AsBold());
+            irc.AddLine($"Commands (Page {page + 1}/{maxPages + 1})".WithColor("AAFF00").AsBold());
+            irc.AddLine("<arg> = Required, [arg] = Optional".WithColor("AAAAAA").AsBold());
             for (int i = page * 7; i < endIndex; ++i)
             {
                 Command command = Mod.Commands.Elements[i];
-                string msg = "> ".WithColor("00ff00").AsBold() + $"/{command.Name} {command.Usage}";
+                string msg = "> ".WithColor("00FF00").AsBold() + $"/{command.Name} {command.Usage}";
                 if (command.MasterClient)
                 {
-                    msg += " [MC]".WithColor("ff0000").AsBold();
+                    msg += " [MC]".WithColor("FF0000").AsBold();
                 }
                 if (command.GetType().Namespace.EndsWith("Debug"))
                 {
-                    msg += " [DBG]".WithColor("aaaaa").AsBold();
+                    msg += " [DBG]".WithColor("AAAAAA").AsBold();
                 }
                 irc.AddLine(msg);
             }

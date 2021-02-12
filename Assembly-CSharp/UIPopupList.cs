@@ -124,7 +124,7 @@ public class UIPopupList : MonoBehaviour
 
 	private void Start()
 	{
-		if (!(textLabel != null))
+		if (textLabel == null)
 		{
 			return;
 		}
@@ -153,7 +153,7 @@ public class UIPopupList : MonoBehaviour
 
 	private void Highlight(UILabel lbl, bool instant)
 	{
-		if (!(mHighlight != null))
+		if (mHighlight == null)
 		{
 			return;
 		}
@@ -361,7 +361,7 @@ public class UIPopupList : MonoBehaviour
 				UILabel uILabel = NGUITools.AddWidget<UILabel>(mChild);
 				uILabel.pivot = UIWidget.Pivot.TopLeft;
 				uILabel.font = font;
-				uILabel.text = ((!isLocalized || !(Localization.instance != null)) ? text : Localization.instance.Get(text));
+				uILabel.text = (!isLocalized || Localization.instance == null) ? text : Localization.instance.Get(text);
 				uILabel.color = textColor;
 				uILabel.cachedTransform.localPosition = new Vector3(border.x + padding.x, num4, -1f);
 				uILabel.MakePixelPerfect();

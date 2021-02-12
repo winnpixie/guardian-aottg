@@ -8,6 +8,11 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 
         public override void Execute(InRoomChat irc, string[] args)
         {
+            if (!Mod.Instance.IsMultiMap)
+            {
+                irc.AddLine("This is not a Multi-Map room!".WithColor("FF0000"));
+                return;
+            }
             if (args.Length > 0)
             {
                 LevelInfo levelInfo = LevelInfo.GetInfo(string.Join(" ", args));
@@ -17,6 +22,16 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     {
                         { "Map", levelInfo.Name }
                     });
+
+                    ExitGames.Client.Photon.Hashtable properties = new ExitGames.Client.Photon.Hashtable()
+                    {
+                        { PhotonPlayerProperty.IsTitan, 1 },
+                    };
+                    foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                    {
+                        player.SetCustomProperties(properties);
+                    }
+
                     FengGameManagerMKII.Instance.RestartGame();
 
                     GameHelper.Broadcast($"The map in play is now {levelInfo.Name}!");
@@ -24,11 +39,11 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             }
             else
             {
-                irc.AddLine("Available Maps:".WithColor("aaff00"));
+                irc.AddLine("Available Maps:".WithColor("AAFF00"));
 
                 foreach (LevelInfo level in LevelInfo.Levels)
                 {
-                    irc.AddLine("> ".WithColor("00ff00").AsBold() + level.Name);
+                    irc.AddLine("> ".WithColor("00FF00").AsBold() + level.Name);
                 }
             }
         }

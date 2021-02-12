@@ -41,7 +41,7 @@ public class UICursor : MonoBehaviour
 
 	private void Update()
 	{
-		if (!(mSprite.atlas != null))
+		if (mSprite.atlas == null)
 		{
 			return;
 		}

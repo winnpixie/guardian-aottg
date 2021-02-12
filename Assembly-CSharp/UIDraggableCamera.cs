@@ -110,7 +110,7 @@ public class UIDraggableCamera : IgnoreTimeScale
 		{
 			mDragStarted = false;
 		}
-		if (!(rootForBounds != null))
+		if (rootForBounds == null)
 		{
 			return;
 		}

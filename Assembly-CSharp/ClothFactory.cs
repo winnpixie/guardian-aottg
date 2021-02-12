@@ -105,7 +105,7 @@ public static class ClothFactory
 
     public static void DisposeObject(GameObject cachedObject)
     {
-        if (!(cachedObject != null))
+        if (cachedObject == null)
         {
             return;
         }

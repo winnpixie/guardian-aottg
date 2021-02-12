@@ -7,10 +7,10 @@ public class UIStorageSlot : UIItemSlot
 
 	public int slot;
 
-	protected override InvGameItem observedItem => (!(storage != null)) ? null : storage.GetItem(slot);
+	protected override InvGameItem observedItem => storage == null ? null : storage.GetItem(slot);
 
 	protected override InvGameItem Replace(InvGameItem item)
 	{
-		return (!(storage != null)) ? item : storage.Replace(slot, item);
+		return storage == null ? item : storage.Replace(slot, item);
 	}
 }

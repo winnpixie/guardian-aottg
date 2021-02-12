@@ -12,7 +12,7 @@ public class UIDragPanelContents : MonoBehaviour
 
 	private void Awake()
 	{
-		if (!(panel != null))
+		if (panel == null)
 		{
 			return;
 		}

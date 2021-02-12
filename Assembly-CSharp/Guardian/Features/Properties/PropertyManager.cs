@@ -30,6 +30,8 @@ namespace Guardian.Features.Properties
 
         // Visual
         public Property<bool> LegacyTimeFormat = new Property<bool>("Visual_LegacyTimeFormat", new string[0], true);
+        public Property<bool> ChatBackground = new Property<bool>("Visual_ShowChatBackground", new string[0], true);
+        public Property<bool> LogBackground = new Property<bool>("Visual_ShowLogBackground", new string[0], true);
 
         // Logging
         public Property<bool> ShowLog = new Property<bool>("Log_ShowLog", new string[0], true);
@@ -61,6 +63,8 @@ namespace Guardian.Features.Properties
 
             // Visual
             base.Add(LegacyTimeFormat);
+            base.Add(ChatBackground);
+            base.Add(LogBackground);
 
             // Logging
             base.Add(ShowLog);

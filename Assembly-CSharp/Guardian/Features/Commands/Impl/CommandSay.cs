@@ -13,7 +13,7 @@
                 {
                     name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
                 }
-                FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, Mod.HandleChat(string.Join(" ", args), name));
+                FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, InRoomChat.FormatMessage(string.Join(" ", args), name));
             }
         }
     }

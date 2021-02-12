@@ -126,12 +126,12 @@ public class UITextList : MonoBehaviour
 
 	protected void UpdateVisibleText()
 	{
-		if (!(textLabel != null))
+		if (textLabel == null)
 		{
 			return;
 		}
 		UIFont font = textLabel.font;
-		if (!(font != null))
+		if (font == null)
 		{
 			return;
 		}

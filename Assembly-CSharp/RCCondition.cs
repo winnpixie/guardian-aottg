@@ -50,7 +50,7 @@ public class RCCondition
         switch (type)
         {
             case 0:
-                return IntCompare(parameter1.returnInt(null), parameter2.returnInt(null));
+                return IntCompare(parameter1.ReturnInt(null), parameter2.ReturnInt(null));
             case 1:
                 return BoolCompare(parameter1.returnBool(null), parameter2.returnBool(null));
             case 2:

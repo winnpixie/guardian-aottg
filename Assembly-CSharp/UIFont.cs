@@ -82,21 +82,21 @@ public class UIFont : MonoBehaviour
 
     private static CharacterInfo mChar;
 
-    public BMFont bmFont => (!(mReplacement != null)) ? mFont : mReplacement.bmFont;
+    public BMFont bmFont => mReplacement == null ? mFont : mReplacement.bmFont;
 
     public int texWidth => (mReplacement != null) ? mReplacement.texWidth : ((mFont == null) ? 1 : mFont.texWidth);
 
     public int texHeight => (mReplacement != null) ? mReplacement.texHeight : ((mFont == null) ? 1 : mFont.texHeight);
 
-    public bool hasSymbols => (!(mReplacement != null)) ? (mSymbols.Count != 0) : mReplacement.hasSymbols;
+    public bool hasSymbols => mReplacement == null ? (mSymbols.Count != 0) : mReplacement.hasSymbols;
 
-    public List<BMSymbol> symbols => (!(mReplacement != null)) ? mSymbols : mReplacement.symbols;
+    public List<BMSymbol> symbols => mReplacement == null ? mSymbols : mReplacement.symbols;
 
     public UIAtlas atlas
     {
         get
         {
-            return (!(mReplacement != null)) ? mAtlas : mReplacement.atlas;
+            return mReplacement == null ? mAtlas : mReplacement.atlas;
         }
         set
         {
@@ -234,7 +234,7 @@ public class UIFont : MonoBehaviour
                 return mReplacement.texture;
             }
             Material material = this.material;
-            return (!(material != null)) ? null : (material.mainTexture as Texture2D);
+            return material == null ? null : (material.mainTexture as Texture2D);
         }
     }
 
@@ -290,7 +290,7 @@ public class UIFont : MonoBehaviour
     {
         get
         {
-            return (!(mReplacement != null)) ? mFont.spriteName : mReplacement.spriteName;
+            return mReplacement == null ? mFont.spriteName : mReplacement.spriteName;
         }
         set
         {
@@ -310,7 +310,7 @@ public class UIFont : MonoBehaviour
     {
         get
         {
-            return (!(mReplacement != null)) ? mSpacingX : mReplacement.horizontalSpacing;
+            return (mReplacement == null) ? mSpacingX : mReplacement.horizontalSpacing;
         }
         set
         {
@@ -330,7 +330,7 @@ public class UIFont : MonoBehaviour
     {
         get
         {
-            return (!(mReplacement != null)) ? mSpacingY : mReplacement.verticalSpacing;
+            return mReplacement == null ? mSpacingY : mReplacement.verticalSpacing;
         }
         set
         {
@@ -422,7 +422,7 @@ public class UIFont : MonoBehaviour
     {
         get
         {
-            return (!(mReplacement != null)) ? mDynamicFont : mReplacement.dynamicFont;
+            return mReplacement == null ? mDynamicFont : mReplacement.dynamicFont;
         }
         set
         {
@@ -468,7 +468,7 @@ public class UIFont : MonoBehaviour
     {
         get
         {
-            return (!(mReplacement != null)) ? mDynamicFontStyle : mReplacement.dynamicFontStyle;
+            return mReplacement == null ? mDynamicFontStyle : mReplacement.dynamicFontStyle;
         }
         set
         {

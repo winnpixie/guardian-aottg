@@ -6,10 +6,10 @@
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            irc.AddLine("List of ignored players:".WithColor("ffcc00"));
+            irc.AddLine("List of ignored players:".WithColor("FFCC00"));
             foreach (int id in FengGameManagerMKII.IgnoreList)
             {
-                irc.AddLine(id.ToString().WithColor("ffcc00"));
+                irc.AddLine(id.ToString().WithColor("FFCC00"));
             }
         }
     }

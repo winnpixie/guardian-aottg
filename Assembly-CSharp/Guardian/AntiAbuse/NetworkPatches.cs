@@ -8,7 +8,7 @@ namespace Guardian.AntiAbuse
     {
         public static List<string> PropertyWhitelist = new List<string>();
         private static List<object> RoomPropertyWhitelist = new List<object>(new object[] {
-            (byte)255, (byte)254, (byte)253, (byte)250, (byte)249, (byte)248, "sender"
+            (byte)255, (byte)254, (byte)253, (byte)250, (byte)249, (byte)248, "sender", "Map", "Lighting"
         });
 
         // NetworkingPeer.OnEvent (Code 202)

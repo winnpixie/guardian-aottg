@@ -32,8 +32,9 @@
                             else if (PhotonNetwork.isMasterClient)
                             {
                                 FengGameManagerMKII.Instance.KickPlayer(player, true, reason);
-                                FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " has been banned from the server!".WithColor("ffcc00"), string.Empty);
-                                FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Reason: {reason}".WithColor("ffcc00"), string.Empty);
+                                FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() 
+                                    + " has been banned from the server!".WithColor("FFCC00"), string.Empty);
+                                FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, $"Reason: {reason}".WithColor("FFCC00"), string.Empty);
                             }
                         }
                     }

@@ -1482,6 +1482,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         break;
                     case "ResetRPCMgr": // ExpMod
                     case "HookDMRPC":
+                    case "GetDownRPC":
                     case "pairRPC": // ExpMod?
                     case "flareColorRPC":
                     case "EMCustomMapRPC":

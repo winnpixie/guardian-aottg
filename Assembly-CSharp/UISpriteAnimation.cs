@@ -108,7 +108,7 @@ public class UISpriteAnimation : MonoBehaviour
 			mSprite = GetComponent<UISprite>();
 		}
 		mSpriteNames.Clear();
-		if (!(mSprite != null) || !(mSprite.atlas != null))
+		if (mSprite == null || mSprite.atlas == null)
 		{
 			return;
 		}

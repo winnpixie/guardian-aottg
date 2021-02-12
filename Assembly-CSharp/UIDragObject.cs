@@ -38,7 +38,7 @@ public class UIDragObject : IgnoreTimeScale
 
 	private void FindPanel()
 	{
-		mPanel = ((!(target != null)) ? null : UIPanel.Find(target.transform, createIfMissing: false));
+		mPanel = target == null ? null : UIPanel.Find(target.transform, createIfMissing: false);
 		if (mPanel == null)
 		{
 			restrictWithinPanel = false;
@@ -47,7 +47,7 @@ public class UIDragObject : IgnoreTimeScale
 
 	private void OnPress(bool pressed)
 	{
-		if (!base.enabled || !NGUITools.GetActive(base.gameObject) || !(target != null))
+		if (!base.enabled || !NGUITools.GetActive(base.gameObject) || target == null)
 		{
 			return;
 		}
@@ -71,7 +71,7 @@ public class UIDragObject : IgnoreTimeScale
 			}
 			mLastPos = UICamera.lastHit.point;
 			Transform transform = UICamera.currentCamera.transform;
-			mPlane = new Plane(((!(mPanel != null)) ? transform.rotation : mPanel.cachedTransform.rotation) * Vector3.back, mLastPos);
+			mPlane = new Plane((mPanel == null ? transform.rotation : mPanel.cachedTransform.rotation) * Vector3.back, mLastPos);
 		}
 		else if (restrictWithinPanel && mPanel.clipping != 0 && dragEffect == DragEffect.MomentumAndSpring)
 		{
@@ -81,7 +81,7 @@ public class UIDragObject : IgnoreTimeScale
 
 	private void OnDrag(Vector2 delta)
 	{
-		if (!base.enabled || !NGUITools.GetActive(base.gameObject) || !(target != null))
+		if (!base.enabled || !NGUITools.GetActive(base.gameObject) || target == null)
 		{
 			return;
 		}

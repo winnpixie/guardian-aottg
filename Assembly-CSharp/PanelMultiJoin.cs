@@ -66,19 +66,19 @@ public class PanelMultiJoin : MonoBehaviour
         string[] info = room.name.Split('`');
         if (info.Length < 7)
         {
-            return "[ff0000]Insufficient room data to be playable.";
+            return "[FF0000]Insufficient room data to be playable.";
         }
 
-        string pwd = info[5].Length == 0 ? string.Empty : "[ff0000](Pwd)[-] ";
+        string pwd = info[5].Length == 0 ? string.Empty : "[FF0000](Pwd)[-] ";
 
         string difficulty = info[2];
         if (difficulty.Equals("normal", StringComparison.OrdinalIgnoreCase))
         {
-            difficulty = $"[00ff00]Normal[-]";
+            difficulty = $"[00FF00]Normal[-]";
         }
         else if (difficulty.Equals("hard", StringComparison.OrdinalIgnoreCase))
         {
-            difficulty = $"[ff0000]Hard[-]";
+            difficulty = $"[FF0000]Hard[-]";
         }
         else if (difficulty.Equals("abnormal", StringComparison.OrdinalIgnoreCase))
         {
@@ -88,11 +88,11 @@ public class PanelMultiJoin : MonoBehaviour
         string daylight = info[4];
         if (daylight.Equals("day", StringComparison.OrdinalIgnoreCase))
         {
-            daylight = $"[ffff00]Day[-]";
+            daylight = $"[FFFF00]Day[-]";
         }
         else if (daylight.Equals("dawn", StringComparison.OrdinalIgnoreCase))
         {
-            daylight = $"[ff6600]Dawn[-]";
+            daylight = $"[FF6600]Dawn[-]";
         }
         else if (daylight.Equals("night", StringComparison.OrdinalIgnoreCase))
         {
@@ -102,11 +102,11 @@ public class PanelMultiJoin : MonoBehaviour
         string roomMeta = string.Empty;
         if (!room.open || (room.maxPlayers != 0 && room.playerCount >= room.maxPlayers))
         {
-            roomMeta = "[ff0000]";
+            roomMeta = "[FF0000]";
         }
         roomMeta += $"{room.playerCount}/{room.maxPlayers}[-]";
 
-        return $"{pwd}{info[0]}[-][ffffff]/{info[1]}/{difficulty}/{daylight} {roomMeta}";
+        return $"{pwd}{info[0]}[-][FFFFFF]/{info[1]}/{difficulty}/{daylight} {roomMeta}";
     }
 
     private void showServerList()

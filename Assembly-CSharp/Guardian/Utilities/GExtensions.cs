@@ -45,7 +45,7 @@ public static class GExtensions
             {
                 if (str[i + 1] == '-' && str[i + 2] == ']') // [-], aka return to previous color in the stack
                 {
-                    string previous = "ffffff"; // Default to white
+                    string previous = "FFFFFF"; // Default to white
 
                     if (colors.Count > 0)
                     {

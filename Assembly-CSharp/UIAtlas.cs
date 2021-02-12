@@ -51,7 +51,7 @@ public class UIAtlas : MonoBehaviour
     {
         get
         {
-            return (!(mReplacement != null)) ? material : mReplacement.spriteMaterial;
+            return mReplacement == null ? material : mReplacement.spriteMaterial;
         }
         set
         {
@@ -94,7 +94,7 @@ public class UIAtlas : MonoBehaviour
     {
         get
         {
-            return (!(mReplacement != null)) ? sprites : mReplacement.spriteList;
+            return mReplacement == null ? sprites : mReplacement.spriteList;
         }
         set
         {
@@ -109,13 +109,13 @@ public class UIAtlas : MonoBehaviour
         }
     }
 
-    public Texture texture => (mReplacement != null) ? mReplacement.texture : ((!(material != null)) ? null : material.mainTexture);
+    public Texture texture => (mReplacement != null) ? mReplacement.texture : (material == null ? null : material.mainTexture);
 
     public Coordinates coordinates
     {
         get
         {
-            return (!(mReplacement != null)) ? mCoordinates : mReplacement.coordinates;
+            return mReplacement == null ? mCoordinates : mReplacement.coordinates;
         }
         set
         {
@@ -159,7 +159,7 @@ public class UIAtlas : MonoBehaviour
     {
         get
         {
-            return (!(mReplacement != null)) ? mPixelSize : mReplacement.pixelSize;
+            return mReplacement == null ? mPixelSize : mReplacement.pixelSize;
         }
         set
         {

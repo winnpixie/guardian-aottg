@@ -129,26 +129,23 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         snapShotCamera.gameObject.GetComponent<Skybox>().material = base.gameObject.GetComponent<Skybox>().material;
     }
 
-    public void setHUDposition()
+    public void SetHUDPosition()
     {
-        GameObject gameObject = GameObject.Find("Flare");
-        gameObject.transform.localPosition = new Vector3((int)((float)(-Screen.width) * 0.5f) + 14, (int)((float)(-Screen.height) * 0.5f), 0f);
-        gameObject = GameObject.Find("LabelInfoBottomRight");
+        GameObject.Find("Flare").transform.localPosition = new Vector3((int)((float)(-Screen.width) * 0.5f) + 14, (int)((float)(-Screen.height) * 0.5f), 0f);
+
+        GameObject gameObject = GameObject.Find("LabelInfoBottomRight");
         gameObject.transform.localPosition = new Vector3((int)((float)Screen.width * 0.5f), (int)((float)(-Screen.height) * 0.5f), 0f);
         gameObject.GetComponent<UILabel>().text = "Pause : " + GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().inputString[InputCode.Pause] + " ";
-        gameObject = GameObject.Find("LabelInfoTopCenter");
-        gameObject.transform.localPosition = new Vector3(0f, (int)((float)Screen.height * 0.5f), 0f);
-        gameObject = GameObject.Find("LabelInfoTopRight");
-        gameObject.transform.localPosition = new Vector3((int)((float)Screen.width * 0.5f), (int)((float)Screen.height * 0.5f), 0f);
+
+        GameObject.Find("LabelInfoTopCenter").transform.localPosition = new Vector3(0f, (int)((float)Screen.height * 0.5f), 0f);
+        GameObject.Find("LabelInfoTopRight").transform.localPosition = new Vector3((int)((float)Screen.width * 0.5f), (int)((float)Screen.height * 0.5f), 0f);
         GameObject.Find("LabelNetworkStatus").transform.localPosition = new Vector3((int)((float)(-Screen.width) * 0.5f), (int)((float)Screen.height * 0.5f), 0f);
-        gameObject = GameObject.Find("LabelInfoTopLeft");
-        gameObject.transform.localPosition = new Vector3((int)((float)(-Screen.width) * 0.5f), (int)((float)Screen.height * 0.5f - 20f), 0f);
+        GameObject.Find("LabelInfoTopLeft").transform.localPosition = new Vector3((int)((float)(-Screen.width) * 0.5f), (int)((float)Screen.height * 0.5f - 20f), 0f);
+
         gameObject = GameObject.Find("Chatroom");
         gameObject.transform.localPosition = new Vector3((int)((float)(-Screen.width) * 0.5f), (int)((float)(-Screen.height) * 0.5f), 0f);
-        if ((bool)GameObject.Find("Chatroom"))
-        {
-            GameObject.Find("Chatroom").GetComponent<InRoomChat>().UpdatePosition();
-        }
+        gameObject.GetComponent<InRoomChat>().UpdatePosition();
+
         if (!UsingTitan || Gametype == GameType.Singleplayer)
         {
             GameObject.Find("skill_cd_bottom").transform.localPosition = new Vector3(0f, (int)((float)(-Screen.height) * 0.5f + 5f), 0f);
@@ -172,6 +169,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             GameObject.Find("stamina_titan").transform.localPosition = new Vector3(-160f, (int)((float)(-Screen.height) * 0.5f + 15f), 0f);
             GameObject.Find("stamina_titan_bottom").transform.localPosition = new Vector3(-160f, (int)((float)(-Screen.height) * 0.5f + 15f), 0f);
         }
+
         if (main_object != null && main_object.GetComponent<HERO>() != null)
         {
             if (Gametype == GameType.Singleplayer)
@@ -183,10 +181,12 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 main_object.GetComponent<HERO>().setSkillHUDPosition2();
             }
         }
+
         if (StereoType == STEREO_3D_TYPE.SIDE_BY_SIDE)
         {
             base.gameObject.GetComponent<Camera>().aspect = Screen.width / Screen.height;
         }
+
         createSnapShotRT2();
     }
 
@@ -216,21 +216,23 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     {
         if (Gametype == GameType.Singleplayer)
         {
-            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().RestartGameSingle();
+            FengGameManagerMKII.Instance.RestartGameSingle();
         }
     }
 
     public void SetSpectorMode(bool val)
     {
         spectatorMode = val;
-        GameObject.Find("MainCamera").GetComponent<SpectatorMovement>().disable = !val;
-        GameObject.Find("MainCamera").GetComponent<MouseLook>().disable = !val;
+
+        GameObject mainCam = GameObject.Find("MainCamera");
+        mainCam.GetComponent<SpectatorMovement>().disable = !val;
+        mainCam.GetComponent<MouseLook>().disable = !val;
     }
 
     private void MoveCamera()
     {
         distanceOffsetMulti = CameraDistance * (200f - base.camera.fieldOfView) / 150f;
-        base.transform.position = ((!(head != null)) ? main_object.transform.position : head.transform.position);
+        base.transform.position = head == null ? main_object.transform.position : head.transform.position;
         base.transform.position += Vector3.up * heightMulti;
         base.transform.position -= Vector3.up * (0.6f - CameraDistance) * 2f;
 
@@ -326,7 +328,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
     }
 
-    private GameObject findNearestTitan()
+    private GameObject FindNearestTitan()
     {
         GameObject[] array = GameObject.FindGameObjectsWithTag("titan");
         GameObject result = null;
@@ -397,7 +399,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         return obj;
     }
 
-    public void snapShotUpdate()
+    public void SnapShotUpdate()
     {
         if (startSnapShotFrameCount)
         {
@@ -441,7 +443,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     public void snapShot2(int index)
     {
-        snapShotCamera.transform.position = ((!(head != null)) ? main_object.transform.position : head.transform.position);
+        snapShotCamera.transform.position = head == null ? main_object.transform.position : head.transform.position;
         snapShotCamera.transform.position += Vector3.up * heightMulti;
         snapShotCamera.transform.position -= Vector3.up * 1.1f;
         Vector3 position;
@@ -471,8 +473,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         snapShotCamera.transform.position -= snapShotCamera.transform.forward * Random.Range(num + 3f, num + 10f);
         snapShotCamera.transform.LookAt(a);
         snapShotCamera.transform.RotateAround(a, base.transform.forward, Random.Range(-30f, 30f));
-        Vector3 end = (!(head != null)) ? main_object.transform.position : head.transform.position;
-        Vector3 vector2 = ((!(head != null)) ? main_object.transform.position : head.transform.position) - snapShotCamera.transform.position;
+        Vector3 end = head == null ? main_object.transform.position : head.transform.position;
+        Vector3 vector2 = (head == null ? main_object.transform.position : head.transform.position) - snapShotCamera.transform.position;
         end -= vector2;
         LayerMask mask = 1 << LayerMask.NameToLayer("Ground");
         LayerMask mask2 = 1 << LayerMask.NameToLayer("EnemyBox");
@@ -697,7 +699,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         if (needSetHUD)
         {
             needSetHUD = false;
-            setHUDposition();
+            SetHUDPosition();
             Screen.lockCursor = !Screen.lockCursor;
             Screen.lockCursor = !Screen.lockCursor;
         }
@@ -754,7 +756,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             TriggerAutoLock = !TriggerAutoLock;
             if (TriggerAutoLock)
             {
-                lockTarget = findNearestTitan();
+                lockTarget = FindNearestTitan();
                 if (closestDistance >= 150f)
                 {
                     lockTarget = null;

@@ -26,7 +26,7 @@ namespace Guardian.Features.Commands.Impl.RC
                                 Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(GameHelper.GetHero(player).gameObject);
                             }
                             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(false);
-                            irc.AddLine($"Now spectating #{id}.".WithColor("ffcc00"));
+                            irc.AddLine($"Now spectating #{id}.".WithColor("FFCC00"));
                         }
                     }
                 }
@@ -37,13 +37,13 @@ namespace Guardian.Features.Commands.Impl.RC
                 {
                     FengGameManagerMKII.Settings[0xf5] = 1;
                     FengGameManagerMKII.Instance.EnterSpecMode(true);
-                    irc.AddLine("You entered spectator mode.".WithColor("ffcc00"));
+                    irc.AddLine("You entered spectator mode.".WithColor("FFCC00"));
                 }
                 else
                 {
                     FengGameManagerMKII.Settings[0xf5] = 0;
                     FengGameManagerMKII.Instance.EnterSpecMode(false);
-                    irc.AddLine("You left spectator mode.".WithColor("ffcc00"));
+                    irc.AddLine("You left spectator mode.".WithColor("FFCC00"));
                 }
             }
         }

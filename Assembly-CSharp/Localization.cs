@@ -120,6 +120,6 @@ public class Localization : MonoBehaviour
 
     public static string Localize(string key)
     {
-        return (!(instance != null)) ? key : instance.Get(key);
+        return instance == null ? key : instance.Get(key);
     }
 }

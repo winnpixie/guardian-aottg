@@ -83,17 +83,17 @@ public class RCActionHelper
         parameters = options;
     }
 
-    public void setNextHelper(RCActionHelper sentHelper)
+    public void SetNextHelper(RCActionHelper sentHelper)
     {
         nextHelper = sentHelper;
     }
 
-    public void callException(string str)
+    public void CallException(string str)
     {
-        FengGameManagerMKII.Instance.chatRoom.AddLine(str);
+        InRoomChat.Instance.AddLine(str);
     }
 
-    public int returnInt(object sentObject)
+    public int ReturnInt(object sentObject)
     {
         object obj = sentObject;
         if (parameters != null)
@@ -139,15 +139,15 @@ public class RCActionHelper
                         case 0:
                             return (int)FengGameManagerMKII.IntVariables[rCActionHelper2.returnString(null)];
                         case 1:
-                            return nextHelper.returnInt(FengGameManagerMKII.BoolVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.BoolVariables[rCActionHelper2.returnString(null)]);
                         case 2:
-                            return nextHelper.returnInt(FengGameManagerMKII.StringVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.StringVariables[rCActionHelper2.returnString(null)]);
                         case 3:
-                            return nextHelper.returnInt(FengGameManagerMKII.FloatVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.FloatVariables[rCActionHelper2.returnString(null)]);
                         case 4:
-                            return nextHelper.returnInt(FengGameManagerMKII.PlayerVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.PlayerVariables[rCActionHelper2.returnString(null)]);
                         case 5:
-                            return nextHelper.returnInt(FengGameManagerMKII.TitanVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.TitanVariables[rCActionHelper2.returnString(null)]);
                         default:
                             return 0;
                     }
@@ -164,7 +164,7 @@ public class RCActionHelper
                             case 1:
                                 return (int)photonPlayer.customProperties[PhotonPlayerProperty.RCTeam];
                             case 2:
-                                return nextHelper.returnInt(photonPlayer.customProperties[PhotonPlayerProperty.Dead]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.Dead]);
                             case 3:
                                 return (int)photonPlayer.customProperties[PhotonPlayerProperty.IsTitan];
                             case 4:
@@ -178,18 +178,18 @@ public class RCActionHelper
                             case 8:
                                 return (int)photonPlayer.customProperties[PhotonPlayerProperty.CustomInt];
                             case 9:
-                                return nextHelper.returnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomBool]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomBool]);
                             case 10:
-                                return nextHelper.returnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomString]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomString]);
                             case 11:
-                                return nextHelper.returnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
                             case 14:
                                 {
                                     int iD4 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD4))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD4];
-                                        return nextHelper.returnInt(hERO.transform.position.x);
+                                        return nextHelper.ReturnInt(hERO.transform.position.x);
                                     }
                                     return 0;
                                 }
@@ -199,7 +199,7 @@ public class RCActionHelper
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD3))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD3];
-                                        return nextHelper.returnInt(hERO.transform.position.y);
+                                        return nextHelper.ReturnInt(hERO.transform.position.y);
                                     }
                                     return 0;
                                 }
@@ -209,21 +209,21 @@ public class RCActionHelper
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD2))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD2];
-                                        return nextHelper.returnInt(hERO.transform.position.z);
+                                        return nextHelper.ReturnInt(hERO.transform.position.z);
                                     }
                                     return 0;
                                 }
                             case 12:
-                                return nextHelper.returnInt(photonPlayer.customProperties[PhotonPlayerProperty.Name]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.Name]);
                             case 13:
-                                return nextHelper.returnInt(photonPlayer.customProperties[PhotonPlayerProperty.Guild]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.Guild]);
                             case 17:
                                 {
                                     int iD = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD];
-                                        return nextHelper.returnInt(hERO.rigidbody.velocity.magnitude);
+                                        return nextHelper.ReturnInt(hERO.rigidbody.velocity.magnitude);
                                     }
                                     return 0;
                                 }
@@ -241,15 +241,15 @@ public class RCActionHelper
                             case 0:
                                 return (int)tITAN.abnormalType;
                             case 1:
-                                return nextHelper.returnInt(tITAN.myLevel);
+                                return nextHelper.ReturnInt(tITAN.myLevel);
                             case 2:
                                 return tITAN.currentHealth;
                             case 3:
-                                return nextHelper.returnInt(tITAN.transform.position.x);
+                                return nextHelper.ReturnInt(tITAN.transform.position.x);
                             case 4:
-                                return nextHelper.returnInt(tITAN.transform.position.y);
+                                return nextHelper.ReturnInt(tITAN.transform.position.y);
                             case 5:
-                                return nextHelper.returnInt(tITAN.transform.position.z);
+                                return nextHelper.ReturnInt(tITAN.transform.position.z);
                         }
                     }
                     return 0;
@@ -261,11 +261,11 @@ public class RCActionHelper
                     switch (helperType)
                     {
                         case 0:
-                            return nextHelper.returnInt(rCRegion.GetRandomX());
+                            return nextHelper.ReturnInt(rCRegion.GetRandomX());
                         case 1:
-                            return nextHelper.returnInt(rCRegion.GetRandomY());
+                            return nextHelper.ReturnInt(rCRegion.GetRandomY());
                         case 2:
-                            return nextHelper.returnInt(rCRegion.GetRandomZ());
+                            return nextHelper.ReturnInt(rCRegion.GetRandomZ());
                         default:
                             return 0;
                     }

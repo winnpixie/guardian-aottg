@@ -348,8 +348,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         float num = 2.4f * myLevel;
         Collider[] array = Physics.OverlapSphere(hand.GetComponent<SphereCollider>().transform.position, num + 1f);
-        Collider[] array2 = array;
-        foreach (Collider collider in array2)
+        foreach (Collider collider in array)
         {
             if (!(collider.transform.root.tag == "Player"))
             {
@@ -1451,7 +1450,7 @@ public class TITAN : Photon.MonoBehaviour
     public void titanGetHit(int viewID, int speed)
     {
         PhotonView photonView = PhotonView.Find(viewID);
-        if (!(photonView != null) || !((photonView.gameObject.transform.position - neck.position).magnitude < lagMax) || hasDie || !(Time.time - healthTime > 0.2f))
+        if (photonView == null || !((photonView.gameObject.transform.position - neck.position).magnitude < lagMax) || hasDie || !(Time.time - healthTime > 0.2f))
         {
             return;
         }
@@ -1513,7 +1512,7 @@ public class TITAN : Photon.MonoBehaviour
         }
     }
 
-    public void suicide()
+    public void Suicide()
     {
         netDie();
         if (nonAI)
@@ -2453,7 +2452,7 @@ public class TITAN : Photon.MonoBehaviour
                     }
                     if (controller.isSuicide)
                     {
-                        suicide();
+                        Suicide();
                     }
                     return;
                 }
@@ -2590,7 +2589,7 @@ public class TITAN : Photon.MonoBehaviour
                         return;
                     }
                 }
-                if (!(PVPfromCheckPt != null))
+                if (PVPfromCheckPt == null)
                 {
                     return;
                 }
@@ -3797,7 +3796,7 @@ public class TITAN : Photon.MonoBehaviour
 
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
                 {
-                    hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "[ff0000]Explosion ");
+                    hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "[FF0000]Explosion ");
                 }
                 else
                 {
@@ -3880,15 +3879,15 @@ public class TITAN : Photon.MonoBehaviour
         float num2 = (float)health / (float)maxHealth;
         if (num2 < 0.75f && num2 >= 0.5f)
         {
-            str = "[f2b50f]";
+            str = "[F2B50F]";
         }
         else if (num2 < 0.5f && num2 >= 0.25f)
         {
-            str = "[ff8100]";
+            str = "[FF8100]";
         }
         else if (num2 < 0.25f)
         {
-            str = "[ff3333]";
+            str = "[FF3333]";
         }
         healthLabel.GetComponent<UILabel>().text = str + Convert.ToString(health);
     }

@@ -19,7 +19,7 @@ public class Cannon : Photon.MonoBehaviour
 
     public void Awake()
     {
-        if (!(base.photonView != null))
+        if (base.photonView == null)
         {
             return;
         }

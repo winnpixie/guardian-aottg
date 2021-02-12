@@ -6,7 +6,7 @@ using Guardian;
 using Guardian.Utilities;
 using Xft;
 
-public class HERO : Photon.MonoBehaviour
+public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScriptHero
 {
     public FengCustomInputs inputManager;
     public Camera currentCamera;
@@ -180,6 +180,23 @@ public class HERO : Photon.MonoBehaviour
     public bool isPhotonCamera;
     public GameObject myFlashlight;
     public bool isGrabbed => state == HERO_STATE.Grab;
+
+    // Anarchy
+    private float gasMultiplier = 1f;
+    public float GasUsageModifier
+    {
+        get
+        {
+            return gasMultiplier;
+        }
+        set
+        {
+            if (gasMultiplier >= 0f)
+            {
+                gasMultiplier = value;
+            }
+        }
+    }
 
     private HERO_STATE state
     {
@@ -930,7 +947,7 @@ public class HERO : Photon.MonoBehaviour
     {
         if (!(dashTime > 0f) && !(currentGas <= 0f) && !isMounted)
         {
-            useGas(totalGas * 0.04f);
+            UseGas(totalGas * 0.04f);
             facingDirection = GetGlobalFacingDirection(horizontal, vertical);
             dashV = GetGlobalFacingVector(facingDirection);
             originVM = currentSpeed;
@@ -1018,12 +1035,17 @@ public class HERO : Photon.MonoBehaviour
         }
     }
 
-    private void useGas(float amount = 0f)
+    private void UseGas(float amount = 0f)
     {
         if (amount == 0f)
         {
             amount = useGasSpeed;
         }
+
+        // BEGIN Anarchy
+        amount *= GasUsageModifier;
+        // END Anarchy
+
         if (currentGas > 0f)
         {
             currentGas -= amount;
@@ -1111,7 +1133,7 @@ public class HERO : Photon.MonoBehaviour
     {
         if (currentGas != 0f)
         {
-            useGas(0f);
+            UseGas(0f);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 bulletLeft = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("hook"));
@@ -1143,7 +1165,7 @@ public class HERO : Photon.MonoBehaviour
     {
         if (currentGas != 0f)
         {
-            useGas(0f);
+            UseGas(0f);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 bulletRight = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("hook"));
@@ -1187,8 +1209,8 @@ public class HERO : Photon.MonoBehaviour
         {
             checkBoxLeft.GetComponent<TriggerColliderWeapon>().active_me = false;
             checkBoxRight.GetComponent<TriggerColliderWeapon>().active_me = false;
-            checkBoxLeft.GetComponent<TriggerColliderWeapon>().clearHits();
-            checkBoxRight.GetComponent<TriggerColliderWeapon>().clearHits();
+            checkBoxLeft.GetComponent<TriggerColliderWeapon>().ClearHits();
+            checkBoxRight.GetComponent<TriggerColliderWeapon>().ClearHits();
             leftbladetrail.StopSmoothly(0.2f);
             rightbladetrail.StopSmoothly(0.2f);
             leftbladetrail2.StopSmoothly(0.2f);
@@ -1645,7 +1667,7 @@ public class HERO : Photon.MonoBehaviour
             }
             breakApart2(v, isBite);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
-            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().LoseGame();
+            FengGameManagerMKII.Instance.LoseGame();
             falseAttack();
             hasDied = true;
             Transform transform = base.transform.Find("audio_die");
@@ -1751,7 +1773,7 @@ public class HERO : Photon.MonoBehaviour
             meatDie.Play();
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
-            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().LoseGame();
+            FengGameManagerMKII.Instance.LoseGame();
             falseAttack();
             hasDied = true;
             GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("hitMeat2"));
@@ -1893,6 +1915,9 @@ public class HERO : Photon.MonoBehaviour
         forearmR = baseTransform.Find("Amarture/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R");
         upperarmL = baseTransform.Find("Amarture/Controller_Body/hip/spine/chest/shoulder_L/upper_arm_L");
         upperarmR = baseTransform.Find("Amarture/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R");
+
+        // Anarchy
+        Anarchy.Custom.Level.CustomAnarchyLevel.Instance.AddScriptHero(this);
     }
 
     private void Start()
@@ -2161,7 +2186,7 @@ public class HERO : Photon.MonoBehaviour
             launchElapsedTimeL += Time.deltaTime;
             if (QHold && currentGas > 0f)
             {
-                useGas(useGasSpeed * Time.deltaTime);
+                UseGas(useGasSpeed * Time.deltaTime);
             }
             else if (launchElapsedTimeL > 0.3f)
             {
@@ -2204,7 +2229,7 @@ public class HERO : Photon.MonoBehaviour
             launchElapsedTimeR += Time.deltaTime;
             if (EHold && currentGas > 0f)
             {
-                useGas(useGasSpeed * Time.deltaTime);
+                UseGas(useGasSpeed * Time.deltaTime);
             }
             else if (launchElapsedTimeR > 0.3f)
             {
@@ -2668,7 +2693,7 @@ public class HERO : Photon.MonoBehaviour
         }
         if (flag)
         {
-            useGas(useGasSpeed * Time.deltaTime);
+            UseGas(useGasSpeed * Time.deltaTime);
             if (!smoke_3dmg.enableEmission && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
             {
                 object[] parameters = new object[1]
@@ -2943,6 +2968,9 @@ public class HERO : Photon.MonoBehaviour
 
     private void OnDestroy()
     {
+        // Anarchy
+        Anarchy.Custom.Level.CustomAnarchyLevel.Instance.RemoveHero(this);
+
         if (myFlashlight != null)
         {
             UnityEngine.Object.Destroy(myFlashlight);
@@ -3553,8 +3581,8 @@ public class HERO : Photon.MonoBehaviour
                         }
                         if (!flag2)
                         {
-                            checkBoxLeft.GetComponent<TriggerColliderWeapon>().clearHits();
-                            checkBoxRight.GetComponent<TriggerColliderWeapon>().clearHits();
+                            checkBoxLeft.GetComponent<TriggerColliderWeapon>().ClearHits();
+                            checkBoxRight.GetComponent<TriggerColliderWeapon>().ClearHits();
                             if (grounded)
                             {
                                 baseRigidBody.AddForce(base.gameObject.transform.forward * 200f);
@@ -3759,8 +3787,8 @@ public class HERO : Photon.MonoBehaviour
                             {
                                 weaponColliderLeft.active_me = false;
                                 weaponColliderRight.active_me = false;
-                                weaponColliderLeft.clearHits();
-                                weaponColliderRight.clearHits();
+                                weaponColliderLeft.ClearHits();
+                                weaponColliderRight.ClearHits();
                                 leftbladetrail.StopSmoothly(0.1f);
                                 rightbladetrail.StopSmoothly(0.1f);
                                 leftbladetrail2.StopSmoothly(0.1f);
@@ -3829,8 +3857,8 @@ public class HERO : Photon.MonoBehaviour
                             {
                                 weaponColliderLeft.active_me = false;
                                 weaponColliderRight.active_me = false;
-                                weaponColliderLeft.clearHits();
-                                weaponColliderRight.clearHits();
+                                weaponColliderLeft.ClearHits();
+                                weaponColliderRight.ClearHits();
                                 leftbladetrail2.StopSmoothly(0.1f);
                                 rightbladetrail2.StopSmoothly(0.1f);
                                 leftbladetrail.StopSmoothly(0.1f);
@@ -4452,7 +4480,7 @@ public class HERO : Photon.MonoBehaviour
             }
             else
             {
-                FengGameManagerMKII.Instance.sendKillInfo(!(titanName == string.Empty), titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                FengGameManagerMKII.Instance.sendKillInfo(titanName != string.Empty, titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
             }
         }
         if (base.photonView.isMine)
@@ -4579,25 +4607,25 @@ public class HERO : Photon.MonoBehaviour
             {
                 if (info.sender.customProperties[PhotonPlayerProperty.Name] == null || info.sender.customProperties[PhotonPlayerProperty.IsTitan] == null)
                 {
-                    FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
+                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
                     return;
                 }
                 else if (viewID < 0)
                 {
                     if (titanName == string.Empty)
                     {
-                        FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + " (possibly valid).</color>");
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString() + " (possibly valid).");
                         return;
                     }
                     else
                     {
-                        FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
                         return;
                     }
                 }
                 else if (PhotonView.Find(viewID) == null)
                 {
-                    FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
+                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
                     return;
                 }
                 else
@@ -4605,7 +4633,7 @@ public class HERO : Photon.MonoBehaviour
                     PhotonView photonView = PhotonView.Find(viewID);
                     if (photonView.owner.Id != info.sender.Id)
                     {
-                        FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
                         return;
                     }
                 }
@@ -4689,7 +4717,7 @@ public class HERO : Photon.MonoBehaviour
                 PhotonView photonView2 = PhotonView.Find(viewID);
                 if (photonView2 != null)
                 {
-                    FengGameManagerMKII.Instance.sendKillInfo(killByTitan, "[ffcc00][" + info.sender.Id.ToString() + "][FFFFFF]" + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                    FengGameManagerMKII.Instance.sendKillInfo(killByTitan, "[FFCC00][" + info.sender.Id.ToString() + "][FFFFFF] " + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
                     hashtable = new ExitGames.Client.Photon.Hashtable();
                     hashtable.Add(PhotonPlayerProperty.Kills, GExtensions.AsInt(photonView2.owner.customProperties[PhotonPlayerProperty.Kills]) + 1);
                     photonView2.owner.SetCustomProperties(hashtable);
@@ -4697,7 +4725,7 @@ public class HERO : Photon.MonoBehaviour
             }
             else
             {
-                FengGameManagerMKII.Instance.sendKillInfo(!(titanName == string.Empty), "[ffcc00][" + info.sender.Id.ToString() + "][FFFFFF]" + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                FengGameManagerMKII.Instance.sendKillInfo(titanName != string.Empty, "[FFCC00][" + info.sender.Id.ToString() + "][FFFFFF] " + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
             }
         }
         if (base.photonView.isMine)
@@ -4720,29 +4748,29 @@ public class HERO : Photon.MonoBehaviour
             {
                 if (info.sender.customProperties[PhotonPlayerProperty.Name] == null || info.sender.customProperties[PhotonPlayerProperty.IsTitan] == null)
                 {
-                    FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
+                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
                 }
                 else if (viewID < 0)
                 {
                     if (titanName == string.Empty)
                     {
-                        FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + " (possibly valid).</color>");
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString() + " (possibly valid).");
                     }
                     else if (RCSettings.BombMode == 0 && RCSettings.DeadlyCannons == 0)
                     {
-                        FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
                     }
                 }
                 else if (PhotonView.Find(viewID) == null)
                 {
-                    FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
+                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
                 }
                 else
                 {
                     PhotonView photonView = PhotonView.Find(viewID);
                     if (photonView.owner.Id != info.sender.Id)
                     {
-                        FengGameManagerMKII.Instance.chatRoom.AddLine("<color=#ffcc00>Unusual Kill from ID " + info.sender.Id.ToString() + "</color>");
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
                     }
                 }
             }
@@ -4802,7 +4830,7 @@ public class HERO : Photon.MonoBehaviour
                 PhotonView photonView2 = PhotonView.Find(viewID);
                 if (photonView2 != null)
                 {
-                    FengGameManagerMKII.Instance.sendKillInfo(isKillerTitan: true, "[ffcc00][" + info.sender.Id.ToString() + "][FFFFFF]" + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                    FengGameManagerMKII.Instance.sendKillInfo(isKillerTitan: true, "[FFCC00][" + info.sender.Id.ToString() + "][FFFFFF]" + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
                     hashtable = new ExitGames.Client.Photon.Hashtable();
                     hashtable.Add(PhotonPlayerProperty.Kills, GExtensions.AsInt(photonView2.owner.customProperties[PhotonPlayerProperty.Kills]) + 1);
                     photonView2.owner.SetCustomProperties(hashtable);
@@ -4810,7 +4838,7 @@ public class HERO : Photon.MonoBehaviour
             }
             else
             {
-                FengGameManagerMKII.Instance.sendKillInfo(isKillerTitan: true, "[ffcc00][" + info.sender.Id.ToString() + "][FFFFFF]" + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                FengGameManagerMKII.Instance.sendKillInfo(isKillerTitan: true, "[FFCC00][" + info.sender.Id.ToString() + "][FFFFFF]" + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
             }
             object[] parameters = new object[1]
             {

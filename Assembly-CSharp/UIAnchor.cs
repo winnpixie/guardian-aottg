@@ -62,7 +62,7 @@ public class UIAnchor : MonoBehaviour
         {
             if (panelContainer.clipping == UIDrawCall.Clipping.None)
             {
-                float num = (!(mRoot != null)) ? 0.5f : ((float)mRoot.activeHeight / (float)Screen.height * 0.5f);
+                float num = mRoot == null ? 0.5f : ((float)mRoot.activeHeight / (float)Screen.height * 0.5f);
                 mRect.xMin = (float)(-Screen.width) * num;
                 mRect.yMin = (float)(-Screen.height) * num;
                 mRect.xMax = 0f - mRect.xMin;

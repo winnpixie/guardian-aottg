@@ -13,7 +13,7 @@ public class LevelBottom : MonoBehaviour
         }
         if (type == BottomType.Die)
         {
-            if (!(other.gameObject.GetComponent<HERO>() != null))
+            if (other.gameObject.GetComponent<HERO>() == null)
             {
                 return;
             }

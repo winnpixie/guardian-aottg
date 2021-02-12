@@ -26,7 +26,7 @@ namespace Guardian.Features.Commands.Impl.RC
                         {
                             player.SetCustomProperties(properties);
                         }
-                        FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, "All stats have been reset.".WithColor("ffcc00"), string.Empty);
+                        FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, "All stats have been reset.".WithColor("FFCC00"), string.Empty);
                     }
                     else if (int.TryParse(args[0], out int id))
                     {
@@ -35,18 +35,18 @@ namespace Guardian.Features.Commands.Impl.RC
                         {
                             player.SetCustomProperties(properties);
                         }
-                        irc.AddLine($"You reset #{id}'s stats.".WithColor("ffcc00"));
+                        irc.AddLine($"You reset #{id}'s stats.".WithColor("FFCC00"));
                     }
                 }
                 else
                 {
-                    irc.AddLine("Command requires master client.".WithColor("ff0000"));
+                    irc.AddLine("Command requires master client!".WithColor("FF0000"));
                 }
             }
             else
             {
                 PhotonNetwork.player.SetCustomProperties(properties);
-                irc.AddLine("Your stats have been reset.".WithColor("ffcc00"));
+                irc.AddLine("Your stats have been reset.".WithColor("FFCC00"));
             }
         }
     }

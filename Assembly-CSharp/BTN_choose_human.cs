@@ -66,7 +66,7 @@ public class BTN_choose_human : MonoBehaviour
         NGUITools.SetActive(GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[2], state: false);
         NGUITools.SetActive(GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[3], state: false);
         IN_GAME_MAIN_CAMERA.UsingTitan = false;
-        GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().setHUDposition();
+        GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().SetHUDPosition();
         PhotonNetwork.player.SetCustomProperties(new Hashtable
         {
             { PhotonPlayerProperty.Character, selection }

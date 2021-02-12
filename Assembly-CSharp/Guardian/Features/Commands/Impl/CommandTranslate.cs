@@ -16,14 +16,17 @@ namespace Guardian.Features.Commands.Impl
                 translator.LanguageTo = args[1];
                 translator.OriginalText = string.Join(" ", args.CopyOfRange(2, args.Length));
 
-                if (translator.Get())
+                new System.Threading.Thread(() =>
                 {
-                    irc.AddMessage("Translation ".WithColor("ffcc00") + $"({translator.LanguageFrom} -> {translator.LanguageTo})", translator.TranslatedText);
-                }
-                else
-                {
-                    irc.AddLine("An error occured trying to retrieve the translation.".WithColor("ff0000"));
-                }
+                    if (translator.Get())
+                    {
+                        irc.AddMessage("Translation ".WithColor("FFCC00") + $"({translator.LanguageFrom} -> {translator.LanguageTo})", translator.TranslatedText);
+                    }
+                    else
+                    {
+                        irc.AddLine("An error occured while trying to retrieve the translation!".WithColor("FF0000"));
+                    }
+                }).Start();
             }
         }
     }

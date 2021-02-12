@@ -127,7 +127,7 @@ public class UILabel : UIWidget
 			if (mFont != value)
 			{
 				mFont = value;
-				material = ((!(mFont != null)) ? null : mFont.material);
+				material = mFont == null ? null : mFont.material;
 				mChanged = true;
 				hasChanged = true;
 				MarkAsChanged();
@@ -387,7 +387,7 @@ public class UILabel : UIWidget
 			Material material = base.material;
 			if (material == null)
 			{
-				material = (this.material = ((!(mFont != null)) ? null : mFont.material));
+				material = this.material = (mFont == null ? null : mFont.material);
 			}
 			return material;
 		}

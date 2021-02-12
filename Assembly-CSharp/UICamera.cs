@@ -193,7 +193,7 @@ public class UICamera : MonoBehaviour
 				}
 			}
 			mSel = value;
-			if (!(mSel != null))
+			if (mSel == null)
 			{
 				return;
 			}
@@ -271,7 +271,7 @@ public class UICamera : MonoBehaviour
 		get
 		{
 			UICamera eventHandler = UICamera.eventHandler;
-			return (!(eventHandler != null)) ? null : eventHandler.cachedCamera;
+			return eventHandler == null ? null : eventHandler.cachedCamera;
 		}
 	}
 
@@ -444,7 +444,7 @@ public class UICamera : MonoBehaviour
 
 	private static void Highlight(GameObject go, bool highlighted)
 	{
-		if (!(go != null))
+		if (go == null)
 		{
 			return;
 		}

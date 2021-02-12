@@ -97,7 +97,7 @@ public class UIStretch : MonoBehaviour
 		}
 		else
 		{
-			if (!(uiCamera != null))
+			if (uiCamera == null)
 			{
 				return;
 			}

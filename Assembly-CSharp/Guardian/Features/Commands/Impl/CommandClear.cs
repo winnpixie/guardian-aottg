@@ -19,15 +19,15 @@ namespace Guardian.Features.Commands.Impl
             InRoomChat.Messages = new List<InRoomChat.Message>();
             if (!PhotonNetwork.isMasterClient)
             {
-                irc.AddLine("Chat has been cleared.".WithColor("ffcc00"));
+                irc.AddLine("Chat has been cleared.".WithColor("AAFF00"));
             }
             else
             {
                 for (int i = 0; i < 14; i++)
                 {
-                    GameHelper.Broadcast("~");
+                    GameHelper.Broadcast(" ");
                 }
-                GameHelper.Broadcast("Chat has been cleared!".WithColor("ffcc00"));
+                GameHelper.Broadcast("Chat has been cleared!".WithColor("AAFF00"));
             }
         }
     }

@@ -26,7 +26,7 @@ namespace Guardian.Utilities
         {
             if (Mod.Properties.LogInfo.Value)
             {
-                Log("[INFO]: ".WithColor("aaaaaa").AsBold() + message);
+                Log("[INFO]: ".WithColor("AAAAAA").AsBold() + message);
             }
         }
 
@@ -34,7 +34,7 @@ namespace Guardian.Utilities
         {
             if (Mod.Properties.LogWarnings.Value)
             {
-                Log("[WARN]: ".WithColor("ffcc00").AsBold() + message);
+                Log("[WARN]: ".WithColor("FFCC00").AsBold() + message);
             }
         }
 
@@ -42,7 +42,7 @@ namespace Guardian.Utilities
         {
             if (Mod.Properties.LogErrors.Value)
             {
-                Log("[ERROR]: ".WithColor("ff0000").AsBold() + message);
+                Log("[ERROR]: ".WithColor("FF0000").AsBold() + message);
 
             }
         }

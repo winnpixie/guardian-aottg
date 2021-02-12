@@ -84,7 +84,7 @@ public class CannonBall : Photon.MonoBehaviour
             else if (gameObject.layer == 10)
             {
                 TITAN component2 = gameObject.transform.root.gameObject.GetComponent<TITAN>();
-                if (!(component2 != null))
+                if (component2 == null)
                 {
                     continue;
                 }

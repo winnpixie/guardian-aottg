@@ -137,7 +137,7 @@ public class ActiveAnimation : IgnoreTimeScale
 
     private void Play(string clipName, Direction playDirection)
     {
-        if (!(mAnim != null))
+        if (mAnim == null)
         {
             return;
         }

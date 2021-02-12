@@ -47,6 +47,10 @@
     </DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Anarchy.Custom, Version=0.9.4.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\AoTTG\Guardian_Data\Managed\Anarchy.Custom.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\AoTTG\Guardian_Data\Managed\ICSharpCode.SharpZipLib.dll</HintPath>

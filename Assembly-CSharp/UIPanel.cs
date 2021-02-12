@@ -412,7 +412,7 @@ public class UIPanel : MonoBehaviour
 	{
 		mLayer = mGo.layer;
 		UICamera uICamera = UICamera.FindCameraForLayer(mLayer);
-		mCam = ((!(uICamera != null)) ? NGUITools.FindCameraForLayer(mLayer) : uICamera.cachedCamera);
+		mCam = uICamera == null ? NGUITools.FindCameraForLayer(mLayer) : uICamera.cachedCamera;
 	}
 
 	private void OnEnable()
@@ -571,7 +571,7 @@ public class UIPanel : MonoBehaviour
 		{
 			mLayer = mGo.layer;
 			UICamera uICamera = UICamera.FindCameraForLayer(mLayer);
-			mCam = ((!(uICamera != null)) ? NGUITools.FindCameraForLayer(mLayer) : uICamera.cachedCamera);
+			mCam = uICamera == null ? NGUITools.FindCameraForLayer(mLayer) : uICamera.cachedCamera;
 			SetChildLayer(cachedTransform, mLayer);
 			int i = 0;
 			for (int size = drawCalls.size; i < size; i++)

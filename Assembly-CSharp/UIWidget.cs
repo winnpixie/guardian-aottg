@@ -100,7 +100,7 @@ public abstract class UIWidget : MonoBehaviour
 			{
 				CreatePanel();
 			}
-			return (!(mPanel != null)) ? mColor.a : (mColor.a * mPanel.alpha);
+			return mPanel != null ? mColor.a : (mColor.a * mPanel.alpha);
 		}
 	}
 
@@ -403,7 +403,7 @@ public abstract class UIWidget : MonoBehaviour
 
 	public void ParentHasChanged()
 	{
-		if (!(mPanel != null))
+		if (mPanel == null)
 		{
 			return;
 		}

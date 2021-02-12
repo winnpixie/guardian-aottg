@@ -50,7 +50,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
 
     private void StartMain()
     {
-        GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().AddColossal(this);
+        FengGameManagerMKII.Instance.AddColossal(this);
         if (myHero == null)
         {
             FindNearestHero();
@@ -314,7 +314,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
 
     private void Kill(GameObject hitHero)
     {
-        if (!(hitHero != null))
+        if (hitHero == null)
         {
             return;
         }
@@ -415,8 +415,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         Transform transform = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck");
         float radius = 30f;
         Collider[] array = Physics.OverlapSphere(transform.transform.position - base.transform.forward * 10f, radius);
-        Collider[] array2 = array;
-        foreach (Collider collider in array2)
+        foreach (Collider collider in array)
         {
             if (collider.transform.root.tag == "Player")
             {
@@ -444,11 +443,11 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     }
 
     [RPC]
-    public void titanGetHit(int viewID, int speed)
+    public void titanGetHit(int viewId, int speed)
     {
         Transform transform = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck");
-        PhotonView photonView = PhotonView.Find(viewID);
-        if (!(photonView != null) || !((photonView.gameObject.transform.position - transform.transform.position).magnitude < lagMax) || !(healthTime <= 0f))
+        PhotonView photonView = PhotonView.Find(viewId);
+        if (photonView == null || !((photonView.gameObject.transform.position - transform.transform.position).magnitude < lagMax) || !(healthTime <= 0f))
         {
             return;
         }
@@ -474,18 +473,18 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                 {
                     base.photonView.RPC("netDie", PhotonTargets.OthersBuffered);
                     netDie();
-                    GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().titanGetKill(photonView.owner, speed, base.name);
+                    FengGameManagerMKII.Instance.titanGetKill(photonView.owner, speed, base.name);
                 }
             }
         }
         else
         {
-            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().sendKillInfo(isKillerTitan: false, (string)photonView.owner.customProperties[PhotonPlayerProperty.Name], isVictimTitan: true, "Colossal Titan's neck", speed);
+            FengGameManagerMKII.Instance.sendKillInfo(isKillerTitan: false, (string)photonView.owner.customProperties[PhotonPlayerProperty.Name], isVictimTitan: true, "Colossal Titan's neck", speed);
             object[] parameters = new object[1]
             {
                 speed
             };
-            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().photonView.RPC("netShowDamage", photonView.owner, parameters);
+            FengGameManagerMKII.Instance.photonView.RPC("netShowDamage", photonView.owner, parameters);
         }
         healthTime = 0.2f;
     }
@@ -516,8 +515,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         }
         GameObject[] array = GameObject.FindGameObjectsWithTag("titanRespawn");
         ArrayList arrayList = new ArrayList();
-        GameObject[] array2 = array;
-        foreach (GameObject gameObject in array2)
+        foreach (GameObject gameObject in array)
         {
             if (gameObject.transform.parent.name == "titanRespawnCT")
             {
@@ -799,7 +797,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                     {
                         PhotonNetwork.Destroy(base.photonView);
                     }
-                    GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().WinGame();
+                    FengGameManagerMKII.Instance.WinGame();
                 }
                 FindNearestHero();
                 idle();
@@ -1065,15 +1063,15 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         float num2 = (float)health / (float)maxHealth;
         if (num2 < 0.75f && num2 >= 0.5f)
         {
-            str = "[f2b50f]";
+            str = "[F2B50F]";
         }
         else if (num2 < 0.5f && num2 >= 0.25f)
         {
-            str = "[ff8100]";
+            str = "[FF8100]";
         }
         else if (num2 < 0.25f)
         {
-            str = "[ff3333]";
+            str = "[FF3333]";
         }
         healthLabel.GetComponent<UILabel>().text = str + health;
     }

@@ -1,4 +1,4 @@
-using Guardian;
+﻿using Guardian;
 using Guardian.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
@@ -61,7 +61,7 @@ public class InRoomChat : Photon.MonoBehaviour
 
     public void OnGUI()
     {
-        if (!IsVisible)
+        if (!IsVisible || !PhotonNetwork.connected)
         {
             return;
         }
@@ -77,7 +77,14 @@ public class InRoomChat : Photon.MonoBehaviour
         }
 
         GUI.SetNextControlName(string.Empty);
-        GUILayout.BeginArea(MessagesRect, boxStyle);
+        if (Mod.Properties.ChatBackground.Value)
+        {
+            GUILayout.BeginArea(MessagesRect, boxStyle);
+        }
+        else
+        {
+            GUILayout.BeginArea(MessagesRect);
+        }
         GUILayout.FlexibleSpace();
 
         ScrollPosition = GUILayout.BeginScrollView(ScrollPosition);
@@ -170,7 +177,7 @@ public class InRoomChat : Photon.MonoBehaviour
                             {
                                 name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
                             }
-                            FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, Mod.HandleChat(inputLine, name));
+                            FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, FormatMessage(inputLine, name));
                         }
                         else
                         {
@@ -210,6 +217,73 @@ public class InRoomChat : Photon.MonoBehaviour
         inputLine = GUILayout.TextField(inputLine, textboxStyle, GUILayout.MaxWidth(300));
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
+    }
+
+    public static object[] FormatMessage(string input, string name)
+    {
+        // Emotes
+        input = input.Replace("<3", "\u2665");
+        input = input.Replace(":lenny:", "( ͡° ͜ʖ ͡°)");
+
+        // Color and fading
+        string chatColor = Mod.Properties.TextColor.Value;
+        if (chatColor.Length != 0)
+        {
+            if (!chatColor.Contains(","))
+            {
+                input = input.WithColor(chatColor);
+            }
+            else
+            {
+                string[] colors = chatColor.Split(new char[] { ',' }, 2);
+
+                if (colors.Length > 1 && colors[0].IsHex() && colors[1].IsHex())
+                {
+                    input = GameHelper.Detagger.Replace(input, string.Empty);
+
+                    Color startColor = NGUIMath.IntToColor(int.Parse(colors[0] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));
+                    Color endColor = NGUIMath.IntToColor(int.Parse(colors[1] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));
+
+                    string faded = string.Empty;
+                    for (int i = 0; i < input.Length; i++)
+                    {
+                        Color color = Color.Lerp(startColor, endColor, (float)i / (float)input.Length);
+                        faded += $"<color=#{color.ToHex()}>{input[i]}</color>";
+                    }
+                    input = faded;
+                }
+            }
+        }
+
+        // Bold chat
+        if (Mod.Properties.BoldText.Value)
+        {
+            input = input.AsBold();
+        }
+        // Italic chat
+        if (Mod.Properties.ItalicText.Value)
+        {
+            input = input.AsItalic();
+        }
+
+        // Custom name
+        string customName = Mod.Properties.ChatName.Value;
+        if (customName.Length != 0)
+        {
+            name = customName.Colored();
+        }
+        // Bold name
+        if (Mod.Properties.BoldName.Value)
+        {
+            name = name.AsBold();
+        }
+        // Italic name
+        if (Mod.Properties.ItalicName.Value)
+        {
+            name = name.AsItalic();
+        }
+
+        return new object[] { $"{Mod.Properties.TextPrefix.Value}{input}{Mod.Properties.TextSuffix.Value}", name };
     }
 
     public class Message

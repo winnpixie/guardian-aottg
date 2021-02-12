@@ -52,7 +52,7 @@ public class BMSymbol
             {
                 return false;
             }
-            mSprite = ((!(atlas != null)) ? null : atlas.GetSprite(spriteName));
+            mSprite = atlas == null ? null : atlas.GetSprite(spriteName);
             if (mSprite != null)
             {
                 Texture texture = atlas.texture;

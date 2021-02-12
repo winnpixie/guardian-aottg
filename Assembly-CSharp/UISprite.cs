@@ -93,7 +93,7 @@ public class UISprite : UIWidget
 				mAtlas = value;
 				mSpriteSet = false;
 				mSprite = null;
-				material = ((!(mAtlas != null)) ? null : mAtlas.spriteMaterial);
+				material = mAtlas == null ? null : mAtlas.spriteMaterial;
 				if (string.IsNullOrEmpty(mSpriteName) && mAtlas != null && mAtlas.spriteList.Count > 0)
 				{
 					SetAtlasSprite(mAtlas.spriteList[0]);
@@ -152,7 +152,7 @@ public class UISprite : UIWidget
 			Material material = base.material;
 			if (material == null)
 			{
-				material = ((!(mAtlas != null)) ? null : mAtlas.spriteMaterial);
+				material = mAtlas == null ? null : mAtlas.spriteMaterial;
 				mSprite = null;
 				this.material = material;
 				if (material != null)

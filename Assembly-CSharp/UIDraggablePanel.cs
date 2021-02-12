@@ -397,8 +397,8 @@ public class UIDraggablePanel : IgnoreTimeScale
 	{
 		if (!mIgnoreCallbacks)
 		{
-			float x = (!(horizontalScrollBar != null)) ? 0f : horizontalScrollBar.scrollValue;
-			float y = (!(verticalScrollBar != null)) ? 0f : verticalScrollBar.scrollValue;
+			float x = horizontalScrollBar == null ? 0f : horizontalScrollBar.scrollValue;
+			float y = verticalScrollBar == null ? 0f : verticalScrollBar.scrollValue;
 			SetDragAmount(x, y, updateScrollbars: false);
 		}
 	}
@@ -407,8 +407,8 @@ public class UIDraggablePanel : IgnoreTimeScale
 	{
 		if (!mIgnoreCallbacks)
 		{
-			float x = (!(horizontalScrollBar != null)) ? 0f : horizontalScrollBar.scrollValue;
-			float y = (!(verticalScrollBar != null)) ? 0f : verticalScrollBar.scrollValue;
+			float x = horizontalScrollBar == null ? 0f : horizontalScrollBar.scrollValue;
+			float y = verticalScrollBar == null ? 0f : verticalScrollBar.scrollValue;
 			SetDragAmount(x, y, updateScrollbars: false);
 		}
 	}

@@ -7,10 +7,10 @@ public class UIEquipmentSlot : UIItemSlot
 
 	public InvBaseItem.Slot slot;
 
-	protected override InvGameItem observedItem => (!(equipment != null)) ? null : equipment.GetItem(slot);
+	protected override InvGameItem observedItem => equipment == null ? null : equipment.GetItem(slot);
 
 	protected override InvGameItem Replace(InvGameItem item)
 	{
-		return (!(equipment != null)) ? item : equipment.Replace(slot, item);
+		return equipment == null ? item : equipment.Replace(slot, item);
 	}
 }

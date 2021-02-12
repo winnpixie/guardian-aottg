@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-public class FengGameManagerMKII : Photon.MonoBehaviour
+public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IGameManager
 {
     // Adapt to the new AoTTG2 applicationId
     public static string ApplicationId
@@ -133,7 +133,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     public bool restartingEren;
     public bool restartingHorse;
     public bool isRestarting;
-    public InRoomChat chatRoom => InRoomChat.Instance;
     public List<GameObject> groundList;
     public Dictionary<string, Texture2D> assetCacheTextures;
     public bool isUnloading;
@@ -267,7 +266,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             }
             if (mainCamera != null)
             {
-                mainCamera.snapShotUpdate();
+                mainCamera.SnapShotUpdate();
             }
             foreach (TITAN_EREN eren in erenTitans)
             {
@@ -757,7 +756,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 if (AreAllTitansDead())
                 {
                     WinGame();
-                    Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 }
                 break;
             case GameMode.SURVIVE_MODE:
@@ -778,7 +776,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
-                    sendChatContentInfo("Wave ".WithColor("a8ff24") + wave + " / " + RCSettings.GetMaxWave());
+                    sendChatContentInfo("Wave ".WithColor("AAFF00") + wave + " / " + RCSettings.GetMaxWave());
                 }
                 if (wave > highestWave)
                 {
@@ -975,6 +973,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     void Awake()
     {
         Instance = this;
+
+        Anarchy.Custom.Level.CustomAnarchyLevel anarchyLevel = gameObject.AddComponent<Anarchy.Custom.Level.CustomAnarchyLevel>();
+        anarchyLevel.GameManager = this;
     }
 
     private void Start()
@@ -1072,6 +1073,23 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         base.gameObject.AddComponent<Guardian.Mod>();
     }
 
+    // BEGIN Anarchy
+    public float GetRoundTime()
+    {
+        return roundTime;
+    }
+
+    public string GetLevelName()
+    {
+        return Level.Name;
+    }
+
+    public bool IsCustomMapLoaded()
+    {
+        return CustomLevelLoaded;
+    }
+    // END Anarchy
+
     [RPC]
     private void Chat(string content, string sender, PhotonMessageInfo info)
     {
@@ -1083,11 +1101,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
         if (sender.Length == 0)
         {
-            chatRoom.AddMessage("<color=#ffcc00>[" + info.sender.Id + "]</color>", content);
+            InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "]").WithColor("FFCC00"), content);
         }
         else
         {
-            chatRoom.AddMessage("<color=#ffcc00>[" + info.sender.Id + "]</color> " + sender, content);
+            InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "] ").WithColor("FFCC00") + sender, content);
         }
     }
 
@@ -1327,7 +1345,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         Cache();
         LoadSkin();
 
-        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setHUDposition();
+        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetHUDPosition();
         Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(IN_GAME_MAIN_CAMERA.Lighting);
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
@@ -1794,11 +1812,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         infoObj.transform.parent = ui.GetComponent<UIReferArray>().panels[0].transform;
         infoObj.GetComponent<KillInfoComponent>().Show(isKillerTitan, killer, isVictimTitan, victim, damage);
         killInfoGO.Add(infoObj);
+
         if ((int)Settings[244] == 1)
         {
-            string str = "<color=#ffcc00>(" + roundTime.ToString("F2") + ")</color> ";
-            str += killer.Colored() + " killed " + victim.Colored() + " for " + damage + " damage.";
-            chatRoom.AddLine(str);
+            InRoomChat.Instance.AddLine(("(" + roundTime.ToString("F2") + ") ").WithColor("FFCC00") + killer.Colored() + " killed " + victim.Colored() + " for " + damage + " damage.");
         }
     }
 
@@ -1810,11 +1827,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         gameEndCD = gameEndTotalCDtime;
         if ((int)Settings[244] == 1)
         {
-            chatRoom.AddLine("<color=#ffcc00>(" + roundTime.ToString("F2") + ")</color> Round ended (game lose).");
+            InRoomChat.Instance.AddLine(("(" + roundTime.ToString("F2") + ") ").WithColor("FFCC00") + "Round ended (game lose).");
         }
         if (!info.sender.isMasterClient && !info.sender.isLocal && PhotonNetwork.isMasterClient)
         {
-            chatRoom.AddLine("<color=#ffcc00>Round end sent from Player " + info.sender.Id.ToString() + "</color>");
+            InRoomChat.Instance.AddLine("Round end sent from #".WithColor("FFCC00") + info.sender.Id);
         }
     }
 
@@ -1847,11 +1864,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         if ((int)Settings[244] == 1)
         {
-            chatRoom.AddLine("<color=#ffcc00>(" + roundTime.ToString("F2") + ")</color> Round ended (game win).");
+            InRoomChat.Instance.AddLine(("(" + roundTime.ToString("F2") + ") ").WithColor("FFCC00") + "Round ended (game win).");
         }
         if (!info.sender.isMasterClient && !info.sender.isLocal)
         {
-            chatRoom.AddLine("<color=#ffcc00>Round end sent from Player " + info.sender.Id.ToString() + "</color>");
+            InRoomChat.Instance.AddLine("Round end sent from #".WithColor("FFCC00") + info.sender.Id);
         }
     }
 
@@ -1891,7 +1908,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
             if (masterClientSwitched)
             {
-                sendChatContentInfo("<color=#A8FF24>MasterClient has switched to </color>" + ((string)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored());
+                sendChatContentInfo("MasterClient has switched to ".WithColor("AAFF00") + ((string)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored());
             }
         }
     }
@@ -1969,7 +1986,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     if (myRespawnTime > (float)respawnDelay)
                     {
                         myRespawnTime = 0f;
-                        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = false;
                         if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.IsTitan]) == 2)
                         {
                             SpawnNonAITitan2(myLastHero);
@@ -2179,7 +2195,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 if (myRespawnTime > 1.5f)
                 {
                     myRespawnTime = 0f;
-                    Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = false;
                     if (checkpoint != null)
                     {
                         StartCoroutine(WaitAndRespawn2(0.1f, checkpoint));
@@ -2228,7 +2243,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
             if (RCSettings.TeamMode > 0)
             {
-                text += "\n[00FFFF]Cyan: " + Convert.ToString(cyanKills) + "       [FF00FF]Magenta: " + Convert.ToString(magentaKills) + "[ffffff]";
+                text += "\n[00FFFF]Cyan: " + Convert.ToString(cyanKills) + "       [FF00FF]Magenta: " + Convert.ToString(magentaKills) + "[FFFFFF]";
             }
             ShowHUDInfoTopCenter(text);
             text = string.Empty;
@@ -2297,10 +2312,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     roomName = roomName.Remove(19) + "...";
                 }
-                ShowHUDInfoTopRightMAPNAME("\n" + roomName + " [ffcc00](" + Convert.ToString(PhotonNetwork.room.playerCount) + "/" + Convert.ToString(PhotonNetwork.room.maxPlayers) + ")");
+                ShowHUDInfoTopRightMAPNAME("\n" + roomName + " [FFCC00](" + Convert.ToString(PhotonNetwork.room.playerCount) + "/" + Convert.ToString(PhotonNetwork.room.maxPlayers) + ")");
 
                 // TODO: Mod
-                ShowHUDInfoTopRightMAPNAME($"\n\n[ [{(PhotonNetwork.room.visible ? "00ff00" : "ff0000")}]Visible[-] | [{(PhotonNetwork.room.open ? "00ff00" : "ff0000")}]Open[-] ]");
+                ShowHUDInfoTopRightMAPNAME($"\n\n[ [{(PhotonNetwork.room.visible ? "00FF00" : "FF0000")}]Visible[-] | [{(PhotonNetwork.room.open ? "00FF00" : "FF0000")}]Open[-] ]");
 
                 if (needChooseSide)
                 {
@@ -2526,7 +2541,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 PhotonNetwork.player.SetCustomProperties(hashtable);
             }
             component.enabled = true;
-            component.setHUDposition();
+            component.SetHUDPosition();
             mainCam.GetComponent<SpectatorMovement>().disable = true;
             mainCam.GetComponent<MouseLook>().disable = true;
             component.gameOver = false;
@@ -2595,7 +2610,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             base.photonView.RPC("netGameLose", PhotonTargets.Others, titanScore);
             if ((int)Settings[244] == 1)
             {
-                chatRoom.AddLine("<color=#ffcc00>(" + roundTime.ToString("F2") + ")</color> Round ended (game lose).");
+                InRoomChat.Instance.AddLine(("(" + roundTime.ToString("F2") + ") ").WithColor("FFCC00") + "Round ended (game lose).");
             }
         }
     }
@@ -2643,7 +2658,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             base.photonView.RPC("netGameWin", PhotonTargets.Others, humanScore);
             if ((int)Settings[244] == 1)
             {
-                chatRoom.AddLine("<color=#ffcc00>(" + roundTime.ToString("F2") + ")</color> Round ended (game win).");
+                InRoomChat.Instance.AddLine(("(" + roundTime.ToString("F2") + ") ").WithColor("FFCC00") + "Round ended (game win).");
             }
         }
     }
@@ -2912,21 +2927,21 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         if (player.isMasterClient)
         {
-            content += "[aaff00]";
+            content += "[AAFF00]";
         }
         else if (player.isLocal)
         {
-            content += "[0099ff]";
+            content += "[0099FF]";
         }
         else
         {
-            content += "[ffcc00]";
+            content += "[FFCC00]";
         }
         content += "[" + player.Id + "][-] ";
 
         if (player.customProperties[PhotonPlayerProperty.Dead] == null)
         {
-            content += $"[ff0000]({(player.Id < 0 ? "Connecting" : "Invisible")})[-] ";
+            content += $"[FF0000]({(player.Id < 0 ? "Connecting" : "Invisible")})[-] ";
         }
 
         if (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]))
@@ -2947,14 +2962,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             content += "[" + ColorSet.Human + "]<H>[-] ";
         }
 
-        content += "[ffffff]" + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
+        content += "[FFFFFF]" + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
 
         int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
         int deaths = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Deaths]);
         int maxDmg = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.MaxDamage]);
         int totalDmg = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.TotalDamage]);
         content += string.Concat(
-            " [aaaaaa]::[ffffff] ",
+            " [AAAAAA]::[FFFFFF] ",
             kills,
             " / ",
             deaths,
@@ -3093,7 +3108,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     }
                 }
             }
-            content += "[00FFFF]TEAM CYAN[ffffff]: " + cyanKills + " [aaaaaa]/[-] " + _cyanDeaths + " [aaaaaa]/[-] " + _cyanMaxDmg + " [aaaaaa]/[-] " + _cyanDmgSum + "\n";
+            content += "[00FFFF]TEAM CYAN[FFFFFF]: " + cyanKills + " [AAAAAA]/[-] " + _cyanDeaths + " [AAAAAA]/[-] " + _cyanMaxDmg + " [AAAAAA]/[-] " + _cyanDmgSum + "\n";
             foreach (PhotonPlayer player in cyanPlayers.Values)
             {
                 int team = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.RCTeam]);
@@ -3103,7 +3118,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 }
             }
 
-            content += " \n[FF00FF]TEAM MAGENTA[ffffff]: " + magentaKills + " [aaaaaa]/[-] " + _magentaDeaths + " [aaaaaa]/[-] " + _magentaMaxDmg + " [aaaaaa]/[-] " + _magentaDmgSum + "\n";
+            content += " \n[FF00FF]TEAM MAGENTA[FFFFFF]: " + magentaKills + " [AAAAAA]/[-] " + _magentaDeaths + " [AAAAAA]/[-] " + _magentaMaxDmg + " [AAAAAA]/[-] " + _magentaDmgSum + "\n";
             foreach (PhotonPlayer player in magentaPlayers.Values)
             {
                 int team = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.RCTeam]);
@@ -3193,7 +3208,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     {
                         object[] parameters = new object[2]
                         {
-                            "<color=#00FFFF>Team Cyan wins! </color>",
+                            "Team Cyan wins!".WithColor("00FFFF"),
                             string.Empty
                         };
                         base.photonView.RPC("Chat", PhotonTargets.All, parameters);
@@ -3203,7 +3218,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                     {
                         object[] args = new object[2]
                         {
-                            "<color=#FF00FF>Team Magenta wins! </color>",
+                            "Team Magenta wins!".WithColor("FF00FF"),
                             string.Empty
                         };
                         base.photonView.RPC("Chat", PhotonTargets.All, args);
@@ -3219,7 +3234,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         {
                             object[] parameters2 = new object[2]
                             {
-                                "<color=#ffcc00>" + GExtensions.AsString(photonPlayer6.customProperties[PhotonPlayerProperty.Name]).Colored() + " wins!</color>",
+                                GExtensions.AsString(photonPlayer6.customProperties[PhotonPlayerProperty.Name]).Colored() + " wins!".WithColor("FFCC00"),
                                 string.Empty
                             };
                             base.photonView.RPC("Chat", PhotonTargets.All, parameters2);
@@ -3266,7 +3281,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         {
                             object[] parameters3 = new object[2]
                             {
-                                "<color=#FF00FF>Team Magenta wins! </color>",
+                                "Team Magenta wins!".WithColor("FF00FF"),
                                 string.Empty
                             };
                             base.photonView.RPC("Chat", PhotonTargets.All, parameters3);
@@ -3276,7 +3291,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         {
                             object[] parameters4 = new object[2]
                             {
-                                "<color=#00FFFF>Team Cyan wins! </color>",
+                                "Team Cyan wins!".WithColor("00FFFF"),
                                 string.Empty
                             };
                             base.photonView.RPC("Chat", PhotonTargets.All, parameters4);
@@ -3315,7 +3330,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         }
                         object[] parameters5 = new object[2]
                         {
-                            "<color=#ffcc00>" + winnerName.Colored() + " wins." + text4 + "</color>",
+                            "<color=#FFCC00>" + winnerName.Colored() + " wins." + text4 + "</color>",
                             string.Empty
                         };
                         base.photonView.RPC("Chat", PhotonTargets.All, parameters5);
@@ -3775,18 +3790,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             }
             if (num3 != num4)
             {
-                chatRoom.AddLine("Script Error: Parentheses not equal! (line " + (i + 1).ToString() + ")");
+                InRoomChat.Instance.AddLine("Script Error: Parentheses not equal! (line " + (i + 1).ToString() + ")");
                 flag = true;
             }
             if (num5 % 2 != 0)
             {
-                chatRoom.AddLine("Script Error: Quotations not equal! (line " + (i + 1).ToString() + ")");
+                InRoomChat.Instance.AddLine("Script Error: Quotations not equal! (line " + (i + 1).ToString() + ")");
                 flag = true;
             }
         }
         if (num != num2)
         {
-            chatRoom.AddLine("Script Error: Bracket count not equivalent!");
+            InRoomChat.Instance.AddLine("Script Error: Bracket count not equivalent!");
             flag = true;
         }
         if (!flag)
@@ -3985,7 +4000,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             }
             catch (UnityException ex)
             {
-                chatRoom.AddLine(ex.Message);
+                InRoomChat.Instance.AddLine(ex.Message);
             }
         }
     }
@@ -5210,7 +5225,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         for (int i = list.Count - 1; i > 0; i--)
         {
-            list[i - 1].setNextHelper(list[i]);
+            list[i - 1].SetNextHelper(list[i]);
         }
         return list[0];
     }
@@ -5412,7 +5427,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         PhotonNetwork.player.SetCustomProperties(hashtable);
         component.enabled = true;
         GameObject cam = GameObject.Find("MainCamera");
-        cam.GetComponent<IN_GAME_MAIN_CAMERA>().setHUDposition();
+        cam.GetComponent<IN_GAME_MAIN_CAMERA>().SetHUDPosition();
         cam.GetComponent<SpectatorMovement>().disable = true;
         cam.GetComponent<MouseLook>().disable = true;
         component.gameOver = false;
@@ -5481,12 +5496,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             {
                 continue;
             }
-            for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
+
+            foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
-                PhotonPlayer photonPlayer = PhotonNetwork.playerList[i];
-                if (photonPlayer.customProperties[PhotonPlayerProperty.RCTeam] == null && GExtensions.AsBool(photonPlayer.customProperties[PhotonPlayerProperty.Dead]) && GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]) != 2)
+                if (player.customProperties[PhotonPlayerProperty.RCTeam] == null && GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]) && GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.IsTitan]) != 2)
                 {
-                    base.photonView.RPC("respawnHeroInNewRound", photonPlayer);
+                    base.photonView.RPC("respawnHeroInNewRound", player);
                 }
             }
         }
@@ -5570,7 +5585,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         if (reason != string.Empty)
         {
-            chatRoom.AddLine($"Player #{player.Id} was {(ban ? "banned" : "kicked")}. Reason: " + reason);
+            InRoomChat.Instance.AddLine($"Player #{player.Id} was {(ban ? "banned" : "kicked")}. Reason: " + reason);
         }
         RecompilePlayerList(0.1f);
     }
@@ -5714,7 +5729,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             return;
         }
 
-        chatRoom.AddMessage($"FROM [{info.sender.Id}]".WithColor("ffcc00"), content);
+        InRoomChat.Instance.AddMessage($"FROM [{info.sender.Id}]".WithColor("FFCC00"), content);
     }
 
     [RPC]
@@ -5817,7 +5832,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         if ((int)Settings[244] == 1)
         {
-            chatRoom.AddLine("<color=#ffcc00>(" + roundTime.ToString("F2") + ")</color> Round Start.");
+            InRoomChat.Instance.AddLine(("(" + roundTime.ToString("F2") + ") ").WithColor("FFCC00") + "Round Start.");
         }
         isFirstLoad = false;
         RecompilePlayerList(0.5f);
@@ -6624,8 +6639,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
     }
 
+    // Replaced with Anarchy's Custom Level code
     private void CustomLevelClientE(string[] content, bool renewHash)
     {
+        int num;
+        string[] strArray;
         bool flag = false;
         bool flag2 = false;
         if (content[content.Length - 1].StartsWith("a"))
@@ -6636,323 +6654,354 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             flag2 = true;
             CustomLevelLoaded = true;
-            spawnPlayerCustomMap();
+            this.spawnPlayerCustomMap();
             Minimap.TryRecaptureInstance();
-            UnloadAssets();
+            this.UnloadAssets();
             Camera.main.GetComponent<TiltShift>().enabled = false;
         }
+
         if (renewHash)
         {
             if (flag)
             {
                 CurrentLevel = string.Empty;
-                levelCache.Clear();
-                titanSpawns.Clear();
-                playerSpawnsC.Clear();
-                playerSpawnsM.Clear();
-                for (int i = 0; i < content.Length; i++)
+                this.levelCache.Clear();
+                this.titanSpawns.Clear();
+                this.playerSpawnsC.Clear();
+                this.playerSpawnsM.Clear();
+                for (num = 0; num < content.Length; num++)
                 {
-                    string[] array = content[i].Split(',');
-                    if (array[0] == "titan")
+                    strArray = content[num].Split(new char[] { ',' });
+                    if (strArray[0] == "titan")
                     {
-                        titanSpawns.Add(new Vector3(Convert.ToSingle(array[1]), Convert.ToSingle(array[2]), Convert.ToSingle(array[3])));
+                        this.titanSpawns.Add(new Vector3(Convert.ToSingle(strArray[1]), Convert.ToSingle(strArray[2]), Convert.ToSingle(strArray[3])));
                     }
-                    else if (array[0] == "playerC")
+                    else if (strArray[0] == "playerC")
                     {
-                        playerSpawnsC.Add(new Vector3(Convert.ToSingle(array[1]), Convert.ToSingle(array[2]), Convert.ToSingle(array[3])));
+                        this.playerSpawnsC.Add(new Vector3(Convert.ToSingle(strArray[1]), Convert.ToSingle(strArray[2]), Convert.ToSingle(strArray[3])));
                     }
-                    else if (array[0] == "playerM")
+                    else if (strArray[0] == "playerM")
                     {
-                        playerSpawnsM.Add(new Vector3(Convert.ToSingle(array[1]), Convert.ToSingle(array[2]), Convert.ToSingle(array[3])));
+                        this.playerSpawnsM.Add(new Vector3(Convert.ToSingle(strArray[1]), Convert.ToSingle(strArray[2]), Convert.ToSingle(strArray[3])));
                     }
                 }
-                spawnPlayerCustomMap();
+                this.spawnPlayerCustomMap();
             }
-            CurrentLevel += content[content.Length - 1];
-            levelCache.Add(content);
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add(PhotonPlayerProperty.CurrentLevel, CurrentLevel);
-            PhotonNetwork.player.SetCustomProperties(hashtable);
-        }
-        if (flag || flag2)
-        {
-            return;
+            CurrentLevel = CurrentLevel + content[content.Length - 1];
+            this.levelCache.Add(content);
+            ExitGames.Client.Photon.Hashtable propertiesToSet = new ExitGames.Client.Photon.Hashtable();
+            propertiesToSet.Add(PhotonPlayerProperty.CurrentLevel, CurrentLevel);
+            PhotonNetwork.player.SetCustomProperties(propertiesToSet);
         }
 
-        // Map Downloader
-        Mod.MapData += string.Join(";\n", content) + ";\n";
-
-        for (int i = 0; i < content.Length; i++)
+        if (!flag && !flag2)
         {
-            string[] array = content[i].Split(',');
-            float result;
-            if (array[0].StartsWith("custom"))
+            // Map Downloader
+            Mod.MapData += string.Join(";\n", content) + ";\n";
+
+            for (num = 0; num < content.Length; num++)
             {
-                float a = 1f;
-                GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(array[1]), new Vector3(Convert.ToSingle(array[12]), Convert.ToSingle(array[13]), Convert.ToSingle(array[14])), new Quaternion(Convert.ToSingle(array[15]), Convert.ToSingle(array[16]), Convert.ToSingle(array[17]), Convert.ToSingle(array[18])));
-                if (array[2] != "default")
+                float num2;
+                GameObject obj2;
+                float num3;
+                float num5;
+                float num6;
+                float num7;
+                Color color;
+                Mesh mesh;
+                Color[] colorArray;
+                int num8;
+
+                GameObject resultObject = null;
+                strArray = content[num].Split(new char[] { ',' });
+                if (strArray[0].StartsWith("custom"))
                 {
-                    if (array[2].StartsWith("transparent"))
+                    num2 = 1f;
+                    obj2 = null;
+                    obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[12]), Convert.ToSingle(strArray[13]), Convert.ToSingle(strArray[14])), new Quaternion(Convert.ToSingle(strArray[15]), Convert.ToSingle(strArray[0x10]), Convert.ToSingle(strArray[0x11]), Convert.ToSingle(strArray[0x12])));
+                    if (strArray[2] != "default")
                     {
-                        if (float.TryParse(array[2].Substring(11), out result))
+                        if (strArray[2].StartsWith("transparent"))
                         {
-                            a = result;
-                        }
-                        Renderer[] componentsInChildren = gameObject.GetComponentsInChildren<Renderer>();
-                        foreach (Renderer renderer in componentsInChildren)
-                        {
-                            renderer.material = (Material)RCAssets.Load("transparent");
-                            if (Convert.ToSingle(array[10]) != 1f || Convert.ToSingle(array[11]) != 1f)
+                            if (float.TryParse(strArray[2].Substring(11), out num3))
                             {
-                                renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * Convert.ToSingle(array[10]), renderer.material.mainTextureScale.y * Convert.ToSingle(array[11]));
+                                num2 = num3;
                             }
-                        }
-                    }
-                    else
-                    {
-                        Renderer[] componentsInChildren = gameObject.GetComponentsInChildren<Renderer>();
-                        foreach (Renderer renderer in componentsInChildren)
-                        {
-                            renderer.material = (Material)RCAssets.Load(array[2]);
-                            if (Convert.ToSingle(array[10]) != 1f || Convert.ToSingle(array[11]) != 1f)
+                            foreach (Renderer renderer in obj2.GetComponentsInChildren<Renderer>())
                             {
-                                renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * Convert.ToSingle(array[10]), renderer.material.mainTextureScale.y * Convert.ToSingle(array[11]));
-                            }
-                        }
-                    }
-                }
-                float num = gameObject.transform.localScale.x * Convert.ToSingle(array[3]);
-                num -= 0.001f;
-                float y = gameObject.transform.localScale.y * Convert.ToSingle(array[4]);
-                float z = gameObject.transform.localScale.z * Convert.ToSingle(array[5]);
-                gameObject.transform.localScale = new Vector3(num, y, z);
-                if (!(array[6] != "0"))
-                {
-                    continue;
-                }
-                Color color = new Color(Convert.ToSingle(array[7]), Convert.ToSingle(array[8]), Convert.ToSingle(array[9]), a);
-                MeshFilter[] componentsInChildren2 = gameObject.GetComponentsInChildren<MeshFilter>();
-                foreach (MeshFilter meshFilter in componentsInChildren2)
-                {
-                    Mesh mesh = meshFilter.mesh;
-                    Color[] array2 = new Color[mesh.vertexCount];
-                    for (int k = 0; k < mesh.vertexCount; k++)
-                    {
-                        array2[k] = color;
-                    }
-                    mesh.colors = array2;
-                }
-            }
-            else if (array[0].StartsWith("base"))
-            {
-                if (array.Length < 15)
-                {
-                    UnityEngine.Object.Instantiate(Resources.Load(array[1]), new Vector3(Convert.ToSingle(array[2]), Convert.ToSingle(array[3]), Convert.ToSingle(array[4])), new Quaternion(Convert.ToSingle(array[5]), Convert.ToSingle(array[6]), Convert.ToSingle(array[7]), Convert.ToSingle(array[8])));
-                    continue;
-                }
-                float a = 1f;
-                GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate((GameObject)Resources.Load(array[1]), new Vector3(Convert.ToSingle(array[12]), Convert.ToSingle(array[13]), Convert.ToSingle(array[14])), new Quaternion(Convert.ToSingle(array[15]), Convert.ToSingle(array[16]), Convert.ToSingle(array[17]), Convert.ToSingle(array[18])));
-                if (array[2] != "default")
-                {
-                    if (array[2].StartsWith("transparent"))
-                    {
-                        if (float.TryParse(array[2].Substring(11), out result))
-                        {
-                            a = result;
-                        }
-                        Renderer[] componentsInChildren = gameObject.GetComponentsInChildren<Renderer>();
-                        foreach (Renderer renderer in componentsInChildren)
-                        {
-                            renderer.material = (Material)RCAssets.Load("transparent");
-                            if (Convert.ToSingle(array[10]) != 1f || Convert.ToSingle(array[11]) != 1f)
-                            {
-                                renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * Convert.ToSingle(array[10]), renderer.material.mainTextureScale.y * Convert.ToSingle(array[11]));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Renderer[] componentsInChildren = gameObject.GetComponentsInChildren<Renderer>();
-                        foreach (Renderer renderer in componentsInChildren)
-                        {
-                            if (!renderer.name.Contains("Particle System") || !gameObject.name.Contains("aot_supply"))
-                            {
-                                renderer.material = (Material)RCAssets.Load(array[2]);
-                                if (Convert.ToSingle(array[10]) != 1f || Convert.ToSingle(array[11]) != 1f)
+                                renderer.material = (Material)RCAssets.Load("transparent");
+                                if ((Convert.ToSingle(strArray[10]) != 1f) || (Convert.ToSingle(strArray[11]) != 1f))
                                 {
-                                    renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * Convert.ToSingle(array[10]), renderer.material.mainTextureScale.y * Convert.ToSingle(array[11]));
+                                    renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * Convert.ToSingle(strArray[10]), renderer.material.mainTextureScale.y * Convert.ToSingle(strArray[11]));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (Renderer renderer in obj2.GetComponentsInChildren<Renderer>())
+                            {
+                                renderer.material = (Material)RCAssets.Load(strArray[2]);
+                                if ((Convert.ToSingle(strArray[10]) != 1f) || (Convert.ToSingle(strArray[11]) != 1f))
+                                {
+                                    renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * Convert.ToSingle(strArray[10]), renderer.material.mainTextureScale.y * Convert.ToSingle(strArray[11]));
                                 }
                             }
                         }
                     }
-                }
-                float num = gameObject.transform.localScale.x * Convert.ToSingle(array[3]);
-                num -= 0.001f;
-                float y = gameObject.transform.localScale.y * Convert.ToSingle(array[4]);
-                float z = gameObject.transform.localScale.z * Convert.ToSingle(array[5]);
-                gameObject.transform.localScale = new Vector3(num, y, z);
-                if (!(array[6] != "0"))
-                {
-                    continue;
-                }
-                Color color = new Color(Convert.ToSingle(array[7]), Convert.ToSingle(array[8]), Convert.ToSingle(array[9]), a);
-                MeshFilter[] componentsInChildren2 = gameObject.GetComponentsInChildren<MeshFilter>();
-                foreach (MeshFilter meshFilter in componentsInChildren2)
-                {
-                    Mesh mesh = meshFilter.mesh;
-                    Color[] array2 = new Color[mesh.vertexCount];
-                    for (int k = 0; k < mesh.vertexCount; k++)
+                    num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[3]);
+                    num5 -= 0.001f;
+                    num6 = obj2.transform.localScale.y * Convert.ToSingle(strArray[4]);
+                    num7 = obj2.transform.localScale.z * Convert.ToSingle(strArray[5]);
+                    obj2.transform.localScale = new Vector3(num5, num6, num7);
+                    if (strArray[6] != "0")
                     {
-                        array2[k] = color;
+                        color = new Color(Convert.ToSingle(strArray[7]), Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), num2);
+                        foreach (MeshFilter filter in obj2.GetComponentsInChildren<MeshFilter>())
+                        {
+                            mesh = filter.mesh;
+                            colorArray = new Color[mesh.vertexCount];
+                            num8 = 0;
+                            while (num8 < mesh.vertexCount)
+                            {
+                                colorArray[num8] = color;
+                                num8++;
+                            }
+                            mesh.colors = colorArray;
+                        }
                     }
-                    mesh.colors = array2;
+                    resultObject = obj2;
                 }
-            }
-            else if (array[0].StartsWith("misc"))
-            {
-                if (array[1].StartsWith("barrier"))
+                else if (strArray[0].StartsWith("base"))
                 {
-                    GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(array[1]), new Vector3(Convert.ToSingle(array[5]), Convert.ToSingle(array[6]), Convert.ToSingle(array[7])), new Quaternion(Convert.ToSingle(array[8]), Convert.ToSingle(array[9]), Convert.ToSingle(array[10]), Convert.ToSingle(array[11])));
-                    float num = gameObject.transform.localScale.x * Convert.ToSingle(array[2]);
-                    num -= 0.001f;
-                    float y = gameObject.transform.localScale.y * Convert.ToSingle(array[3]);
-                    float z = gameObject.transform.localScale.z * Convert.ToSingle(array[4]);
-                    gameObject.transform.localScale = new Vector3(num, y, z);
-                }
-                else if (array[1].StartsWith("racingStart"))
-                {
-                    GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(array[1]), new Vector3(Convert.ToSingle(array[5]), Convert.ToSingle(array[6]), Convert.ToSingle(array[7])), new Quaternion(Convert.ToSingle(array[8]), Convert.ToSingle(array[9]), Convert.ToSingle(array[10]), Convert.ToSingle(array[11])));
-                    float num = gameObject.transform.localScale.x * Convert.ToSingle(array[2]);
-                    num -= 0.001f;
-                    float y = gameObject.transform.localScale.y * Convert.ToSingle(array[3]);
-                    float z = gameObject.transform.localScale.z * Convert.ToSingle(array[4]);
-                    gameObject.transform.localScale = new Vector3(num, y, z);
-                    if (racingDoors != null)
+                    if (strArray.Length < 15)
                     {
-                        racingDoors.Add(gameObject);
-                    }
-                }
-                else if (array[1].StartsWith("racingEnd"))
-                {
-                    GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(array[1]), new Vector3(Convert.ToSingle(array[5]), Convert.ToSingle(array[6]), Convert.ToSingle(array[7])), new Quaternion(Convert.ToSingle(array[8]), Convert.ToSingle(array[9]), Convert.ToSingle(array[10]), Convert.ToSingle(array[11])));
-                    float num = gameObject.transform.localScale.x * Convert.ToSingle(array[2]);
-                    num -= 0.001f;
-                    float y = gameObject.transform.localScale.y * Convert.ToSingle(array[3]);
-                    float z = gameObject.transform.localScale.z * Convert.ToSingle(array[4]);
-                    gameObject.transform.localScale = new Vector3(num, y, z);
-                    gameObject.AddComponent<LevelTriggerRacingEnd>();
-                }
-                else if (array[1].StartsWith("region") && PhotonNetwork.isMasterClient)
-                {
-                    Vector3 vector = new Vector3(Convert.ToSingle(array[6]), Convert.ToSingle(array[7]), Convert.ToSingle(array[8]));
-                    RCRegion rCRegion = new RCRegion(vector, Convert.ToSingle(array[3]), Convert.ToSingle(array[4]), Convert.ToSingle(array[5]));
-                    string key = array[2];
-                    if (RCRegionTriggers.ContainsKey(key))
-                    {
-                        GameObject gameObject2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load("region"));
-                        gameObject2.transform.position = vector;
-                        gameObject2.AddComponent<RegionTrigger>();
-                        gameObject2.GetComponent<RegionTrigger>().CopyTrigger((RegionTrigger)RCRegionTriggers[key]);
-                        float num = gameObject2.transform.localScale.x * Convert.ToSingle(array[3]);
-                        num -= 0.001f;
-                        float y = gameObject2.transform.localScale.y * Convert.ToSingle(array[4]);
-                        float z = gameObject2.transform.localScale.z * Convert.ToSingle(array[5]);
-                        gameObject2.transform.localScale = new Vector3(num, y, z);
-                        rCRegion.myBox = gameObject2;
-                    }
-                    RCRegions.Add(key, rCRegion);
-                }
-            }
-            else if (array[0].StartsWith("racing"))
-            {
-                if (array[1].StartsWith("start"))
-                {
-                    GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(array[1]), new Vector3(Convert.ToSingle(array[5]), Convert.ToSingle(array[6]), Convert.ToSingle(array[7])), new Quaternion(Convert.ToSingle(array[8]), Convert.ToSingle(array[9]), Convert.ToSingle(array[10]), Convert.ToSingle(array[11])));
-                    float num = gameObject.transform.localScale.x * Convert.ToSingle(array[2]);
-                    num -= 0.001f;
-                    float y = gameObject.transform.localScale.y * Convert.ToSingle(array[3]);
-                    float z = gameObject.transform.localScale.z * Convert.ToSingle(array[4]);
-                    gameObject.transform.localScale = new Vector3(num, y, z);
-                    if (racingDoors != null)
-                    {
-                        racingDoors.Add(gameObject);
-                    }
-                }
-                else if (array[1].StartsWith("end"))
-                {
-                    GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(array[1]), new Vector3(Convert.ToSingle(array[5]), Convert.ToSingle(array[6]), Convert.ToSingle(array[7])), new Quaternion(Convert.ToSingle(array[8]), Convert.ToSingle(array[9]), Convert.ToSingle(array[10]), Convert.ToSingle(array[11])));
-                    float num = gameObject.transform.localScale.x * Convert.ToSingle(array[2]);
-                    num -= 0.001f;
-                    float y = gameObject.transform.localScale.y * Convert.ToSingle(array[3]);
-                    float z = gameObject.transform.localScale.z * Convert.ToSingle(array[4]);
-                    gameObject.transform.localScale = new Vector3(num, y, z);
-                    Collider componentInChildren = gameObject.GetComponentInChildren<Collider>();
-                    componentInChildren.gameObject.AddComponent<LevelTriggerRacingEnd>();
-                }
-                else if (array[1].StartsWith("kill"))
-                {
-                    GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(array[1]), new Vector3(Convert.ToSingle(array[5]), Convert.ToSingle(array[6]), Convert.ToSingle(array[7])), new Quaternion(Convert.ToSingle(array[8]), Convert.ToSingle(array[9]), Convert.ToSingle(array[10]), Convert.ToSingle(array[11])));
-                    float num = gameObject.transform.localScale.x * Convert.ToSingle(array[2]);
-                    num -= 0.001f;
-                    float y = gameObject.transform.localScale.y * Convert.ToSingle(array[3]);
-                    float z = gameObject.transform.localScale.z * Convert.ToSingle(array[4]);
-                    gameObject.transform.localScale = new Vector3(num, y, z);
-                    Collider componentInChildren = gameObject.GetComponentInChildren<Collider>();
-                    componentInChildren.gameObject.AddComponent<RacingKillTrigger>();
-                }
-                else if (array[1].StartsWith("checkpoint"))
-                {
-                    GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(array[1]), new Vector3(Convert.ToSingle(array[5]), Convert.ToSingle(array[6]), Convert.ToSingle(array[7])), new Quaternion(Convert.ToSingle(array[8]), Convert.ToSingle(array[9]), Convert.ToSingle(array[10]), Convert.ToSingle(array[11])));
-                    float num = gameObject.transform.localScale.x * Convert.ToSingle(array[2]);
-                    num -= 0.001f;
-                    float y = gameObject.transform.localScale.y * Convert.ToSingle(array[3]);
-                    float z = gameObject.transform.localScale.z * Convert.ToSingle(array[4]);
-                    gameObject.transform.localScale = new Vector3(num, y, z);
-                    Collider componentInChildren = gameObject.GetComponentInChildren<Collider>();
-                    componentInChildren.gameObject.AddComponent<RacingCheckpointTrigger>();
-                }
-            }
-            else if (array[0].StartsWith("map"))
-            {
-                if (array[1].StartsWith("disablebounds"))
-                {
-                    UnityEngine.Object.Destroy(GameObject.Find("gameobjectOutSide"));
-                    UnityEngine.Object.Instantiate(RCAssets.Load("outside"));
-                }
-            }
-            else
-            {
-                if (!PhotonNetwork.isMasterClient || !array[0].StartsWith("photon"))
-                {
-                    continue;
-                }
-                if (array[1].StartsWith("Cannon"))
-                {
-                    if (array.Length > 15)
-                    {
-                        GameObject gameObject3 = PhotonNetwork.Instantiate("RCAsset/" + array[1] + "Prop", new Vector3(Convert.ToSingle(array[12]), Convert.ToSingle(array[13]), Convert.ToSingle(array[14])), new Quaternion(Convert.ToSingle(array[15]), Convert.ToSingle(array[16]), Convert.ToSingle(array[17]), Convert.ToSingle(array[18])), 0);
-                        gameObject3.GetComponent<CannonPropRegion>().settings = content[i];
-                        gameObject3.GetPhotonView().RPC("SetSize", PhotonTargets.AllBuffered, content[i]);
+                        resultObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[2]), Convert.ToSingle(strArray[3]), Convert.ToSingle(strArray[4])), new Quaternion(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7]), Convert.ToSingle(strArray[8])));
                     }
                     else
                     {
-                        GameObject gameObject3 = PhotonNetwork.Instantiate("RCAsset/" + array[1] + "Prop", new Vector3(Convert.ToSingle(array[2]), Convert.ToSingle(array[3]), Convert.ToSingle(array[4])), new Quaternion(Convert.ToSingle(array[5]), Convert.ToSingle(array[6]), Convert.ToSingle(array[7]), Convert.ToSingle(array[8])), 0);
-                        gameObject3.GetComponent<CannonPropRegion>().settings = content[i];
+                        num2 = 1f;
+                        obj2 = null;
+                        obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)Resources.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[12]), Convert.ToSingle(strArray[13]), Convert.ToSingle(strArray[14])), new Quaternion(Convert.ToSingle(strArray[15]), Convert.ToSingle(strArray[0x10]), Convert.ToSingle(strArray[0x11]), Convert.ToSingle(strArray[0x12])));
+                        if (strArray[2] != "default")
+                        {
+                            if (strArray[2].StartsWith("transparent"))
+                            {
+                                if (float.TryParse(strArray[2].Substring(11), out num3))
+                                {
+                                    num2 = num3;
+                                }
+                                foreach (Renderer renderer in obj2.GetComponentsInChildren<Renderer>())
+                                {
+                                    renderer.material = (Material)RCAssets.Load("transparent");
+                                    if ((Convert.ToSingle(strArray[10]) != 1f) || (Convert.ToSingle(strArray[11]) != 1f))
+                                    {
+                                        renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * Convert.ToSingle(strArray[10]), renderer.material.mainTextureScale.y * Convert.ToSingle(strArray[11]));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (Renderer renderer in obj2.GetComponentsInChildren<Renderer>())
+                                {
+                                    if (!renderer.name.Contains("Particle System") || !obj2.name.Contains("aot_supply"))
+                                    {
+                                        renderer.material = (Material)RCAssets.Load(strArray[2]);
+                                        if ((Convert.ToSingle(strArray[10]) != 1f) || (Convert.ToSingle(strArray[11]) != 1f))
+                                        {
+                                            renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * Convert.ToSingle(strArray[10]), renderer.material.mainTextureScale.y * Convert.ToSingle(strArray[11]));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[3]);
+                        num5 -= 0.001f;
+                        num6 = obj2.transform.localScale.y * Convert.ToSingle(strArray[4]);
+                        num7 = obj2.transform.localScale.z * Convert.ToSingle(strArray[5]);
+                        obj2.transform.localScale = new Vector3(num5, num6, num7);
+                        if (strArray[6] != "0")
+                        {
+                            color = new Color(Convert.ToSingle(strArray[7]), Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), num2);
+                            foreach (MeshFilter filter in obj2.GetComponentsInChildren<MeshFilter>())
+                            {
+                                mesh = filter.mesh;
+                                colorArray = new Color[mesh.vertexCount];
+                                for (num8 = 0; num8 < mesh.vertexCount; num8++)
+                                {
+                                    colorArray[num8] = color;
+                                }
+                                mesh.colors = colorArray;
+                            }
+                        }
+                        resultObject = obj2;
                     }
-                    continue;
                 }
-                TitanSpawner titanSpawner = new TitanSpawner();
-                float num = 30f;
-                if (float.TryParse(array[2], out result))
+                else if (strArray[0].StartsWith("misc"))
                 {
-                    num = Mathf.Max(Convert.ToSingle(array[2]), 1f);
+                    if (strArray[1].StartsWith("barrier"))
+                    {
+                        obj2 = null;
+                        obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
+                        num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
+                        num5 -= 0.001f;
+                        num6 = obj2.transform.localScale.y * Convert.ToSingle(strArray[3]);
+                        num7 = obj2.transform.localScale.z * Convert.ToSingle(strArray[4]);
+                        obj2.transform.localScale = new Vector3(num5, num6, num7);
+                        resultObject = obj2;
+                    }
+                    else if (strArray[1].StartsWith("racingStart"))
+                    {
+                        obj2 = null;
+                        obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
+                        num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
+                        num5 -= 0.001f;
+                        num6 = obj2.transform.localScale.y * Convert.ToSingle(strArray[3]);
+                        num7 = obj2.transform.localScale.z * Convert.ToSingle(strArray[4]);
+                        obj2.transform.localScale = new Vector3(num5, num6, num7);
+                        if (this.racingDoors != null)
+                        {
+                            this.racingDoors.Add(obj2);
+                        }
+                        resultObject = obj2;
+                    }
+                    else if (strArray[1].StartsWith("racingEnd"))
+                    {
+                        obj2 = null;
+                        obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
+                        num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
+                        num5 -= 0.001f;
+                        num6 = obj2.transform.localScale.y * Convert.ToSingle(strArray[3]);
+                        num7 = obj2.transform.localScale.z * Convert.ToSingle(strArray[4]);
+                        obj2.transform.localScale = new Vector3(num5, num6, num7);
+                        obj2.AddComponent<LevelTriggerRacingEnd>();
+                        resultObject = obj2;
+                    }
+                    else if (strArray[1].StartsWith("region") && PhotonNetwork.isMasterClient)
+                    {
+                        Vector3 loc = new Vector3(Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7]), Convert.ToSingle(strArray[8]));
+                        RCRegion region = new RCRegion(loc, Convert.ToSingle(strArray[3]), Convert.ToSingle(strArray[4]), Convert.ToSingle(strArray[5]));
+                        string key = strArray[2];
+                        if (RCRegionTriggers.ContainsKey(key))
+                        {
+                            GameObject obj3 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load("region"));
+                            obj3.transform.position = loc;
+                            obj3.AddComponent<RegionTrigger>();
+                            obj3.GetComponent<RegionTrigger>().CopyTrigger((RegionTrigger)RCRegionTriggers[key]);
+                            num5 = obj3.transform.localScale.x * Convert.ToSingle(strArray[3]);
+                            num5 -= 0.001f;
+                            num6 = obj3.transform.localScale.y * Convert.ToSingle(strArray[4]);
+                            num7 = obj3.transform.localScale.z * Convert.ToSingle(strArray[5]);
+                            obj3.transform.localScale = new Vector3(num5, num6, num7);
+                            region.myBox = obj3;
+                        }
+                        RCRegions.Add(key, region);
+                    }
                 }
-                titanSpawner.time = num;
-                titanSpawner.delay = num;
-                titanSpawner.name = array[1];
-                titanSpawner.endless = array[3].Equals("1");
-                titanSpawner.location = new Vector3(Convert.ToSingle(array[4]), Convert.ToSingle(array[5]), Convert.ToSingle(array[6]));
-                titanSpawners.Add(titanSpawner);
+                else if (strArray[0].StartsWith("racing"))
+                {
+                    if (strArray[1].StartsWith("start"))
+                    {
+                        obj2 = null;
+                        obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
+                        num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
+                        num5 -= 0.001f;
+                        num6 = obj2.transform.localScale.y * Convert.ToSingle(strArray[3]);
+                        num7 = obj2.transform.localScale.z * Convert.ToSingle(strArray[4]);
+                        obj2.transform.localScale = new Vector3(num5, num6, num7);
+                        if (this.racingDoors != null)
+                        {
+                            this.racingDoors.Add(obj2);
+                        }
+                        resultObject = obj2;
+                    }
+                    else if (strArray[1].StartsWith("end"))
+                    {
+                        obj2 = null;
+                        obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
+                        num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
+                        num5 -= 0.001f;
+                        num6 = obj2.transform.localScale.y * Convert.ToSingle(strArray[3]);
+                        num7 = obj2.transform.localScale.z * Convert.ToSingle(strArray[4]);
+                        obj2.transform.localScale = new Vector3(num5, num6, num7);
+                        obj2.GetComponentInChildren<Collider>().gameObject.AddComponent<LevelTriggerRacingEnd>();
+                        resultObject = obj2;
+                    }
+                    else if (strArray[1].StartsWith("kill"))
+                    {
+                        obj2 = null;
+                        obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
+                        num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
+                        num5 -= 0.001f;
+                        num6 = obj2.transform.localScale.y * Convert.ToSingle(strArray[3]);
+                        num7 = obj2.transform.localScale.z * Convert.ToSingle(strArray[4]);
+                        obj2.transform.localScale = new Vector3(num5, num6, num7);
+                        obj2.GetComponentInChildren<Collider>().gameObject.AddComponent<RacingKillTrigger>();
+                        resultObject = obj2;
+                    }
+                    else if (strArray[1].StartsWith("checkpoint"))
+                    {
+                        obj2 = null;
+                        obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
+                        num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
+                        num5 -= 0.001f;
+                        num6 = obj2.transform.localScale.y * Convert.ToSingle(strArray[3]);
+                        num7 = obj2.transform.localScale.z * Convert.ToSingle(strArray[4]);
+                        obj2.transform.localScale = new Vector3(num5, num6, num7);
+                        obj2.GetComponentInChildren<Collider>().gameObject.AddComponent<RacingCheckpointTrigger>();
+                        resultObject = obj2;
+                    }
+                }
+                else if (strArray[0].StartsWith("map"))
+                {
+                    if (strArray[1].StartsWith("disablebounds"))
+                    {
+                        UnityEngine.Object.Destroy(GameObject.Find("gameobjectOutSide"));
+                        UnityEngine.Object.Instantiate(RCAssets.Load("outside"));
+                    }
+                }
+                else if (PhotonNetwork.isMasterClient && strArray[0].StartsWith("photon"))
+                {
+                    if (strArray[1].StartsWith("Cannon"))
+                    {
+                        if (strArray.Length > 15)
+                        {
+                            GameObject go = PhotonNetwork.Instantiate("RCAsset/" + strArray[1] + "Prop", new Vector3(Convert.ToSingle(strArray[12]), Convert.ToSingle(strArray[13]), Convert.ToSingle(strArray[14])), new Quaternion(Convert.ToSingle(strArray[15]), Convert.ToSingle(strArray[0x10]), Convert.ToSingle(strArray[0x11]), Convert.ToSingle(strArray[0x12])), 0);
+                            go.GetComponent<CannonPropRegion>().settings = content[num];
+                            go.GetPhotonView().RPC("SetSize", PhotonTargets.AllBuffered, new object[] { content[num] });
+                        }
+                        else
+                        {
+                            PhotonNetwork.Instantiate("RCAsset/" + strArray[1] + "Prop", new Vector3(Convert.ToSingle(strArray[2]), Convert.ToSingle(strArray[3]), Convert.ToSingle(strArray[4])), new Quaternion(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7]), Convert.ToSingle(strArray[8])), 0).GetComponent<CannonPropRegion>().settings = content[num];
+                        }
+                    }
+                    else
+                    {
+                        TitanSpawner item = new TitanSpawner();
+                        num5 = 30f;
+                        if (float.TryParse(strArray[2], out num3))
+                        {
+                            num5 = Mathf.Max(Convert.ToSingle(strArray[2]), 1f);
+                        }
+                        item.time = num5;
+                        item.delay = num5;
+                        item.name = strArray[1];
+                        if (strArray[3] == "1")
+                        {
+                            item.endless = true;
+                        }
+                        else
+                        {
+                            item.endless = false;
+                        }
+                        item.location = new Vector3(Convert.ToSingle(strArray[4]), Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]));
+                        this.titanSpawners.Add(item);
+                    }
+                }
+
+                if (resultObject != null)
+                {
+                    Anarchy.Custom.Level.CustomAnarchyLevel.Instance.TryAddAnarchyScripts(resultObject, strArray);
+                }
             }
         }
     }
@@ -11692,38 +11741,38 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         restartingHorse = false;
         restartingTitan = false;
 
-        // Bomb PvP
+        // Bomb PVP
         if (settings.ContainsKey("bomb"))
         {
             if (RCSettings.BombMode != (int)settings["bomb"])
             {
                 RCSettings.BombMode = (int)settings["bomb"];
-                chatRoom.AddLine("<color=#ffcc00>PVP Bomb Mode enabled.</color>");
+                InRoomChat.Instance.AddLine("PVP Bomb Mode enabled.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.BombMode != 0)
         {
             RCSettings.BombMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>PVP Bomb Mode disabled.</color>");
+            InRoomChat.Instance.AddLine("PVP Bomb Mode disabled.".WithColor("FFCC00"));
             if (PhotonNetwork.isMasterClient)
             {
                 restartingBomb = true;
             }
         }
 
-        // Global minimap disable
+        // Global Minimap Disable
         if (settings.ContainsKey("globalDisableMinimap"))
         {
             if (RCSettings.GlobalDisableMinimap != (int)settings["globalDisableMinimap"])
             {
                 RCSettings.GlobalDisableMinimap = (int)settings["globalDisableMinimap"];
-                chatRoom.AddLine("<color=#ffcc00>Minimaps are not allowed.</color>");
+                InRoomChat.Instance.AddLine("Minimaps are not allowed.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.GlobalDisableMinimap != 0)
         {
             RCSettings.GlobalDisableMinimap = 0;
-            chatRoom.AddLine("<color=#ffcc00>Minimaps are allowed.</color>");
+            InRoomChat.Instance.AddLine("Minimaps are allowed.".WithColor("FFCC00"));
         }
 
         // Horses
@@ -11732,32 +11781,32 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.HorseMode != (int)settings["horse"])
             {
                 RCSettings.HorseMode = (int)settings["horse"];
-                chatRoom.AddLine("<color=#ffcc00>Horses enabled.</color>");
+                InRoomChat.Instance.AddLine("Horses enabled.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.HorseMode != 0)
         {
             RCSettings.HorseMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Horses disabled.</color>");
+            InRoomChat.Instance.AddLine("Horses disabled.".WithColor("FFCC00"));
             if (PhotonNetwork.isMasterClient)
             {
                 restartingHorse = true;
             }
         }
 
-        // Punk waves
+        // Punk Waves
         if (settings.ContainsKey("punkWaves"))
         {
             if (RCSettings.PunkWaves != (int)settings["punkWaves"])
             {
                 RCSettings.PunkWaves = (int)settings["punkWaves"];
-                chatRoom.AddLine("<color=#ffcc00>Punk override every 5 waves enabled.</color>");
+                InRoomChat.Instance.AddLine("Punk override every 5 waves enabled.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.PunkWaves != 0)
         {
             RCSettings.PunkWaves = 0;
-            chatRoom.AddLine("<color=#ffcc00>Punk override every 5 waves disabled.</color>");
+            InRoomChat.Instance.AddLine("Punk override every 5 waves disabled.".WithColor("FFCC00"));
         }
 
         // AHSS Air-Reload
@@ -11766,16 +11815,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.AhssReload != (int)settings["ahssReload"])
             {
                 RCSettings.AhssReload = (int)settings["ahssReload"];
-                chatRoom.AddLine("<color=#ffcc00>AHSS Air-Reload is not allowed.</color>");
+                InRoomChat.Instance.AddLine("AHSS Air-Reload is not allowed.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.AhssReload != 0)
         {
             RCSettings.AhssReload = 0;
-            chatRoom.AddLine("<color=#ffcc00>AHSS Air-Reload is allowed.</color>");
+            InRoomChat.Instance.AddLine("AHSS Air-Reload is allowed.".WithColor("FFCC00"));
         }
 
-        // Team sorting
+        // Team Sorting
         if (settings.ContainsKey("team"))
         {
             if (RCSettings.TeamMode != (int)settings["team"])
@@ -11794,7 +11843,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                         str = "Locked by Skill";
                         break;
                 }
-                chatRoom.AddLine("<color=#ffcc00>Team Mode enabled</color> (" + str + ").</color>");
+                InRoomChat.Instance.AddLine("Team Mode enabled</color> (".WithColor("FFCC00") + str + ").".WithColor("FFCC00"));
                 if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam]) == 0)
                 {
                     SetTeam(3);
@@ -11805,7 +11854,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         {
             RCSettings.TeamMode = 0;
             SetTeam(0);
-            chatRoom.AddLine("<color=#ffcc00>Team Mode disabled.</color>");
+            InRoomChat.Instance.AddLine("Team Mode disabled.".WithColor("FFCC00"));
         }
 
         // Point limit
@@ -11814,46 +11863,46 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.PointMode != (int)settings["point"])
             {
                 RCSettings.PointMode = (int)settings["point"];
-                chatRoom.AddLine("<color=#ffcc00>Point Limit enabled (" + RCSettings.PointMode + ").</color>");
+                InRoomChat.Instance.AddLine("Point Limit enabled (".WithColor("FFCC00") + RCSettings.PointMode + ").".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.PointMode != 0)
         {
             RCSettings.PointMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Point limit disabled.</color>");
+            InRoomChat.Instance.AddLine("Point limit disabled.".WithColor("FFCC00"));
         }
 
-        // Punk rocks
+        // Punk Rocks
         if (settings.ContainsKey("rock"))
         {
             if (RCSettings.DisableRock != (int)settings["rock"])
             {
                 RCSettings.DisableRock = (int)settings["rock"];
-                chatRoom.AddLine("<color=#ffcc00>Punk rock throwing disabled.</color>");
+                InRoomChat.Instance.AddLine("Punk rock throwing disabled.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.DisableRock != 0)
         {
             RCSettings.DisableRock = 0;
-            chatRoom.AddLine("<color=#ffcc00>Punk rock throwing enabled.</color>");
+            InRoomChat.Instance.AddLine("Punk rock throwing enabled.".WithColor("FFCC00"));
         }
 
-        // Titan explode
+        // Titan Explode
         if (settings.ContainsKey("explode"))
         {
             if (RCSettings.ExplodeMode != (int)settings["explode"])
             {
                 RCSettings.ExplodeMode = (int)settings["explode"];
-                chatRoom.AddLine("<color=#ffcc00>Titan Explode Mode enabled (Radius " + RCSettings.ExplodeMode + ").</color>");
+                InRoomChat.Instance.AddLine("Titan Explode Mode enabled (Radius ".WithColor("FFCC00") + RCSettings.ExplodeMode + ").".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.ExplodeMode != 0)
         {
             RCSettings.ExplodeMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Titan Explode Mode disabled.</color>");
+            InRoomChat.Instance.AddLine("Titan Explode Mode disabled.".WithColor("FFCC00"));
         }
 
-        // Titan health mode
+        // Titan Health
         if (settings.ContainsKey("healthMode") && settings.ContainsKey("healthLower") && settings.ContainsKey("healthUpper"))
         {
             if (RCSettings.HealthMode != (int)settings["healthMode"] || RCSettings.HealthLower != (int)settings["healthLower"] || RCSettings.HealthUpper != (int)settings["healthUpper"])
@@ -11866,7 +11915,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     str = "Scaled";
                 }
-                chatRoom.AddLine("<color=#ffcc00>Titan Health (" + str + ", " + RCSettings.HealthLower + " to " + RCSettings.HealthUpper + ") enabled.</color>");
+                InRoomChat.Instance.AddLine("Titan Health (".WithColor("FFCC00") + str + ", ".WithColor("FFCC00")
+                    + RCSettings.HealthLower + " to ".WithColor("FFCC00")
+                    + RCSettings.HealthUpper + ") enabled.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.HealthMode != 0 || RCSettings.HealthLower != 0 || RCSettings.HealthUpper != 0)
@@ -11874,10 +11925,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             RCSettings.HealthMode = 0;
             RCSettings.HealthLower = 0;
             RCSettings.HealthUpper = 0;
-            chatRoom.AddLine("<color=#ffcc00>Titan Health disabled.</color>");
+            InRoomChat.Instance.AddLine("Titan Health disabled.".WithColor("FFCC00"));
         }
 
-        // Infection mode
+        // Infection
         if (settings.ContainsKey("infection"))
         {
             if (RCSettings.InfectionMode != (int)settings["infection"])
@@ -11886,7 +11937,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
                 hashtable.Add(PhotonPlayerProperty.RCTeam, 0);
                 PhotonNetwork.player.SetCustomProperties(hashtable);
-                chatRoom.AddLine("<color=#ffcc00>Infection mode (" + RCSettings.InfectionMode + ") enabled. Make sure your first character is human.</color>");
+                InRoomChat.Instance.AddLine("Infection mode (".WithColor("FFCC00") + RCSettings.InfectionMode + ") enabled. Make sure your first character is human.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.InfectionMode != 0)
@@ -11895,7 +11946,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
             hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
             PhotonNetwork.player.SetCustomProperties(hashtable);
-            chatRoom.AddLine("<color=#ffcc00>Infection Mode disabled.</color>");
+            InRoomChat.Instance.AddLine("Infection Mode disabled.".WithColor("FFCC00"));
             if (PhotonNetwork.isMasterClient)
             {
                 restartingTitan = true;
@@ -11908,7 +11959,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.BanEren != (int)settings["eren"])
             {
                 RCSettings.BanEren = (int)settings["eren"];
-                chatRoom.AddLine("<color=#ffcc00>Anti-Eren enabled. Using Titan Eren will get you kicked.</color>");
+                InRoomChat.Instance.AddLine("Anti-Eren enabled. Using Titan Eren will get you kicked.".WithColor("FFCC00"));
                 if (PhotonNetwork.isMasterClient)
                 {
                     restartingEren = true;
@@ -11918,40 +11969,40 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         else if (RCSettings.BanEren != 0)
         {
             RCSettings.BanEren = 0;
-            chatRoom.AddLine("<color=#ffcc00>Anti-Eren disabled. Titan Eren is allowed.</color>");
+            InRoomChat.Instance.AddLine("Anti-Eren disabled. Titan Eren is allowed.".WithColor("FFCC00"));
         }
 
-        // Custom titan count
+        // Custom Titan Count
         if (settings.ContainsKey("titanc"))
         {
             if (RCSettings.MoreTitans != (int)settings["titanc"])
             {
                 RCSettings.MoreTitans = (int)settings["titanc"];
-                chatRoom.AddLine("<color=#ffcc00>" + RCSettings.MoreTitans + " titans will spawn each round.</color>");
+                InRoomChat.Instance.AddLine(RCSettings.MoreTitans + " Titans will spawn each round.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.MoreTitans != 0)
         {
             RCSettings.MoreTitans = 0;
-            chatRoom.AddLine("<color=#ffcc00>Default titan amount will spawn each round.</color>");
+            InRoomChat.Instance.AddLine("Default titan amount will spawn each round.".WithColor("FFCC00"));
         }
 
-        // Minimum damage
+        // Minimum Damage
         if (settings.ContainsKey("damage"))
         {
             if (RCSettings.DamageMode != (int)settings["damage"])
             {
                 RCSettings.DamageMode = (int)settings["damage"];
-                chatRoom.AddLine("<color=#ffcc00>Minimum nape damage (" + Convert.ToString(RCSettings.DamageMode) + ") enabled.</color>");
+                InRoomChat.Instance.AddLine("Minimum nape damage (".WithColor("FFCC00") + RCSettings.DamageMode + ") enabled.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.DamageMode != 0)
         {
             RCSettings.DamageMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Minimum nape damage disabled.</color>");
+            InRoomChat.Instance.AddLine("Minimum nape damage disabled.".WithColor("FFCC00"));
         }
 
-        // Custom titan sizes
+        // Custom Titan Sizes
         if (settings.ContainsKey("sizeMode") && settings.ContainsKey("sizeLower") && settings.ContainsKey("sizeUpper"))
         {
             if (RCSettings.SizeMode != (int)settings["sizeMode"] || RCSettings.SizeLower != (float)settings["sizeLower"] || RCSettings.SizeUpper != (float)settings["sizeUpper"])
@@ -11959,7 +12010,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 RCSettings.SizeMode = (int)settings["sizeMode"];
                 RCSettings.SizeLower = (float)settings["sizeLower"];
                 RCSettings.SizeUpper = (float)settings["sizeUpper"];
-                chatRoom.AddLine("<color=#ffcc00>Custom titan size (" + RCSettings.SizeLower.ToString("F2") + "," + RCSettings.SizeUpper.ToString("F2") + ") enabled.</color>");
+                InRoomChat.Instance.AddLine("Custom titan size (".WithColor("FFCC00")
+                    + RCSettings.SizeLower.ToString("F2") + ", ".WithColor("FFCC00")
+                    + RCSettings.SizeUpper.ToString("F2") + ") enabled.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.SizeMode != 0 || RCSettings.SizeLower != 0f || RCSettings.SizeUpper != 0f)
@@ -11967,10 +12020,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             RCSettings.SizeMode = 0;
             RCSettings.SizeLower = 0f;
             RCSettings.SizeUpper = 0f;
-            chatRoom.AddLine("<color=#ffcc00>Custom titan size <color=#ff0000>disabled</color>.</color>");
+            InRoomChat.Instance.AddLine("Custom titan size disabled.".WithColor("FFCC00"));
         }
 
-        // Custom spawn rates
+        // Custom Spawn Rates
         if (settings.ContainsKey("spawnMode") && settings.ContainsKey("nRate") && settings.ContainsKey("aRate") && settings.ContainsKey("jRate") && settings.ContainsKey("cRate") && settings.ContainsKey("pRate"))
         {
             if (RCSettings.SpawnMode != (int)settings["spawnMode"] || RCSettings.NormalRate != (float)settings["nRate"] || RCSettings.AberrantRate != (float)settings["aRate"] || RCSettings.JumperRate != (float)settings["jRate"] || RCSettings.CrawlerRate != (float)settings["cRate"] || RCSettings.PunkRate != (float)settings["pRate"])
@@ -11981,11 +12034,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 RCSettings.JumperRate = (float)settings["jRate"];
                 RCSettings.CrawlerRate = (float)settings["cRate"];
                 RCSettings.PunkRate = (float)settings["pRate"];
-                chatRoom.AddLine("<color=#ffcc00>Custom spawn rate enabled (" + RCSettings.NormalRate.ToString("F2") + "% Normal, "
-                    + RCSettings.AberrantRate.ToString("F2") + "% Abnormal, "
-                    + RCSettings.JumperRate.ToString("F2") + "% Jumper, "
-                    + RCSettings.CrawlerRate.ToString("F2") + "% Crawler, "
-                    + RCSettings.PunkRate.ToString("F2") + "% Punk)</color>");
+                InRoomChat.Instance.AddLine("Custom spawn rate enabled (".WithColor("FFCC00") + RCSettings.NormalRate.ToString("F2") + "% Normal, ".WithColor("FFCC00")
+                    + RCSettings.AberrantRate.ToString("F2") + "% Abnormal, ".WithColor("FFCC00")
+                    + RCSettings.JumperRate.ToString("F2") + "% Jumper, ".WithColor("FFCC00")
+                    + RCSettings.CrawlerRate.ToString("F2") + "% Crawler, ".WithColor("FFCC00")
+                    + RCSettings.PunkRate.ToString("F2") + "% Punk)".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.SpawnMode != 0 || RCSettings.NormalRate != 0f || RCSettings.AberrantRate != 0f || RCSettings.JumperRate != 0f || RCSettings.CrawlerRate != 0f || RCSettings.PunkRate != 0f)
@@ -11996,42 +12049,42 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             RCSettings.JumperRate = 0f;
             RCSettings.CrawlerRate = 0f;
             RCSettings.PunkRate = 0f;
-            chatRoom.AddLine("<color=#ffcc00>Custom spawn rate disabled.</color>");
+            InRoomChat.Instance.AddLine("Custom spawn rate disabled.".WithColor("FFCC00"));
         }
 
-        // Wave mode (Titan count multiplier?)
+        // Wave Mode (Titan count multiplier?)
         if (settings.ContainsKey("waveModeOn") && settings.ContainsKey("waveModeNum"))
         {
             if (RCSettings.WaveModeOn != (int)settings["waveModeOn"] || RCSettings.WaveModeNum != (int)settings["waveModeNum"])
             {
                 RCSettings.WaveModeOn = (int)settings["waveModeOn"];
                 RCSettings.WaveModeNum = (int)settings["waveModeNum"];
-                chatRoom.AddLine("<color=#ffcc00>Custom Wave Mode (" + RCSettings.WaveModeNum.ToString() + ") enabled.</color>");
+                InRoomChat.Instance.AddLine("Custom Wave Mode (".WithColor("FFCC00") + RCSettings.WaveModeNum.ToString() + ") enabled.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.WaveModeOn != 0 || RCSettings.WaveModeNum != 0)
         {
             RCSettings.WaveModeOn = 0;
             RCSettings.WaveModeNum = 0;
-            chatRoom.AddLine("<color=#ffcc00>Custom Wave Mode disabled.</color>");
+            InRoomChat.Instance.AddLine("Custom Wave Mode disabled.".WithColor("FFCC00"));
         }
 
-        // Friendly fire
+        // Friendly Fire
         if (settings.ContainsKey("friendly"))
         {
             if (RCSettings.FriendlyMode != (int)settings["friendly"])
             {
                 RCSettings.FriendlyMode = (int)settings["friendly"];
-                chatRoom.AddLine("<color=#ffcc00>PVP is not allowed.</color>");
+                InRoomChat.Instance.AddLine("Friendly Fire disabled, PVP is not allowed.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.FriendlyMode != 0)
         {
             RCSettings.FriendlyMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>PVP is allowed.</color>");
+            InRoomChat.Instance.AddLine("Friendly Fire enabled, PVP is allowed.".WithColor("FFCC00"));
         }
 
-        // PVP mode
+        // PVP Mode
         if (settings.ContainsKey("pvp"))
         {
             if (RCSettings.PvPMode != (int)settings["pvp"])
@@ -12046,28 +12099,28 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
                 {
                     str = "FFA";
                 }
-                chatRoom.AddLine("<color=#ffcc00>Blade/AHSS PVP enabled (" + str + ").</color>");
+                InRoomChat.Instance.AddLine("Blade/AHSS PVP enabled (".WithColor("FFCC00") + str + ").".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.PvPMode != 0)
         {
             RCSettings.PvPMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Blade/AHSS PVP disabled.</color>");
+            InRoomChat.Instance.AddLine("Blade/AHSS PVP disabled.".WithColor("FFCC00"));
         }
 
-        // Max Waves
+        // Max Wave
         if (settings.ContainsKey("maxwave"))
         {
             if (RCSettings.MaxWave != (int)settings["maxwave"])
             {
                 RCSettings.MaxWave = (int)settings["maxwave"];
-                chatRoom.AddLine("<color=#ffcc00>Max Wave is " + RCSettings.MaxWave + ".</color>");
+                InRoomChat.Instance.AddLine("Max Wave is ".WithColor("FFCC00") + RCSettings.MaxWave + ".".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.MaxWave != 0)
         {
             RCSettings.MaxWave = 0;
-            chatRoom.AddLine("<color=#ffcc00>Max Wave set to default (20).</color>");
+            InRoomChat.Instance.AddLine("Max Wave set to default (20)".WithColor("FFCC00"));
         }
 
         // Endless Respawn
@@ -12076,13 +12129,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.EndlessMode != (int)settings["endless"])
             {
                 RCSettings.EndlessMode = (int)settings["endless"];
-                chatRoom.AddLine("<color=#ffcc00>Endless Respawn enabled (" + RCSettings.EndlessMode + "s).</color>");
+                InRoomChat.Instance.AddLine("Endless Respawn enabled (".WithColor("FFCC00") + RCSettings.EndlessMode + "s).".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.EndlessMode != 0)
         {
             RCSettings.EndlessMode = 0;
-            chatRoom.AddLine("<color=#ffcc00>Endless Respawn disabled.</color>");
+            InRoomChat.Instance.AddLine("Endless Respawn disabled.".WithColor("FFCC00"));
         }
 
         // Deadly Cannons
@@ -12091,13 +12144,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.DeadlyCannons != (int)settings["deadlycannons"])
             {
                 RCSettings.DeadlyCannons = (int)settings["deadlycannons"];
-                chatRoom.AddLine("<color=#ffcc00>Cannons will now kill players.</color>");
+                InRoomChat.Instance.AddLine("Cannons will now kill humans.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.DeadlyCannons != 0)
         {
             RCSettings.DeadlyCannons = 0;
-            chatRoom.AddLine("<color=#ffcc00>Cannons will no longer kill players.</color>");
+            InRoomChat.Instance.AddLine("Cannons will no longer kill humans.".WithColor("FFCC00"));
         }
 
         // Aso Racing
@@ -12106,22 +12159,22 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             if (RCSettings.RacingStatic != (int)settings["asoracing"])
             {
                 RCSettings.RacingStatic = (int)settings["asoracing"];
-                chatRoom.AddLine("<color=#ffcc00>Racing will not restart on win.</color>");
+                InRoomChat.Instance.AddLine("Racing will not restart on win.".WithColor("FFCC00"));
             }
         }
         else if (RCSettings.RacingStatic != 0)
         {
             RCSettings.RacingStatic = 0;
-            chatRoom.AddLine("<color=#ffcc00>Racing will restart on win.</color>");
+            InRoomChat.Instance.AddLine("Racing will restart on win.".WithColor("FFCC00"));
         }
 
-        // Motd
+        // MOTD
         if (settings.ContainsKey("motd"))
         {
             if (RCSettings.Motd != (string)settings["motd"])
             {
                 RCSettings.Motd = (string)settings["motd"];
-                chatRoom.AddLine("<color=#ffcc00>MOTD:</color> " + RCSettings.Motd);
+                InRoomChat.Instance.AddLine("MOTD: ".WithColor("FFCC00") + RCSettings.Motd);
             }
         }
         else if (RCSettings.Motd != string.Empty)
@@ -12134,7 +12187,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     private void labelRPC(int viewId, PhotonMessageInfo info)
     {
         // Anarchy Detection
-        // https://github.com/Orrder/Anarchy/blob/master/Anarchy/Assembly/AoTTG/FengRPCs.cs
+        // https://github.com/aelariane/Anarchy/blob/master/Anarchy/Assembly/AoTTG/FengRPCs.cs
         if (((info.timeInt - 1000000) * -1) == info.sender.Id)
         {
             info.sender.isAnarchy = true;
@@ -12149,6 +12202,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         string newGuild = GExtensions.AsString(owner.customProperties[PhotonPlayerProperty.Guild]);
         string newName = GExtensions.AsString(owner.customProperties[PhotonPlayerProperty.Name]);
         GameObject gameObject = pv.gameObject;
+
         HERO component = gameObject.GetComponent<HERO>();
         if (component != null)
         {
@@ -12157,7 +12211,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
 
             if (newGuild.Length > 0)
             {
-                label.text = "[ffff00]" + newGuild + "\n[ffffff]" + label.text;
+                label.text = "[FFFF00]" + newGuild + "\n[FFFFFF]" + label.text;
             }
         }
     }

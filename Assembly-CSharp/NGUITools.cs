@@ -357,7 +357,7 @@ public static class NGUITools
 
     public static UISprite AddSprite(GameObject go, UIAtlas atlas, string spriteName)
     {
-        UIAtlas.Sprite sprite = (!(atlas != null)) ? null : atlas.GetSprite(spriteName);
+        UIAtlas.Sprite sprite = atlas == null ? null : atlas.GetSprite(spriteName);
         UISprite uISprite = AddWidget<UISprite>(go);
         uISprite.type = ((sprite != null && !(sprite.inner == sprite.outer)) ? UISprite.Type.Sliced : UISprite.Type.Simple);
         uISprite.atlas = atlas;

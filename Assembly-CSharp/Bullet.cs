@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Bullet : Photon.MonoBehaviour
+public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScriptHook
 {
     private GameObject master;
     private Vector3 velocity = Vector3.zero;
@@ -23,6 +23,29 @@ public class Bullet : Photon.MonoBehaviour
     private int spiralcount;
     private bool isdestroying;
     public TITAN myTitan;
+
+    // BEGIN Anarchy
+    public Transform Transform
+    {
+        get
+        {
+            return transform;
+        }
+    }
+
+    public Anarchy.Custom.Interfaces.IAnarchyScriptHero Master
+    {
+        get
+        {
+            return master == null ? null : master.GetComponent<HERO>();
+        }
+    }
+
+    void Anarchy.Custom.Interfaces.IAnarchyScriptHook.KillMaster()
+    {
+        master.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, new object[] { -1, "Trap" });
+    }
+    // END Anarchy
 
     public void launch(Vector3 v, Vector3 v2, string launcher_ref, bool isLeft, GameObject hero, bool leviMode = false)
     {
@@ -362,6 +385,9 @@ public class Bullet : Photon.MonoBehaviour
 
     public void RemoveMe()
     {
+        // Anarchy
+        Anarchy.Custom.Level.CustomAnarchyLevel.Instance.OnHookUntiedGround(this);
+
         isdestroying = true;
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
         {
@@ -410,6 +436,7 @@ public class Bullet : Photon.MonoBehaviour
                 return;
             }
         }
+
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine)
         {
             if (phase == 0)
@@ -450,6 +477,9 @@ public class Bullet : Photon.MonoBehaviour
                 else if (hitInfo.collider.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
                 {
                     master.GetComponent<HERO>().lastHook = null;
+
+                    // Anarchy
+                    Anarchy.Custom.Level.CustomAnarchyLevel.Instance.OnHookAttachedToGround(this, hitInfo.collider.gameObject);
                 }
                 else if (hitInfo.collider.transform.gameObject.layer == LayerMask.NameToLayer("NetworkObject") && hitInfo.collider.transform.gameObject.tag == "Player" && !leviMode)
                 {
@@ -525,7 +555,7 @@ public class Bullet : Photon.MonoBehaviour
     public void CheckTitan()
     {
         GameObject main_object = Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
-        if (!(main_object != null) || !(master != null) || !(master == main_object) || !Physics.Raycast(layerMask: ((LayerMask)(1 << LayerMask.NameToLayer("PlayerAttackBox"))).value, origin: base.transform.position, direction: velocity, hitInfo: out RaycastHit hitInfo, distance: 10f))
+        if (main_object == null || master == null || !(master == main_object) || !Physics.Raycast(layerMask: ((LayerMask)(1 << LayerMask.NameToLayer("PlayerAttackBox"))).value, origin: base.transform.position, direction: velocity, hitInfo: out RaycastHit hitInfo, distance: 10f))
         {
             return;
         }

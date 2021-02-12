@@ -37,7 +37,7 @@ public class BTN_choose_titan : MonoBehaviour
             NGUITools.SetActive(GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[2], state: false);
             NGUITools.SetActive(GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[3], state: false);
             IN_GAME_MAIN_CAMERA.UsingTitan = false;
-            GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().setHUDposition();
+            GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().SetHUDPosition();
 
             Hashtable hashtable = new Hashtable();
             hashtable.Add(PhotonPlayerProperty.Character, text);
@@ -47,7 +47,7 @@ public class BTN_choose_titan : MonoBehaviour
         {
             if (FengGameManagerMKII.Level.Mode == GameMode.PVP_CAPTURE)
             {
-                GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().checkpoint = GameObject.Find("PVPchkPtT");
+                fgmkii.checkpoint = GameObject.Find("PVPchkPtT");
             }
             string selection = GameObject.Find("PopupListCharacterTITAN").GetComponent<UIPopupList>().selection;
             NGUITools.SetActive(base.transform.parent.gameObject, state: false);
@@ -66,7 +66,7 @@ public class BTN_choose_titan : MonoBehaviour
             NGUITools.SetActive(GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[2], state: false);
             NGUITools.SetActive(GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[3], state: false);
             IN_GAME_MAIN_CAMERA.UsingTitan = true;
-            GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().setHUDposition();
+            GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().SetHUDPosition();
         }
     }
 }

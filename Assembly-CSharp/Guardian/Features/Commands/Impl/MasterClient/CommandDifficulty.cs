@@ -30,7 +30,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                         GameHelper.Broadcast("Room difficulty is now ABNORMAL!");
                         break;
                     default:
-                        irc.AddLine("Invalid difficulty level.".WithColor("ff0000"));
+                        irc.AddLine("Invalid difficulty level!".WithColor("FF0000"));
                         break;
                 }
 

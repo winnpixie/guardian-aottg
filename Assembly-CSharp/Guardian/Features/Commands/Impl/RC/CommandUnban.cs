@@ -17,16 +17,17 @@
                     if (FengGameManagerMKII.BanHash.ContainsKey(id))
                     {
                         FengGameManagerMKII.BanHash.Remove(id);
-                        FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, GExtensions.AsString(FengGameManagerMKII.BanHash[id]) + " has been unbanned from the server.".WithColor("ffcc00"), string.Empty);
+                        FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, GExtensions.AsString(FengGameManagerMKII.BanHash[id]) 
+                            + " has been unbanned from the server.".WithColor("FFCC00"), string.Empty);
                     }
                     else
                     {
-                        irc.AddLine($"Player #{id} is not banned.".WithColor("ffcc00"));
+                        irc.AddLine($"Player #{id} is not banned.".WithColor("FFCC00"));
                     }
                 }
                 else
                 {
-                    irc.AddLine("Command requires master client.".WithColor("ff4444"));
+                    irc.AddLine("Command requires master client.".WithColor("FF0000"));
                 }
             }
         }
