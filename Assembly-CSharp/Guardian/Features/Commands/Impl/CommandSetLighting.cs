@@ -11,8 +11,6 @@ namespace Guardian.Features.Commands.Impl
         {
             if (args.Length > 0 && GExtensions.TryParseEnum(args[0], out DayLight dayLight))
             {
-                IN_GAME_MAIN_CAMERA.Lighting = dayLight;
-
                 if (PhotonNetwork.isMasterClient)
                 {
                     PhotonNetwork.room.SetCustomProperties(new ExitGames.Client.Photon.Hashtable

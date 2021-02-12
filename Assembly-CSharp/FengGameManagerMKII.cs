@@ -1070,6 +1070,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         ChangeQuality.SetCurrentQuality();
 
+        // Mod
         base.gameObject.AddComponent<Guardian.Mod>();
     }
 
@@ -1137,18 +1138,17 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         IN_GAME_MAIN_CAMERA.Difficulty = difficulty;
         time = int.Parse(roomInfo[3]) * 60;
 
-        if (GExtensions.TryParseEnum(roomInfo[4], out DayLight dayLight))
-        {
-            IN_GAME_MAIN_CAMERA.Lighting = dayLight;
-        }
-
         if (PhotonNetwork.room.customProperties.ContainsKey("Lighting")
-            && PhotonNetwork.room.customProperties["Lighting"] is string)
+           && PhotonNetwork.room.customProperties["Lighting"] is string)
         {
             if (GExtensions.TryParseEnum((string)PhotonNetwork.room.customProperties["Lighting"], out DayLight customDayLight))
             {
                 IN_GAME_MAIN_CAMERA.Lighting = customDayLight;
             }
+        }
+        else if (GExtensions.TryParseEnum(roomInfo[4], out DayLight dayLight))
+        {
+            IN_GAME_MAIN_CAMERA.Lighting = dayLight;
         }
 
         if (roomInfo[1].StartsWith("Multi-Map")

@@ -103,6 +103,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public void setDayLight(DayLight val)
     {
         Lighting = val;
+
         switch (Lighting)
         {
             case DayLight.Day:

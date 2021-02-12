@@ -2,8 +2,9 @@
 {
     class DiscordHelper
     {
-        public static Discord.Discord DiscordInstance;
         public static long StartTime;
+
+        private static Discord.Discord DiscordInstance;
 
         public static void Initialize()
         {
@@ -29,6 +30,30 @@
                                 break;
                         }
                     });
+                }
+                finally { }
+            }
+        }
+
+        public static void RunCallbacks()
+        {
+            if (DiscordInstance != null)
+            {
+                try
+                {
+                    DiscordInstance.RunCallbacks();
+                }
+                finally { }
+            }
+        }
+
+        public static void Shutdown()
+        {
+            if (DiscordInstance != null)
+            {
+                try
+                {
+                    DiscordInstance.Dispose();
                 }
                 finally { }
             }

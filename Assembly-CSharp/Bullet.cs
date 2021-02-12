@@ -386,7 +386,10 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     public void RemoveMe()
     {
         // Anarchy
-        Anarchy.Custom.Level.CustomAnarchyLevel.Instance.OnHookUntiedGround(this);
+        if (Master != null)
+        {
+            Anarchy.Custom.Level.CustomAnarchyLevel.Instance.OnHookUntiedGround(this);
+        }
 
         isdestroying = true;
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)

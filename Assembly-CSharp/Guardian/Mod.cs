@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "02122021";
+        public static string Build = "02122021-1";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static string MapData = string.Empty;
@@ -199,28 +199,31 @@ namespace Guardian
         {
             NetworkPatches.OnRoomPropertyModification(propertiesThatChanged);
 
-            PhotonPlayer sender = null;
-            if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer)
+            if (!FirstJoin)
             {
-                sender = (PhotonPlayer)propertiesThatChanged["sender"];
-            }
-
-            if (sender == null || sender.isMasterClient)
-            {
-                if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string && IsMultiMap)
+                PhotonPlayer sender = null;
+                if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer)
                 {
-                    LevelInfo levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
-                    if (levelInfo != null)
-                    {
-                        FengGameManagerMKII.Level = levelInfo;
-                    }
+                    sender = (PhotonPlayer)propertiesThatChanged["sender"];
                 }
 
-                if (propertiesThatChanged.ContainsKey("Lighting") && propertiesThatChanged["Lighting"] is string)
+                if (sender == null || sender.isMasterClient)
                 {
-                    if (GExtensions.TryParseEnum((string)propertiesThatChanged["Lighting"], out DayLight time))
+                    if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string && IsMultiMap)
                     {
-                        Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(time);
+                        LevelInfo levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
+                        if (levelInfo != null)
+                        {
+                            FengGameManagerMKII.Level = levelInfo;
+                        }
+                    }
+
+                    if (propertiesThatChanged.ContainsKey("Lighting") && propertiesThatChanged["Lighting"] is string)
+                    {
+                        if (GExtensions.TryParseEnum((string)propertiesThatChanged["Lighting"], out DayLight time))
+                        {
+                            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().setDayLight(time);
+                        }
                     }
                 }
             }
@@ -279,12 +282,12 @@ namespace Guardian
         {
             Properties.Save();
 
-            DiscordHelper.DiscordInstance.Dispose();
+            DiscordHelper.Shutdown();
         }
 
         void Update()
         {
-            DiscordHelper.DiscordInstance.RunCallbacks();
+            DiscordHelper.RunCallbacks();
         }
     }
 }
