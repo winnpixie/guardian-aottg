@@ -79,6 +79,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandPause.cs" />
+    <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandUnpause.cs" />
     <Compile Include="Guardian\Utilities\Translator.cs" />
     <Compile Include="TitanClass.cs" />
     <Compile Include="ActiveAnimation.cs" />
@@ -232,7 +234,6 @@
     <Compile Include="Guardian\AntiAbuse\TitanPatches.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandTranslate.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandDifficulty.cs" />
-    <Compile Include="Guardian\Features\Commands\Impl\CommandDownloadMap.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandKill.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandMute.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\CommandRejoin.cs" />

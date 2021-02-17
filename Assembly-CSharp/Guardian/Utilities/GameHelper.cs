@@ -1,14 +1,11 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
-using System.Text.RegularExpressions;
 
 namespace Guardian.Utilities
 {
     class GameHelper
     {
-        public static readonly Regex Detagger = new Regex("<\\/?(color(=[^>]*)?|size(=\\d*)?|b|i|material(=[^>]*)?|quad([^>]*)?)>", RegexOptions.IgnoreCase);
-        public static readonly Regex SpecialChars = new Regex("[~!@#$%^&*()_+`\\-=\\[\\]{}\\|;:'\",<.>\\/?]+", RegexOptions.IgnoreCase);
         public static readonly Vector2 ScrollBottom = new Vector2(0, float.MaxValue);
         private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 

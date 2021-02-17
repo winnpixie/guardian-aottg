@@ -1,29 +1,29 @@
-﻿using Guardian.Features.Commands;
-using Guardian.Utilities;
-using UnityEngine;
-using System.Reflection;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.IO;
+﻿using Guardian.AntiAbuse;
+using Guardian.Features.Commands;
 using Guardian.Features.Properties;
-using Guardian.AntiAbuse;
 using Guardian.Networking;
+using Guardian.Utilities;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEngine;
 
 namespace Guardian
 {
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "02122021-1";
+        public static string Build = "02162021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
-        public static string MapData = string.Empty;
         public static CommandManager Commands = new CommandManager();
         public static PropertyManager Properties = new PropertyManager();
         public static List<string> HostWhitelist = new List<string>();
-        public static Regex BlacklistedTags = new Regex("<\\/?(size(=\\d*)?|quad([^>]*)?|material([^>]*)?)>", RegexOptions.IgnoreCase);
+        public static Regex BlacklistedTags = new Regex("<\\/?(size|material|quad)([^>]*)?>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
+
         private static bool Initialized = false;
         private static bool FirstJoin = true;
 
@@ -121,6 +121,26 @@ namespace Guardian
         public static void LoadSkinHostWhitelist()
         {
             HostWhitelist = new List<string>(File.ReadAllLines(HostWhitelistPath));
+        }
+
+        // Attempts to fix some dumb bugs that occur when you alt-tab
+        void OnApplicationFocus(bool hasFocus)
+        {
+            if (hasFocus && IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
+            {
+                // Minimap turning white
+                if (Minimap.Instance != null)
+                {
+                    Minimap.WaitAndTryRecaptureInstance(0.1f);
+                }
+
+                // TPS crosshair ending up where it shouldn't
+                if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS)
+                {
+                    Screen.lockCursor = false;
+                    Screen.lockCursor = true;
+                }
+            }
         }
 
         void OnLevelWasLoaded(int level)
@@ -265,8 +285,6 @@ namespace Guardian
 
         void OnLeftRoom()
         {
-            MapData = string.Empty;
-
             DiscordHelper.SetPresence(new Discord.Activity
             {
                 Details = "Idle..."
@@ -276,6 +294,11 @@ namespace Guardian
         void OnConnectionFail(DisconnectCause cause)
         {
             Logger.Warn($"OnConnectionFail ({cause})");
+        }
+
+        void OnPhotonRoomJoinFailed(object[] codeAndMsg)
+        {
+            Logger.Error($"OnPhotonRoomJoinFailed ({codeAndMsg[0]} : {codeAndMsg[1]})");
         }
 
         void OnApplicationQuit()

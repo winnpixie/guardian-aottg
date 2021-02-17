@@ -1,36 +1,36 @@
-﻿using System;
-using UnityEngine;
+﻿
 using SimpleJSON;
+using System;
+using System.Collections;
+using UnityEngine;
 
 namespace Guardian.Utilities
 {
     class Translator
     {
-        public string OriginalText = string.Empty;
-        public string TranslatedText { get; private set; }
-
-        public string LanguageFrom = "auto";
-        public string LanguageTo = string.Empty;
-
-        public bool Get()
+        public static IEnumerator Translate(string text, string langCodeFrom, string langCodeTo, Action<string[]> callback)
         {
-            string query = Uri.EscapeDataString(OriginalText);
+            string query = WWW.EscapeURL(text);
+            string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl={langCodeFrom}&tl={langCodeTo}&dt=t&q={query}";
 
-            using (WWW www = new WWW($"https://translate.googleapis.com/translate_a/single?client=gtx&sl={LanguageFrom}&tl={LanguageTo}&dt=t&q={query}"))
+            using (WWW www = new WWW(url))
             {
-                while (!www.isDone) { }
+                yield return www;
 
                 if (www.error != null)
                 {
-                    return false;
+                    callback.Invoke(new string[] { www.error });
                 }
-
-                JSONArray array = JSONNode.Parse(www.text).AsArray;
-                LanguageFrom = array[2].Value;
-                TranslatedText = array[0].AsArray[0].AsArray[0].Value;
+                else
+                {
+                    JSONArray array = JSONNode.Parse(www.text).AsArray;
+                    callback.Invoke(new string[]
+                    {
+                        array[2].Value,
+                        array[0].AsArray[0].AsArray[0].Value
+                    });
+                }
             }
-
-            return true;
         }
     }
 }

@@ -1,10 +1,25 @@
-﻿using UnityEngine;
-using Guardian.Utilities;
+﻿using Guardian.Utilities;
 
 namespace Guardian.AntiAbuse
 {
     class FGMPatches
     {
+        // FengGameManagerMKII.pauseRPC
+        public static bool IsPauseStateChangeValid(PhotonMessageInfo info)
+        {
+            if (info == null || !info.sender.isMasterClient)
+            {
+                Mod.Logger.Error($"'FengGameManagerMKII.pauseRPC' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
+                {
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
+                }
+                return false;
+            }
+
+            return true;
+        }
+
         // FengGameManagerMKII.RequireStatus
         public static bool IsStatusRequestValid(PhotonMessageInfo info)
         {
@@ -17,6 +32,7 @@ namespace Guardian.AntiAbuse
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -32,6 +48,7 @@ namespace Guardian.AntiAbuse
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -47,6 +64,7 @@ namespace Guardian.AntiAbuse
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -66,6 +84,7 @@ namespace Guardian.AntiAbuse
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -86,6 +105,7 @@ namespace Guardian.AntiAbuse
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
             }
+
             return false;
         }
     }

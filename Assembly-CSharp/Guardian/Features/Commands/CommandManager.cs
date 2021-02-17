@@ -12,7 +12,6 @@ namespace Guardian.Features.Commands
             // Normal
             base.Add(new CommandHelp());
             base.Add(new CommandClear());
-            base.Add(new CommandDownloadMap());
             base.Add(new CommandIgnore());
             base.Add(new CommandMute());
             base.Add(new CommandRejoin());
@@ -30,12 +29,14 @@ namespace Guardian.Features.Commands
             base.Add(new CommandAso());
             base.Add(new CommandDifficulty());
             base.Add(new CommandKill());
+            base.Add(new CommandPause());
             base.Add(new CommandRestart());
             base.Add(new CommandRevive());
             base.Add(new CommandRoom());
             base.Add(new CommandScatterTitans());
             base.Add(new CommandSetMap());
             base.Add(new CommandSetTitans());
+            base.Add(new CommandUnpause());
 
             // Debug
             base.Add(new CommandDrawDistance());

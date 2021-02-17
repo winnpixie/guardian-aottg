@@ -146,6 +146,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public float transparencySlider;
     public float retryTime;
     public bool isFirstLoad = true;
+    public float pauseWaitTime;
     public Texture2D textureBackgroundBlack;
     public Texture2D textureBackgroundGray;
 
@@ -234,7 +235,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 annie.lateUpdate2();
             }
-            core2();
+            Core2();
         }
     }
 
@@ -307,9 +308,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public void NOTSpawnPlayer(string id)
     {
         myLastHero = id.ToUpper();
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add(PhotonPlayerProperty.Dead, true);
-        hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
+        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable
+        {
+            { PhotonPlayerProperty.Dead, true },
+            { PhotonPlayerProperty.IsTitan, 1 }
+        };
         PhotonNetwork.player.SetCustomProperties(hashtable);
         Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
         Screen.showCursor = false;
@@ -324,9 +327,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public void NOTSpawnNonAITitan(string id)
     {
         myLastHero = id.ToUpper();
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add("dead", true);
-        hashtable.Add(PhotonPlayerProperty.IsTitan, 2);
+        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable
+        {
+            { PhotonPlayerProperty.Dead, true },
+            { PhotonPlayerProperty.IsTitan, 2 }
+        };
         PhotonNetwork.player.SetCustomProperties(hashtable);
         Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
         Screen.showCursor = true;
@@ -357,9 +362,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         mainCam.GetComponent<SpectatorMovement>().disable = true;
         mainCam.GetComponent<MouseLook>().disable = true;
         mainCam.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = false;
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add("dead", false);
-        hashtable.Add(PhotonPlayerProperty.IsTitan, 2);
+        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable
+        {
+            { PhotonPlayerProperty.Dead, false },
+            { PhotonPlayerProperty.IsTitan, 2 }
+        };
         PhotonNetwork.player.SetCustomProperties(hashtable);
         Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
         Screen.showCursor = true;
@@ -1053,9 +1060,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             textureBackgroundGray.Apply();
         }
         LoadConfig();
-        List<string> list = new List<string>();
-        list.Add("PanelLogin");
-        list.Add("LOGIN");
+        List<string> list = new List<string>
+        {
+            "PanelLogin",
+            "LOGIN"
+        };
         UnityEngine.Object[] array = UnityEngine.Object.FindObjectsOfType(typeof(GameObject));
         for (int i = 0; i < array.Length; i++)
         {
@@ -1260,8 +1269,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             ResetSettings(isLeave: false);
             if (!Level.PlayerTitans)
             {
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
+                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable
+                {
+                    { PhotonPlayerProperty.IsTitan, 1 }
+                };
                 PhotonNetwork.player.SetCustomProperties(hashtable);
             }
             if (!gameTimesUp && PhotonNetwork.isMasterClient)
@@ -1280,7 +1291,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             DestroyAllExistingCloths();
             PhotonNetwork.LoadLevel(Level.Map);
-            Mod.MapData = string.Empty;
         }
         else if (PhotonNetwork.isMasterClient)
         {
@@ -1645,6 +1655,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 photonView.RPC("settingRPC", player, hashtable);
                 photonView.RPC("setMasterRC", player);
+
+                if (Time.timeScale <= 0.1f && pauseWaitTime > 3f)
+                {
+                    base.photonView.RPC("pauseRPC", player, true);
+                    base.photonView.RPC("Chat", player, "MasterClient has paused the game.".WithColor("FFCC00"), string.Empty);
+                }
+
             }
         }
 
@@ -1913,7 +1930,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    private void core2()
+    private void Core2()
     {
         if ((int)Settings[64] >= 100)
         {
@@ -1963,7 +1980,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer) // Multiplayer messages
         {
-            coreadd();
+            CoreAdd();
             ShowHUDInfoTopLeft(playerList);
 
             // Respawn message
@@ -3740,6 +3757,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         WWWForm myForm = new WWWForm();
         myForm.AddField("name", LoginFengKAI.Player.Name);
         myForm.AddField("guildname", LoginFengKAI.Player.Guild);
+
         using (WWW www = new WWW("http://fenglee.com/game/aog/change_guild_name.php", myForm))
         {
             yield return www;
@@ -5733,12 +5751,23 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     }
 
     [RPC]
-    private void pauseRPC(bool paused)
+    private void pauseRPC(bool paused, PhotonMessageInfo info)
     {
-        // Do nothing
+        if (Guardian.AntiAbuse.FGMPatches.IsPauseStateChangeValid(info))
+        {
+            if (paused)
+            {
+                pauseWaitTime = 100000f;
+                Time.timeScale = 0.00001f;
+            }
+            else
+            {
+                pauseWaitTime = 3f;
+            }
+        }
     }
 
-    private void coreadd()
+    private void CoreAdd()
     {
         if (PhotonNetwork.isMasterClient)
         {
@@ -5788,6 +5817,26 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
             }
         }
+
+        if (Time.timeScale <= 0.1f)
+        {
+            if (pauseWaitTime <= 3f)
+            {
+                pauseWaitTime -= Time.deltaTime * 1000000f;
+                if (pauseWaitTime <= 1f)
+                {
+                    Camera.main.farClipPlane = 1500f;
+                }
+                if (pauseWaitTime <= 0f)
+                {
+                    pauseWaitTime = 0f;
+                    Time.timeScale = 1f;
+                }
+            }
+            // justRecompileThePlayerList();
+            WaitAndRecompilePlayerList(0.1f);
+        }
+
     }
 
     private void Cache()
@@ -5808,6 +5857,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         isRecompiling = false;
         Time.timeScale = 1f;
         Camera.main.farClipPlane = 1500f;
+        pauseWaitTime = 0f;
         spectateSprites = new List<GameObject>();
         isRestarting = false;
         if (PhotonNetwork.isMasterClient)
@@ -6696,9 +6746,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         if (!flag && !flag2)
         {
-            // Map Downloader
-            Mod.MapData += string.Join(";\n", content) + ";\n";
-
             for (num = 0; num < content.Length; num++)
             {
                 float num2;
@@ -10475,11 +10522,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             Settings[85] = GUI.TextField(new Rect(num7 + 155f, num8 + 81f, 30f, 20f), (string)Settings[85]);
                             string[] texts = new string[5]
                             {
-                        "1 Round",
-                        "Waves",
-                        "PVP",
-                        "Racing",
-                        "Custom"
+                                "1 Round",
+                                "Waves",
+                                "PVP",
+                                "Racing",
+                                "Custom"
                             };
                             RCSettings.GameType = GUI.SelectionGrid(new Rect(num7 + 190f, num8 + 80f, 140f, 60f), RCSettings.GameType, texts, 2, GUI.skin.toggle);
                             GUI.Label(new Rect(num7 + 150f, num8 + 155f, 150f, 20f), "Level Script:", "Label");
@@ -11356,10 +11403,26 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     return;
                 }
-                if (!LogicLoaded || !CustomLevelLoaded)
+
+                float num7 = (float)Screen.width / 2f;
+                float num8 = (float)Screen.height / 2f;
+                if (Time.timeScale <= 0.1f)
                 {
-                    float num7 = (float)Screen.width / 2f;
-                    float num8 = (float)Screen.height / 2f;
+                    GUI.backgroundColor = Color.white; // new Color(0.08f, 0.3f, 0.4f, 1f);
+                    GUI.DrawTexture(new Rect(num7 - 98f, num8 - 48f, 196f, 96f), textureBackgroundGray);
+                    GUI.Box(new Rect(num7 - 100f, num8 - 50f, 200f, 100f), string.Empty);
+                    if (this.pauseWaitTime > 3f)
+                    {
+                        GUI.Label(new Rect(num7 - 43f, num8 - 10f, 200f, 22f), "Game Paused.");
+                    }
+                    else
+                    {
+                        GUI.Label(new Rect(num7 - 43f, num8 - 15f, 200f, 22f), "Unpausing in:");
+                        GUI.Label(new Rect(num7 - 8f, num8 + 5f, 200f, 22f), pauseWaitTime.ToString("F1"));
+                    }
+                }
+                else if (!LogicLoaded || !CustomLevelLoaded)
+                {
                     GUI.backgroundColor = Color.white; // new Color(0.08f, 0.3f, 0.4f, 1f);
                     GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), textureBackgroundBlack);
                     GUI.DrawTexture(new Rect(num7 - 98f, num8 - 48f, 196f, 146f), textureBackgroundGray);

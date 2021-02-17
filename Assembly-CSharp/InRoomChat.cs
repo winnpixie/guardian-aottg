@@ -2,15 +2,18 @@
 using Guardian.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class InRoomChat : Photon.MonoBehaviour
 {
     public static InRoomChat Instance;
     public static Rect MessagesRect = new Rect(1f, 0f, 329f, 225f);
     public static Rect ChatBoxRect = new Rect(30f, 575f, 300f, 25f);
+    public static List<Message> Messages = new List<Message>();
+    private static readonly Regex Detagger = new Regex("<\\/?(color|size|b|i|material|quad)([^>]*)?>", RegexOptions.IgnoreCase);
+
     public bool IsVisible = true;
     private bool AlignBottom = true;
-    public static List<Message> Messages = new List<Message>();
     public string inputLine = string.Empty;
     private Vector2 ScrollPosition = GameHelper.ScrollBottom;
     private string TextFieldName = "ChatInput";
@@ -110,10 +113,7 @@ public class InRoomChat : Photon.MonoBehaviour
                 {
                     if (Input.GetMouseButtonDown(0)) // Mouse1/Left Click
                     {
-                        string text = message.Content;
-
-                        text = GameHelper.Detagger.Replace(text, string.Empty);
-                        text = GameHelper.SpecialChars.Replace(text, string.Empty);
+                        string text = Detagger.Replace(message.Content, string.Empty);
 
                         Mod.Commands.Find("translate").Execute(this, new string[] {
                             "auto",
@@ -239,7 +239,7 @@ public class InRoomChat : Photon.MonoBehaviour
 
                 if (colors.Length > 1 && colors[0].IsHex() && colors[1].IsHex())
                 {
-                    input = GameHelper.Detagger.Replace(input, string.Empty);
+                    input = Detagger.Replace(input, string.Empty);
 
                     Color startColor = NGUIMath.IntToColor(int.Parse(colors[0] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));
                     Color endColor = NGUIMath.IntToColor(int.Parse(colors[1] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));

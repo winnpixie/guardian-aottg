@@ -37,48 +37,115 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         }
     }
 
-    public void setPunkHair()
+    public void setPunkHair2()
     {
-        Object.Destroy(part_hair);
-        hair = CostumeHair.MaleHairs[3];
-        hairType = 3;
-        GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.hair));
-        gameObject.transform.parent = hair_go_ref.transform.parent;
-        gameObject.transform.position = hair_go_ref.transform.position;
-        gameObject.transform.rotation = hair_go_ref.transform.rotation;
-        gameObject.transform.localScale = hair_go_ref.transform.localScale;
-        gameObject.renderer.material = CharacterMaterials.materials[hair.texture];
-        int num = Random.Range(1, 4);
-        if (num == 1)
+        if ((int)FengGameManagerMKII.Settings[1] == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine))
         {
-            gameObject.renderer.material.color = FengColor.PunkHair1;
-        }
-        if (num == 2)
-        {
-            gameObject.renderer.material.color = FengColor.PunkHair2;
-        }
-        if (num == 3)
-        {
-            gameObject.renderer.material.color = FengColor.PunkHair3;
-        }
-        part_hair = gameObject;
-        setFacialTexture(eye, 0);
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
-        {
-            PhotonView photonView = base.photonView;
-            object[] obj = new object[5]
+            int num = Random.Range(0, 9);
+            if (num == 3)
             {
+                num = 9;
+            }
+            int num2 = skin - 70;
+            if ((int)FengGameManagerMKII.Settings[32] == 1)
+            {
+                num2 = Random.Range(16, 20);
+            }
+            if ((int)FengGameManagerMKII.Settings[num2] >= 0)
+            {
+                num = (int)FengGameManagerMKII.Settings[num2];
+            }
+            string text = (string)FengGameManagerMKII.Settings[num2 + 5];
+            int num3 = Random.Range(1, 8);
+            if (haseye)
+            {
+                num3 = 0;
+            }
+            bool flag = false;
+            if (text.EndsWith(".jpg") || text.EndsWith(".png") || text.EndsWith(".jpeg"))
+            {
+                flag = true;
+            }
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
+            {
+                if (flag)
+                {
+                    object[] parameters = new object[3]
+                    {
+                        num,
+                        num3,
+                        text
+                    };
+                    base.photonView.RPC("setHairRPC2", PhotonTargets.AllBuffered, parameters);
+                }
+                else
+                {
+                    Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
+                    object[] parameters = new object[5]
+                    {
+                        num,
+                        num3,
+                        hair_color.r,
+                        hair_color.g,
+                        hair_color.b
+                    };
+                    base.photonView.RPC("setHairPRC", PhotonTargets.AllBuffered, parameters);
+                }
+            }
+            else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+            {
+                if (flag)
+                {
+                    StartCoroutine(loadskinE(num, num3, text));
+                    return;
+                }
+                Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
+                setHairPRC(num, num3, hair_color.r, hair_color.g, hair_color.b);
+            }
+        }
+        else
+        {
+            Object.Destroy(part_hair);
+            hair = CostumeHair.MaleHairs[3];
+            hairType = 3;
+            GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.hair));
+            gameObject.transform.parent = hair_go_ref.transform.parent;
+            gameObject.transform.position = hair_go_ref.transform.position;
+            gameObject.transform.rotation = hair_go_ref.transform.rotation;
+            gameObject.transform.localScale = hair_go_ref.transform.localScale;
+            gameObject.renderer.material = CharacterMaterials.materials[hair.texture];
+            int num = Random.Range(1, 4);
+            if (num == 1)
+            {
+                gameObject.renderer.material.color = FengColor.PunkHair1;
+            }
+            if (num == 2)
+            {
+                gameObject.renderer.material.color = FengColor.PunkHair2;
+            }
+            if (num == 3)
+            {
+                gameObject.renderer.material.color = FengColor.PunkHair3;
+            }
+            part_hair = gameObject;
+            setFacialTexture(eye, 0);
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
+            {
+                PhotonView photonView = base.photonView;
+                object[] obj = new object[5]
+                {
                 hairType,
                 0,
                 null,
                 null,
                 null
-            };
-            Color color = part_hair.renderer.material.color;
-            obj[2] = color.r;
-            obj[3] = color.g;
-            obj[4] = color.b;
-            photonView.RPC("setHairPRC", PhotonTargets.OthersBuffered, obj);
+                };
+                Color color = part_hair.renderer.material.color;
+                obj[2] = color.r;
+                obj[3] = color.g;
+                obj[4] = color.b;
+                photonView.RPC("setHairPRC", PhotonTargets.OthersBuffered, obj);
+            }
         }
     }
 

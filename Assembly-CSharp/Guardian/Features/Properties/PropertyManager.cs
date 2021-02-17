@@ -16,6 +16,8 @@ namespace Guardian.Features.Properties
         // Player
         public Property<bool> AlternateIdle = new Property<bool>("Player_AHSSIdle", new string[0], false);
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
+        public Property<double> OpacityOfOwnName = new Property<double>("Player_OpacityOfOwnName", new string[0], 1.0);
+        public Property<double> OpacityOfOtherNames = new Property<double>("Player_OpacityOfOtherNames", new string[0], 1.0);
 
         // Chat
         public Property<string> JoinMessage = new Property<string>("Chat_JoinMessage", new string[0], string.Empty);
@@ -33,6 +35,9 @@ namespace Guardian.Features.Properties
         public Property<bool> ChatBackground = new Property<bool>("Visual_ShowChatBackground", new string[0], true);
         public Property<bool> LogBackground = new Property<bool>("Visual_ShowLogBackground", new string[0], true);
 
+        // Misc
+        public Property<bool> UseRichPresence = new Property<bool>("Misc_DiscordPresence", new string[0], true);
+
         // Logging
         public Property<bool> ShowLog = new Property<bool>("Log_ShowLog", new string[0], true);
         public Property<bool> LogInfo = new Property<bool>("Log_ShowGeneric", new string[0], true);
@@ -49,6 +54,8 @@ namespace Guardian.Features.Properties
             // Player
             base.Add(AlternateIdle);
             base.Add(AlternateBurst);
+            base.Add(OpacityOfOwnName);
+            base.Add(OpacityOfOtherNames);
 
             // Chat
             base.Add(JoinMessage);
@@ -60,6 +67,9 @@ namespace Guardian.Features.Properties
             base.Add(TextSuffix);
             base.Add(BoldText);
             base.Add(ItalicText);
+
+            // Misc
+            base.Add(UseRichPresence);
 
             // Visual
             base.Add(LegacyTimeFormat);
@@ -106,6 +116,13 @@ namespace Guardian.Features.Properties
                         if (float.TryParse(data[1], out float result))
                         {
                             ((Property<float>)property).Value = result;
+                        }
+                    }
+                    else if (property.Value is double)
+                    {
+                        if (double.TryParse(data[1], out double result))
+                        {
+                            ((Property<double>)property).Value = result;
                         }
                     }
                     else if (property.Value is string)

@@ -228,7 +228,7 @@ public class TITAN : Photon.MonoBehaviour
                 abnormalType = TitanClass.Punk;
                 base.name = "Punk";
                 runAnimation = "run_abnormal_1";
-                GetComponent<TITAN_SETUP>().setHair2();
+                GetComponent<TITAN_SETUP>().setPunkHair2();
                 break;
         }
         if (abnormalType == TitanClass.Aberrant || abnormalType == TitanClass.Jumper || abnormalType == TitanClass.Punk)

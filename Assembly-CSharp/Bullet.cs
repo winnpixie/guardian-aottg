@@ -386,21 +386,18 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     public void RemoveMe()
     {
         // Anarchy
-        if (Master != null)
-        {
-            Anarchy.Custom.Level.CustomAnarchyLevel.Instance.OnHookUntiedGround(this);
-        }
+        Anarchy.Custom.Level.CustomAnarchyLevel.Instance.OnHookUntiedGround(this);
 
         isdestroying = true;
-        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
-        {
-            PhotonNetwork.Destroy(base.photonView);
-            PhotonNetwork.RemoveRPCs(base.photonView);
-        }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             UnityEngine.Object.Destroy(rope);
             UnityEngine.Object.Destroy(base.gameObject);
+        }
+        else if (base.photonView.isMine)
+        {
+            PhotonNetwork.Destroy(base.photonView);
+            PhotonNetwork.RemoveRPCs(base.photonView);
         }
     }
 

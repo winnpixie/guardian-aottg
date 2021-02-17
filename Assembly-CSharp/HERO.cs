@@ -1958,8 +1958,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             myNetWorkName.transform.parent = gameObject.GetComponent<UIReferArray>().panels[0].transform;
             myNetWorkName.transform.localScale = new Vector3(14f, 14f, 14f);
             myNetWorkName.GetComponent<UILabel>().text = string.Empty;
+            myNetWorkName.GetComponent<UILabel>().alpha = (float)Mod.Properties.OpacityOfOtherNames.Value;
             if (base.photonView.isMine)
             {
+                myNetWorkName.GetComponent<UILabel>().alpha = (float)Mod.Properties.OpacityOfOwnName.Value;
+
                 if (Minimap.Instance != null)
                 {
                     Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.green, trackOrientation: false, depthAboveAll: true);

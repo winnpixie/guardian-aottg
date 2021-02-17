@@ -8,7 +8,7 @@
 
         public static void Initialize()
         {
-            if (DiscordInstance == null)
+            if (DiscordInstance == null && Mod.Properties.UseRichPresence.Value)
             {
                 try
                 {
@@ -39,11 +39,7 @@
         {
             if (DiscordInstance != null)
             {
-                try
-                {
-                    DiscordInstance.RunCallbacks();
-                }
-                finally { }
+                DiscordInstance.RunCallbacks();
             }
         }
 
@@ -51,20 +47,16 @@
         {
             if (DiscordInstance != null)
             {
-                try
-                {
-                    DiscordInstance.Dispose();
-                }
-                finally { }
+                DiscordInstance.Dispose();
             }
         }
 
         public static void SetPresence(Discord.Activity activity)
         {
-            try
-            {
-                Initialize();
+            Initialize();
 
+            if (DiscordInstance != null)
+            {
                 activity.Assets = new Discord.ActivityAssets
                 {
                     LargeImage = "main_icon"
@@ -77,7 +69,6 @@
 
                 DiscordInstance.GetActivityManager().UpdateActivity(activity, result => { });
             }
-            finally { }
         }
     }
 }

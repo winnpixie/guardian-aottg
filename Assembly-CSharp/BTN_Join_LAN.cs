@@ -1,7 +1,10 @@
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class BTN_Join_LAN : MonoBehaviour
 {
+	private static readonly Regex PhotonCloud = new Regex("app-[a-z0-9]+\\.exitgames(cloud)?\\.com", RegexOptions.IgnoreCase);
+
 	private void OnClick()
 	{
 		string ip = base.transform.parent.Find("InputIP").GetComponent<UIInput>().text;
@@ -14,7 +17,8 @@ public class BTN_Join_LAN : MonoBehaviour
 			PlayerPrefs.SetString("lastIP", ip);
 			PlayerPrefs.SetString("lastPort", port);
 			PlayerPrefs.SetString("lastAuthPass", passwd);
-			FengGameManagerMKII.OnPrivateServer = true;
+
+			FengGameManagerMKII.OnPrivateServer = !PhotonCloud.IsMatch(ip);
 			FengGameManagerMKII.PrivateServerAuthPass = passwd;
 		}
 	}
