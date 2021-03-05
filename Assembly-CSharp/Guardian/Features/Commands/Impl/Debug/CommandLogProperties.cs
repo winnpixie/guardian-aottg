@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Collections;
 using Guardian.Utilities;
 
 namespace Guardian.Features.Commands.Impl.Debug
@@ -16,14 +14,15 @@ namespace Guardian.Features.Commands.Impl.Debug
         {
             if (args.Length > 0 && int.TryParse(args[0], out int id))
             {
-                PhotonPlayer player = PhotonPlayer.Find(id);
+                var player = PhotonPlayer.Find(id);
                 if (player != null)
                 {
-                    IEnumerator<DictionaryEntry> ienum = player.customProperties.GetEnumerator();
-                    string output = string.Empty;
+                    var ienum = player.customProperties.GetEnumerator();
+                    var output = string.Empty;
+
                     while (ienum.MoveNext())
                     {
-                        DictionaryEntry entry = ienum.Current;
+                        var entry = ienum.Current;
                         output = $"{output}({entry.Value.GetType().Name}) {entry.Key}:{entry.Value}{Environment.NewLine}";
                     }
 

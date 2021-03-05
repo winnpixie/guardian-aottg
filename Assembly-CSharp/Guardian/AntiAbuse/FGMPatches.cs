@@ -14,6 +14,7 @@ namespace Guardian.AntiAbuse
                 {
                     FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
+
                 return false;
             }
 
@@ -30,6 +31,7 @@ namespace Guardian.AntiAbuse
                 {
                     FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
+
                 return false;
             }
 
@@ -46,6 +48,7 @@ namespace Guardian.AntiAbuse
                 {
                     FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
+
                 return false;
             }
 
@@ -62,6 +65,7 @@ namespace Guardian.AntiAbuse
                 {
                     FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
+
                 return false;
             }
 
@@ -82,6 +86,7 @@ namespace Guardian.AntiAbuse
                 {
                     FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
+
                 return false;
             }
 
@@ -100,6 +105,7 @@ namespace Guardian.AntiAbuse
             {
                 return true;
             }
+
             Mod.Logger.Error($"'FengGameManagerMKII.updateKillInfo' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
@@ -107,6 +113,23 @@ namespace Guardian.AntiAbuse
             }
 
             return false;
+        }
+
+        // FengGameManagerMKII.showChatContent
+        public static bool IsChatContentShowValid(PhotonMessageInfo info)
+        {
+            if (info != null)
+            {
+                Mod.Logger.Error($"'FengGameManagerMKII.showChatContent' from #{info.sender.Id}");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
+                {
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
+                }
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

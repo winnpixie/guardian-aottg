@@ -3,7 +3,6 @@ using UnityEngine;
 public class BTN_SIGNOUT : MonoBehaviour
 {
 	public GameObject loginPanel;
-
 	public GameObject logincomponent;
 
 	private void OnClick()

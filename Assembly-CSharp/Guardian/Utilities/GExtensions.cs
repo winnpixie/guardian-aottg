@@ -13,8 +13,8 @@ public static class GExtensions
             endIndex--;
         }
 
-        int len = endIndex - startIndex + 1;
-        T[] arrOut = new T[len];
+        var len = endIndex - startIndex + 1;
+        var arrOut = new T[len];
 
         Array.Copy(arrIn, startIndex, arrOut, 0, len);
 
@@ -23,7 +23,7 @@ public static class GExtensions
 
     public static T[] Sorted<T>(this T[] arrIn, Comparison<T> comparator)
     {
-        T[] sorted = new T[arrIn.Length];
+        var sorted = new T[arrIn.Length];
         arrIn.CopyTo(sorted, 0);
         Array.Sort(sorted, comparator);
 
@@ -33,19 +33,19 @@ public static class GExtensions
     // My implementation of NGUI color parsing
     public static string Colored(this string str)
     {
-        string output = string.Empty;
-        Stack<string> colors = new Stack<string>(); // Thank you to Kevin for telling me to use a Stack
-        bool coloring = false;
+        var output = string.Empty;
+        var colors = new Stack<string>(); // Thank you to Kevin for telling me to use a Stack
+        var coloring = false;
 
         for (int i = 0; i < str.Length; i++)
         {
-            char c = str[i];
+            var c = str[i];
 
             if (c == '[' && i + 2 < str.Length)
             {
                 if (str[i + 1] == '-' && str[i + 2] == ']') // [-], aka return to previous color in the stack
                 {
-                    string previous = "FFFFFF"; // Default to white
+                    var previous = "FFFFFF"; // Default to white
 
                     if (colors.Count > 0)
                     {
@@ -65,7 +65,7 @@ public static class GExtensions
                 }
                 else if (i + 7 < str.Length && str[i + 7] == ']' && str.Substring(i + 1, 6).IsHex()) // [RRGGBB], aka use the color supplied by RRGGBB
                 {
-                    string color = str.Substring(i + 1, 6).ToUpper();
+                    var color = str.Substring(i + 1, 6).ToUpper();
                     colors.Push(color);
                     output += coloring ? $"</color><color=#{color}>" : $"<color=#{color}>";
                     coloring = true;
@@ -82,11 +82,11 @@ public static class GExtensions
 
     public static string Uncolored(this string str)
     {
-        string output = string.Empty;
+        var output = string.Empty;
 
         for (int i = 0; i < str.Length; i++)
         {
-            char c = str[i];
+            var c = str[i];
 
             if (c == '[' && i + 2 < str.Length)
             {
@@ -115,10 +115,10 @@ public static class GExtensions
 
     public static string ToHex(this Color color)
     {
-        int r = Mathf.RoundToInt(color.r * 255);
-        int g = Mathf.RoundToInt(color.g * 255);
-        int b = Mathf.RoundToInt(color.b * 255);
-        int a = Mathf.RoundToInt(color.a * 255);
+        var r = Mathf.RoundToInt(color.r * 255f);
+        var g = Mathf.RoundToInt(color.g * 255f);
+        var b = Mathf.RoundToInt(color.b * 255f);
+        var a = Mathf.RoundToInt(color.a * 255f);
 
         return r.ToString("X2") + g.ToString("X2") + b.ToString("X2") + a.ToString("X2");
     }
@@ -187,8 +187,9 @@ public static class GExtensions
         value = default;
         try
         {
-            Type enumType = typeof(T);
+            var enumType = typeof(T);
             value = (T)Enum.Parse(enumType, input, true);
+
             if (Enum.IsDefined(enumType, value))
             {
                 return true;

@@ -137,17 +137,17 @@ public class RCActionHelper
                     switch (helperType)
                     {
                         case 0:
-                            return (int)FengGameManagerMKII.IntVariables[rCActionHelper2.returnString(null)];
+                            return (int)FengGameManagerMKII.IntVariables[rCActionHelper2.ReturnString(null)];
                         case 1:
-                            return nextHelper.ReturnInt(FengGameManagerMKII.BoolVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.BoolVariables[rCActionHelper2.ReturnString(null)]);
                         case 2:
-                            return nextHelper.ReturnInt(FengGameManagerMKII.StringVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.StringVariables[rCActionHelper2.ReturnString(null)]);
                         case 3:
-                            return nextHelper.ReturnInt(FengGameManagerMKII.FloatVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.FloatVariables[rCActionHelper2.ReturnString(null)]);
                         case 4:
-                            return nextHelper.ReturnInt(FengGameManagerMKII.PlayerVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.PlayerVariables[rCActionHelper2.ReturnString(null)]);
                         case 5:
-                            return nextHelper.ReturnInt(FengGameManagerMKII.TitanVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnInt(FengGameManagerMKII.TitanVariables[rCActionHelper2.ReturnString(null)]);
                         default:
                             return 0;
                     }
@@ -257,7 +257,7 @@ public class RCActionHelper
             case 4:
                 {
                     RCActionHelper rCActionHelper = (RCActionHelper)obj;
-                    RCRegion rCRegion = (RCRegion)FengGameManagerMKII.RCRegions[rCActionHelper.returnString(null)];
+                    RCRegion rCRegion = (RCRegion)FengGameManagerMKII.RCRegions[rCActionHelper.ReturnString(null)];
                     switch (helperType)
                     {
                         case 0:
@@ -275,7 +275,7 @@ public class RCActionHelper
         }
     }
 
-    public bool returnBool(object sentObject)
+    public bool ReturnBool(object sentObject)
     {
         object obj = sentObject;
         if (parameters != null)
@@ -315,17 +315,17 @@ public class RCActionHelper
                     switch (helperType)
                     {
                         case 1:
-                            return (bool)FengGameManagerMKII.BoolVariables[rCActionHelper2.returnString(null)];
+                            return (bool)FengGameManagerMKII.BoolVariables[rCActionHelper2.ReturnString(null)];
                         case 0:
-                            return nextHelper.returnBool(FengGameManagerMKII.IntVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnBool(FengGameManagerMKII.IntVariables[rCActionHelper2.ReturnString(null)]);
                         case 2:
-                            return nextHelper.returnBool(FengGameManagerMKII.StringVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnBool(FengGameManagerMKII.StringVariables[rCActionHelper2.ReturnString(null)]);
                         case 3:
-                            return nextHelper.returnBool(FengGameManagerMKII.FloatVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnBool(FengGameManagerMKII.FloatVariables[rCActionHelper2.ReturnString(null)]);
                         case 4:
-                            return nextHelper.returnBool(FengGameManagerMKII.PlayerVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnBool(FengGameManagerMKII.PlayerVariables[rCActionHelper2.ReturnString(null)]);
                         case 5:
-                            return nextHelper.returnBool(FengGameManagerMKII.TitanVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnBool(FengGameManagerMKII.TitanVariables[rCActionHelper2.ReturnString(null)]);
                         default:
                             return false;
                     }
@@ -338,36 +338,36 @@ public class RCActionHelper
                         switch (helperType)
                         {
                             case 0:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.Team]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.Team]);
                             case 1:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
                             case 2:
                                 return !(bool)photonPlayer.customProperties[PhotonPlayerProperty.Dead];
                             case 3:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]);
                             case 4:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.Kills]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.Kills]);
                             case 5:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.Deaths]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.Deaths]);
                             case 6:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.MaxDamage]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.MaxDamage]);
                             case 7:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
                             case 8:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomInt]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomInt]);
                             case 9:
                                 return (bool)photonPlayer.customProperties[PhotonPlayerProperty.CustomBool];
                             case 10:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomString]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomString]);
                             case 11:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
                             case 14:
                                 {
                                     int iD4 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD4))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD4];
-                                        return nextHelper.returnBool(hERO.transform.position.x);
+                                        return nextHelper.ReturnBool(hERO.transform.position.x);
                                     }
                                     return false;
                                 }
@@ -377,7 +377,7 @@ public class RCActionHelper
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD3))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD3];
-                                        return nextHelper.returnBool(hERO.transform.position.y);
+                                        return nextHelper.ReturnBool(hERO.transform.position.y);
                                     }
                                     return false;
                                 }
@@ -387,21 +387,21 @@ public class RCActionHelper
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD2))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD2];
-                                        return nextHelper.returnBool(hERO.transform.position.z);
+                                        return nextHelper.ReturnBool(hERO.transform.position.z);
                                     }
                                     return false;
                                 }
                             case 12:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.Name]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.Name]);
                             case 13:
-                                return nextHelper.returnBool(photonPlayer.customProperties[PhotonPlayerProperty.Guild]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.Guild]);
                             case 17:
                                 {
                                     int iD = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD];
-                                        return nextHelper.returnBool(hERO.rigidbody.velocity.magnitude);
+                                        return nextHelper.ReturnBool(hERO.rigidbody.velocity.magnitude);
                                     }
                                     return false;
                                 }
@@ -417,17 +417,17 @@ public class RCActionHelper
                         switch (helperType)
                         {
                             case 0:
-                                return nextHelper.returnBool(tITAN.abnormalType);
+                                return nextHelper.ReturnBool(tITAN.abnormalType);
                             case 1:
-                                return nextHelper.returnBool(tITAN.myLevel);
+                                return nextHelper.ReturnBool(tITAN.myLevel);
                             case 2:
-                                return nextHelper.returnBool(tITAN.currentHealth);
+                                return nextHelper.ReturnBool(tITAN.currentHealth);
                             case 3:
-                                return nextHelper.returnBool(tITAN.transform.position.x);
+                                return nextHelper.ReturnBool(tITAN.transform.position.x);
                             case 4:
-                                return nextHelper.returnBool(tITAN.transform.position.y);
+                                return nextHelper.ReturnBool(tITAN.transform.position.y);
                             case 5:
-                                return nextHelper.returnBool(tITAN.transform.position.z);
+                                return nextHelper.ReturnBool(tITAN.transform.position.z);
                         }
                     }
                     return false;
@@ -435,15 +435,15 @@ public class RCActionHelper
             case 4:
                 {
                     RCActionHelper rCActionHelper = (RCActionHelper)obj;
-                    RCRegion rCRegion = (RCRegion)FengGameManagerMKII.RCRegions[rCActionHelper.returnString(null)];
+                    RCRegion rCRegion = (RCRegion)FengGameManagerMKII.RCRegions[rCActionHelper.ReturnString(null)];
                     switch (helperType)
                     {
                         case 0:
-                            return nextHelper.returnBool(rCRegion.GetRandomX());
+                            return nextHelper.ReturnBool(rCRegion.GetRandomX());
                         case 1:
-                            return nextHelper.returnBool(rCRegion.GetRandomY());
+                            return nextHelper.ReturnBool(rCRegion.GetRandomY());
                         case 2:
-                            return nextHelper.returnBool(rCRegion.GetRandomZ());
+                            return nextHelper.ReturnBool(rCRegion.GetRandomZ());
                         default:
                             return false;
                     }
@@ -453,7 +453,7 @@ public class RCActionHelper
         }
     }
 
-    public string returnString(object sentObject)
+    public string ReturnString(object sentObject)
     {
         object obj = sentObject;
         if (parameters != null)
@@ -484,17 +484,17 @@ public class RCActionHelper
                     switch (helperType)
                     {
                         case 0:
-                            return nextHelper.returnString(FengGameManagerMKII.IntVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnString(FengGameManagerMKII.IntVariables[rCActionHelper2.ReturnString(null)]);
                         case 1:
-                            return nextHelper.returnString(FengGameManagerMKII.BoolVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnString(FengGameManagerMKII.BoolVariables[rCActionHelper2.ReturnString(null)]);
                         case 2:
-                            return (string)FengGameManagerMKII.StringVariables[rCActionHelper2.returnString(null)];
+                            return (string)FengGameManagerMKII.StringVariables[rCActionHelper2.ReturnString(null)];
                         case 3:
-                            return nextHelper.returnString(FengGameManagerMKII.FloatVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnString(FengGameManagerMKII.FloatVariables[rCActionHelper2.ReturnString(null)]);
                         case 4:
-                            return nextHelper.returnString(FengGameManagerMKII.PlayerVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnString(FengGameManagerMKII.PlayerVariables[rCActionHelper2.ReturnString(null)]);
                         case 5:
-                            return nextHelper.returnString(FengGameManagerMKII.TitanVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnString(FengGameManagerMKII.TitanVariables[rCActionHelper2.ReturnString(null)]);
                         default:
                             return string.Empty;
                     }
@@ -507,36 +507,36 @@ public class RCActionHelper
                         switch (helperType)
                         {
                             case 0:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.Team]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.Team]);
                             case 1:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
                             case 2:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.Dead]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.Dead]);
                             case 3:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]);
                             case 4:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.Kills]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.Kills]);
                             case 5:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.Deaths]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.Deaths]);
                             case 6:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.MaxDamage]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.MaxDamage]);
                             case 7:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
                             case 8:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomInt]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomInt]);
                             case 9:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomBool]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomBool]);
                             case 10:
                                 return (string)photonPlayer.customProperties[PhotonPlayerProperty.CustomString];
                             case 11:
-                                return nextHelper.returnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
                             case 14:
                                 {
                                     int iD4 = photonPlayer.Id;
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD4))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD4];
-                                        return nextHelper.returnString(hERO.transform.position.x);
+                                        return nextHelper.ReturnString(hERO.transform.position.x);
                                     }
                                     return string.Empty;
                                 }
@@ -546,7 +546,7 @@ public class RCActionHelper
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD3))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD3];
-                                        return nextHelper.returnString(hERO.transform.position.y);
+                                        return nextHelper.ReturnString(hERO.transform.position.y);
                                     }
                                     return string.Empty;
                                 }
@@ -556,7 +556,7 @@ public class RCActionHelper
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD2))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD2];
-                                        return nextHelper.returnString(hERO.transform.position.z);
+                                        return nextHelper.ReturnString(hERO.transform.position.z);
                                     }
                                     return string.Empty;
                                 }
@@ -570,7 +570,7 @@ public class RCActionHelper
                                     if (FengGameManagerMKII.HeroHash.ContainsKey(iD))
                                     {
                                         HERO hERO = (HERO)FengGameManagerMKII.HeroHash[iD];
-                                        return nextHelper.returnString(hERO.rigidbody.velocity.magnitude);
+                                        return nextHelper.ReturnString(hERO.rigidbody.velocity.magnitude);
                                     }
                                     return string.Empty;
                                 }
@@ -586,17 +586,17 @@ public class RCActionHelper
                         switch (helperType)
                         {
                             case 0:
-                                return nextHelper.returnString(tITAN.abnormalType);
+                                return nextHelper.ReturnString(tITAN.abnormalType);
                             case 1:
-                                return nextHelper.returnString(tITAN.myLevel);
+                                return nextHelper.ReturnString(tITAN.myLevel);
                             case 2:
-                                return nextHelper.returnString(tITAN.currentHealth);
+                                return nextHelper.ReturnString(tITAN.currentHealth);
                             case 3:
-                                return nextHelper.returnString(tITAN.transform.position.x);
+                                return nextHelper.ReturnString(tITAN.transform.position.x);
                             case 4:
-                                return nextHelper.returnString(tITAN.transform.position.y);
+                                return nextHelper.ReturnString(tITAN.transform.position.y);
                             case 5:
-                                return nextHelper.returnString(tITAN.transform.position.z);
+                                return nextHelper.ReturnString(tITAN.transform.position.z);
                         }
                     }
                     return string.Empty;
@@ -604,15 +604,15 @@ public class RCActionHelper
             case 4:
                 {
                     RCActionHelper rCActionHelper = (RCActionHelper)obj;
-                    RCRegion rCRegion = (RCRegion)FengGameManagerMKII.RCRegions[rCActionHelper.returnString(null)];
+                    RCRegion rCRegion = (RCRegion)FengGameManagerMKII.RCRegions[rCActionHelper.ReturnString(null)];
                     switch (helperType)
                     {
                         case 0:
-                            return nextHelper.returnString(rCRegion.GetRandomX());
+                            return nextHelper.ReturnString(rCRegion.GetRandomX());
                         case 1:
-                            return nextHelper.returnString(rCRegion.GetRandomY());
+                            return nextHelper.ReturnString(rCRegion.GetRandomY());
                         case 2:
-                            return nextHelper.returnString(rCRegion.GetRandomZ());
+                            return nextHelper.ReturnString(rCRegion.GetRandomZ());
                         default:
                             return string.Empty;
                     }
@@ -622,7 +622,7 @@ public class RCActionHelper
         }
     }
 
-    public float returnFloat(object sentObject)
+    public float ReturnFloat(object sentObject)
     {
         object obj = sentObject;
         if (parameters != null)
@@ -666,17 +666,17 @@ public class RCActionHelper
                     switch (helperType)
                     {
                         case 0:
-                            return nextHelper.returnFloat(FengGameManagerMKII.IntVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnFloat(FengGameManagerMKII.IntVariables[rCActionHelper2.ReturnString(null)]);
                         case 1:
-                            return nextHelper.returnFloat(FengGameManagerMKII.BoolVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnFloat(FengGameManagerMKII.BoolVariables[rCActionHelper2.ReturnString(null)]);
                         case 2:
-                            return nextHelper.returnFloat(FengGameManagerMKII.StringVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnFloat(FengGameManagerMKII.StringVariables[rCActionHelper2.ReturnString(null)]);
                         case 3:
-                            return (float)FengGameManagerMKII.FloatVariables[rCActionHelper2.returnString(null)];
+                            return (float)FengGameManagerMKII.FloatVariables[rCActionHelper2.ReturnString(null)];
                         case 4:
-                            return nextHelper.returnFloat(FengGameManagerMKII.PlayerVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnFloat(FengGameManagerMKII.PlayerVariables[rCActionHelper2.ReturnString(null)]);
                         case 5:
-                            return nextHelper.returnFloat(FengGameManagerMKII.TitanVariables[rCActionHelper2.returnString(null)]);
+                            return nextHelper.ReturnFloat(FengGameManagerMKII.TitanVariables[rCActionHelper2.ReturnString(null)]);
                         default:
                             return 0f;
                     }
@@ -689,27 +689,27 @@ public class RCActionHelper
                         switch (helperType)
                         {
                             case 0:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Team]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Team]);
                             case 1:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
                             case 2:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Dead]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Dead]);
                             case 3:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]);
                             case 4:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Kills]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Kills]);
                             case 5:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Deaths]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Deaths]);
                             case 6:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.MaxDamage]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.MaxDamage]);
                             case 7:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
                             case 8:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.CustomInt]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.CustomInt]);
                             case 9:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.CustomBool]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.CustomBool]);
                             case 10:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.CustomString]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.CustomString]);
                             case 11:
                                 return (float)photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat];
                             case 14:
@@ -743,9 +743,9 @@ public class RCActionHelper
                                     return 0f;
                                 }
                             case 12:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Name]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Name]);
                             case 13:
-                                return nextHelper.returnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Guild]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Guild]);
                             case 17:
                                 {
                                     int iD = photonPlayer.Id;
@@ -768,11 +768,11 @@ public class RCActionHelper
                         switch (helperType)
                         {
                             case 0:
-                                return nextHelper.returnFloat(tITAN.abnormalType);
+                                return nextHelper.ReturnFloat(tITAN.abnormalType);
                             case 1:
                                 return tITAN.myLevel;
                             case 2:
-                                return nextHelper.returnFloat(tITAN.currentHealth);
+                                return nextHelper.ReturnFloat(tITAN.currentHealth);
                             case 3:
                                 return tITAN.transform.position.x;
                             case 4:
@@ -786,7 +786,7 @@ public class RCActionHelper
             case 4:
                 {
                     RCActionHelper rCActionHelper = (RCActionHelper)obj;
-                    RCRegion rCRegion = (RCRegion)FengGameManagerMKII.RCRegions[rCActionHelper.returnString(null)];
+                    RCRegion rCRegion = (RCRegion)FengGameManagerMKII.RCRegions[rCActionHelper.ReturnString(null)];
                     switch (helperType)
                     {
                         case 0:
@@ -804,7 +804,7 @@ public class RCActionHelper
         }
     }
 
-    public PhotonPlayer returnPlayer(object objParameter)
+    public PhotonPlayer ReturnPlayer(object objParameter)
     {
         object obj = objParameter;
         if (parameters != null)
@@ -816,7 +816,7 @@ public class RCActionHelper
             case 1:
                 {
                     RCActionHelper rCActionHelper = (RCActionHelper)obj;
-                    return (PhotonPlayer)FengGameManagerMKII.PlayerVariables[rCActionHelper.returnString(null)];
+                    return (PhotonPlayer)FengGameManagerMKII.PlayerVariables[rCActionHelper.ReturnString(null)];
                 }
             case 2:
                 return (PhotonPlayer)obj;
@@ -825,7 +825,7 @@ public class RCActionHelper
         }
     }
 
-    public TITAN returnTitan(object objParameter)
+    public TITAN ReturnTitan(object objParameter)
     {
         object obj = objParameter;
         if (parameters != null)
@@ -837,7 +837,7 @@ public class RCActionHelper
             case 1:
                 {
                     RCActionHelper rCActionHelper = (RCActionHelper)obj;
-                    return (TITAN)FengGameManagerMKII.TitanVariables[rCActionHelper.returnString(null)];
+                    return (TITAN)FengGameManagerMKII.TitanVariables[rCActionHelper.ReturnString(null)];
                 }
             case 3:
                 return (TITAN)obj;

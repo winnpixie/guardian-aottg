@@ -18,7 +18,7 @@ namespace Guardian.Features.Commands.Impl.RC
                         FengGameManagerMKII.Instance.photonView.RPC("setTeamRPC", PhotonNetwork.player, 1);
                         irc.AddLine("You have joined team Cyan.".WithColor("00FFFF"));
 
-                        HERO hero = GameHelper.GetHero(PhotonNetwork.player);
+                        var hero = GameHelper.GetHero(PhotonNetwork.player);
                         if (hero != null)
                         {
                             hero.MarkDead();
@@ -30,7 +30,7 @@ namespace Guardian.Features.Commands.Impl.RC
                         FengGameManagerMKII.Instance.photonView.RPC("setTeamRPC", PhotonNetwork.player, 2);
                         irc.AddLine("You have joined team Magenta.".WithColor("FF00FF"));
 
-                        HERO hero = GameHelper.GetHero(PhotonNetwork.player);
+                        var hero = GameHelper.GetHero(PhotonNetwork.player);
                         if (hero != null)
                         {
                             hero.MarkDead();
@@ -42,7 +42,7 @@ namespace Guardian.Features.Commands.Impl.RC
                         FengGameManagerMKII.Instance.photonView.RPC("setTeamRPC", PhotonNetwork.player, 0);
                         irc.AddLine("You have joined team Individual.".WithColor("FFFFFF"));
 
-                        HERO hero = GameHelper.GetHero(PhotonNetwork.player);
+                        var hero = GameHelper.GetHero(PhotonNetwork.player);
                         if (hero != null)
                         {
                             hero.MarkDead();

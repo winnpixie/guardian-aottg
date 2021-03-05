@@ -5,10 +5,17 @@ namespace Guardian.UI
 {
     class ModUI : MonoBehaviour
     {
+        public static UIBase CurrentScreen;
+
         private GUIStyle boxStyle;
 
         void OnGUI()
         {
+            if (CurrentScreen != null)
+            {
+                CurrentScreen.Draw();
+            }
+
             if (Mod.Properties.ShowLog.Value)
             {
                 if (boxStyle == null)
@@ -40,7 +47,7 @@ namespace Guardian.UI
                     border = new RectOffset(0, 0, 0, 0)
                 };
 
-                foreach (string message in Mod.Logger.Messages)
+                foreach (var message in Mod.Logger.Messages)
                 {
                     try
                     {
@@ -50,12 +57,12 @@ namespace Guardian.UI
                 }
                 GUILayout.EndScrollView();
 
-                string coords = "N/A";
+                var coords = "N/A";
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     if (!GameHelper.IsDead(PhotonNetwork.player))
                     {
-                        Photon.MonoBehaviour mb = GameHelper.IsPT(PhotonNetwork.player) ? (Photon.MonoBehaviour)GameHelper.GetPT(PhotonNetwork.player)
+                        var mb = GameHelper.IsPT(PhotonNetwork.player) ? (Photon.MonoBehaviour)GameHelper.GetPT(PhotonNetwork.player)
                             : (Photon.MonoBehaviour)GameHelper.GetHero(PhotonNetwork.player);
                         if (mb != null)
                         {
@@ -63,6 +70,7 @@ namespace Guardian.UI
                         }
                     }
                 }
+
                 GUILayout.Label($"FPS: {MathHelper.Floor(1f / Time.smoothDeltaTime)} X/Y/Z {coords}");
                 GUILayout.EndArea();
             }

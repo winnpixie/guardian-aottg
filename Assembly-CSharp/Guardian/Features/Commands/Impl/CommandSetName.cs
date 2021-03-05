@@ -8,11 +8,12 @@ namespace Guardian.Features.Commands.Impl
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            string name = string.Empty;
+            var name = string.Empty;
             if (args.Length > 0)
             {
                 name = string.Join(" ", args);
             }
+
             LoginFengKAI.Player.Name = name;
             FengGameManagerMKII.NameField = name;
 
@@ -21,7 +22,7 @@ namespace Guardian.Features.Commands.Impl
                 { PhotonPlayerProperty.Name, name }
             });
 
-            HERO hero = GameHelper.GetHero(PhotonNetwork.player);
+            var hero = GameHelper.GetHero(PhotonNetwork.player);
             if (hero != null)
             {
                 FengGameManagerMKII.Instance.photonView.RPC("labelRPC", PhotonTargets.All, new object[] { hero.photonView.viewID });

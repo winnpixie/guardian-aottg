@@ -15,7 +15,7 @@ namespace Guardian.Features.Commands.Impl
 
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
             {
-                foreach (HERO hero in Object.FindObjectsOfType<HERO>())
+                foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
                 {
                     if (hero.myNetWorkName != null)
                     {

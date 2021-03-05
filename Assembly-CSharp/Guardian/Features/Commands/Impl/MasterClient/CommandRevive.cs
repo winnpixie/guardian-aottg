@@ -13,7 +13,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             {
                 if (args[0].Equals("all", StringComparison.OrdinalIgnoreCase))
                 {
-                    foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                    foreach (var player in PhotonNetwork.playerList)
                     {
                         if (GameHelper.IsDead(player) && !GameHelper.IsPT(player))
                         {
@@ -25,7 +25,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 }
                 else if (int.TryParse(args[0], out int id))
                 {
-                    PhotonPlayer player = PhotonPlayer.Find(id);
+                    var player = PhotonPlayer.Find(id);
                     if (player != null)
                     {
                         if (GameHelper.IsDead(player) && !GameHelper.IsPT(player))

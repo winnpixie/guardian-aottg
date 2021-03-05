@@ -8,12 +8,12 @@ namespace Guardian.Features.Commands.Impl
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            int maxPages = (Mod.Commands.Elements.Count - 1) / 7;
-            int page = 0;
+            var maxPages = (Mod.Commands.Elements.Count - 1) / 7;
+            var page = 0;
 
             if (args.Length > 0)
             {
-                Command command = Mod.Commands.Find(args[0]);
+                var command = Mod.Commands.Find(args[0]);
 
                 if (command != null)
                 {
@@ -37,13 +37,14 @@ namespace Guardian.Features.Commands.Impl
                 }
             }
 
-            int endIndex = Math.Min((page + 1) * 7, Mod.Commands.Elements.Count);
+            var endIndex = Math.Min((page + 1) * 7, Mod.Commands.Elements.Count);
             irc.AddLine($"Commands (Page {page + 1}/{maxPages + 1})".WithColor("AAFF00").AsBold());
             irc.AddLine("<arg> = Required, [arg] = Optional".WithColor("AAAAAA").AsBold());
-            for (int i = page * 7; i < endIndex; ++i)
+            for (var i = page * 7; i < endIndex; ++i)
             {
-                Command command = Mod.Commands.Elements[i];
-                string msg = "> ".WithColor("00FF00").AsBold() + $"/{command.Name} {command.Usage}";
+                var command = Mod.Commands.Elements[i];
+                var msg = "> ".WithColor("00FF00").AsBold() + $"/{command.Name} {command.Usage}";
+
                 if (command.MasterClient)
                 {
                     msg += " [MC]".WithColor("FF0000").AsBold();
@@ -52,6 +53,7 @@ namespace Guardian.Features.Commands.Impl
                 {
                     msg += " [DBG]".WithColor("AAAAAA").AsBold();
                 }
+
                 irc.AddLine(msg);
             }
         }

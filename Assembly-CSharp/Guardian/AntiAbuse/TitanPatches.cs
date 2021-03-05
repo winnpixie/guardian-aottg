@@ -14,9 +14,11 @@
                     {
                         FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
+
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -32,9 +34,11 @@
                     {
                         FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
+
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -50,9 +54,11 @@
                     {
                         FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
+
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -68,9 +74,11 @@
                     {
                         FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
+
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -86,9 +94,11 @@
                     {
                         FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
+
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -104,9 +114,11 @@
                     {
                         FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
+
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -122,9 +134,11 @@
                     {
                         FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
+
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -140,9 +154,11 @@
                     {
                         FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
+
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -158,9 +174,11 @@
                     {
                         FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                     }
+
                     return false;
                 }
             }
+
             return true;
         }
     }

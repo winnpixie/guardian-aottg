@@ -18,13 +18,14 @@ namespace Guardian.Features
 
         public T Find(string name)
         {
-            foreach (T element in Elements)
+            foreach (var element in Elements)
             {
                 if (element.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
                 {
                     return element;
                 }
-                foreach (string alias in element.Aliases)
+
+                foreach (var alias in element.Aliases)
                 {
                     if (alias.Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
@@ -32,6 +33,7 @@ namespace Guardian.Features
                     }
                 }
             }
+
             return null;
         }
     }

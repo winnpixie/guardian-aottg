@@ -11,12 +11,14 @@ namespace Guardian.Utilities
         private void Log(string message)
         {
             message = Mod.BlacklistedTags.Replace(message, string.Empty);
+
             if (message.Length != 0)
             {
                 if (Messages.Count > 49)
                 {
                     Messages.RemoveAt(0);
                 }
+
                 Messages.Add(message);
                 ScrollPosition = GameHelper.ScrollBottom;
             }

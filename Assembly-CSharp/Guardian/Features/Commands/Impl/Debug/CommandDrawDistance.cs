@@ -6,7 +6,7 @@
 
 		public override void Execute(InRoomChat irc, string[] args)
 		{
-			float distance = 1500f; // Observed default
+			var distance = 1500f; // Observed default
 
 			if (args.Length > 0 && float.TryParse(args[0], out distance))
 			{

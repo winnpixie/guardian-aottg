@@ -10,12 +10,12 @@ namespace Guardian.Features.Commands.Impl.MasterClient
         {
             if (args.Length > 0 && int.TryParse(args[0], out int id))
             {
-                PhotonPlayer player = PhotonPlayer.Find(id);
+                var player = PhotonPlayer.Find(id);
                 if (player != null)
                 {
                     if (GameHelper.IsPT(player))
                     {
-                        TITAN titan = GameHelper.GetPT(player);
+                        var titan = GameHelper.GetPT(player);
                         if (titan != null)
                         {
                             titan.photonView.RPC("titanGetHit", player, titan.photonView.viewID, 10);
@@ -23,7 +23,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     }
                     else
                     {
-                        HERO hero = GameHelper.GetHero(player);
+                        var hero = GameHelper.GetHero(player);
                         if (hero != null)
                         {
                             hero.photonView.RPC("netDie", PhotonTargets.All, hero.transform.position, false, -1, "[FF0000]Server", true);

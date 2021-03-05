@@ -23,15 +23,6 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                         { "Map", levelInfo.Name }
                     });
 
-                    ExitGames.Client.Photon.Hashtable properties = new ExitGames.Client.Photon.Hashtable()
-                    {
-                        { PhotonPlayerProperty.IsTitan, 1 },
-                    };
-                    foreach (PhotonPlayer player in PhotonNetwork.playerList)
-                    {
-                        player.SetCustomProperties(properties);
-                    }
-
                     FengGameManagerMKII.Instance.RestartGame();
 
                     GameHelper.Broadcast($"The map in play is now {levelInfo.Name}!");

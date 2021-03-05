@@ -343,9 +343,9 @@ public class LevelInfo
                 {
                     Name = "Cave Fight",
                     Map = "CaveFight",
-                    Description = "***SPOILER ALERT***",
+                    Description = "PVP combat in the cavern underneath the Reiss Chapel.",
                     Enemies = 0,
-                    Mode =GameMode.PVP_AHSS,
+                    Mode = GameMode.PVP_AHSS,
                     RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     PlayerTitans = true,
@@ -356,7 +356,7 @@ public class LevelInfo
                 {
                     Name = "House Fight",
                     Map = "HouseFight",
-                    Description = "***SPOILER ALERT***",
+                    Description = "PVP combat.",
                     Enemies = 0,
                     Mode =GameMode.PVP_AHSS,
                     RespawnMode = RespawnMode.Never,

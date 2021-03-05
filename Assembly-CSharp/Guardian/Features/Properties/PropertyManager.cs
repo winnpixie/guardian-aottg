@@ -90,10 +90,10 @@ namespace Guardian.Features.Properties
         {
             GameHelper.TryCreateFile(DataPath, false);
 
-            foreach (string line in File.ReadAllLines(DataPath))
+            foreach (var line in File.ReadAllLines(DataPath))
             {
-                string[] data = line.Split(new char[] { '=' }, 2);
-                Property property = Find(data[0]);
+                var data = line.Split(new char[] { '=' }, 2);
+                var property = Find(data[0]);
 
                 if (property != null)
                 {
@@ -137,7 +137,7 @@ namespace Guardian.Features.Properties
         {
             GameHelper.TryCreateFile(DataPath, false);
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             base.Elements.ForEach(property => builder.AppendLine($"{property.Name}={property.Value}"));
 
             File.WriteAllText(DataPath, builder.ToString());

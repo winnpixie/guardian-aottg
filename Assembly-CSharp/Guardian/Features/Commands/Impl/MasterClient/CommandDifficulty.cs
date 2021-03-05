@@ -10,7 +10,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
         {
             if (args.Length > 0)
             {
-                int difficulty = -2;
+                var difficulty = -2;
                 switch (args[0].ToLower())
                 {
                     case "training":

@@ -28,13 +28,16 @@ namespace Guardian.Networking
 
         public static long GetResponseTime(string server, int port)
         {
-            IPHostEntry entry = Dns.GetHostEntry(server);
-            Stopwatch sw = new Stopwatch();
+            var entry = Dns.GetHostEntry(server);
+            var sw = new Stopwatch();
+
             foreach (IPAddress address in entry.AddressList)
             {
                 sw.Start();
+
                 IPEndPoint ipe = new IPEndPoint(address, port);
                 Socket socket = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
                 socket.Connect(ipe);
 
                 if (socket.Connected)
@@ -44,19 +47,20 @@ namespace Guardian.Networking
 
                 sw.Reset();
             }
+
             return -1;
         }
 
         public static string GetBestRegion()
         {
-            string[] regions = { "us", "eu", "asia", "jp" };
-            string bestRegion = string.Empty;
-            long lowestPing = long.MaxValue;
+            var regions = new string[] { "us", "eu", "asia", "jp" };
+            var bestRegion = string.Empty;
+            var lowestPing = long.MaxValue;
 
             foreach (string code in regions)
             {
-                string address = $"app-{code}.exitgamescloud.com";
-                long ping = GetResponseTime(address, 4530);
+                var address = $"app-{code}.exitgamescloud.com";
+                var ping = GetResponseTime(address, 4530);
 
                 if (ping != -1 && ping < lowestPing)
                 {
@@ -70,7 +74,7 @@ namespace Guardian.Networking
 
         public static string GetRegionCode()
         {
-            string masterAddress = PhotonNetwork.networkingPeer.MasterServerAddress.ToUpper();
+            var masterAddress = PhotonNetwork.networkingPeer.MasterServerAddress.ToUpper();
 
             if (masterAddress.Contains("APP-"))
             {

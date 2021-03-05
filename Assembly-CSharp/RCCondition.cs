@@ -52,15 +52,15 @@ public class RCCondition
             case 0:
                 return IntCompare(parameter1.ReturnInt(null), parameter2.ReturnInt(null));
             case 1:
-                return BoolCompare(parameter1.returnBool(null), parameter2.returnBool(null));
+                return BoolCompare(parameter1.ReturnBool(null), parameter2.ReturnBool(null));
             case 2:
-                return StringCompare(parameter1.returnString(null), parameter2.returnString(null));
+                return StringCompare(parameter1.ReturnString(null), parameter2.ReturnString(null));
             case 3:
-                return FloatCompare(parameter1.returnFloat(null), parameter2.returnFloat(null));
+                return FloatCompare(parameter1.ReturnFloat(null), parameter2.ReturnFloat(null));
             case 4:
-                return PlayerCompare(parameter1.returnPlayer(null), parameter2.returnPlayer(null));
+                return PlayerCompare(parameter1.ReturnPlayer(null), parameter2.ReturnPlayer(null));
             case 5:
-                return TitanCompare(parameter1.returnTitan(null), parameter2.returnTitan(null));
+                return TitanCompare(parameter1.ReturnTitan(null), parameter2.ReturnTitan(null));
             default:
                 return false;
         }

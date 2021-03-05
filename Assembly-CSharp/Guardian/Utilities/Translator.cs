@@ -10,10 +10,10 @@ namespace Guardian.Utilities
     {
         public static IEnumerator Translate(string text, string langCodeFrom, string langCodeTo, Action<string[]> callback)
         {
-            string query = WWW.EscapeURL(text);
-            string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl={langCodeFrom}&tl={langCodeTo}&dt=t&q={query}";
+            var query = WWW.EscapeURL(text);
+            var url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl={langCodeFrom}&tl={langCodeTo}&dt=t&q={query}";
 
-            using (WWW www = new WWW(url))
+            using (var www = new WWW(url))
             {
                 yield return www;
 
@@ -23,7 +23,7 @@ namespace Guardian.Utilities
                 }
                 else
                 {
-                    JSONArray array = JSONNode.Parse(www.text).AsArray;
+                    var array = JSONNode.Parse(www.text).AsArray;
                     callback.Invoke(new string[]
                     {
                         array[2].Value,

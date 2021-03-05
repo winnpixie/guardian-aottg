@@ -13,7 +13,7 @@ namespace Guardian.Features.Commands.Impl.RC
             {
                 if (int.TryParse(args[0], out int id))
                 {
-                    PhotonPlayer player = PhotonPlayer.Find(id);
+                    var player = PhotonPlayer.Find(id);
                     if (player != null)
                     {
                         if (!GameHelper.IsDead(player))

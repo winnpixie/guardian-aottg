@@ -37,7 +37,7 @@ public class MicEF : MonoBehaviour
         }
         if (PlayerPrefs.HasKey("voiceAutoConnect"))
         {
-            string str = PlayerPrefs.GetString("voiceAutoConnect");
+            var str = PlayerPrefs.GetString("voiceAutoConnect");
             if (str.ToLower().StartsWith("f"))
             {
                 AutoConnect = false;
@@ -45,7 +45,7 @@ public class MicEF : MonoBehaviour
         }
         if (PlayerPrefs.HasKey("voiceAutoMute"))
         {
-            string str = PlayerPrefs.GetString("voiceAutoMute");
+            var str = PlayerPrefs.GetString("voiceAutoMute");
             if (str.ToLower().StartsWith("t"))
             {
                 AutoMute = true;
@@ -53,7 +53,7 @@ public class MicEF : MonoBehaviour
         }
         if (PlayerPrefs.HasKey("voiceToggleMic"))
         {
-            string str = PlayerPrefs.GetString("voiceToggleMic");
+            var str = PlayerPrefs.GetString("voiceToggleMic");
             if (str.ToLower().StartsWith("t"))
             {
                 ToggleMic = true;
@@ -180,7 +180,7 @@ public class MicEF : MonoBehaviour
                 {
                     try
                     {
-                        int tId = ThreadId;
+                        var tId = ThreadId;
                         Thread.CurrentThread.IsBackground = true;
                         while (tId == ThreadId && !Disconnected) // Just in case 2 instances of the thread is up, it'll stop the old one
                         {
@@ -222,8 +222,8 @@ public class MicEF : MonoBehaviour
     // Used to show their name while they talk
     public void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
     {
-        PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
-        ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
+        var player = playerAndUpdatedProps[0] as PhotonPlayer;
+        var properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
 
         if (properties.ContainsKey("name") && properties["name"] is string && Users.ContainsKey(player.Id))
         {
@@ -236,18 +236,18 @@ public class MicEF : MonoBehaviour
     {
         if (AdjustableList.Count > 0)
         {
-            int pos = Microphone.GetPosition(DeviceName);
+            var pos = Microphone.GetPosition(DeviceName);
             if (pos < lastPos) // If the microphone loops, the last sample needs to loop too
             {
                 lastPos = 0;
             }
 
-            int diff = pos - lastPos;
+            var diff = pos - lastPos;
             if (diff > 0) // So it doesn't send an empty float[]
             {
-                float[] samples = new float[diff];
+                var samples = new float[diff];
                 clip.GetData(samples, lastPos);
-                byte[] bytes = GzipCompress(samples);
+                var bytes = GzipCompress(samples);
                 if (bytes.Length < 12000)
                 {
                     PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, bytes, false, new RaiseEventOptions
@@ -266,11 +266,11 @@ public class MicEF : MonoBehaviour
         if (data == null)
             return null;
 
-        using (MemoryStream outStream = new MemoryStream())
+        using (var outStream = new MemoryStream())
         {
-            using (GZipOutputStream gzos = new GZipOutputStream(outStream))
+            using (var gzos = new GZipOutputStream(outStream))
             {
-                byte[] floatSerialization = new byte[data.Length * 4]; // Float uses 4 bytes (it's 32 bit)
+                var floatSerialization = new byte[data.Length * 4]; // Float uses 4 bytes (it's 32 bit)
                 Buffer.BlockCopy(data, 0, floatSerialization, 0, floatSerialization.Length); // Serializes the float[] to bytes
 
                 gzos.Write(floatSerialization, 0, floatSerialization.Length);
@@ -287,18 +287,19 @@ public class MicEF : MonoBehaviour
         if (bytes == null)
             return null;
 
-        using (MemoryStream inStream = new MemoryStream(bytes))
+        using (var inStream = new MemoryStream(bytes))
         {
-            using (GZipInputStream gzis = new GZipInputStream(inStream))
+            using (var gzis = new GZipInputStream(inStream))
             {
-                using (MemoryStream outStream = new MemoryStream())
+                using (var outStream = new MemoryStream())
                 {
-                    byte[] buffer = new byte[4096];
+                    var buffer = new byte[4096];
                     StreamUtils.Copy(gzis, outStream, buffer);
 
-                    byte[] decompressed = outStream.ToArray(); // Converts the stream to byte array
-                    float[] data = new float[decompressed.Length / 4]; // float uses 4 bytes (32 bits)
+                    var decompressed = outStream.ToArray(); // Converts the stream to byte array
+                    var data = new float[decompressed.Length / 4]; // float uses 4 bytes (32 bits)
                     Buffer.BlockCopy(decompressed, 0, data, 0, decompressed.Length); // Converts the decompressed bytes into the float[]
+
                     return data;
                 }
             }

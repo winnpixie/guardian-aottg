@@ -15,7 +15,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "02162021";
+        public static string Build = "03042021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static CommandManager Commands = new CommandManager();
@@ -76,7 +76,7 @@ namespace Guardian
                 // Property whitelist
                 NetworkPatches.PropertyWhitelist.Add("sender");
                 NetworkPatches.PropertyWhitelist.Add("GuardianMod");
-                foreach (FieldInfo field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
+                foreach (var field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
                 {
                     NetworkPatches.PropertyWhitelist.Add((string)field.GetValue(null));
                 }
@@ -98,7 +98,7 @@ namespace Guardian
 
         private IEnumerator CheckForUpdate()
         {
-            using (WWW www = new WWW("http://lewd.cf/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()))
+            using (var www = new WWW("http://lewd.cf/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()))
             {
                 yield return www;
 
@@ -147,7 +147,7 @@ namespace Guardian
         {
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
-                string difficulty = "Training";
+                var difficulty = "Training";
                 switch (IN_GAME_MAIN_CAMERA.Difficulty)
                 {
                     case 0:
@@ -171,7 +171,7 @@ namespace Guardian
             if (FirstJoin)
             {
                 FirstJoin = false;
-                string joinMessage = Properties.JoinMessage.Value.Colored();
+                var joinMessage = Properties.JoinMessage.Value.Colored();
                 if (joinMessage.Uncolored().Length <= 0)
                 {
                     joinMessage = Properties.JoinMessage.Value;
@@ -197,8 +197,8 @@ namespace Guardian
         {
             NetworkPatches.OnPlayerPropertyModification(playerAndUpdatedProps);
 
-            PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
-            ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
+            var player = playerAndUpdatedProps[0] as PhotonPlayer;
+            var properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
 
             // Neko Mod detection
             if (properties.ContainsValue("N_user") || properties.ContainsValue("N_owner"))
@@ -231,7 +231,7 @@ namespace Guardian
                 {
                     if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string && IsMultiMap)
                     {
-                        LevelInfo levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
+                        var levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
                         if (levelInfo != null)
                         {
                             FengGameManagerMKII.Level = levelInfo;
@@ -271,7 +271,7 @@ namespace Guardian
                 { "GuardianMod", 1 },
             });
 
-            string[] roomInfo = PhotonNetwork.room.name.Split('`');
+            var roomInfo = PhotonNetwork.room.name.Split('`');
             if (roomInfo.Length > 6)
             {
 

@@ -1,4 +1,3 @@
-using Photon;
 using UnityEngine;
 
 public class BombExplode : Photon.MonoBehaviour

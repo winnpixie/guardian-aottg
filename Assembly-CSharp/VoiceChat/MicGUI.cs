@@ -43,29 +43,29 @@ public class MicGUI : MonoBehaviour
         AdjustRect();
         overlayStyle = new GUIStyle();
 
-        Texture2D defaultBackground = new Texture2D(1, 1);
+        var defaultBackground = new Texture2D(1, 1);
         defaultBackground.SetPixel(0, 0, new Color(0.1569f, 0.1569f, 0.1569f));
         defaultBackground.Apply();
         micStyle = new GUIStyle();
         micStyle.normal.background = defaultBackground; // mic GUI color
 
-        Texture2D areaBack = new Texture2D(1, 1);
+        var areaBack = new Texture2D(1, 1);
         areaBack.SetPixel(0, 0, new Color(0.1961f, 0.1961f, 0.1961f));
         areaBack.Apply();
         areaStyle = new GUIStyle();
         areaStyle.normal.background = areaBack; // inner area GUI color
 
-        Texture2D buttonBack = new Texture2D(1, 1);
+        var buttonBack = new Texture2D(1, 1);
         buttonBack.SetPixel(0, 0, buttonGUIColor);
         buttonBack.Apply();
         buttonStyle = new GUIStyle();
         buttonStyle.normal.background = buttonBack; // Normal button color
-        Texture2D buttonAct = new Texture2D(1, 1);
+        var buttonAct = new Texture2D(1, 1);
         buttonAct.SetPixel(0, 0, adjustColor(buttonGUIColor, 0.75f)); // 25% darker
         buttonAct.Apply();
         buttonStyle.active.background = buttonAct; // Press button Color
         buttonStyle.active.textColor = new Color(0.149f, 0.149f, 0.149f); // active text color
-        Texture2D buttonHov = new Texture2D(1, 1);
+        var buttonHov = new Texture2D(1, 1);
         buttonHov.SetPixel(0, 0, adjustColor(buttonGUIColor, 1.25f)); // 25% brighter
         buttonHov.Apply();
         buttonStyle.hover.background = buttonHov; // Hover button color
@@ -77,9 +77,10 @@ public class MicGUI : MonoBehaviour
 
     public static Color adjustColor(Color col, float adjustment)
     {
-        float red = col.r * adjustment;
-        float green = col.g * adjustment;
-        float blue = col.b * adjustment;
+        var red = col.r * adjustment;
+        var green = col.g * adjustment;
+        var blue = col.b * adjustment;
+
         return new Color(red, green, blue);
     }
 
@@ -93,9 +94,9 @@ public class MicGUI : MonoBehaviour
             {
                 GUILayout.Label("<b>(" + PhotonNetwork.player.Id + ") </b>" + PhotonNetwork.player.customProperties["name"].ToString().Colored());
             }
-            foreach (KeyValuePair<int, MicPlayer> entry in MicEF.Users)
+            foreach (var entry in MicEF.Users)
             {
-                MicPlayer player = entry.Value;
+                var player = entry.Value;
                 if (player.clipProcess)
                 {
                     GUILayout.Label("<b>(" + entry.Key + ") </b>" + entry.Value.name);
@@ -143,14 +144,14 @@ public class MicGUI : MonoBehaviour
             case 0:
                 { // User list
                     vSliderValue = GUILayout.BeginScrollView(vSliderValue);
-                    foreach (KeyValuePair<int, MicPlayer> entry in MicEF.Users)
+                    foreach (var entry in MicEF.Users)
                     {
-                        MicPlayer player = entry.Value;
+                        var player = entry.Value;
 
                         GUILayout.BeginHorizontal();
 
                         GUILayout.Label(player.name, GUILayout.Width(labelLength));
-                        Color oldCol = buttonStyle.normal.textColor;
+                        var oldCol = buttonStyle.normal.textColor;
 
                         if (player.mutedYou)
                         {
@@ -202,7 +203,7 @@ public class MicGUI : MonoBehaviour
                     // Voice Assignment
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Push To talk:");
-                    string buttonText = MicEF.PushToTalk.ToString();
+                    var buttonText = MicEF.PushToTalk.ToString();
                     if (changingKeys == 0)
                     {
                         buttonText = "Waiting...";
@@ -234,9 +235,9 @@ public class MicGUI : MonoBehaviour
                     if (changingKeys == 1)
                     {
                         buttonText = "Waiting...";
-                        for (int i = 1; i <= 429; i++)
+                        for (var i = 1; i <= 429; i++)
                         {
-                            KeyCode code = (KeyCode)(i);
+                            KeyCode code = (KeyCode)i;
                             if (Input.GetKeyDown(code))
                             {
                                 guiKey = code;
@@ -257,7 +258,7 @@ public class MicGUI : MonoBehaviour
 
                     // Volume
                     GUILayout.Label("Volume Multiplier: " + MicEF.VolumeMultiplier);
-                    float oldVol = MicEF.VolumeMultiplier;
+                    var oldVol = MicEF.VolumeMultiplier;
                     MicEF.VolumeMultiplier = GUILayout.HorizontalSlider(MicEF.VolumeMultiplier, 0f, 3f, new GUILayoutOption[0]);
                     if (oldVol != MicEF.VolumeMultiplier)
                     {
@@ -270,7 +271,7 @@ public class MicGUI : MonoBehaviour
 
                     GUILayout.Label("Microphone: ");
 
-                    string micButtonText = "Default";
+                    var micButtonText = "Default";
                     if (MicEF.DeviceName.Length > 0)
                     {
                         micButtonText = MicEF.DeviceName;
@@ -294,7 +295,7 @@ public class MicGUI : MonoBehaviour
                     //Auto Mute People On Join
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Auto Mute People On Join:");
-                    bool autoMute = MicEF.AutoMute;
+                    var autoMute = MicEF.AutoMute;
                     MicEF.AutoMute = GUILayout.Toggle(autoMute, "On");
                     if (autoMute != MicEF.AutoMute)
                     {
@@ -306,7 +307,7 @@ public class MicGUI : MonoBehaviour
                     // Auto Connect
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Auto Connect:");
-                    bool autoConnect = MicEF.AutoConnect;
+                    var autoConnect = MicEF.AutoConnect;
                     MicEF.AutoConnect = GUILayout.Toggle(autoConnect, "On");
                     if (autoConnect != MicEF.AutoConnect)
                     {
@@ -318,7 +319,7 @@ public class MicGUI : MonoBehaviour
                     // Toggle Mic
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Toggle Mic:");
-                    bool toggleMic = MicEF.ToggleMic;
+                    var toggleMic = MicEF.ToggleMic;
                     MicEF.ToggleMic = GUILayout.Toggle(toggleMic, "On");
                     if (toggleMic != MicEF.ToggleMic)
                     {
@@ -334,7 +335,7 @@ public class MicGUI : MonoBehaviour
                         buttonText = "Connect To Voice";
                     }
 
-                    Color oldCol = buttonStyle.normal.textColor;
+                    var oldCol = buttonStyle.normal.textColor;
 
                     if (MicEF.Disconnected)
                     {
@@ -350,16 +351,18 @@ public class MicGUI : MonoBehaviour
                     {
                         if (!MicEF.Disconnected)
                         {
-                            RaiseEventOptions raised = new RaiseEventOptions();
-                            raised.Receivers = ReceiverGroup.Others;
-                            PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[] { (byte)253 }, true, raised);
+                            PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[] { (byte)253 }, true, new RaiseEventOptions
+                            {
+                                Receivers = ReceiverGroup.Others
+                            });
                             MicEF.Disconnected = true;
                         }
                         else
                         {
-                            RaiseEventOptions raised = new RaiseEventOptions();
-                            raised.Receivers = ReceiverGroup.Others;
-                            PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[0], true, raised);
+                            PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[0], true, new RaiseEventOptions
+                            {
+                                Receivers = ReceiverGroup.Others
+                            });
                             MicEF.Disconnected = false;
                         }
                     }
@@ -415,9 +418,9 @@ public class MicGUI : MonoBehaviour
     { // Maybe add a scroll view later
         GUILayout.BeginVertical();
 
-        foreach (string str in Microphone.devices)
+        foreach (var str in Microphone.devices)
         {
-            string butText = str.Remove(0, 12);
+            var butText = str.Remove(0, 12);
             butText = butText.Substring(0, butText.Length - 1);
             if (GUILayout.Button(butText, buttonStyle))
             {
@@ -474,8 +477,8 @@ public class MicGUI : MonoBehaviour
     // Fixes the GUI sizes
     private void AdjustRect()
     {
-        float desiredWidth = 1920; // Theoretically makes 4k screens still look okay(may need to change some other things though)
-        float desiredHeight = 1080;
+        var desiredWidth = 1920f; // Theoretically makes 4k screens still look okay(may need to change some other things though)
+        var desiredHeight = 1080f;
 
         if (Screen.width > 1920)
         {
@@ -485,8 +488,8 @@ public class MicGUI : MonoBehaviour
         {
             desiredHeight = Screen.height;
         }
-        float width = Convert.ToSingle(desiredWidth / 4.2);
-        float height = Convert.ToSingle(desiredHeight / 4.2);
+        var width = desiredWidth / 4.2f;
+        var height = desiredHeight / 4.2f;
 
         overlayRect = new Rect(0, Screen.height / 2 - 100, 200, 200);
         micRect = new Rect(Screen.width - width, Screen.height - height, width, height);

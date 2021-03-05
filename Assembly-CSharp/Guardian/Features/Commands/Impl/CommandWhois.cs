@@ -10,7 +10,8 @@ namespace Guardian.Features.Commands.Impl
         {
             if (args.Length > 0 && int.TryParse(args[0], out int id))
             {
-                PhotonPlayer player = PhotonPlayer.Find(id);
+                var player = PhotonPlayer.Find(id);
+
                 if (player != null)
                 {
                     irc.AddLine($"Whois Report (#{player.Id})".WithColor("AAFF00").AsBold());
@@ -19,9 +20,9 @@ namespace Guardian.Features.Commands.Impl
                     irc.AddLine("Guild: ".WithColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Guild]).Colored());
                     irc.AddLine("Status: ".WithColor("FFCC00") + (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]) ? "Dead" : "Alive"));
 
-                    int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
-                    int deaths = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Deaths]);
-                    int totalDamage = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.TotalDamage]);
+                    var kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
+                    var deaths = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Deaths]);
+                    var totalDamage = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.TotalDamage]);
                     irc.AddLine("Kills: ".WithColor("FFCC00") + kills);
                     irc.AddLine("Deaths: ".WithColor("FFCC00") + deaths);
                     irc.AddLine("K/D Ratio: ".WithColor("FFCC00") + (deaths == 0 ? kills : ((double)kills / (double)deaths)) + $" ({kills}:{deaths})");
@@ -31,13 +32,13 @@ namespace Guardian.Features.Commands.Impl
 
                     irc.AddLine("Average Damage: ".WithColor("FFCC00") + (kills == 0 ? "n/a" : (totalDamage / kills).ToString()));
 
-                    float bombRadius = GExtensions.AsFloat(player.customProperties[PhotonPlayerProperty.RCBombRadius]);
+                    var bombRadius = GExtensions.AsFloat(player.customProperties[PhotonPlayerProperty.RCBombRadius]);
                     if (player.customProperties.ContainsKey(PhotonPlayerProperty.RCBombRadius))
                     {
                         irc.AddLine("Bomb Radius: ".WithColor("FFCC00") + ((bombRadius - 20f) / 4f));
                     }
 
-                    string team = "Human (Blade)";
+                    var team = "Human (Blade)";
                     if (GameHelper.IsAHSS(player))
                     {
                         team = "Human (AHSS)";

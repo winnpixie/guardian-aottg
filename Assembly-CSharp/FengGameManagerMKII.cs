@@ -439,7 +439,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     }
 
     [RPC]
-    private void refreshStatus(int score1, int score2, int wav, int highestWav, float time1, float time2, bool startRacin, bool endRacin, PhotonMessageInfo info)
+    private void refreshStatus(int score1, int score2, int theWave, int theHighestWave, float time1, float time2, bool startRacin, bool shouldEndRacing, PhotonMessageInfo info)
     {
         if (!Guardian.AntiAbuse.FGMPatches.IsStatusRefreshValid(info))
         {
@@ -447,12 +447,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         humanScore = score1;
         titanScore = score2;
-        wave = wav;
-        highestWave = highestWav;
+        wave = theWave;
+        highestWave = theHighestWave;
         roundTime = time1;
         timeTotalServer = time2;
         startRacing = startRacin;
-        endRacing = endRacin;
+        endRacing = shouldEndRacing;
         if (startRacing && (bool)GameObject.Find("door"))
         {
             GameObject.Find("door").SetActive(value: false);
@@ -722,6 +722,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             return;
         }
+
         switch (Level.Mode)
         {
             case GameMode.PVP_CAPTURE:
@@ -771,6 +772,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     return;
                 }
                 wave++;
+
                 if ((Level.RespawnMode == RespawnMode.NewRound || (Level.Name.StartsWith("Custom") && RCSettings.GameType == 1)) && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     foreach (PhotonPlayer photonPlayer in PhotonNetwork.playerList)
@@ -781,23 +783,28 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                     }
                 }
+
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
-                    sendChatContentInfo("Wave ".WithColor("AAFF00") + wave + " / " + RCSettings.GetMaxWave());
+                    GameHelper.Broadcast("Wave ".WithColor("AAFF00") + $"{wave} / {RCSettings.GetMaxWave()}");
                 }
+
                 if (wave > highestWave)
                 {
                     highestWave = wave;
                 }
+
                 if (PhotonNetwork.isMasterClient)
                 {
                     RequireStatus();
                 }
+
                 if (wave > RCSettings.GetMaxWave())
                 {
                     WinGame();
                     return;
                 }
+
                 int abnormal = 90;
                 if (difficulty == 1)
                 {
@@ -828,9 +835,15 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     }
 
     [RPC]
-    private void respawnHeroInNewRound()
+    private void respawnHeroInNewRound(PhotonMessageInfo info)
     {
+        if (!info.sender.isMasterClient)
+        {
+            Mod.Logger.Info($"Non-MC revive from #{info.sender.Id}.");
+        }
+
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
+
         if (!needChooseSide && cam.gameOver)
         {
             SpawnPlayer(myLastHero, myLastRespawnTag);
@@ -887,19 +900,21 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         base.photonView.RPC("updateKillInfo", PhotonTargets.All, isKillerTitan, killer, isVictimTitan, victim, dmg);
     }
 
-    public void sendChatContentInfo(string content)
-    {
-        base.photonView.RPC("Chat", PhotonTargets.All, content, string.Empty);
-    }
-
     [RPC]
-    private void showChatContent(string content)
+    private void showChatContent(string content, PhotonMessageInfo info)
     {
+        if (!Guardian.AntiAbuse.FGMPatches.IsChatContentShowValid(info))
+        {
+            return;
+        }
+
         chatContent.Add(content);
+
         if (chatContent.Count > 10)
         {
             chatContent.RemoveAt(0);
         }
+
         UILabel chatTextLabel = GameObject.Find("LabelChatContent").GetComponent<UILabel>();
         chatTextLabel.text = string.Empty;
         for (int i = 0; i < chatContent.Count; i++)
@@ -1925,7 +1940,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
             if (masterClientSwitched)
             {
-                sendChatContentInfo("MasterClient has switched to ".WithColor("AAFF00") + ((string)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored());
+                GameHelper.Broadcast("MasterClient has switched to " + ((string)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored().AsBold());
             }
         }
     }
@@ -2233,7 +2248,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             switch (Level.Mode)
             {
                 case GameMode.ENDLESS_TITAN:
-                    text = "Time : " + GameHelper.FormatTime((time - timeTotalServer));
+                    text = "Time : " + GameHelper.FormatTime(time - timeTotalServer);
                     break;
                 case GameMode.KILL_TITAN:
                 case GameMode.None:
@@ -2241,12 +2256,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         + " Time : " + GameHelper.FormatTime((IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer));
                     break;
                 case GameMode.SURVIVE_MODE:
-                    text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length
-                        + " Wave : " + wave;
+                    text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length + " Wave : " + wave;
                     break;
                 case GameMode.BOSS_FIGHT_CT:
-                    text = "Time : " + GameHelper.FormatTime((time - timeTotalServer))
-                        + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the north gate!";
+                    text = "Time : " + GameHelper.FormatTime(time - timeTotalServer) + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the north gate!";
                     break;
                 case GameMode.PVP_CAPTURE:
                     string str = "| ";
@@ -2638,6 +2651,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             return;
         }
+
         isWinning = true;
         humanScore++;
 
@@ -3223,22 +3237,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     if (cyanKills >= RCSettings.PointMode)
                     {
-                        object[] parameters = new object[2]
-                        {
-                            "Team Cyan wins!".WithColor("00FFFF"),
-                            string.Empty
-                        };
-                        base.photonView.RPC("Chat", PhotonTargets.All, parameters);
+                        base.photonView.RPC("Chat", PhotonTargets.All, "Team Cyan wins!".WithColor("00FFFF"), string.Empty);
                         WinGame();
                     }
                     else if (magentaKills >= RCSettings.PointMode)
                     {
-                        object[] args = new object[2]
-                        {
-                            "Team Magenta wins!".WithColor("FF00FF"),
-                            string.Empty
-                        };
-                        base.photonView.RPC("Chat", PhotonTargets.All, args);
+                        base.photonView.RPC("Chat", PhotonTargets.All, "Team Magenta wins!".WithColor("FF00FF"), string.Empty);
                         WinGame();
                     }
                 }
@@ -3249,12 +3253,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         PhotonPlayer photonPlayer6 = PhotonNetwork.playerList[j];
                         if (GExtensions.AsInt(photonPlayer6.customProperties[PhotonPlayerProperty.Kills]) >= RCSettings.PointMode)
                         {
-                            object[] parameters2 = new object[2]
-                            {
-                                GExtensions.AsString(photonPlayer6.customProperties[PhotonPlayerProperty.Name]).Colored() + " wins!".WithColor("FFCC00"),
-                                string.Empty
-                            };
-                            base.photonView.RPC("Chat", PhotonTargets.All, parameters2);
+                            base.photonView.RPC("Chat", PhotonTargets.All, GExtensions.AsString(photonPlayer6.customProperties[PhotonPlayerProperty.Name]).Colored() + " wins!".WithColor("FFCC00"), string.Empty);
                             WinGame();
                         }
                     }
@@ -3296,22 +3295,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     {
                         if (num20 == 0)
                         {
-                            object[] parameters3 = new object[2]
-                            {
-                                "Team Magenta wins!".WithColor("FF00FF"),
-                                string.Empty
-                            };
-                            base.photonView.RPC("Chat", PhotonTargets.All, parameters3);
+                            base.photonView.RPC("Chat", PhotonTargets.All, "Team Magenta wins!".WithColor("FF00FF"), string.Empty);
                             WinGame();
                         }
                         else if (num21 == 0)
                         {
-                            object[] parameters4 = new object[2]
-                            {
-                                "Team Cyan wins!".WithColor("00FFFF"),
-                                string.Empty
-                            };
-                            base.photonView.RPC("Chat", PhotonTargets.All, parameters4);
+                            base.photonView.RPC("Chat", PhotonTargets.All, "Team Cyan wins!".WithColor("00FFFF"), string.Empty);
                             WinGame();
                         }
                     }
@@ -3345,12 +3334,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 UpdatePlayerKillInfo(0, player);
                             }
                         }
-                        object[] parameters5 = new object[2]
-                        {
-                            "<color=#FFCC00>" + winnerName.Colored() + " wins." + text4 + "</color>",
-                            string.Empty
-                        };
-                        base.photonView.RPC("Chat", PhotonTargets.All, parameters5);
+                        base.photonView.RPC("Chat", PhotonTargets.All, winnerName.Colored() + " wins.".WithColor("FFCC00"), string.Empty);
                         WinGame();
                     }
                 }
@@ -5757,8 +5741,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             if (paused)
             {
-                pauseWaitTime = 100000f;
-                Time.timeScale = 0.00001f;
+                pauseWaitTime = 4f;
+                Time.timeScale = 0.000001f;
             }
             else
             {

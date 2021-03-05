@@ -81,6 +81,9 @@
   <ItemGroup>
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandPause.cs" />
     <Compile Include="Guardian\Features\Commands\Impl\MasterClient\CommandUnpause.cs" />
+    <Compile Include="Guardian\UI\Impl\UICustomChar.cs" />
+    <Compile Include="Guardian\UI\Impl\UIModSettings.cs" />
+    <Compile Include="Guardian\UI\UIBase.cs" />
     <Compile Include="Guardian\Utilities\Translator.cs" />
     <Compile Include="TitanClass.cs" />
     <Compile Include="ActiveAnimation.cs" />

@@ -8,7 +8,7 @@ namespace Guardian.Features.Commands.Impl.RC
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            ExitGames.Client.Photon.Hashtable properties = new ExitGames.Client.Photon.Hashtable()
+            var properties = new ExitGames.Client.Photon.Hashtable()
             {
                 { PhotonPlayerProperty.Kills, 0 },
                 { PhotonPlayerProperty.Deaths, 0 },
@@ -22,7 +22,7 @@ namespace Guardian.Features.Commands.Impl.RC
                 {
                     if (args[0].Equals("all", StringComparison.OrdinalIgnoreCase))
                     {
-                        foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                        foreach (var player in PhotonNetwork.playerList)
                         {
                             player.SetCustomProperties(properties);
                         }
@@ -30,7 +30,7 @@ namespace Guardian.Features.Commands.Impl.RC
                     }
                     else if (int.TryParse(args[0], out int id))
                     {
-                        PhotonPlayer player = PhotonPlayer.Find(id);
+                        var player = PhotonPlayer.Find(id);
                         if (player != null)
                         {
                             player.SetCustomProperties(properties);

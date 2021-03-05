@@ -12,8 +12,10 @@
                 {
                     FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
                 }
+
                 return false;
             }
+
             return true;
         }
 
@@ -24,8 +26,10 @@
             if (info == null || view == null || hook.photonView.ownerId != info.sender.Id || view.gameObject.GetComponent<HERO>() == null)
             {
                 Mod.Logger.Warn($"'Bullet.myMasterIs' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+
                 return false;
             }
+
             return true;
         }
 
@@ -36,8 +40,10 @@
             if (info == null || view == null || hook.photonView.ownerId != info.sender.Id)
             {
                 Mod.Logger.Warn($"'Bullet.tieMeToOBJ' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+
                 return false;
             }
+
             return true;
         }
     }

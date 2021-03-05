@@ -20,21 +20,24 @@ namespace Guardian.Utilities
             {
                 return new WWW(url);
             }
+
             if (Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
             {
-                string textureHost = uri.Authority;
+                var textureHost = uri.Authority;
                 textureHost = textureHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? textureHost.Substring(4) : textureHost;
 
                 foreach (string whitelistHost in Mod.HostWhitelist)
                 {
-                    string host = whitelistHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? whitelistHost.Substring(4) : whitelistHost;
+                    var host = whitelistHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? whitelistHost.Substring(4) : whitelistHost;
                     if (textureHost.Equals(host, StringComparison.OrdinalIgnoreCase))
                     {
                         return new WWW(url);
                     }
                 }
+
                 Mod.Logger.Warn($"Unwhitelisted skin host: {textureHost}");
             }
+
             return null;
         }
 
@@ -47,6 +50,7 @@ namespace Guardian.Utilities
                     return hero;
                 }
             }
+
             return null;
         }
 
@@ -59,6 +63,7 @@ namespace Guardian.Utilities
                     return titan;
                 }
             }
+
             return null;
         }
 
@@ -79,30 +84,34 @@ namespace Guardian.Utilities
 
         public static object[] GetRandomTitanRespawnPoint()
         {
-            Vector3 position = new Vector3(MathHelper.RandomInt(-400, 401), 0f, MathHelper.RandomInt(-400, 401));
-            Quaternion rotation = new Quaternion(0f, 0f, 0f, 1f);
+            var position = new Vector3(MathHelper.RandomInt(-400, 401), 0f, MathHelper.RandomInt(-400, 401));
+            var rotation = new Quaternion(0f, 0f, 0f, 1f);
+
             if (FengGameManagerMKII.Instance.titanSpawns.Count > 0)
             {
-
                 position = FengGameManagerMKII.Instance.titanSpawns[MathHelper.RandomInt(0, FengGameManagerMKII.Instance.titanSpawns.Count)];
             }
             else
             {
-                GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("titanRespawn");
+                var spawnPoints = GameObject.FindGameObjectsWithTag("titanRespawn");
+
                 if (spawnPoints.Length > 0)
                 {
-                    int index = MathHelper.RandomInt(0, spawnPoints.Length);
+                    var index = MathHelper.RandomInt(0, spawnPoints.Length);
                     GameObject spawnPoint = spawnPoints[index];
+
                     while (spawnPoints[index] == null)
                     {
                         index = MathHelper.RandomInt(0, spawnPoints.Length);
                         spawnPoint = spawnPoints[index];
                     }
+
                     spawnPoints[index] = null;
                     position = spawnPoint.transform.position;
                     rotation = spawnPoint.transform.rotation;
                 }
             }
+
             return new object[] { position, rotation };
         }
 
@@ -140,7 +149,7 @@ namespace Guardian.Utilities
         {
             if (Mod.Properties.LegacyTimeFormat.Value)
             {
-                float secs = isSeconds ? time : (time / 1000f);
+                var secs = isSeconds ? time : (time / 1000f);
 
                 if (!precise)
                 {
@@ -150,22 +159,22 @@ namespace Guardian.Utilities
                 return secs > 1 ? secs + " secs" : secs + " sec";
             }
 
-            string output = string.Empty;
+            var output = string.Empty;
 
             if (isSeconds)
             {
                 time *= 1000;
             }
 
-            int ms = (int)time % 1000;
-            int sec = MathHelper.Floor(time / 1000f);
-            int min = MathHelper.Floor(sec / 60f);
+            var ms = (int)time % 1000;
+            var sec = MathHelper.Floor(time / 1000f);
+            var min = MathHelper.Floor(sec / 60f);
             sec -= min * 60;
-            int hrs = MathHelper.Floor(min / 60f);
+            var hrs = MathHelper.Floor(min / 60f);
             min -= hrs * 60;
-            int days = MathHelper.Floor(hrs / 24f);
+            var days = MathHelper.Floor(hrs / 24f);
             hrs -= days * 24;
-            int years = MathHelper.Floor(days / 365f);
+            var years = MathHelper.Floor(days / 365f);
             days -= years * 365;
 
 

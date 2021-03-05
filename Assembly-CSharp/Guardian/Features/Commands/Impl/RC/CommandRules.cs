@@ -41,7 +41,7 @@
             // Team Sorting
             if (RCSettings.TeamMode > 0)
             {
-                string str = string.Empty;
+                var str = string.Empty;
                 switch (RCSettings.TeamMode)
                 {
                     case 1:
@@ -54,6 +54,7 @@
                         str = "Locked by Skill";
                         break;
                 }
+
                 irc.AddLine("Team Mode enabled (".WithColor("FFCC00") + str + ").".WithColor("FFCC00"));
             }
 

@@ -7,12 +7,12 @@ namespace Guardian.Utilities
         public static List<string> GetMods(PhotonPlayer player)
         {
             ExitGames.Client.Photon.Hashtable properties = player.customProperties;
-            List<string> mods = new List<string>();
+            var mods = new List<string>();
 
             // Neko
             if (player.isNeko)
             {
-                string userType = "[FFFFFF]";
+                var userType = "[FFFFFF]";
                 if (player.isNekoUser)
                 {
                     userType += "(User)";
@@ -156,7 +156,7 @@ namespace Guardian.Utilities
                 || properties.ContainsKey("Version")
                 || properties.ContainsKey("Pref"))
             {
-                string version = "[FFFFFF]v";
+                var version = "[FFFFFF]v";
                 if (properties.ContainsKey("Version"))
                 {
                     version += GExtensions.AsFloat(properties["Version"]);
@@ -181,7 +181,7 @@ namespace Guardian.Utilities
                 || properties.ContainsKey("coins")
                 || (properties.ContainsKey(string.Empty) && properties[string.Empty] is string))
             {
-                string edition = "[FFFFFF]";
+                var edition = "[FFFFFF]";
                 if (properties.ContainsKey("UYoutube"))
                 {
                     edition += "(You[FF0000]Tube[-])";
@@ -238,8 +238,8 @@ namespace Guardian.Utilities
                 mods.Add("[0000FF][AoE]");
             }
 
-            string name = GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
-            string guild = GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Guild]);
+            var name = GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
+            var guild = GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Guild]);
 
             // Parrot
             if (guild.StartsWith("[00FF00]PARROT'S MOD"))
@@ -274,7 +274,7 @@ namespace Guardian.Utilities
             // >48/>40 chars
             if (name.Length > 48 || guild.Length > 40)
             {
-                string lengthFlags = string.Empty;
+                var lengthFlags = string.Empty;
 
                 if (name.Length > 48)
                 {

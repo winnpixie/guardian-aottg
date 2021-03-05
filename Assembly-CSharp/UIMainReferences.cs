@@ -40,11 +40,6 @@ public class UIMainReferences : MonoBehaviour
             FengGameManagerMKII.S = "verified343,hair,character_eye,glass,character_face,character_head,character_hand,character_body,character_arm,character_leg,character_chest,character_cape,character_brand,character_3dmg,r,character_blade_l,character_3dmg_gas_r,character_blade_r,3dmg_smoke,HORSE,hair,body_001,Cube,Plane_031,mikasa_asset,character_cap_,character_gun".Split(',');
             LoginFengKAI.LoginState = LoginState.LoggedOut;
 
-            if (!Screen.fullScreen)
-            {
-                Screen.SetResolution(960, 600, fullscreen: false);
-            }
-
             StartCoroutine(LoadCustomAssets());
         }
     }
@@ -55,7 +50,7 @@ public class UIMainReferences : MonoBehaviour
         yield return abcr;
         FengGameManagerMKII.RCAssets = abcr.assetBundle;
 
-        using (WWW www = new WWW("file:///" + Application.dataPath + "/Resources/AoTTG_2_LOGO.PNG"))
+        using (WWW www = new WWW("file:///" + Application.dataPath + "/Resources/Textures/patreon.png"))
         {
             yield return www;
             AOT_2_LOGO = www.texture;

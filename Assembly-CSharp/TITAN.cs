@@ -3198,7 +3198,7 @@ public class TITAN : Photon.MonoBehaviour
                         {
                             if (checkPoints.Count == 4)
                             {
-                                FengGameManagerMKII.Instance.sendChatContentInfo("*WARNING* An abnormal titan is approaching the North gate!".WithColor("a8ff24").AsBold().AsItalic());
+                                GameHelper.Broadcast("An abnormal titan is approaching the North gate!".WithColor("CC0000").AsBold().AsItalic());
                             }
                             Vector3 newCheckPt = (Vector3)this.checkPoints[0];
                             targetCheckPt = newCheckPt;

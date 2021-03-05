@@ -9,6 +9,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
         public override void Execute(InRoomChat irc, string[] args)
         {
             FengGameManagerMKII.Instance.photonView.RPC("pauseRPC", PhotonTargets.All, true);
+
             GameHelper.Broadcast("MasterClient has paused the game!");
         }
     }

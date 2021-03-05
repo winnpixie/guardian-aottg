@@ -14,7 +14,7 @@ namespace Guardian.AntiAbuse
         // NetworkingPeer.OnEvent (Code 202)
         public static bool IsInstantiatePacketValid(ExitGames.Client.Photon.Hashtable evData, PhotonPlayer sender)
         {
-            bool malformed = evData == null;
+            var malformed = evData == null;
 
             if (!malformed)
             {
@@ -56,6 +56,7 @@ namespace Guardian.AntiAbuse
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
                 }
+
                 return false;
             }
 
@@ -65,7 +66,7 @@ namespace Guardian.AntiAbuse
         // NetworkingPeer.OnEvent (Codes 201 and 206)
         public static bool IsSerializeReadValid(ExitGames.Client.Photon.Hashtable data, PhotonPlayer sender)
         {
-            bool malformed = data == null;
+            var malformed = data == null;
 
             if (!malformed)
             {
@@ -87,6 +88,7 @@ namespace Guardian.AntiAbuse
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
                 }
+
                 return false;
             }
 
@@ -96,7 +98,7 @@ namespace Guardian.AntiAbuse
         // NetworkingPeer.OnEvent (Code 200)
         public static bool IsRPCValid(ExitGames.Client.Photon.Hashtable rpcData, PhotonPlayer sender)
         {
-            bool malformed = rpcData == null;
+            var malformed = rpcData == null;
 
             if (!malformed)
             {
@@ -134,6 +136,7 @@ namespace Guardian.AntiAbuse
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
                 }
+
                 return false;
             }
 
@@ -149,6 +152,7 @@ namespace Guardian.AntiAbuse
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
                 }
+
                 return false;
             }
 
@@ -157,26 +161,26 @@ namespace Guardian.AntiAbuse
 
         public static void OnPlayerPropertyModification(object[] playerAndUpdatedProps)
         {
-            PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
-            ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
+            var player = playerAndUpdatedProps[0] as PhotonPlayer;
+            var properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
 
             // Remove invalid properties
             if (player.isLocal && properties.ContainsKey("sender") && properties["sender"] is PhotonPlayer)
             {
-                PhotonPlayer sender = (PhotonPlayer)properties["sender"];
+                var sender = (PhotonPlayer)properties["sender"];
                 if (!sender.isLocal)
                 {
                     properties.StripKeysWithNullValues();
-                    List<object> keys = properties.Keys.ToList();
+                    var keys = properties.Keys.ToList();
                     PropertyWhitelist.ForEach(k => keys.Remove(k));
 
                     if (keys.Count > 0)
                     {
                         Mod.Logger.Error($"#{sender.Id} applied foreign properties to you.");
-                        string propertiesModified = string.Join(", ", keys.Select(k => $"{{{k}={properties[k]}}}").ToArray());
+                        var propertiesModified = string.Join(", ", keys.Select(k => $"{{{k}={properties[k]}}}").ToArray());
                         Mod.Logger.Error($"Properties: {propertiesModified}");
 
-                        ExitGames.Client.Photon.Hashtable nullified = new ExitGames.Client.Photon.Hashtable();
+                        var nullified = new ExitGames.Client.Photon.Hashtable();
                         keys.ForEach(v => nullified.Add(v, null));
                         PhotonNetwork.player.SetCustomProperties(nullified);
 
@@ -196,20 +200,20 @@ namespace Guardian.AntiAbuse
             {
                 if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer)
                 {
-                    PhotonPlayer sender = (PhotonPlayer)propertiesThatChanged["sender"];
+                    var sender = (PhotonPlayer)propertiesThatChanged["sender"];
                     if (!sender.isLocal && !sender.isMasterClient)
                     {
                         propertiesThatChanged.StripKeysWithNullValues();
-                        List<object> keys = propertiesThatChanged.Keys.ToList();
+                        var keys = propertiesThatChanged.Keys.ToList();
                         RoomPropertyWhitelist.ForEach(k => keys.Remove(k));
 
                         if (keys.Count > 0)
                         {
                             Mod.Logger.Error($"#{sender.Id} applied foreign properties to the room.");
-                            string propertiesModified = string.Join(", ", keys.Select(k => $"{{{k}={propertiesThatChanged[k]}}}").ToArray());
+                            var propertiesModified = string.Join(", ", keys.Select(k => $"{{{k}={propertiesThatChanged[k]}}}").ToArray());
                             Mod.Logger.Error($"Properties: {propertiesModified}");
 
-                            ExitGames.Client.Photon.Hashtable nullified = new ExitGames.Client.Photon.Hashtable();
+                            var nullified = new ExitGames.Client.Photon.Hashtable();
                             keys.ForEach(v => nullified.Add(v, null));
                             PhotonNetwork.room.SetCustomProperties(nullified);
                         }

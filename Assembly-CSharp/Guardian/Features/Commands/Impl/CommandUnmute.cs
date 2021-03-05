@@ -8,7 +8,7 @@
         {
             if (args.Length > 0 && int.TryParse(args[0], out int id))
             {
-                PhotonPlayer player = PhotonPlayer.Find(id);
+                var player = PhotonPlayer.Find(id);
                 if (player != null)
                 {
                     if (Mod.Instance.Muted.Contains(id))

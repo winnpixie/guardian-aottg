@@ -8,7 +8,7 @@
         {
             if (args.Length > 0)
             {
-                string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored();
+                var name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored();
                 if (name.Uncolored().Length <= 0)
                 {
                     name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);

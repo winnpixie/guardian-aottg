@@ -13,7 +13,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             {
                 if (titan.photonView.isMine)
                 {
-                    object[] point = GameHelper.GetRandomTitanRespawnPoint();
+                    var point = GameHelper.GetRandomTitanRespawnPoint();
                     titan.transform.position = (Vector3)point[0];
                     titan.transform.rotation = (Quaternion)point[1];
                 }

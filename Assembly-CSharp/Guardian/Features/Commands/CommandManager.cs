@@ -57,10 +57,10 @@ namespace Guardian.Features.Commands
 
         public void HandleCommand(InRoomChat irc)
         {
-            string message = irc.inputLine.Trim();
-            string[] args = message.Substring(1).Split(' ');
+            var message = irc.inputLine.Trim();
+            var args = message.Substring(1).Split(' ');
 
-            Command command = base.Find(args[0]);
+            var command = base.Find(args[0]);
             if (command != null)
             {
                 if (!command.MasterClient || PhotonNetwork.isMasterClient)

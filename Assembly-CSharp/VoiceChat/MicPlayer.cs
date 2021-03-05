@@ -85,7 +85,7 @@ public class MicPlayer
         }
         if (clipQueue.Count > 0)
         {
-            AudioClip clip = clipQueue.Dequeue();
+            var clip = clipQueue.Dequeue();
             Camera.main.gameObject.GetComponent<AudioSource>().PlayOneShot(clip, micVolume * MicEF.VolumeMultiplier);
 
             // This makes it so that the queue doesn't get too long, the stiched audios also sounds a bit better at 0.98, but otherwise unnoticeable
@@ -125,8 +125,6 @@ public class MicPlayer
             muted = enabled;
             if (enabled)
             {
-                RaiseEventOptions raised = new RaiseEventOptions();
-                raised.TargetActors = new int[] { id };
                 PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[] { (byte)254 }, true, new RaiseEventOptions
                 {
                     TargetActors = new int[] { id }

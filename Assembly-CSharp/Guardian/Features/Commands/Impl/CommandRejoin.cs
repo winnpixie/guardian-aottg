@@ -8,16 +8,12 @@ namespace Guardian.Features.Commands.Impl
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            string room = PhotonNetwork.room.name;
+            var room = PhotonNetwork.room.name;
 
-            string[] addr = PhotonNetwork.networkingPeer.MasterServerAddress.Split(':');
-            string host = addr[0];
-            int port = Networking.NetworkHelper.Connection.Port;
-
-            if (addr.Length > 1)
-            {
-                int.TryParse(addr[1], out port);
-            }
+            var addr = PhotonNetwork.networkingPeer.MasterServerAddress.Split(':');
+            var host = addr[0];
+            var port = Networking.NetworkHelper.Connection.Port;
+            if (addr.Length > 1 && int.TryParse(args[1], out port)) { }
 
             PhotonNetwork.Disconnect();
             PhotonNetwork.ConnectToMaster(host, port, Networking.NetworkHelper.App.Id, UIMainReferences.Version);

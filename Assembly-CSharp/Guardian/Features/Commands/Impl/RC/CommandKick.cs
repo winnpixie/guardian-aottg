@@ -12,7 +12,7 @@
                 {
                     if (!(FengGameManagerMKII.OnPrivateServer || PhotonNetwork.isMasterClient))
                     {
-                        string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored();
+                        var name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored();
                         if (name == string.Empty)
                         {
                             name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
@@ -21,10 +21,10 @@
                     }
                     else
                     {
-                        PhotonPlayer player = PhotonPlayer.Find(id);
+                        var player = PhotonPlayer.Find(id);
                         if (player != null)
                         {
-                            string reason = args.Length > 1 ? string.Join(" ", args.CopyOfRange(1, args.Length)) : "Kicked.";
+                            var reason = args.Length > 1 ? string.Join(" ", args.CopyOfRange(1, args.Length)) : "Kicked.";
                             if (FengGameManagerMKII.OnPrivateServer)
                             {
                                 FengGameManagerMKII.Instance.KickPlayer(player, false, reason);
