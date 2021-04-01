@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Assembly-CSharp": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\Summer\\Desktop\\Dev\\guardian-aot\\Guardian\\Guardian.exe"
+    }
+  }
+}

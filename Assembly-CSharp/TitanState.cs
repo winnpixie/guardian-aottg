@@ -1,0 +1,19 @@
+public enum TitanState
+{
+    Idle,
+    Attack,
+    Turn,
+    Chase,
+    Laughing,
+    Hit,
+    Wander,
+    Grabbing,
+    Eating,
+    EyeHit,
+    ToCheckPoint,
+    ToPVPPoint,
+    RandomRun,
+    Down,
+    Sitting,
+    Recovering
+}
