@@ -1025,7 +1025,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    private void showSkillCD()
+    private void ShowSkillCountDown()
     {
         if ((bool)skillCD)
         {
@@ -1054,7 +1054,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public void getSupply()
+    public void GetSupply()
     {
         if ((base.animation.IsPlaying(standAnimation) || base.animation.IsPlaying("run") || base.animation.IsPlaying("run_sasha")) && (currentBladeSta != totalBladeSta || currentBladeNum != totalBladeNum || currentGas != totalGas || leftBulletLeft != bulletMAX || rightBulletLeft != bulletMAX))
         {
@@ -1068,7 +1068,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         currentGas = totalGas;
     }
 
-    public void useBlade(int amount = 0)
+    public void UseBlade(int amount = 0)
     {
         if (amount == 0)
         {
@@ -1092,11 +1092,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 checkBoxRight.GetComponent<TriggerColliderWeapon>().active_me = false;
             }
             currentBladeSta = 0f;
-            throwBlades();
+            ThrowBlades();
         }
     }
 
-    private void throwBlades()
+    private void ThrowBlades()
     {
         Transform transform = setup.part_blade_l.transform;
         Transform transform2 = setup.part_blade_r.transform;
@@ -1127,7 +1127,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    private void launchLeftRope(RaycastHit hit, bool single, int mode = 0)
+    private void LaunchLeftHook(RaycastHit hit, bool single, int mode = 0)
     {
         if (currentGas != 0f)
         {
@@ -1159,7 +1159,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    private void launchRightRope(RaycastHit hit, bool single, int mode = 0)
+    private void LaunchRightHook(RaycastHit hit, bool single, int mode = 0)
     {
         if (currentGas != 0f)
         {
@@ -1335,7 +1335,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void hookToHuman(GameObject target, Vector3 hookPosition)
     {
-        releaseIfIHookSb();
+        ReleaseHookedTarget();
         hookTarget = target;
         hookSomeOne = true;
         if ((bool)target.GetComponent<HERO>())
@@ -1408,7 +1408,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         badGuy = null;
     }
 
-    private void releaseIfIHookSb()
+    private void ReleaseHookedTarget()
     {
         if (hookSomeOne && hookTarget != null)
         {
@@ -1517,18 +1517,18 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             if ((bool)bulletRight)
             {
                 bulletRight.GetComponent<Bullet>().Disable();
-                releaseIfIHookSb();
+                ReleaseHookedTarget();
             }
             if ((bool)bulletLeft)
             {
                 bulletLeft.GetComponent<Bullet>().Disable();
-                releaseIfIHookSb();
+                ReleaseHookedTarget();
             }
         }
         sparks.enableEmission = false;
     }
 
-    private void leftArmAimTo(Vector3 target)
+    private void AimLeftArmTo(Vector3 target)
     {
         float x = target.x;
         Vector3 position = upperarmL.transform.position;
@@ -1545,7 +1545,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         upperarmL.rotation = Quaternion.Euler(0f, 90f + Mathf.Atan2(num, num2) * 57.29578f, (0f - Mathf.Atan2(y2, x2)) * 57.29578f);
     }
 
-    private void rightArmAimTo(Vector3 target)
+    private void ArmRightArmTo(Vector3 target)
     {
         float x = target.x;
         Vector3 position = upperarmR.transform.position;
@@ -2131,7 +2131,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 if (bulletLeft != null)
                 {
                     bulletLeft.GetComponent<Bullet>().Disable();
-                    releaseIfIHookSb();
+                    ReleaseHookedTarget();
                     bulletLeft = null;
                     flag2 = false;
                 }
@@ -2174,7 +2174,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 if (bulletRight != null)
                 {
                     bulletRight.GetComponent<Bullet>().Disable();
-                    releaseIfIHookSb();
+                    ReleaseHookedTarget();
                     bulletRight = null;
                     flag3 = false;
                 }
@@ -2537,8 +2537,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d2 = currentSpeed + 0.1f;
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             Vector3 current2 = (bulletRight.transform.position + bulletLeft.transform.position) * 0.5f - baseTransform.position;
-            float num10 = 0f;
-            num10 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
+            float num10 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
             num10 = Mathf.Clamp(num10, -0.8f, 0.8f);
             float num11 = 1f + num10;
             Vector3 a2 = Vector3.RotateTowards(current2, baseRigidBody.velocity, 1.53938f * num11, 1.53938f * num11);
@@ -2550,8 +2549,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d3 = currentSpeed + 0.1f;
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             Vector3 current3 = bulletLeft.transform.position - baseTransform.position;
-            float num12 = 0f;
-            num12 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
+            float num12 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
             num12 = Mathf.Clamp(num12, -0.8f, 0.8f);
             float num13 = 1f + num12;
             Vector3 a3 = Vector3.RotateTowards(current3, baseRigidBody.velocity, 1.53938f * num13, 1.53938f * num13);
@@ -2563,8 +2561,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d4 = currentSpeed + 0.1f;
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             Vector3 current4 = bulletRight.transform.position - baseTransform.position;
-            float num14 = 0f;
-            num14 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
+            float num14 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
             num14 = Mathf.Clamp(num14, -0.8f, 0.8f);
             float num15 = 1f + num14;
             Vector3 a4 = Vector3.RotateTowards(current4, baseRigidBody.velocity, 1.53938f * num15, 1.53938f * num15);
@@ -2590,29 +2587,29 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 if (bulletRight != null)
                 {
                     bulletRight.GetComponent<Bullet>().Disable();
-                    releaseIfIHookSb();
+                    ReleaseHookedTarget();
                 }
                 if (bulletLeft != null)
                 {
                     bulletLeft.GetComponent<Bullet>().Disable();
-                    releaseIfIHookSb();
+                    ReleaseHookedTarget();
                 }
             }
             baseRigidBody.AddForce(Vector3.up * 2f, ForceMode.Impulse);
         }
-        bool flag6 = false;
+        bool hookedToSomething = false;
         if (bulletLeft != null || bulletRight != null)
         {
             if (bulletLeft != null && bulletLeft.transform.position.y > base.gameObject.transform.position.y && isLaunchLeft && bulletLeft.GetComponent<Bullet>().isHooked())
             {
-                flag6 = true;
+                hookedToSomething = true;
             }
             if (bulletRight != null && bulletRight.transform.position.y > base.gameObject.transform.position.y && isLaunchRight && bulletRight.GetComponent<Bullet>().isHooked())
             {
-                flag6 = true;
+                hookedToSomething = true;
             }
         }
-        if (flag6)
+        if (hookedToSomething)
         {
             baseRigidBody.AddForce(new Vector3(0f, -10f * baseRigidBody.mass, 0f));
         }
@@ -2681,7 +2678,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             cachedSprites["gasL"].color = Color.red;
             cachedSprites["gasR"].color = Color.red;
         }
-        else if (num < 0.3f)
+        else if (num < 0.25f)
+        {
+            cachedSprites["gasL"].color = Guardian.Utilities.Colors.Orange;
+            cachedSprites["gasR"].color = Guardian.Utilities.Colors.Orange;
+        }
+        else if (num < 0.5f)
         {
             cachedSprites["gasL"].color = Color.yellow;
             cachedSprites["gasR"].color = Color.yellow;
@@ -2927,7 +2929,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
         {
-            releaseIfIHookSb();
+            ReleaseHookedTarget();
         }
         GameObject mm = GameObject.Find("MultiplayerManager");
         if (mm != null)
@@ -3067,11 +3069,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 MoveHead();
                 if (!isLeftHandHooked && leftArmAim && num2 < 40f && num2 > -90f)
                 {
-                    leftArmAimTo(gunTarget);
+                    AimLeftArmTo(gunTarget);
                 }
                 if (!isRightHandHooked && rightArmAim && num2 > -40f && num2 < 90f)
                 {
-                    rightArmAimTo(gunTarget);
+                    ArmRightArmTo(gunTarget);
                 }
             }
             else if (!grounded)
@@ -3081,11 +3083,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             if (isLeftHandHooked && bulletLeft != null)
             {
-                leftArmAimTo(bulletLeft.transform.position);
+                AimLeftArmTo(bulletLeft.transform.position);
             }
             if (isRightHandHooked && bulletRight != null)
             {
-                rightArmAimTo(bulletRight.transform.position);
+                ArmRightArmTo(bulletRight.transform.position);
             }
         }
         setHookedPplDirection();
@@ -3165,7 +3167,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 {
                     return;
                 }
-                showSkillCD();
+                ShowSkillCountDown();
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer || (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer && !IN_GAME_MAIN_CAMERA.IsPausing))
                 {
                     TickSkillCooldown();
@@ -3367,10 +3369,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                             if (bulletRight != null)
                                             {
                                                 bulletRight.GetComponent<Bullet>().Disable();
-                                                releaseIfIHookSb();
+                                                ReleaseHookedTarget();
                                             }
                                             dashDirection = hitInfo.point - baseTransform.position;
-                                            launchRightRope(hitInfo, single: true, 1);
+                                            LaunchRightHook(hitInfo, single: true, 1);
                                             rope.Play();
                                         }
                                         facingDirection = Mathf.Atan2(dashDirection.x, dashDirection.z) * 57.29578f;
@@ -3389,16 +3391,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                             if (bulletRight != null)
                                             {
                                                 bulletRight.GetComponent<Bullet>().Disable();
-                                                releaseIfIHookSb();
+                                                ReleaseHookedTarget();
                                             }
                                             if (bulletLeft != null)
                                             {
                                                 bulletLeft.GetComponent<Bullet>().Disable();
-                                                releaseIfIHookSb();
+                                                ReleaseHookedTarget();
                                             }
                                             dashDirection = hitInfo2.point - baseTransform.position;
-                                            launchLeftRope(hitInfo2, single: true);
-                                            launchRightRope(hitInfo2, single: true);
+                                            LaunchLeftHook(hitInfo2, single: true);
+                                            LaunchRightHook(hitInfo2, single: true);
                                             rope.Play();
                                         }
                                         facingDirection = Mathf.Atan2(dashDirection.x, dashDirection.z) * 57.29578f;
@@ -3990,7 +3992,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 throwedBlades = true;
                                 if (setup.part_blade_l.activeSelf)
                                 {
-                                    throwBlades();
+                                    ThrowBlades();
                                 }
                             }
                             if (base.animation[reloadAnimation].normalizedTime >= 0.56f && currentBladeNum > 0)
@@ -4007,7 +4009,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 throwedBlades = true;
                                 if (setup.part_blade_l.activeSelf)
                                 {
-                                    throwBlades();
+                                    ThrowBlades();
                                 }
                             }
                             if (baseAnimation[reloadAnimation].normalizedTime >= 0.37f && currentBladeNum > 0)
@@ -4106,7 +4108,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     LayerMask mask8 = 1 << LayerMask.NameToLayer("EnemyBox");
                     if (Physics.Raycast(ray4, out RaycastHit hitInfo4, 10000f, ((LayerMask)((int)mask8 | (int)mask7)).value))
                     {
-                        launchLeftRope(hitInfo4, single: true);
+                        LaunchLeftHook(hitInfo4, single: true);
                         rope.Play();
                     }
                 }
@@ -4128,7 +4130,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     LayerMask mask10 = 1 << LayerMask.NameToLayer("EnemyBox");
                     if (Physics.Raycast(ray5, out RaycastHit hitInfo5, 10000f, ((LayerMask)((int)mask10 | (int)mask9)).value))
                     {
-                        launchRightRope(hitInfo5, single: true);
+                        LaunchRightHook(hitInfo5, single: true);
                         rope.Play();
                     }
                 }
@@ -4148,8 +4150,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     LayerMask mask12 = 1 << LayerMask.NameToLayer("EnemyBox");
                     if (Physics.Raycast(ray6, out RaycastHit hitInfo6, 1000000f, ((LayerMask)((int)mask12 | (int)mask11)).value))
                     {
-                        launchLeftRope(hitInfo6, single: false);
-                        launchRightRope(hitInfo6, single: false);
+                        LaunchLeftHook(hitInfo6, single: false);
+                        LaunchRightHook(hitInfo6, single: false);
                         rope.Play();
                     }
                 }
@@ -4184,7 +4186,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             if (!IN_GAME_MAIN_CAMERA.IsPausing)
             {
-                showSkillCD();
+                ShowSkillCountDown();
                 UpdateFlareCooldown();
                 UpdateResourceUI();
                 UpdateCrossHair();
@@ -4194,7 +4196,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             UpdateCrossHair();
             TickSkillCooldown();
-            showSkillCD();
+            ShowSkillCountDown();
         }
     }
 

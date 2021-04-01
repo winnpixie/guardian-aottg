@@ -23,7 +23,7 @@ public class supplyCheck : MonoBehaviour
                 {
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || hero.photonView.isMine)
                     {
-                        hero.getSupply();
+                        hero.GetSupply();
                     }
                 }
             }

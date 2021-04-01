@@ -44,7 +44,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.GetComponent<HERO>().slashHit.Play();
                 GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) ? ((GameObject)Object.Instantiate(Resources.Load("hitMeat"))) : PhotonNetwork.Instantiate("hitMeat", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
                 gameObject.transform.position = base.transform.position;
-                base.transform.root.GetComponent<HERO>().useBlade();
+                base.transform.root.GetComponent<HERO>().UseBlade();
             }
         }
 
@@ -144,7 +144,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     }
                     else if ((bool)hitbox.transform.root.GetComponent<FEMALE_TITAN>())
                     {
-                        base.transform.root.GetComponent<HERO>().useBlade(int.MaxValue);
+                        base.transform.root.GetComponent<HERO>().UseBlade(int.MaxValue);
 
                         if (!hitbox.transform.root.GetComponent<FEMALE_TITAN>().hasDie)
                         {
@@ -153,7 +153,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     }
                     else if ((bool)hitbox.transform.root.GetComponent<COLOSSAL_TITAN>())
                     {
-                        base.transform.root.GetComponent<HERO>().useBlade(int.MaxValue);
+                        base.transform.root.GetComponent<HERO>().UseBlade(int.MaxValue);
 
                         if (!hitbox.transform.root.GetComponent<COLOSSAL_TITAN>().hasDie)
                         {

@@ -66,6 +66,7 @@ public class FlareMovement : MonoBehaviour
                 Object.Destroy(hint);
             }
         }
+
         if (timer < 4f)
         {
             base.rigidbody.AddForce((base.transform.forward + base.transform.up * 5f) * Time.deltaTime * 5f, ForceMode.VelocityChange);
