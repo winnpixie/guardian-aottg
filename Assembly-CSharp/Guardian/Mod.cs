@@ -16,7 +16,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "04222021";
+        public static string Build = "04222021-1";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static GamemodeManager Gamemodes = new GamemodeManager();

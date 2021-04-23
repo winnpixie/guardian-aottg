@@ -413,12 +413,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public void PlayAnimation(string aniName)
     {
         currentAnimation = aniName;
-
-        // TODO: Mod, animation-spam testing
-        if (base.animation.IsPlaying(aniName))
-        {
-            return;
-        }
         base.animation.Play(aniName);
         if (PhotonNetwork.connected && base.photonView.isMine)
         {
@@ -440,12 +434,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public void CrossFade(string aniName, float time)
     {
         currentAnimation = aniName;
-
-        // TODO: Mod, animation-spam testing
-        if (base.animation.IsPlaying(aniName))
-        {
-            return;
-        }
         base.animation.CrossFade(aniName, time);
         if (PhotonNetwork.connected && base.photonView.isMine)
         {

@@ -111,11 +111,6 @@ public class TITAN : Photon.MonoBehaviour
 
     private void PlayAnimation(string aniName)
     {
-        // TODO: Mod, animation-spam testing
-        if (base.animation.IsPlaying(aniName))
-        {
-            return;
-        }
         base.animation.Play(aniName);
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
@@ -135,11 +130,6 @@ public class TITAN : Photon.MonoBehaviour
 
     public void CrossFade(string aniName, float time)
     {
-        // TODO: Mod, animation-spam testing
-        if (base.animation.IsPlaying(aniName))
-        {
-            return;
-        }
         base.animation.CrossFade(aniName, time);
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {

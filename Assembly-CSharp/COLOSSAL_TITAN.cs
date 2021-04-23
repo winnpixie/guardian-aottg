@@ -111,11 +111,6 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
 
     private void PlayAnimation(string aniName)
     {
-        // TODO: Mod, animation-spam testing
-        if (base.animation.IsPlaying(aniName))
-        {
-            return;
-        }
         base.animation.Play(aniName);
         if (!FengGameManagerMKII.LAN && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
@@ -135,11 +130,6 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
 
     private void CrossFade(string aniName, float time)
     {
-        // TODO: Mod, animation-spam testing
-        if (base.animation.IsPlaying(aniName))
-        {
-            return;
-        }
         base.animation.CrossFade(aniName, time);
         if (!FengGameManagerMKII.LAN && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
