@@ -7,7 +7,6 @@ namespace Guardian.Features.Commands.Impl
     {
         // TODO: Maybe I'll use this again, not sure.
         private Regex SpecialChars = new Regex("[~!@#$%^&*()_+`\\-=\\[\\]{}\\|;:'\",<.>\\/?]", RegexOptions.IgnoreCase);
-        private Translator translator = new Translator();
 
         public CommandTranslate() : base("translate", new string[0], "<langfrom> <langto> <message>", false) { }
 

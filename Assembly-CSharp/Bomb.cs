@@ -77,10 +77,10 @@ public class Bomb : Photon.MonoBehaviour
                 }
             }
         }
-        StartCoroutine(WaitAndFade(1.5f));
+        StartCoroutine(CoWaitAndFade(1.5f));
     }
 
-    private IEnumerator WaitAndFade(float time)
+    private IEnumerator CoWaitAndFade(float time)
     {
         yield return new WaitForSeconds(time);
         PhotonNetwork.Destroy(myExplosion);

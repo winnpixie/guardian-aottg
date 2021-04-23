@@ -7,6 +7,8 @@ public class PhotonPlayer
     private string nameField = string.Empty;
     public readonly bool isLocal;
     public int Id = -1;
+    public bool IsInactive;
+    public string UserId;
 
     public string name
     {

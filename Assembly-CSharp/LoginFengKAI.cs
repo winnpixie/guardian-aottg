@@ -38,7 +38,7 @@ public class LoginFengKAI : MonoBehaviour
         {
             NGUITools.SetActive(panelLogin, state: false);
             NGUITools.SetActive(panelStatus, state: true);
-            StartCoroutine(GetInfo());
+            StartCoroutine(CoGetInfo());
         }
         else
         {
@@ -48,10 +48,10 @@ public class LoginFengKAI : MonoBehaviour
 
     public void Login(string name, string password)
     {
-        StartCoroutine(LoginE(name, password));
+        StartCoroutine(CoLogin(name, password));
     }
 
-    private IEnumerator LoginE(string name, string password)
+    private IEnumerator CoLogin(string name, string password)
     {
         WWWForm form = new WWWForm();
         form.AddField("userid", name);
@@ -76,11 +76,11 @@ public class LoginFengKAI : MonoBehaviour
             NGUITools.SetActive(panelStatus, state: true);
             Name = name;
             Password = password;
-            StartCoroutine(GetInfo());
+            StartCoroutine(CoGetInfo());
         }
     }
 
-    private IEnumerator GetInfo()
+    private IEnumerator CoGetInfo()
     {
         WWWForm form = new WWWForm();
         form.AddField("userid", Name);
@@ -114,10 +114,10 @@ public class LoginFengKAI : MonoBehaviour
 
     public void Register(string name, string password, string password2, string email)
     {
-        StartCoroutine(RegisterE(name, password, password2, email));
+        StartCoroutine(CoRegister(name, password, password2, email));
     }
 
-    private IEnumerator RegisterE(string name, string password, string password2, string email)
+    private IEnumerator CoRegister(string name, string password, string password2, string email)
     {
         WWWForm form = new WWWForm();
         form.AddField("userid", name);
@@ -157,11 +157,11 @@ public class LoginFengKAI : MonoBehaviour
         }
         else
         {
-            StartCoroutine(ChangePasswordE(oldpassword, password, password2));
+            StartCoroutine(CoChangePassword(oldpassword, password, password2));
         }
     }
 
-    private IEnumerator ChangePasswordE(string oldpassword, string password, string password2)
+    private IEnumerator CoChangePassword(string oldpassword, string password, string password2)
     {
         WWWForm form = new WWWForm();
         form.AddField("userid", Name);
@@ -196,11 +196,11 @@ public class LoginFengKAI : MonoBehaviour
         }
         else
         {
-            StartCoroutine(ChangeGuildE(name));
+            StartCoroutine(CoChangeGuild(name));
         }
     }
 
-    private IEnumerator ChangeGuildE(string name)
+    private IEnumerator CoChangeGuild(string name)
     {
         WWWForm form = new WWWForm();
         form.AddField("name", Name);
@@ -218,17 +218,17 @@ public class LoginFengKAI : MonoBehaviour
             {
                 NGUITools.SetActive(panelChangeGUILDNAME, state: false);
                 NGUITools.SetActive(panelStatus, state: true);
-                StartCoroutine(GetInfo());
+                StartCoroutine(CoGetInfo());
             }
         }
     }
 
     public void ResetPassword(string email)
     {
-        StartCoroutine(ForgetPassword(email));
+        StartCoroutine(CoResetPassword(email));
     }
 
-    private IEnumerator ForgetPassword(string email)
+    private IEnumerator CoResetPassword(string email)
     {
         WWWForm form = new WWWForm();
         form.AddField("email", email);

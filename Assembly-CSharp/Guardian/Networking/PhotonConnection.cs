@@ -4,6 +4,9 @@ namespace Guardian.Networking
 {
     class PhotonConnection
     {
+        public static PhotonConnection TCP = new PhotonConnection("TCP", 4530, ConnectionProtocol.Tcp);
+        public static PhotonConnection UDP = new PhotonConnection("UDP", 5055, ConnectionProtocol.Udp);
+
         public string Name;
         public int Port;
         public ConnectionProtocol Protocol;
@@ -13,21 +16,6 @@ namespace Guardian.Networking
             this.Name = name;
             this.Port = port;
             this.Protocol = protocol;
-        }
-
-        public class TCP : PhotonConnection
-        {
-            public TCP() : base("TCP", 4530, ConnectionProtocol.Tcp) { }
-        }
-
-        public class UDP : PhotonConnection
-        {
-            public UDP() : base("UDP", 5055, ConnectionProtocol.Udp) { }
-        }
-
-        public class RHttp : PhotonConnection
-        {
-            public RHttp() : base("RHttp", 6063, ConnectionProtocol.RHttp) { }
         }
     }
 }

@@ -23,7 +23,7 @@ public class CannonBall : Photon.MonoBehaviour
             GetComponent<SphereCollider>().enabled = false;
             if (base.photonView.isMine)
             {
-                StartCoroutine(WaitAndDestroy(10f));
+                StartCoroutine(CoWaitAndDestroy(10f));
                 myTitanTriggers = new List<TitanTrigger>();
             }
         }
@@ -132,7 +132,7 @@ public class CannonBall : Photon.MonoBehaviour
         }
     }
 
-    public IEnumerator WaitAndDestroy(float time)
+    public IEnumerator CoWaitAndDestroy(float time)
     {
         yield return new WaitForSeconds(time);
         destroyMe();

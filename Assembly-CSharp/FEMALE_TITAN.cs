@@ -72,8 +72,13 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         base.rigidbody.useGravity = false;
     }
 
-    private void playAnimation(string aniName)
+    private void PlayAnimation(string aniName)
     {
+        // TODO: Mod, animation-spam testing
+        if (base.animation.IsPlaying(aniName))
+        {
+            return;
+        }
         base.animation.Play(aniName);
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
@@ -81,7 +86,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         }
     }
 
-    private void playAnimationAt(string aniName, float normalizedTime)
+    private void PlayAnimationAt(string aniName, float normalizedTime)
     {
         base.animation.Play(aniName);
         base.animation[aniName].normalizedTime = normalizedTime;
@@ -91,8 +96,13 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         }
     }
 
-    private void crossFade(string aniName, float time)
+    private void CrossFade(string aniName, float time)
     {
+        // TODO: Mod, animation-spam testing
+        if (base.animation.IsPlaying(aniName))
+        {
+            return;
+        }
         base.animation.CrossFade(aniName, time);
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
@@ -524,7 +534,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             dieTime += Time.deltaTime;
             if (base.animation["die"].normalizedTime >= 1f)
             {
-                playAnimation("die_cry");
+                PlayAnimation("die_cry");
                 if (FengGameManagerMKII.Level.Mode != GameMode.PVP_CAPTURE)
                 {
                     for (int i = 0; i < 15; i++)
@@ -869,23 +879,23 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
                 Vector3 eulerAngles5 = base.gameObject.transform.rotation.eulerAngles;
                 transform2.rotation = Quaternion.Euler(x6, y5, eulerAngles5.z);
                 idle();
-                playAnimation("idle");
+                PlayAnimation("idle");
             }
         }
         else if (state == "anklehurt")
         {
             if (base.animation["legHurt"].normalizedTime >= 1f)
             {
-                crossFade("legHurt_loop", 0.2f);
+                CrossFade("legHurt_loop", 0.2f);
             }
             if (base.animation["legHurt_loop"].normalizedTime >= 3f)
             {
-                crossFade("legHurt_getup", 0.2f);
+                CrossFade("legHurt_getup", 0.2f);
             }
             if (base.animation["legHurt_getup"].normalizedTime >= 1f)
             {
                 idle();
-                playAnimation("idle");
+                PlayAnimation("idle");
             }
         }
     }
@@ -976,12 +986,12 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         if (attackAnimation == type)
         {
             attackAnimation = type;
-            playAnimationAt("attack_" + type, 0f);
+            PlayAnimationAt("attack_" + type, 0f);
         }
         else
         {
             attackAnimation = type;
-            playAnimationAt("attack_" + type, 0f);
+            PlayAnimationAt("attack_" + type, 0f);
         }
         startJump = false;
         attackChkOnce = false;
@@ -1140,11 +1150,11 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         if (base.animation.IsPlaying("attack_grab_" + type))
         {
             base.animation["attack_grab_" + type].normalizedTime = 0f;
-            playAnimation("attack_grab_" + type);
+            PlayAnimation("attack_grab_" + type);
         }
         else
         {
-            crossFade("attack_grab_" + type, 0.1f);
+            CrossFade("attack_grab_" + type, 0.1f);
         }
         isGrabHandLeft = true;
         grabbedTarget = null;
@@ -1302,7 +1312,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     private void chase()
     {
         state = "chase";
-        crossFade("run", 0.5f);
+        CrossFade("run", 0.5f);
     }
 
     private void idle(float sbtime = 0f)
@@ -1310,7 +1320,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         this.sbtime = sbtime;
         this.sbtime = Mathf.Max(0.5f, this.sbtime);
         state = "idle";
-        crossFade("idle", 0.2f);
+        CrossFade("idle", 0.2f);
     }
 
     private void turn(float d)
@@ -1323,7 +1333,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         {
             turnAnimation = "turnaround2";
         }
-        playAnimation(turnAnimation);
+        PlayAnimation(turnAnimation);
         base.animation[turnAnimation].time = 0f;
         d = Mathf.Clamp(d, -120f, 120f);
         turnDeg = d;
@@ -1335,7 +1345,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     private void turn180()
     {
         turnAnimation = "turn180";
-        playAnimation(turnAnimation);
+        PlayAnimation(turnAnimation);
         base.animation[turnAnimation].time = 0f;
         state = "turn180";
         needFreshCorePosition = true;
@@ -1435,7 +1445,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     private void getDown()
     {
         state = "anklehurt";
-        playAnimation("legHurt");
+        PlayAnimation("legHurt");
         AnkleRHP = AnkleRHPMAX;
         AnkleLHP = AnkleLHPMAX;
         needFreshCorePosition = true;
@@ -1526,7 +1536,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         if (!hasDie)
         {
             hasDie = true;
-            crossFade("die", 0.05f);
+            CrossFade("die", 0.05f);
         }
     }
 
@@ -1614,11 +1624,11 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     {
         if ((int)FengGameManagerMKII.Settings[1] == 1 && (url.EndsWith(".jpg") || url.EndsWith(".png") || url.EndsWith(".jpeg")))
         {
-            StartCoroutine(loadskinE(url));
+            StartCoroutine(CoLoadSkin(url));
         }
     }
 
-    public IEnumerator loadskinE(string url)
+    public IEnumerator CoLoadSkin(string url)
     {
         while (!hasspawn)
         {

@@ -16,7 +16,7 @@ namespace Guardian
     class Mod : MonoBehaviour
     {
         public static Mod Instance;
-        public static string Build = "04012021-AF";
+        public static string Build = "04222021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
         public static GamemodeManager Gamemodes = new GamemodeManager();
@@ -24,7 +24,7 @@ namespace Guardian
         public static PropertyManager Properties = new PropertyManager();
         public static UI.UIManager UI = new UI.UIManager();
         public static List<string> HostWhitelist = new List<string>();
-        public static Regex BlacklistedTags = new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
+        public static Regex BlacklistedTags = new Regex("<(\\/?)(size|material|quad)(.*)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
 
         private static bool Initialized = false;
@@ -43,7 +43,7 @@ namespace Guardian
             if (!Initialized)
             {
                 // Check for an update before doing anything
-                StartCoroutine(CheckForUpdate());
+                StartCoroutine(CoCheckForUpdate());
 
                 // Host whitelist (for skins)
                 if (!File.Exists(HostWhitelistPath))
@@ -100,7 +100,7 @@ namespace Guardian
             });
         }
 
-        private IEnumerator CheckForUpdate()
+        private IEnumerator CoCheckForUpdate()
         {
             using (WWW www = new WWW("http://lewd.cf/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()))
             {
@@ -253,6 +253,7 @@ namespace Guardian
         {
             // Begin testing with Photon Friends API
             PhotonNetwork.playerName = SystemInfo.deviceUniqueIdentifier;
+            PhotonNetwork.AuthValues = new AuthenticationValues(SystemInfo.deviceUniqueIdentifier);
 
             DiscordHelper.SetPresence(new Discord.Activity
             {
@@ -275,7 +276,6 @@ namespace Guardian
             string[] roomInfo = PhotonNetwork.room.name.Split('`');
             if (roomInfo.Length > 6)
             {
-
                 DiscordHelper.SetPresence(new Discord.Activity
                 {
                     Details = $"Playing in {(roomInfo[5].Length == 0 ? string.Empty : "[PWD]")} {roomInfo[0].Uncolored()}",

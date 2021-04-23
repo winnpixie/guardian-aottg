@@ -9,7 +9,6 @@ namespace Guardian.Features.Properties
         private string DataPath = Mod.RootDir + "\\GameSettings.txt";
 
         // Master Client
-        public Property<bool> LaughingTitans = new Property<bool>("MC_TitansLaughOnDeath", new string[0], false);
         public Property<bool> EndlessTitans = new Property<bool>("MC_EndlessTitans", new string[0], false);
         public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], false);
         public Property<bool> OGPunkHair = new Property<bool>("MC_OGPunkHair", new string[0], true);
@@ -18,6 +17,7 @@ namespace Guardian.Features.Properties
         public Property<bool> AlternateIdle = new Property<bool>("Player_AHSSIdle", new string[0], false);
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
         public Property<bool> HideHookArrows = new Property<bool>("Player_HideHookArrows", new string[0], false);
+        public Property<bool> HoldForBladeTrails = new Property<bool>("Player_HoldForBladeTrails", new string[0], true);
         public Property<float> OpacityOfOwnName = new Property<float>("Player_OpacityOfOwnName", new string[0], 1.0f);
         public Property<float> OpacityOfOtherNames = new Property<float>("Player_OpacityOfOtherNames", new string[0], 1.0f);
         public Property<string> SuicideMessage = new Property<string>("Player_SuicideMessage", new string[0], "[FFFFFF]Suicide[-]");
@@ -41,6 +41,7 @@ namespace Guardian.Features.Properties
         public Property<bool> LogBackground = new Property<bool>("Visual_ShowLogBackground", new string[0], true);
 
         // Misc
+        public Property<string> CustomAppId = new Property<string>("Misc_AppId", new string[0], string.Empty);
         public Property<bool> UseRichPresence = new Property<bool>("Misc_DiscordPresence", new string[0], true);
 
         // Logging
@@ -52,7 +53,6 @@ namespace Guardian.Features.Properties
         public override void Load()
         {
             // Gameplay
-            base.Add(LaughingTitans);
             base.Add(EndlessTitans);
             base.Add(InfiniteRoom);
             base.Add(OGPunkHair);
@@ -61,7 +61,42 @@ namespace Guardian.Features.Properties
             base.Add(AlternateIdle);
             base.Add(AlternateBurst);
             base.Add(HideHookArrows);
+            base.Add(HoldForBladeTrails);
+
+            OpacityOfOwnName.OnValueChanged = () =>
+            {
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
+                {
+                    foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
+                    {
+                        if (hero.myNetWorkName != null)
+                        {
+                            if (hero.photonView.isMine)
+                            {
+                                hero.myNetWorkName.GetComponent<UILabel>().alpha = Mod.Properties.OpacityOfOwnName.Value;
+                            }
+                        }
+                    }
+                }
+            };
             base.Add(OpacityOfOwnName);
+
+            OpacityOfOtherNames.OnValueChanged = () =>
+            {
+                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
+                {
+                    foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
+                    {
+                        if (hero.myNetWorkName != null)
+                        {
+                            if (!hero.photonView.isMine)
+                            {
+                                hero.myNetWorkName.GetComponent<UILabel>().alpha = Mod.Properties.OpacityOfOtherNames.Value;
+                            }
+                        }
+                    }
+                }
+            };
             base.Add(OpacityOfOtherNames);
             base.Add(SuicideMessage);
             base.Add(LavaDeathMessage);
@@ -79,6 +114,11 @@ namespace Guardian.Features.Properties
             base.Add(ItalicText);
 
             // Misc
+            CustomAppId.OnValueChanged = () =>
+            {
+                Networking.PhotonApplication.Custom.Id = CustomAppId.Value;
+            };
+            base.Add(CustomAppId);
             base.Add(UseRichPresence);
 
             // Visual

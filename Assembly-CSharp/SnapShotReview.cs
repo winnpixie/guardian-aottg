@@ -14,6 +14,7 @@ public class SnapShotReview : MonoBehaviour
     private void Start()
     {
         QualitySettings.SetQualityLevel(5, applyExpensiveChanges: true);
+
         page = labelPage.GetComponent<UILabel>();
         if (SnapShotSaves.GetLength() > 0)
         {
@@ -26,7 +27,7 @@ public class SnapShotReview : MonoBehaviour
 
     private void SetTextureDimensions()
     {
-        if (SnapShotSaves.GetLength() != 0)
+        if (SnapShotSaves.GetLength() > 0)
         {
             float num = 1.6f;
             float num2 = (float)texture.GetComponent<UITexture>().mainTexture.width / (float)texture.GetComponent<UITexture>().mainTexture.height;

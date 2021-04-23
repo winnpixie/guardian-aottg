@@ -7,7 +7,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 {
     class CommandGuestBeGone : Command
     {
-        private Regex GuestExpression = new Regex("GUEST[-]?[0-9]+", RegexOptions.IgnoreCase);
+        private Regex GuestExpression = new Regex("GUEST([-]?)[0-9]+", RegexOptions.IgnoreCase);
 
         public CommandGuestBeGone() : base("guestbegone", new string[] { "gbg" }, string.Empty, true) { }
 

@@ -60,7 +60,7 @@ public class CannonPropRegion : Photon.MonoBehaviour
             if (component != null && component.photonView.owner == info.sender && !FengGameManagerMKII.Instance.allowedToCannon.ContainsKey(info.sender.Id))
             {
                 disabled = true;
-                StartCoroutine(WaitAndEnable());
+                StartCoroutine(CoWaitAndEnable());
                 FengGameManagerMKII.Instance.allowedToCannon.Add(info.sender.Id, new CannonValues(base.photonView.viewID, settings));
                 component.photonView.RPC("SpawnCannonRPC", info.sender, settings);
             }
@@ -143,7 +143,7 @@ public class CannonPropRegion : Photon.MonoBehaviour
         }
     }
 
-    public IEnumerator WaitAndEnable()
+    public IEnumerator CoWaitAndEnable()
     {
         yield return new WaitForSeconds(5f);
         if (!destroyed)

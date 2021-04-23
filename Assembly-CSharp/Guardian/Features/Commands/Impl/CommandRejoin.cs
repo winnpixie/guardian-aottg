@@ -9,7 +9,6 @@ namespace Guardian.Features.Commands.Impl
         public override void Execute(InRoomChat irc, string[] args)
         {
             string room = PhotonNetwork.room.name;
-
             string[] addr = PhotonNetwork.networkingPeer.MasterServerAddress.Split(':');
             string host = addr[0];
             int port = Networking.NetworkHelper.Connection.Port;
@@ -21,9 +20,8 @@ namespace Guardian.Features.Commands.Impl
             new Thread(() =>
             {
                 while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby) { }
-                PhotonNetwork.JoinRoom(room);
+                PhotonNetwork.JoinRoom(room, true);
             }).Start();
-
         }
     }
 }

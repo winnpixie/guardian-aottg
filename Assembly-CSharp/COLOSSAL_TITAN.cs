@@ -109,8 +109,13 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         base.rigidbody.isKinematic = true;
     }
 
-    private void playAnimation(string aniName)
+    private void PlayAnimation(string aniName)
     {
+        // TODO: Mod, animation-spam testing
+        if (base.animation.IsPlaying(aniName))
+        {
+            return;
+        }
         base.animation.Play(aniName);
         if (!FengGameManagerMKII.LAN && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
@@ -118,7 +123,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         }
     }
 
-    private void playAnimationAt(string aniName, float normalizedTime)
+    private void PlayAnimationAt(string aniName, float normalizedTime)
     {
         base.animation.Play(aniName);
         base.animation[aniName].normalizedTime = normalizedTime;
@@ -128,8 +133,13 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         }
     }
 
-    private void crossFade(string aniName, float time)
+    private void CrossFade(string aniName, float time)
     {
+        // TODO: Mod, animation-spam testing
+        if (base.animation.IsPlaying(aniName))
+        {
+            return;
+        }
         base.animation.CrossFade(aniName, time);
         if (!FengGameManagerMKII.LAN && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
@@ -205,7 +215,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     private void idle()
     {
         state = "idle";
-        crossFade("idle", 0.2f);
+        CrossFade("idle", 0.2f);
     }
 
     private void callTitanHAHA()
@@ -253,7 +263,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         checkHitCapsuleStart = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R");
         checkHitCapsuleEnd = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R/hand_R/hand_R_001");
         checkHitCapsuleR = 20f;
-        crossFade("attack_" + attackAnimation, 0.1f);
+        CrossFade("attack_" + attackAnimation, 0.1f);
         attackChkOnce = false;
         sweepSmokeObject.GetComponent<ParticleSystem>().enableEmission = true;
         sweepSmokeObject.GetComponent<ParticleSystem>().Play();
@@ -279,7 +289,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         actionName = "attack_kick_wall";
         attackCheckTime = 0.64f;
         attackChkOnce = false;
-        crossFade(actionName, 0.1f);
+        CrossFade(actionName, 0.1f);
     }
 
     private void Slap(string type)
@@ -297,7 +307,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         }
         attackCheckTime = 0.57f;
         attackChkOnce = false;
-        crossFade("attack_slap_" + attackAnimation, 0.1f);
+        CrossFade("attack_slap_" + attackAnimation, 0.1f);
     }
 
     private void Steam()
@@ -306,7 +316,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         state = "steam";
         actionName = "attack_steam";
         attackCheckTime = 0.45f;
-        crossFade(actionName, 0.1f);
+        CrossFade(actionName, 0.1f);
         attackChkOnce = false;
     }
 
@@ -655,7 +665,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                     }
                     FindNearestHero();
                     idle();
-                    playAnimation("idle");
+                    PlayAnimation("idle");
                 }
                 return;
             case "kick":
@@ -689,7 +699,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                 {
                     FindNearestHero();
                     idle();
-                    playAnimation("idle");
+                    PlayAnimation("idle");
                 }
                 return;
             case "slap":
@@ -715,7 +725,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                 {
                     FindNearestHero();
                     idle();
-                    playAnimation("idle");
+                    PlayAnimation("idle");
                 }
                 return;
             case "steam":
@@ -799,7 +809,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                 }
                 FindNearestHero();
                 idle();
-                playAnimation("idle");
+                PlayAnimation("idle");
                 return;
         }
         switch (attackPattern)
@@ -961,12 +971,12 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         {
             if ((int)FengGameManagerMKII.Settings[1] == 1 && (url.EndsWith(".jpg") || url.EndsWith(".png") || url.EndsWith(".jpeg")))
             {
-                StartCoroutine(LoadSkinE(url));
+                StartCoroutine(CoLoadSkin(url));
             }
         }
     }
 
-    public IEnumerator LoadSkinE(string url)
+    public IEnumerator CoLoadSkin(string url)
     {
         while (!hasspawn)
         {

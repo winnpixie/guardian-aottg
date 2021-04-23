@@ -42,7 +42,7 @@ public class LevelInfo
 
             Levels = new LevelInfo[]
             {
-                // Singkeplayer
+                // Singleplayer
                 new LevelInfo
                 {
                     Name = "[S]Tutorial",
@@ -116,7 +116,7 @@ public class LevelInfo
                     Mode = GameMode.SURVIVE_MODE,
                     RespawnMode = RespawnMode.Never,
                     HasSupply = true,
-                    NoCrawlers =true,
+                    NoCrawlers = true,
                     Punks = false
                 },
                 new LevelInfo
@@ -206,7 +206,7 @@ public class LevelInfo
                 {
                     Name = "The Forest II",
                     Map = "The Forest",
-                    Description = "Survive all 20 waves. (No respawns)",
+                    Description = "Survive all 20 waves in The Forest of Giant Trees. (No respawns)",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
                     RespawnMode = RespawnMode.Never,
@@ -216,7 +216,7 @@ public class LevelInfo
                 {
                     Name = "The Forest III",
                     Map = "The Forest",
-                    Description = "Survive all 20 waves. (Respawn on each new wave)",
+                    Description = "Survive all 20 waves in The Forest of Giant Trees. (Respawn on each new wave)",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
                     RespawnMode = RespawnMode.NewRound,
@@ -226,7 +226,7 @@ public class LevelInfo
                 {
                     Name = "The Forest IV  - LAVA",
                     Map = "The Forest",
-                    Description = "The floor is LAVA!\nSurvive all 20 waves WITHOUT touching the ground. (Respawn on each new wave, no crawlers)",
+                    Description = "The floor is LAVA!\nSurvive all 20 waves in The Forest of Giant Trees WITHOUT touching the ground. (Respawn on each new wave, no crawlers)",
                     Enemies = 3,
                     Mode = GameMode.SURVIVE_MODE,
                     RespawnMode = RespawnMode.NewRound,
@@ -358,7 +358,7 @@ public class LevelInfo
                     Map = "HouseFight",
                     Description = "PVP combat.",
                     Enemies = 0,
-                    Mode =GameMode.PVP_AHSS,
+                    Mode = GameMode.PVP_AHSS,
                     RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     PlayerTitans = true,

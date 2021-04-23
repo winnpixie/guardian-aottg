@@ -54,6 +54,10 @@ public class SnapShotSaves
 
     public static Texture2D GetNextImage()
     {
+        if (Images.Count == 0)
+        {
+            return GetCurrentImage();
+        }
         CurrentIndex = (CurrentIndex + 1) % Images.Count;
 
         return GetCurrentImage();
@@ -61,11 +65,11 @@ public class SnapShotSaves
 
     public static Texture2D GetPreviousImage()
     {
-        CurrentIndex--;
-        if (CurrentIndex < 0)
+        if (Images.Count == 0)
         {
-            CurrentIndex = Images.Count - 1;
+            return GetCurrentImage();
         }
+        CurrentIndex = (CurrentIndex + Images.Count - 1) % Images.Count;
 
         return GetCurrentImage();
     }

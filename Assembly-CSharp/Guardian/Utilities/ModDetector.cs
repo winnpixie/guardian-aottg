@@ -120,6 +120,16 @@ namespace Guardian.Utilities
                 mods.Add($"[0099FF][Guardian[FFFFFF]({string.Join(",", tags.ToArray())})[-]]");
             }
 
+            // Alice-RC
+            for(int i = 0; i < 5; i++)
+            {
+                if (player.customProperties.ContainsKey($"CO_SLOT_{i}") && player.customProperties[$"CO_SLOT_{i}"] is string)
+                {
+                    mods.Add("[FFCCFF][AliceRC]");
+                    break;
+                }
+            }
+
             // ZMOD
             if ((properties.ContainsKey("ZMOD") && properties["ZMOD"] is string)
                 || (properties.ContainsKey("idleGas") && properties["idleGas"] is bool)

@@ -1,8 +1,20 @@
-﻿namespace Guardian.Features.Properties
+﻿using System;
+
+namespace Guardian.Features.Properties
 {
     public class Property : Feature
     {
-        public object Value;
+        private object _Value;
+        public object Value
+        {
+            get { return _Value; }
+            set
+            {
+                _Value = value;
+                OnValueChanged.Invoke();
+            }
+        }
+        public Action OnValueChanged = () => { return; };
 
         public Property(string name, string[] aliases, object value) : base(name, aliases)
         {

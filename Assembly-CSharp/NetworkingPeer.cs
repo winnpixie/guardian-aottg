@@ -62,6 +62,8 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     private bool isFetchingFriends;
     private Dictionary<int, object[]> tempInstantiationData = new Dictionary<int, object[]>();
     protected internal bool loadingLevelAndPausedNetwork;
+    private string authSecretCache;
+
     protected internal string mAppVersionPun => string.Format("{0}_{1}", mAppVersion, "1.28");
 
     public AuthenticationValues CustomAuthenticationValues
@@ -230,6 +232,36 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     public override bool Connect(string serverAddress, string applicationName)
     {
         Debug.LogError("Avoid using this directly. Thanks.");
+        return false;
+    }
+
+    public bool ReconnectToMaster()
+    {
+        if (this.CustomAuthenticationValues == null)
+        {
+            Debug.LogWarning("ReconnectToMaster() with AuthValues == null is not correct!");
+            this.CustomAuthenticationValues = new AuthenticationValues();
+        }
+        this.CustomAuthenticationValues.Secret = this.authSecretCache;
+
+        return this.Connect(this.MasterServerAddress, ServerConnection.MasterServer);
+    }
+
+    public bool ReconnectAndRejoin()
+    {
+        if (this.CustomAuthenticationValues == null)
+        {
+            Debug.LogWarning("ReconnectAndRejoin() with AuthValues == null is not correct!");
+            this.CustomAuthenticationValues = new AuthenticationValues();
+        }
+        this.CustomAuthenticationValues.Secret = this.authSecretCache;
+
+        if (!string.IsNullOrEmpty(this.mGameserver))
+        {
+            this.mLastJoinType = JoinType.JoinGame;
+            return this.Connect(this.mGameserver, ServerConnection.GameServer);
+        }
+
         return false;
     }
 
@@ -518,7 +550,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         }
     }
 
-    private void HandleEventLeave(int actorID)
+    private void HandleEventLeave(int actorID, EventData eventData)
     {
         if (PhotonNetwork.logLevel >= PhotonLogLevel.Informational)
         {
@@ -529,18 +561,41 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             Debug.LogError($"Received event Leave for unknown player ID: {actorID}");
             return;
         }
-        PhotonPlayer playerWithID = GetPlayerWithID(actorID);
-        if (playerWithID == null)
+
+        PhotonPlayer player = GetPlayerWithID(actorID);
+        if (player == null)
         {
             Debug.LogError("HandleEventLeave for player ID: " + actorID + " has no PhotonPlayer!");
         }
+
+        bool _isAlreadyInactive = player.IsInactive;
+
+        if (eventData.Parameters.ContainsKey(ParameterCode.IsInactive))
+        {
+            // player becomes inactive (but might return / is not gone for good)
+            player.IsInactive = (bool)eventData.Parameters[ParameterCode.IsInactive];
+            Guardian.Mod.Logger.Info($"{player.Id} inactive: {player.IsInactive}");
+
+            if (player.IsInactive && _isAlreadyInactive)
+            {
+                Debug.LogWarning("HandleEventLeave for player ID: " + actorID + " isInactive: " + player.IsInactive + ". Stopping handling if inactive.");
+                return;
+            }
+        }
+
         CheckMasterClient(actorID);
+
+        if (player.IsInactive && !_isAlreadyInactive)
+        {
+            return;
+        }
+
         if (mCurrentGame != null && mCurrentGame.autoCleanUp)
         {
             DestroyPlayerObjects(actorID, localOnly: true);
         }
-        RemovePlayer(actorID, playerWithID);
-        SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerDisconnected, playerWithID);
+        RemovePlayer(actorID, player);
+        SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerDisconnected, player);
     }
 
     private void CheckMasterClient(int leavingPlayerId)
@@ -734,7 +789,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         return base.OpCreateRoom(roomName, roomOptions, mRoomToEnterLobby, GetLocalActorProperties(), flag);
     }
 
-    public bool OpJoinRoom(string roomName, RoomOptions roomOptions, TypedLobby typedLobby, bool createIfNotExists)
+    public bool OpJoinRoom(string roomName, RoomOptions roomOptions, TypedLobby typedLobby, bool createIfNotExists, bool rejoin = false)
     {
         bool flag = server == ServerConnection.GameServer;
         if (!flag)
@@ -748,7 +803,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             }
         }
         mLastJoinType = ((!createIfNotExists) ? JoinType.JoinGame : JoinType.JoinOrCreateOnDemand);
-        return base.OpJoinRoom(roomName, roomOptions, mRoomToEnterLobby, createIfNotExists, GetLocalActorProperties(), flag);
+        return base.OpJoinRoom(roomName, roomOptions, mRoomToEnterLobby, createIfNotExists, GetLocalActorProperties(), flag, rejoin);
     }
 
     public override bool OpJoinRandomRoom(ExitGames.Client.Photon.Hashtable expectedCustomRoomProperties, byte expectedMaxPlayers, ExitGames.Client.Photon.Hashtable playerProperties, MatchmakingMode matchingType, TypedLobby typedLobby, string sqlLobbyFilter)
@@ -759,14 +814,22 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         return base.OpJoinRandomRoom(expectedCustomRoomProperties, expectedMaxPlayers, playerProperties, matchingType, typedLobby, sqlLobbyFilter);
     }
 
-    public virtual bool OpLeave()
+    public virtual bool OpLeave(bool becomeInactive)
     {
         if (State != global::PeerState.Joined)
         {
             Debug.LogWarning("Not sending leave operation. State is not 'Joined': " + State);
             return false;
         }
-        return OpCustom(OperationCode.Leave, null, sendReliable: true, 0);
+        Dictionary<byte, object> parameters = null;
+        if (becomeInactive)
+        {
+            parameters = new Dictionary<byte, object>
+            {
+                { (byte)233, becomeInactive }
+            };
+        }
+        return OpCustom(OperationCode.Leave, parameters, sendReliable: true, 0);
     }
 
     public override bool OpRaiseEvent(byte eventCode, object customEventContent, bool sendReliable, RaiseEventOptions raiseEventOptions)
@@ -775,6 +838,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         {
             return false;
         }
+
         return base.OpRaiseEvent(eventCode, customEventContent, sendReliable, raiseEventOptions);
     }
 
@@ -819,6 +883,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 CustomAuthenticationValues = new AuthenticationValues();
             }
             CustomAuthenticationValues.Secret = (operationResponse[221] as string);
+            authSecretCache = CustomAuthenticationValues.Secret;
         }
         switch (operationResponse.OperationCode)
         {
@@ -899,6 +964,28 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     else if (mLastJoinType == JoinType.CreateGame)
                     {
                         OpCreateGame(mRoomToGetInto.name, mRoomOptionsForCreate, mRoomToEnterLobby);
+                    }
+                }
+
+                if (server == ServerConnection.NameServer || server == ServerConnection.GameServer)
+                {
+                    if (operationResponse.Parameters.ContainsKey(ParameterCode.UserId))
+                    {
+                        string incomingId = (string)operationResponse.Parameters[ParameterCode.UserId];
+                        if (!string.IsNullOrEmpty(incomingId))
+                        {
+                            if (this.CustomAuthenticationValues == null)
+                            {
+                                this.CustomAuthenticationValues = new AuthenticationValues();
+                            }
+                            this.CustomAuthenticationValues.UserId = incomingId;
+                            PhotonNetwork.player.UserId = incomingId;
+
+                            if (PhotonNetwork.logLevel >= PhotonLogLevel.Informational)
+                            {
+                                this.DebugReturn(DebugLevel.INFO, string.Format("Received your UserID from server. Updating local value to: {0}", incomingId));
+                            }
+                        }
                     }
                 }
                 break;
@@ -1150,6 +1237,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
                 if (!didAuthenticate && (!IsUsingNameServer || CloudRegion != CloudRegionCode.none))
                 {
+                    // TODO: Mod
                     didAuthenticate = OpAuthenticate(mAppId, mAppVersionPun, PlayerName, CustomAuthenticationValues, CloudRegion.ToString());
                     if (didAuthenticate)
                     {
@@ -1159,7 +1247,8 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 break;
             case StatusCode.EncryptionFailedToEstablish:
                 Debug.LogError("Encryption wasn't established: " + statusCode + ". Going to authenticate anyways.");
-                OpAuthenticate(mAppId, mAppVersionPun, PlayerName, CustomAuthenticationValues, CloudRegion.ToString());
+                AuthenticationValues authV = this.CustomAuthenticationValues ?? new AuthenticationValues() { UserId = this.PlayerName };
+                OpAuthenticate(mAppId, mAppVersionPun, PlayerName, authV, CloudRegion.ToString());
                 break;
             case StatusCode.Disconnect:
                 didAuthenticate = false;
@@ -2683,35 +2772,35 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         return OpCustom(219, dictionary, sendReliable: true);
     }
 
-    public void OnEvent(EventData photonEvent)
+    public void OnEvent(EventData eventData)
     {
         int actorNr = -1;
         PhotonPlayer sender = null;
-        if (photonEvent.Parameters.ContainsKey(254))
+        if (eventData.Parameters.ContainsKey(254))
         {
-            actorNr = (int)photonEvent[254];
+            actorNr = (int)eventData[254];
             if (mActors.ContainsKey(actorNr))
             {
                 sender = mActors[actorNr];
             }
         }
-        else if (photonEvent.Parameters.Count == 0)
+        else if (eventData.Parameters.Count == 0)
         {
             return;
         }
 
         if (sender != null && FengGameManagerMKII.IgnoreList.Contains(sender.Id)
-            && photonEvent.Code != 254
-            && (photonEvent.Code != 203 || (!sender.isMasterClient && sender.isLocal))
-            && (photonEvent.Code != 208 || !sender.isMasterClient)
-            && photonEvent.Code != 253)
+            && eventData.Code != 254
+            && (eventData.Code != 203 || (!sender.isMasterClient && sender.isLocal))
+            && (eventData.Code != 208 || !sender.isMasterClient)
+            && eventData.Code != 253)
         {
             return;
         }
         // Byte arrays never get sent, except by Elite Future/kevin's voice chat mod
-        if (photonEvent[245] is byte[] && photonEvent.Code != 173)
+        if (eventData[245] is byte[] && eventData.Code != 173)
         {
-            Guardian.Mod.Logger.Error($"Event {photonEvent.Code} ({((byte[])photonEvent[245]).Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+            Guardian.Mod.Logger.Error($"Event {eventData.Code} ({((byte[])eventData[245]).Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
             if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -2719,11 +2808,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             return;
         }
 
-        switch (photonEvent.Code)
+        switch (eventData.Code)
         {
             case PunEvent.RPC:
                 {
-                    object obj = photonEvent[245];
+                    object obj = eventData[245];
                     if (obj == null || !(obj is ExitGames.Client.Photon.Hashtable))
                     {
                         return;
@@ -2739,12 +2828,12 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             case PunEvent.SendSerialize:
             case PunEvent.SendSerializeReliable:
                 {
-                    object obj = photonEvent[245];
+                    object obj = eventData[245];
                     if (obj == null || !(obj is ExitGames.Client.Photon.Hashtable))
                     {
                         return;
                     }
-                    ExitGames.Client.Photon.Hashtable hashtable2 = (ExitGames.Client.Photon.Hashtable)photonEvent[245];
+                    ExitGames.Client.Photon.Hashtable hashtable2 = (ExitGames.Client.Photon.Hashtable)eventData[245];
                     if (!(hashtable2[(byte)0] is int))
                     {
                         return;
@@ -2774,11 +2863,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             case PunEvent.Instantiation:
                 {
-                    if (!(photonEvent[245] is ExitGames.Client.Photon.Hashtable))
+                    if (!(eventData[245] is ExitGames.Client.Photon.Hashtable))
                     {
                         break;
                     }
-                    ExitGames.Client.Photon.Hashtable hashtable4 = (ExitGames.Client.Photon.Hashtable)photonEvent[245];
+                    ExitGames.Client.Photon.Hashtable hashtable4 = (ExitGames.Client.Photon.Hashtable)eventData[245];
                     if (hashtable4[(byte)0] is string)
                     {
                         string text2 = (string)hashtable4[(byte)0];
@@ -2801,11 +2890,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 break;
             case PunEvent.Destroy:
                 {
-                    if (!(photonEvent[245] is ExitGames.Client.Photon.Hashtable))
+                    if (!(eventData[245] is ExitGames.Client.Photon.Hashtable))
                     {
                         break;
                     }
-                    ExitGames.Client.Photon.Hashtable hashtable = (ExitGames.Client.Photon.Hashtable)photonEvent[245];
+                    ExitGames.Client.Photon.Hashtable hashtable = (ExitGames.Client.Photon.Hashtable)eventData[245];
                     if (hashtable[(byte)0] is int)
                     {
                         int key = (int)hashtable[(byte)0];
@@ -2831,11 +2920,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             case PunEvent.DestroyPlayer:
                 {
-                    if (!(photonEvent[245] is ExitGames.Client.Photon.Hashtable))
+                    if (!(eventData[245] is ExitGames.Client.Photon.Hashtable))
                     {
                         break;
                     }
-                    ExitGames.Client.Photon.Hashtable hashtable = (ExitGames.Client.Photon.Hashtable)photonEvent[245];
+                    ExitGames.Client.Photon.Hashtable hashtable = (ExitGames.Client.Photon.Hashtable)eventData[245];
                     if (hashtable[(byte)0] is int)
                     {
                         int num2 = (int)hashtable[(byte)0];
@@ -2852,11 +2941,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             case PunEvent.AssignMaster:
                 {
-                    if (!(photonEvent[245] is ExitGames.Client.Photon.Hashtable))
+                    if (!(eventData[245] is ExitGames.Client.Photon.Hashtable))
                     {
                         break;
                     }
-                    ExitGames.Client.Photon.Hashtable hashtable = (ExitGames.Client.Photon.Hashtable)photonEvent[245];
+                    ExitGames.Client.Photon.Hashtable hashtable = (ExitGames.Client.Photon.Hashtable)eventData[245];
                     if (!(hashtable[(byte)1] is int))
                     {
                         break;
@@ -2888,9 +2977,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             case EventCode.AppStats:
                 {
-                    object obj2 = photonEvent[229];
-                    object obj3 = photonEvent[227];
-                    object obj4 = photonEvent[228];
+                    object obj2 = eventData[229];
+                    object obj3 = eventData[227];
+                    object obj4 = eventData[228];
                     if (obj2 is int && obj3 is int && obj4 is int)
                     {
                         mPlayersInRoomsCount = (int)obj2;
@@ -2904,9 +2993,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     return;
                 }
-                if (photonEvent.Parameters.ContainsKey(223))
+                if (eventData.Parameters.ContainsKey(223))
                 {
-                    object obj7 = photonEvent[223];
+                    object obj7 = eventData[223];
                     if (obj7 is int)
                     {
                         mQueuePosition = (int)obj7;
@@ -2928,7 +3017,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 break;
             case EventCode.GameListUpdate:
                 {
-                    object obj7 = photonEvent[222];
+                    object obj7 = eventData[222];
                     if (obj7 is ExitGames.Client.Photon.Hashtable)
                     {
                         foreach (DictionaryEntry item in (ExitGames.Client.Photon.Hashtable)obj7)
@@ -2952,7 +3041,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             case EventCode.GameList:
                 {
-                    object obj7 = photonEvent[222];
+                    object obj7 = eventData[222];
                     if (obj7 is ExitGames.Client.Photon.Hashtable)
                     {
                         mGameList = new Dictionary<string, RoomInfo>();
@@ -2969,7 +3058,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             case EventCode.PropertiesChanged:
                 {
-                    object obj5 = photonEvent[253];
+                    object obj5 = eventData[253];
                     if (!(obj5 is int))
                     {
                         break;
@@ -2979,7 +3068,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     ExitGames.Client.Photon.Hashtable hashtable3 = null;
                     if (num6 != 0)
                     {
-                        object obj6 = photonEvent[251];
+                        object obj6 = eventData[251];
                         if (obj6 is ExitGames.Client.Photon.Hashtable)
                         {
                             hashtable3 = (ExitGames.Client.Photon.Hashtable)obj6;
@@ -3030,7 +3119,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     }
                     else
                     {
-                        object obj6 = photonEvent[251];
+                        object obj6 = eventData[251];
                         if (obj6 == null || !(obj6 is ExitGames.Client.Photon.Hashtable))
                         {
                             return;
@@ -3045,11 +3134,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     break;
                 }
             case EventCode.Leave:
-                HandleEventLeave(actorNr);
+                HandleEventLeave(actorNr, eventData);
                 break;
             case EventCode.Join:
                 {
-                    object obj5 = photonEvent[249];
+                    object obj5 = eventData[249];
                     if (obj5 != null && !(obj5 is ExitGames.Client.Photon.Hashtable))
                     {
                         break;
@@ -3061,6 +3150,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         AddNewPlayer(actorNr, new PhotonPlayer(isLocal, actorNr, properties));
                         ResetPhotonViewsOnSerialize();
                     }
+                    else
+                    {
+                        sender.InternalCacheProperties(properties);
+                        sender.IsInactive = false;
+                    }
                     if (actorNr != mLocalActor.Id)
                     {
                         object[] parameters = new object[1]
@@ -3070,7 +3164,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerConnected, parameters);
                         break;
                     }
-                    object obj6 = photonEvent[252];
+                    object obj6 = eventData[252];
                     if (!(obj6 is int[]))
                     {
                         break;
@@ -3092,7 +3186,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             case EventCode.ErrorInfo:
                 {
-                    object obj = photonEvent[ParameterCode.Info];
+                    object obj = eventData[ParameterCode.Info];
                     if (obj != null && obj is string)
                     {
                         Guardian.Mod.Logger.Error((string)obj);
@@ -3105,7 +3199,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             case 173: // Voice Chat
                 if (!MicEF.Disconnected)
                 {
-                    object obj = photonEvent[0xf5];
+                    object obj = eventData[0xf5];
                     if (obj != null && obj is byte[])
                     {
                         byte[] bytes = (byte[])obj;
@@ -3189,14 +3283,14 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
                 return;
             default: // Unknown
-                object content = photonEvent[245];
-                if (photonEvent.Code < 200 && PhotonNetwork.OnEventCall != null)
+                object content = eventData[245];
+                if (eventData.Code < 200 && PhotonNetwork.OnEventCall != null)
                 {
-                    PhotonNetwork.OnEventCall(photonEvent.Code, content, actorNr);
+                    PhotonNetwork.OnEventCall(eventData.Code, content, actorNr);
                 }
                 else if (actorNr != -1) // -1 = Server
                 {
-                    Guardian.Mod.Logger.Error($"Event {photonEvent.Code} ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+                    Guardian.Mod.Logger.Error($"Event {eventData.Code} ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                     if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                     {
                         FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -3205,7 +3299,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
                 break;
         }
-        externalListener.OnEvent(photonEvent);
+        externalListener.OnEvent(eventData);
     }
 
     private void DisconnectToReconnect2()

@@ -90,7 +90,7 @@ internal class LoadbalancingPeer : PhotonPeer
         return OpCustom(OperationCode.CreateGame, dictionary, sendReliable: true);
     }
 
-    public virtual bool OpJoinRoom(string roomName, RoomOptions roomOptions, TypedLobby lobby, bool createIfNotExists, Hashtable playerProperties, bool onGameServer)
+    public virtual bool OpJoinRoom(string roomName, RoomOptions roomOptions, TypedLobby lobby, bool createIfNotExists, Hashtable playerProperties, bool onGameServer, bool rejoin = false)
     {
         Dictionary<byte, object> dictionary = new Dictionary<byte, object>();
         if (!string.IsNullOrEmpty(roomName))
@@ -106,12 +106,18 @@ internal class LoadbalancingPeer : PhotonPeer
                 dictionary[212] = (byte)lobby.Type;
             }
         }
+
+        if(rejoin)
+        {
+            dictionary[ParameterCode.JoinMode] = (byte)3; // RejoinOnly
+        }
+
         if (onGameServer)
         {
             if (playerProperties != null && playerProperties.Count > 0)
             {
-                dictionary[249] = playerProperties;
-                dictionary[250] = true;
+                dictionary[ParameterCode.PlayerProperties] = playerProperties;
+                dictionary[ParameterCode.Broadcast] = true;
             }
             if (createIfNotExists)
             {
@@ -271,25 +277,33 @@ internal class LoadbalancingPeer : PhotonPeer
         {
             dictionary[225] = userId;
         }
-        if (authValues != null && authValues.AuthType != CustomAuthenticationType.None)
+        if (authValues != null)
         {
-            if (!base.IsEncryptionAvailable)
+            if (!string.IsNullOrEmpty(authValues.UserId))
             {
-                base.Listener.DebugReturn(DebugLevel.ERROR, "OpAuthenticate() failed. When you want Custom Authentication encryption is mandatory.");
-                return false;
+                dictionary[ParameterCode.UserId] = authValues.UserId;
             }
-            dictionary[217] = (byte)authValues.AuthType;
-            if (!string.IsNullOrEmpty(authValues.Secret))
+
+            if (authValues.AuthType != CustomAuthenticationType.None)
             {
-                dictionary[221] = authValues.Secret;
-            }
-            if (!string.IsNullOrEmpty(authValues.AuthParameters))
-            {
-                dictionary[216] = authValues.AuthParameters;
-            }
-            if (authValues.AuthPostData != null)
-            {
-                dictionary[214] = authValues.AuthPostData;
+                if (!base.IsEncryptionAvailable)
+                {
+                    base.Listener.DebugReturn(DebugLevel.ERROR, "OpAuthenticate() failed. When you want Custom Authentication encryption is mandatory.");
+                    return false;
+                }
+                dictionary[217] = (byte)authValues.AuthType;
+                if (!string.IsNullOrEmpty(authValues.Secret))
+                {
+                    dictionary[221] = authValues.Secret;
+                }
+                if (!string.IsNullOrEmpty(authValues.AuthParameters))
+                {
+                    dictionary[216] = authValues.AuthParameters;
+                }
+                if (authValues.AuthPostData != null)
+                {
+                    dictionary[214] = authValues.AuthPostData;
+                }
             }
         }
         bool flag = OpCustom(OperationCode.Authenticate, dictionary, sendReliable: true, 0, base.IsEncryptionAvailable);

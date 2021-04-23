@@ -20,6 +20,7 @@ public class UIMainReferences : MonoBehaviour
     public static string Version = "01042015";
     public static string FengVersion = "01042015";
 
+    public static AssetBundle Ext;
     public static Texture2D AOT_2_LOGO;
 
     private void Start()
@@ -40,11 +41,11 @@ public class UIMainReferences : MonoBehaviour
             FengGameManagerMKII.S = "verified343,hair,character_eye,glass,character_face,character_head,character_hand,character_body,character_arm,character_leg,character_chest,character_cape,character_brand,character_3dmg,r,character_blade_l,character_3dmg_gas_r,character_blade_r,3dmg_smoke,HORSE,hair,body_001,Cube,Plane_031,mikasa_asset,character_cap_,character_gun".Split(',');
             LoginFengKAI.LoginState = LoginState.LoggedOut;
 
-            StartCoroutine(LoadCustomAssets());
+            StartCoroutine(CoLoadAssets());
         }
     }
 
-    private IEnumerator LoadCustomAssets()
+    private IEnumerator CoLoadAssets()
     {
         AssetBundleCreateRequest abcr = AssetBundle.CreateFromMemory(File.ReadAllBytes(Application.dataPath + "/RCAssets.unity3d"));
         yield return abcr;

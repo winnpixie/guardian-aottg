@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class GExtensions
 {
-    private static readonly Regex ColorPattern = new Regex("\\[[a-fA-F0-9]{6}|-\\]", RegexOptions.IgnoreCase);
+    private static readonly Regex ColorPattern = new Regex("\\[([a-fA-F0-9]{6}|-)\\]", RegexOptions.IgnoreCase);
 
     public static T[] CopyOfRange<T>(this T[] arrIn, int startIndex, int endIndex)
     {
@@ -47,7 +47,7 @@ public static class GExtensions
             {
                 if (str[i + 1] == '-' && str[i + 2] == ']') // [-], aka return to previous color in the stack
                 {
-                    string previous = "FFFFFF"; // Default to white
+                    string previous = "FFFFFFFF"; // Default to white
 
                     if (colors.Count > 0)
                     {
@@ -84,30 +84,7 @@ public static class GExtensions
 
     public static string Uncolored(this string str)
     {
-        string output = string.Empty;
-
-        for (int i = 0; i < str.Length; i++)
-        {
-            char c = str[i];
-
-            if (c == '[' && i + 2 < str.Length)
-            {
-                if (str[i + 1] == '-' && str[i + 2] == ']')
-                {
-                    i += 2;
-                    continue;
-                }
-                else if (i + 7 < str.Length && str[i + 7] == ']' && str.Substring(i + 1, 6).IsHex())
-                {
-                    i += 7;
-                    continue;
-                }
-            }
-
-            output += c;
-        }
-
-        return output;
+        return ColorPattern.Replace(str, string.Empty);
     }
 
     public static bool IsHex(this string str)

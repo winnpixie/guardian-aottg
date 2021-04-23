@@ -413,6 +413,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public void PlayAnimation(string aniName)
     {
         currentAnimation = aniName;
+
+        // TODO: Mod, animation-spam testing
+        if (base.animation.IsPlaying(aniName))
+        {
+            return;
+        }
         base.animation.Play(aniName);
         if (PhotonNetwork.connected && base.photonView.isMine)
         {
@@ -434,6 +440,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public void CrossFade(string aniName, float time)
     {
         currentAnimation = aniName;
+
+        // TODO: Mod, animation-spam testing
+        if (base.animation.IsPlaying(aniName))
+        {
+            return;
+        }
         base.animation.CrossFade(aniName, time);
         if (PhotonNetwork.connected && base.photonView.isMine)
         {
@@ -1274,15 +1286,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void continueAnimation()
     {
-        foreach (AnimationState item in base.animation)
-        {
-            if (item.speed == 1f)
-            {
-                return;
-            }
-            item.speed = 1f;
-        }
-        customAnimationSpeed();
+        resetAnimationSpeed();
         PlayAnimation(currentPlayingClipName());
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
         {
@@ -1993,7 +1997,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             inputManager = GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>();
             LoadSkin();
             hasspawn = true;
-            StartCoroutine(ReloadSky());
+            StartCoroutine(CoReloadSky());
         }
 
         // TODO: Flashlight Fix?
@@ -2021,7 +2025,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (RCSettings.BombMode == 1)
         {
             bombImmune = true;
-            StartCoroutine(StopImmunity());
+            StartCoroutine(CoStopImmunity());
         }
     }
 
@@ -3430,8 +3434,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         }
                         else if (inputManager.isInputDown[InputCode.Attack0])
                         {
-                            // Weapon trail for when you're holding blades down
-                            if ((int)FengGameManagerMKII.Settings[92] == 0)
+                            // TODO: Mod, Weapon trail for when you're holding blades down
+                            if ((int)FengGameManagerMKII.Settings[92] == 0 && Guardian.Mod.Properties.HoldForBladeTrails.Value)
                             {
                                 leftbladetrail2.Activate();
                                 rightbladetrail2.Activate();
@@ -3700,7 +3704,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             }
                             else if (baseAnimation[attackAnimation].normalizedTime >= 0.32f)
                             {
-                                pauseAnimation();
+                                // TODO: Mod, animation-spam fix?
+                                if (baseAnimation[attackAnimation].speed >= 0.1f)
+                                {
+                                    pauseAnimation();
+                                }
                             }
                         }
                         if (attackAnimation == "attack3_1" && currentBladeSta > 0f)
@@ -4905,7 +4913,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         baseTransform.rotation = myCannonBase.rotation;
     }
 
-    public IEnumerator StopImmunity()
+    public IEnumerator CoStopImmunity()
     {
         yield return new WaitForSeconds(5f);
         bombImmune = false;
@@ -4971,7 +4979,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public IEnumerator ReloadSky()
+    public IEnumerator CoReloadSky()
     {
         yield return new WaitForSeconds(0.5f);
         if (FengGameManagerMKII.SkyMaterial != null && Camera.main.GetComponent<Skybox>().material != FengGameManagerMKII.SkyMaterial)
@@ -5311,7 +5319,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         string text14 = text12 + "," + text2 + "," + text3 + "," + text4 + "," + text5 + "," + text6 + "," + text7 + "," + text8 + "," + text9 + "," + text10 + "," + text11 + "," + text + "," + text13;
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
-            StartCoroutine(LoadSkinE(-1, text14));
+            StartCoroutine(CoLoadSkin(-1, text14));
             return;
         }
         int horseId = -1;
@@ -5329,12 +5337,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             if (Guardian.AntiAbuse.HeroPatches.IsSkinLoadValid(this, info))
             {
-                StartCoroutine(LoadSkinE(horse, url));
+                StartCoroutine(CoLoadSkin(horse, url));
             }
         }
     }
 
-    public IEnumerator LoadSkinE(int horse, string url)
+    public IEnumerator CoLoadSkin(int horse, string url)
     {
         while (!hasspawn)
         {
@@ -5352,10 +5360,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             flaggas = true;
         }
-        bool flaghorse = false;
+        bool hasHorses = false;
         if (FengGameManagerMKII.Level.Horses || RCSettings.HorseMode == 1)
         {
-            flaghorse = true;
+            hasHorses = true;
         }
         bool flagtrail = false;
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
@@ -5879,7 +5887,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         finally
         {
         }
-        if (flaghorse && horse >= 0)
+        if (hasHorses && horse >= 0)
         {
             GameObject theHorse = PhotonView.Find(horse).gameObject;
             if (theHorse != null)

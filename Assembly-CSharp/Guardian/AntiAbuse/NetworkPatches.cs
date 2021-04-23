@@ -18,35 +18,35 @@ namespace Guardian.AntiAbuse
 
             if (!malformed)
             {
-                if (evData.ContainsKey((byte)0x0) && !(evData[(byte)0x0] is string))
+                if (evData.ContainsKey((byte)0) && !(evData[(byte)0] is string))
                 {
                     malformed = true;
                 }
-                if (evData.ContainsKey((byte)0x1) && !(evData[(byte)0x1] is Vector3))
+                if (evData.ContainsKey((byte)1) && !(evData[(byte)1] is Vector3))
                 {
                     malformed = true;
                 }
-                if (evData.ContainsKey((byte)0x2) && !(evData[(byte)0x2] is Quaternion))
+                if (evData.ContainsKey((byte)2) && !(evData[(byte)2] is Quaternion))
                 {
                     malformed = true;
                 }
-                if (evData.ContainsKey((byte)0x3) && !(evData[(byte)0x3] is int))
+                if (evData.ContainsKey((byte)3) && !(evData[(byte)3] is int))
                 {
                     malformed = true;
                 }
-                if (evData.ContainsKey((byte)0x4) && !(evData[(byte)0x4] is int[]))
+                if (evData.ContainsKey((byte)4) && !(evData[(byte)4] is int[]))
                 {
                     malformed = true;
                 }
-                if (evData.ContainsKey((byte)0x5) && !(evData[(byte)0x5] is object[]))
+                if (evData.ContainsKey((byte)5) && !(evData[(byte)5] is object[]))
                 {
                     malformed = true;
                 }
-                if (evData.ContainsKey((byte)0x8) && !(evData[(byte)0x8] is short))
+                if (evData.ContainsKey((byte)8) && !(evData[(byte)8] is short))
                 {
                     malformed = true;
                 }
-                malformed = malformed || !evData.ContainsKey((byte)0x0) || !evData.ContainsKey((byte)0x6) || !evData.ContainsKey((byte)0x7);
+                malformed = malformed || !evData.ContainsKey((byte)0) || !evData.ContainsKey((byte)6) || !evData.ContainsKey((byte)7);
             }
 
             if (malformed)
@@ -70,15 +70,15 @@ namespace Guardian.AntiAbuse
 
             if (!malformed)
             {
-                if (data.ContainsKey((byte)0x0) && !(data[(byte)0x0] is int))
+                if (data.ContainsKey((byte)0) && !(data[(byte)0] is int))
                 {
                     malformed = true;
                 }
-                if (data.ContainsKey((byte)0x1) && !(data[(byte)0x1] is object[]))
+                if (data.ContainsKey((byte)1) && !(data[(byte)1] is object[]))
                 {
                     malformed = true;
                 }
-                malformed = malformed || !data.ContainsKey((byte)0x0) || !data.ContainsKey((byte)0x1);
+                malformed = malformed || !data.ContainsKey((byte)0) || !data.ContainsKey((byte)1);
             }
 
             if (malformed)
@@ -102,31 +102,31 @@ namespace Guardian.AntiAbuse
 
             if (!malformed)
             {
-                if (rpcData.ContainsKey((byte)0x0) && !(rpcData[(byte)0x0] is int))
+                if (rpcData.ContainsKey((byte)0) && !(rpcData[(byte)0] is int))
                 {
                     malformed = true;
                 }
-                if (rpcData.ContainsKey((byte)0x1) && !(rpcData[(byte)0x1] is short))
+                if (rpcData.ContainsKey((byte)1) && !(rpcData[(byte)1] is short))
                 {
                     malformed = true;
                 }
-                if (rpcData.ContainsKey((byte)0x2) && !(rpcData[(byte)0x2] is int))
+                if (rpcData.ContainsKey((byte)2) && !(rpcData[(byte)2] is int))
                 {
                     malformed = true;
                 }
-                if (rpcData.ContainsKey((byte)0x3) && !(rpcData[(byte)0x3] is string))
+                if (rpcData.ContainsKey((byte)3) && !(rpcData[(byte)3] is string))
                 {
                     malformed = true;
                 }
-                if (rpcData.ContainsKey((byte)0x4) && !(rpcData[(byte)0x4] is object[]))
+                if (rpcData.ContainsKey((byte)4) && !(rpcData[(byte)4] is object[]))
                 {
                     malformed = true;
                 }
-                if (rpcData.ContainsKey((byte)0x5) && !(rpcData[(byte)0x5] is byte))
+                if (rpcData.ContainsKey((byte)5) && !(rpcData[(byte)5] is byte))
                 {
                     malformed = true;
                 }
-                malformed = malformed || !(rpcData.ContainsKey((byte)0x0) && (rpcData.ContainsKey((byte)0x5) || rpcData.ContainsKey((byte)0x3)));
+                malformed = malformed || !(rpcData.ContainsKey((byte)0) && (rpcData.ContainsKey((byte)5) || rpcData.ContainsKey((byte)3)));
             }
 
             if (malformed)

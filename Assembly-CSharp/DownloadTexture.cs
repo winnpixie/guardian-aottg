@@ -5,9 +5,7 @@ using UnityEngine;
 public class DownloadTexture : MonoBehaviour
 {
 	public string url = "http://www.tasharen.com/misc/logo.png";
-
 	private Material mMat;
-
 	private Texture2D mTex;
 
 	private IEnumerator Start()

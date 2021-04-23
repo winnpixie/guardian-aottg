@@ -12,42 +12,47 @@ public class BTN_save_snapshot : MonoBehaviour
 
     private void OnClick()
     {
-        GameObject[] array = thingsNeedToHide;
-        foreach (GameObject gameObject in array)
+        foreach (GameObject gameObject in thingsNeedToHide)
         {
             gameObject.transform.position += Vector3.up * 10000f;
         }
-        StartCoroutine(ScreenshotEncode());
+
         info.GetComponent<UILabel>().text = "Attempting to save snapshot..";
+        StartCoroutine(CoEncodeScreenshot());
     }
 
-    private IEnumerator ScreenshotEncode()
+    private IEnumerator CoEncodeScreenshot()
     {
         yield return new WaitForEndOfFrame();
-        float r = (float)Screen.height / 600f;
-        Vector3 localScale = targetTexture.transform.localScale;
-        int width = (int)(r * localScale.x);
-        Vector3 localScale2 = targetTexture.transform.localScale;
-        Texture2D texture = new Texture2D(width, (int)(r * localScale2.y), TextureFormat.RGB24, mipmap: false);
-        texture.ReadPixels(new Rect((float)Screen.width * 0.5f - (float)texture.width * 0.5f, (float)Screen.height * 0.5f - (float)texture.height * 0.5f - r * 0f, texture.width, texture.height), 0, 0);
-        texture.Apply();
-        yield return 0;
-        GameObject[] array = thingsNeedToHide;
-        foreach (GameObject go in array)
+
+        try
+        {
+            float scale = Screen.height / 600f;
+            Vector3 texScale = targetTexture.transform.localScale;
+            Texture2D texture = new Texture2D((int)(scale * texScale.x), (int)(scale * texScale.y), TextureFormat.RGB24, mipmap: false);
+            texture.ReadPixels(new Rect((Screen.width / 2f) - (texture.width / 2f), (Screen.height / 2f) - (texture.height / 2f), texture.width, texture.height), 0, 0);
+            texture.Apply();
+
+            DateTime now = DateTime.Now;
+            string img_name = "SnapShot-" + now.Day + "_" + now.Month + "_" + now.Year + "-" + now.Hour + "_" + now.Minute + "_" + now.Second + ".png";
+            byte[] imgData = texture.EncodeToPNG();
+            Guardian.Utilities.GameHelper.TryCreateFile(SaveDir, true);
+            File.WriteAllBytes($"{SaveDir}\\{img_name}", imgData);
+
+            // ExternalCall is legacy code, it used to execute JavaScript on http://fenglee.com/game/aog/
+            // Application.ExternalCall("SaveImg", img_name, texture.width, texture.height, Convert.ToBase64String(imgData));
+            UnityEngine.Object.DestroyObject(texture);
+
+            info.GetComponent<UILabel>().text = "Snapshot saved.";
+        }
+        catch
+        {
+            info.GetComponent<UILabel>().text = "Error saving Snapshot.";
+        }
+
+        foreach (GameObject go in thingsNeedToHide)
         {
             go.transform.position -= Vector3.up * 10000f;
         }
-
-        DateTime now = DateTime.Now;
-        string img_name = "aottg_ss-" + now.Month + "_" + now.Day + "_" + now.Year + "-" + now.Hour + "_" + now.Minute + "_" + now.Second + ".png";
-        byte[] imgData = texture.EncodeToPNG();
-        Guardian.Utilities.GameHelper.TryCreateFile(SaveDir, true);
-        File.WriteAllBytes($"{SaveDir}\\{img_name}", imgData);
-
-        // ExternalCall is legacy code, it used to execute JavaScript on http://fenglee.com/game/aog/
-        // Application.ExternalCall("SaveImg", img_name, texture.width, texture.height, Convert.ToBase64String(imgData));
-        UnityEngine.Object.DestroyObject(texture);
-
-        info.GetComponent<UILabel>().text = "Snapshot saved.";
     }
 }

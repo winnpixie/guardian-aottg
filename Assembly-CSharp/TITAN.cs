@@ -109,8 +109,13 @@ public class TITAN : Photon.MonoBehaviour
     public int skinColor;
     private FengGameManagerMKII fengGame;
 
-    private void playAnimation(string aniName)
+    private void PlayAnimation(string aniName)
     {
+        // TODO: Mod, animation-spam testing
+        if (base.animation.IsPlaying(aniName))
+        {
+            return;
+        }
         base.animation.Play(aniName);
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
@@ -118,7 +123,7 @@ public class TITAN : Photon.MonoBehaviour
         }
     }
 
-    private void playAnimationAt(string aniName, float normalizedTime)
+    private void PlayAnimationAt(string aniName, float normalizedTime)
     {
         base.animation.Play(aniName);
         base.animation[aniName].normalizedTime = normalizedTime;
@@ -128,8 +133,13 @@ public class TITAN : Photon.MonoBehaviour
         }
     }
 
-    public void crossFade(string aniName, float time)
+    public void CrossFade(string aniName, float time)
     {
+        // TODO: Mod, animation-spam testing
+        if (base.animation.IsPlaying(aniName))
+        {
+            return;
+        }
         base.animation.CrossFade(aniName, time);
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
@@ -441,7 +451,7 @@ public class TITAN : Photon.MonoBehaviour
         {
             this.sbtime = sbtime;
             state = TitanState.Laughing;
-            crossFade("laugh", 0.2f);
+            CrossFade("laugh", 0.2f);
         }
     }
 
@@ -721,7 +731,7 @@ public class TITAN : Photon.MonoBehaviour
         state = TitanState.ToCheckPoint;
         targetCheckPt = targetPt;
         targetR = r;
-        crossFade(runAnimation, 0.5f);
+        CrossFade(runAnimation, 0.5f);
     }
 
     public void randomRun(Vector3 targetPt, float r)
@@ -730,7 +740,7 @@ public class TITAN : Photon.MonoBehaviour
         targetCheckPt = targetPt;
         targetR = r;
         random_run_time = UnityEngine.Random.Range(1f, 2f);
-        crossFade(runAnimation, 0.5f);
+        CrossFade(runAnimation, 0.5f);
     }
 
     public void toPVPCheckPoint(Vector3 targetPt, float r)
@@ -738,7 +748,7 @@ public class TITAN : Photon.MonoBehaviour
         state = TitanState.ToPVPPoint;
         targetCheckPt = targetPt;
         targetR = r;
-        crossFade(runAnimation, 0.5f);
+        CrossFade(runAnimation, 0.5f);
     }
 
     public void hitL(Vector3 attacker, float hitPauseTime)
@@ -774,7 +784,7 @@ public class TITAN : Photon.MonoBehaviour
         state = TitanState.Hit;
         hitAnimation = animationName;
         hitPause = hitPauseTime;
-        playAnimation(hitAnimation);
+        PlayAnimation(hitAnimation);
         base.animation[hitAnimation].time = 0f;
         base.animation[hitAnimation].speed = 0f;
         Transform transform = base.transform;
@@ -856,7 +866,7 @@ public class TITAN : Photon.MonoBehaviour
         hasDie = true;
         hitAnimation = "die_blow";
         hitPause = hitPauseTime;
-        playAnimation(hitAnimation);
+        PlayAnimation(hitAnimation);
         base.animation[hitAnimation].time = 0f;
         base.animation[hitAnimation].speed = 0f;
         needFreshCorePosition = true;
@@ -944,7 +954,7 @@ public class TITAN : Photon.MonoBehaviour
         hasDie = true;
         hitAnimation = "die_headOff";
         hitPause = hitPauseTime;
-        playAnimation(hitAnimation);
+        PlayAnimation(hitAnimation);
         base.animation[hitAnimation].time = 0f;
         base.animation[hitAnimation].speed = 0f;
         fengGame.oneTitanDown(string.Empty, onPlayerLeave: false);
@@ -1037,7 +1047,7 @@ public class TITAN : Photon.MonoBehaviour
         attacked = false;
         isAlarm = true;
         attackAnimation = type;
-        crossFade("grab_" + type, 0.1f);
+        CrossFade("grab_" + type, 0.1f);
         isGrabHandLeft = true;
         grabbedTarget = null;
         switch (type)
@@ -1096,12 +1106,12 @@ public class TITAN : Photon.MonoBehaviour
         if (isGrabHandLeft)
         {
             attackAnimation = "eat_l";
-            crossFade("eat_l", 0.1f);
+            CrossFade("eat_l", 0.1f);
         }
         else
         {
             attackAnimation = "eat_r";
-            crossFade("eat_r", 0.1f);
+            CrossFade("eat_r", 0.1f);
         }
     }
 
@@ -1109,7 +1119,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         state = TitanState.Chase;
         isAlarm = true;
-        crossFade(runAnimation, 0.5f);
+        CrossFade(runAnimation, 0.5f);
     }
 
     private void idle(float sbtime = 0f)
@@ -1136,18 +1146,18 @@ public class TITAN : Photon.MonoBehaviour
         state = TitanState.Idle;
         if (abnormalType == TitanClass.Crawler)
         {
-            crossFade("crawler_idle", 0.2f);
+            CrossFade("crawler_idle", 0.2f);
         }
         else
         {
-            crossFade("idle", 0.2f);
+            CrossFade("idle", 0.2f);
         }
     }
 
     private void wander(float sbtime = 0f)
     {
         state = TitanState.Wander;
-        crossFade(runAnimation, 0.5f);
+        CrossFade(runAnimation, 0.5f);
     }
 
     private void turn(float d)
@@ -1171,7 +1181,7 @@ public class TITAN : Photon.MonoBehaviour
         {
             turnAnimation = "turnaround1";
         }
-        playAnimation(turnAnimation);
+        PlayAnimation(turnAnimation);
         base.animation[turnAnimation].time = 0f;
         d = Mathf.Clamp(d, -120f, 120f);
         turnDeg = d;
@@ -1280,10 +1290,10 @@ public class TITAN : Photon.MonoBehaviour
             {
                 case TitanState.Down:
                 case TitanState.Sitting:
-                    playAnimation("sit_hit_eye");
+                    PlayAnimation("sit_hit_eye");
                     break;
                 default:
-                    playAnimation("hit_eye");
+                    PlayAnimation("hit_eye");
                     break;
             }
             state = TitanState.EyeHit;
@@ -1323,28 +1333,28 @@ public class TITAN : Photon.MonoBehaviour
     {
         state = TitanState.Down;
         isAlarm = true;
-        playAnimation("sit_hunt_down");
+        PlayAnimation("sit_hunt_down");
         getdownTime = UnityEngine.Random.Range(3f, 5f);
     }
 
     private void sitdown()
     {
         state = TitanState.Sitting;
-        playAnimation("sit_down");
+        PlayAnimation("sit_down");
         getdownTime = UnityEngine.Random.Range(10f, 30f);
     }
 
     private void remainSitdown()
     {
         state = TitanState.Sitting;
-        playAnimation("sit_idle");
+        PlayAnimation("sit_idle");
         getdownTime = UnityEngine.Random.Range(10f, 30f);
     }
 
     private void recover()
     {
         state = TitanState.Recovering;
-        playAnimation("idle_recovery");
+        PlayAnimation("idle_recovery");
         getdownTime = UnityEngine.Random.Range(2f, 5f);
     }
 
@@ -1392,27 +1402,11 @@ public class TITAN : Photon.MonoBehaviour
 
         hasDie = true;
         fengGame.oneTitanDown(string.Empty, onPlayerLeave: false);
-        DoDeathAnimation();
+        CoAnimateDeath();
         return true;
     }
 
-    private IEnumerator DoEndless()
-    {
-        yield return new WaitForSeconds(4.9f);
-        object[] respawnPoint = Guardian.Utilities.GameHelper.GetRandomTitanRespawnPoint();
-        GameObject go = FengGameManagerMKII.Instance.SpawnTitanRaw((Vector3)respawnPoint[0], (Quaternion)respawnPoint[1]);
-        TitanClass type = this.abnormalType;
-        go.GetComponent<TITAN>().setAbnormalType2(type, type.Equals(TitanClass.Crawler));
-    }
-
-    private IEnumerator DoDeathLaugh()
-    {
-        this.crossFade("laugh", 0.05f);
-        yield return new WaitForSeconds(animation["laugh"].length - 0.5f);
-        this.crossFade("die_back", 0.05f);
-    }
-
-    private void DoDeathAnimation()
+    private void CoAnimateDeath()
     {
         // TODO: Mod
         if ((PhotonNetwork.isMasterClient && base.photonView.isMine) || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
@@ -1420,36 +1414,32 @@ public class TITAN : Photon.MonoBehaviour
             // Endless
             if (Guardian.Mod.Properties.EndlessTitans.Value && !nonAI)
             {
-                StartCoroutine(DoEndless());
-            }
-
-            // Laughing
-            if (Guardian.Mod.Properties.LaughingTitans.Value)
-            {
-                StartCoroutine(DoDeathLaugh());
-                return;
+                object[] respawnPoint = Guardian.Utilities.GameHelper.GetRandomTitanRespawnPoint();
+                GameObject go = FengGameManagerMKII.Instance.SpawnTitanRaw((Vector3)respawnPoint[0], (Quaternion)respawnPoint[1]);
+                TitanClass type = this.abnormalType;
+                go.GetComponent<TITAN>().setAbnormalType2(type, type.Equals(TitanClass.Crawler));
             }
         }
 
         if (base.animation.IsPlaying("sit_idle") || base.animation.IsPlaying("sit_hit_eye"))
         {
-            crossFade("sit_die", 0.1f);
+            CrossFade("sit_die", 0.1f);
         }
         else if (abnormalType == TitanClass.Crawler)
         {
-            crossFade("crawler_die", 0.2f);
+            CrossFade("crawler_die", 0.2f);
         }
         else if (abnormalType == TitanClass.Normal)
         {
-            crossFade("die_front", 0.05f);
+            CrossFade("die_front", 0.05f);
         }
         else if ((base.animation.IsPlaying("attack_abnormal_jump") && base.animation["attack_abnormal_jump"].normalizedTime > 0.7f) || (base.animation.IsPlaying("attack_abnormal_getup") && base.animation["attack_abnormal_getup"].normalizedTime < 0.7f) || base.animation.IsPlaying("tired"))
         {
-            crossFade("die_ground", 0.2f);
+            CrossFade("die_ground", 0.2f);
         }
         else
         {
-            crossFade("die_back", 0.05f);
+            CrossFade("die_back", 0.05f);
         }
     }
 
@@ -1518,7 +1508,7 @@ public class TITAN : Photon.MonoBehaviour
                     { PhotonPlayerProperty.Deaths, (int)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths] + 1 }
                 });
             }
-            DoDeathAnimation();
+            CoAnimateDeath();
         }
     }
 
@@ -1580,7 +1570,7 @@ public class TITAN : Photon.MonoBehaviour
             controller = base.gameObject.GetComponent<TITAN_CONTROLLER>();
             if (nonAI)
             {
-                StartCoroutine(ReloadSky());
+                StartCoroutine(CoReloadSky());
             }
         }
         if (maxHealth == 0 && RCSettings.HealthMode > 0)
@@ -1612,9 +1602,8 @@ public class TITAN : Photon.MonoBehaviour
         GameObject result = null;
         float num = float.PositiveInfinity;
         Vector3 position = baseTransform.position;
-        foreach (HERO player in FengGameManagerMKII.Instance.heroes)
+        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
         {
-            GameObject gameObject = player.gameObject;
             float num2 = Vector3.Distance(gameObject.transform.position, position);
             if (num2 < num)
             {
@@ -1633,9 +1622,8 @@ public class TITAN : Photon.MonoBehaviour
         float num2 = 0f;
         float num3 = (abnormalType != 0) ? 180f : 100f;
         float num4 = 0f;
-        foreach (HERO player in FengGameManagerMKII.Instance.heroes)
+        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
         {
-            GameObject gameObject = player.gameObject;
             float num5 = Vector3.Distance(gameObject.transform.position, position);
             if (num5 < num)
             {
@@ -1671,9 +1659,9 @@ public class TITAN : Photon.MonoBehaviour
 
     private void findNearestHero2()
     {
-        GameObject y = myHero;
+        GameObject oldHero = myHero;
         myHero = getNearestHero2();
-        if (myHero != y && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
+        if (myHero != oldHero && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
             if (myHero == null)
             {
@@ -1766,19 +1754,19 @@ public class TITAN : Photon.MonoBehaviour
                         {
                             if (!baseAnimation.IsPlaying("crawler_run"))
                             {
-                                crossFade("crawler_run", 0.1f);
+                                CrossFade("crawler_run", 0.1f);
                             }
                         }
                         else if (!baseAnimation.IsPlaying("run_walk"))
                         {
-                            crossFade("run_walk", 0.1f);
+                            CrossFade("run_walk", 0.1f);
                         }
                     }
                     else if (abnormalType == TitanClass.Crawler)
                     {
                         if (!baseAnimation.IsPlaying("crawler_run"))
                         {
-                            crossFade("crawler_run", 0.1f);
+                            CrossFade("crawler_run", 0.1f);
                         }
                         GameObject gameObject = checkIfHitCrawlerMouth(head, 2.2f);
                         if (gameObject != null)
@@ -1805,7 +1793,7 @@ public class TITAN : Photon.MonoBehaviour
                     }
                     else if (!baseAnimation.IsPlaying("run_abnormal"))
                     {
-                        crossFade("run_abnormal", 0.1f);
+                        CrossFade("run_abnormal", 0.1f);
                     }
                 }
             }
@@ -1815,12 +1803,12 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     if (!baseAnimation.IsPlaying("crawler_idle"))
                     {
-                        crossFade("crawler_idle", 0.1f);
+                        CrossFade("crawler_idle", 0.1f);
                     }
                 }
                 else if (!baseAnimation.IsPlaying("idle"))
                 {
-                    crossFade("idle", 0.1f);
+                    CrossFade("idle", 0.1f);
                 }
                 a3 = Vector3.zero;
             }
@@ -1953,12 +1941,12 @@ public class TITAN : Photon.MonoBehaviour
         if (attackAnimation == type)
         {
             attackAnimation = type;
-            playAnimationAt("attack_" + type, 0f);
+            PlayAnimationAt("attack_" + type, 0f);
         }
         else
         {
             attackAnimation = type;
-            playAnimationAt("attack_" + type, 0f);
+            PlayAnimationAt("attack_" + type, 0f);
         }
         nextAttackAnimation = null;
         fxName = null;
@@ -2311,8 +2299,9 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     whoHasTauntMe = null;
                 }
+                GameObject oldHero = myHero;
                 myHero = whoHasTauntMe;
-                if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
+                if (myHero != oldHero && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
                 {
                     base.photonView.RPC("setMyTarget", PhotonTargets.Others, myHero.GetPhotonView().viewID);
                 }
@@ -2938,7 +2927,7 @@ public class TITAN : Photon.MonoBehaviour
                             {
                                 attackAnimation = "jumper_1";
                             }
-                            playAnimation("attack_" + attackAnimation);
+                            PlayAnimation("attack_" + attackAnimation);
                         }
                         if (Mathf.Abs(baseRigidBody.velocity.y) < 0.5f || baseRigidBody.velocity.y < 0f || IsGrounded())
                         {
@@ -2950,7 +2939,7 @@ public class TITAN : Photon.MonoBehaviour
                             {
                                 attackAnimation = "jumper_1";
                             }
-                            playAnimation("attack_" + attackAnimation);
+                            PlayAnimation("attack_" + attackAnimation);
                         }
                         break;
                     case "jumper_1":
@@ -2965,7 +2954,7 @@ public class TITAN : Photon.MonoBehaviour
                             {
                                 attackAnimation = "jumper_2";
                             }
-                            crossFade("attack_" + attackAnimation, 0.1f);
+                            CrossFade("attack_" + attackAnimation, 0.1f);
                             fxPosition = baseTransform.position;
                             GameObject gameObject9 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/boom2"), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/boom2", fxPosition, fxRotation, 0);
                             gameObject9.transform.localScale = baseTransform.localScale * 1.6f;
@@ -3003,7 +2992,7 @@ public class TITAN : Photon.MonoBehaviour
                             {
                                 baseTransform.rotation = Quaternion.Euler(baseTransform.rotation.eulerAngles.x, baseTransform.rotation.eulerAngles.y + 180f, baseTransform.rotation.eulerAngles.z);
                                 idle(UnityEngine.Random.Range(0.5f, 1f));
-                                playAnimation("idle");
+                                PlayAnimation("idle");
                             }
                             else if (abnormalType == TitanClass.Aberrant || abnormalType == TitanClass.Jumper)
                             {
@@ -3011,7 +3000,7 @@ public class TITAN : Photon.MonoBehaviour
                                 if (attackCount > 3 && attackAnimation == "abnormal_getup")
                                 {
                                     attackCount = 0;
-                                    crossFade("tired", 0.5f);
+                                    CrossFade("tired", 0.5f);
                                 }
                                 else
                                 {
@@ -3247,11 +3236,11 @@ public class TITAN : Photon.MonoBehaviour
                 getdownTime -= Time.deltaTime;
                 if (baseAnimation.IsPlaying("sit_hunt_down") && baseAnimation["sit_hunt_down"].normalizedTime >= 1f)
                 {
-                    playAnimation("sit_idle");
+                    PlayAnimation("sit_idle");
                 }
                 if (getdownTime <= 0f)
                 {
-                    crossFade("sit_getup", 0.1f);
+                    CrossFade("sit_getup", 0.1f);
                 }
                 if (baseAnimation.IsPlaying("sit_getup") && baseAnimation["sit_getup"].normalizedTime >= 1f)
                 {
@@ -3281,11 +3270,11 @@ public class TITAN : Photon.MonoBehaviour
                 }
                 if (baseAnimation.IsPlaying("sit_down") && baseAnimation["sit_down"].normalizedTime >= 1f)
                 {
-                    playAnimation("sit_idle");
+                    PlayAnimation("sit_idle");
                 }
                 if ((getdownTime <= 0f || isAlarm) && baseAnimation.IsPlaying("sit_idle"))
                 {
-                    crossFade("sit_getup", 0.1f);
+                    CrossFade("sit_getup", 0.1f);
                 }
                 if (baseAnimation.IsPlaying("sit_getup") && baseAnimation["sit_getup"].normalizedTime >= 1f)
                 {
@@ -3681,7 +3670,7 @@ public class TITAN : Photon.MonoBehaviour
         base.transform.position = new Vector3(posX, posY, posZ);
     }
 
-    public IEnumerator ReloadSky()
+    public IEnumerator CoReloadSky()
     {
         yield return new WaitForSeconds(0.5f);
         if (FengGameManagerMKII.SkyMaterial != null && Camera.main.GetComponent<Skybox>().material != FengGameManagerMKII.SkyMaterial)
@@ -3843,7 +3832,7 @@ public class TITAN : Photon.MonoBehaviour
             GetComponent<TITAN_SETUP>().SetVar(skin, eye);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
-                StartCoroutine(loadskinE(text, text2));
+                StartCoroutine(CoLoadSkin(text, text2));
             }
             else
             {
@@ -3857,7 +3846,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         if ((int)FengGameManagerMKII.Settings[1] == 1)
         {
-            StartCoroutine(loadskinE(body, eye));
+            StartCoroutine(CoLoadSkin(body, eye));
         }
     }
 
@@ -3907,7 +3896,7 @@ public class TITAN : Photon.MonoBehaviour
         healthLabel.GetComponent<UILabel>().text = str + Convert.ToString(health);
     }
 
-    public IEnumerator loadskinE(string body, string eye)
+    public IEnumerator CoLoadSkin(string body, string eye)
     {
         while (!hasSpawn)
         {
@@ -4065,7 +4054,7 @@ public class TITAN : Photon.MonoBehaviour
     private void RecoverPT()
     {
         state = TitanState.Recovering;
-        playAnimation("idle_recovery");
+        PlayAnimation("idle_recovery");
         getdownTime = UnityEngine.Random.Range(1.8f, 2.5f);
     }
 }

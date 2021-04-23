@@ -6,8 +6,8 @@ namespace Guardian.Networking
 {
     class NetworkHelper
     {
-        public static PhotonApplication App = new PhotonApplication.AoTTG2();
-        public static PhotonConnection Connection = new PhotonConnection.TCP();
+        public static PhotonApplication App = PhotonApplication.AoTTG2;
+        public static PhotonConnection Connection = PhotonConnection.TCP;
 
         public static string GetMasterAddress(CloudRegionCode code)
         {
