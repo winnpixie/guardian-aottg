@@ -68,7 +68,7 @@ public class LevelTriggerHint : MonoBehaviour
     {
         if (on)
         {
-            fengGame.ShowHUDInfoCenter(content + "\n\n\n\n\n");
+            fengGame.SetTextCenter(content + "\n\n\n\n\n");
             on = false;
         }
     }

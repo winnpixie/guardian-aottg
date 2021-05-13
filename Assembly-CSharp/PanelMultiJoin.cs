@@ -72,31 +72,31 @@ public class PanelMultiJoin : MonoBehaviour
         string pwd = info[5].Length == 0 ? string.Empty : "[FF0000](Pwd)[-] ";
 
         string difficulty = info[2];
-        if (difficulty.Equals("normal", StringComparison.OrdinalIgnoreCase))
+        switch (difficulty.ToLower())
         {
-            difficulty = $"[00FF00]Normal[-]";
-        }
-        else if (difficulty.Equals("hard", StringComparison.OrdinalIgnoreCase))
-        {
-            difficulty = $"[FF0000]Hard[-]";
-        }
-        else if (difficulty.Equals("abnormal", StringComparison.OrdinalIgnoreCase))
-        {
-            difficulty = $"[000000]Abnormal[-]";
+            case "normal":
+                difficulty = $"[00FF00]Normal[-]";
+                break;
+            case "hard":
+                difficulty = $"[FFFF00]Hard[-]";
+                break;
+            case "abnormal":
+                difficulty = $"[FF0000]Abnormal[-]";
+                break;
         }
 
         string daylight = info[4];
-        if (daylight.Equals("day", StringComparison.OrdinalIgnoreCase))
+        switch (daylight.ToLower())
         {
-            daylight = $"[FFFF00]Day[-]";
-        }
-        else if (daylight.Equals("dawn", StringComparison.OrdinalIgnoreCase))
-        {
-            daylight = $"[FF6600]Dawn[-]";
-        }
-        else if (daylight.Equals("night", StringComparison.OrdinalIgnoreCase))
-        {
-            daylight = $"[000000]Night[-]";
+            case "day":
+                daylight = $"[FFFF00]Day[-]";
+                break;
+            case "dawn":
+                daylight = $"[FF6600]Dawn[-]";
+                break;
+            case "night":
+                daylight = $"[000000]Night[-]";
+                break;
         }
 
         string roomMeta = string.Empty;

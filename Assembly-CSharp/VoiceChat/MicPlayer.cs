@@ -125,7 +125,7 @@ public class MicPlayer
             muted = enabled;
             if (enabled)
             {
-                PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[] { (byte)254 }, true, new RaiseEventOptions
+                PhotonNetwork.RaiseEvent((byte)173, new byte[] { (byte)254 }, true, new RaiseEventOptions
                 {
                     TargetActors = new int[] { id }
                 });
@@ -139,7 +139,7 @@ public class MicPlayer
             else if (MicEF.MuteList.Contains(id))
             {
                 MicEF.MuteList.Remove(id);
-                PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[] { (byte)255 }, true, new RaiseEventOptions
+                PhotonNetwork.RaiseEvent((byte)173, new byte[] { (byte)255 }, true, new RaiseEventOptions
                 {
                     TargetActors = new int[] { id }
                 });

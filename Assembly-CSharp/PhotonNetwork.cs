@@ -639,67 +639,6 @@ public static class PhotonNetwork
         return networkingPeer.ConnectToRegionMaster(PhotonServerSettings.PreferredRegion);
     }
 
-    public static bool Reconnect()
-    {
-        if (string.IsNullOrEmpty(networkingPeer.MasterServerAddress))
-        {
-            Debug.LogWarning("Reconnect() failed. It seems the client wasn't connected before?! Current state: " + networkingPeer.PeerState);
-            return false;
-        }
-
-        if (networkingPeer.PeerState != PeerStateValue.Disconnected)
-        {
-            Debug.LogWarning("Reconnect() failed. Can only connect while in state 'Disconnected'. Current state: " + networkingPeer.PeerState);
-            return false;
-        }
-
-        if (offlineMode)
-        {
-            offlineMode = false; // Cleanup offline mode
-            Debug.LogWarning("Reconnect() disabled the offline mode. No longer offline.");
-        }
-
-        if (!isMessageQueueRunning)
-        {
-            isMessageQueueRunning = true;
-            Debug.LogWarning("Reconnect() enabled isMessageQueueRunning. Needs to be able to dispatch incoming messages.");
-        }
-
-        networkingPeer.IsUsingNameServer = false;
-        networkingPeer.IsInitialConnect = false;
-        return networkingPeer.ReconnectToMaster();
-    }
-
-    public static bool ReconnectAndRejoin()
-    {
-        if (networkingPeer.PeerState != PeerStateValue.Disconnected)
-        {
-            Debug.LogWarning("ReconnectAndRejoin() failed. Can only connect while in state 'Disconnected'. Current state: " + networkingPeer.PeerState);
-            return false;
-        }
-        if (offlineMode)
-        {
-            offlineMode = false; // Cleanup offline mode
-            Debug.LogWarning("ReconnectAndRejoin() disabled the offline mode. No longer offline.");
-        }
-
-        if (string.IsNullOrEmpty(networkingPeer.mGameserver))
-        {
-            Debug.LogWarning("ReconnectAndRejoin() failed. It seems the client wasn't connected to a game server before (no address).");
-            return false;
-        }
-
-        if (!isMessageQueueRunning)
-        {
-            isMessageQueueRunning = true;
-            Debug.LogWarning("ReconnectAndRejoin() enabled isMessageQueueRunning. Needs to be able to dispatch incoming messages.");
-        }
-
-        networkingPeer.IsUsingNameServer = false;
-        networkingPeer.IsInitialConnect = false;
-        return networkingPeer.ReconnectAndRejoin();
-    }
-
     public static bool ConnectToMaster(string masterServerAddress, int port, string appID, string gameVersion)
     {
         if (networkingPeer.PeerState != 0)
@@ -835,7 +774,7 @@ public static class PhotonNetwork
     }
 
     [Obsolete("Use overload with roomOptions and TypedLobby parameter.")]
-    public static bool JoinRoom(string roomName, bool createIfNotExists, bool rejoin = false)
+    public static bool JoinRoom(string roomName, bool createIfNotExists)
     {
         if (connectionStateDetailed == PeerState.Joining || connectionStateDetailed == PeerState.Joined || connectionStateDetailed == PeerState.ConnectedToGameserver)
         {
@@ -855,14 +794,14 @@ public static class PhotonNetwork
                     NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnJoinedRoom);
                     return true;
                 }
-                return networkingPeer.OpJoinRoom(roomName, null, null, createIfNotExists, rejoin);
+                return networkingPeer.OpJoinRoom(roomName, null, null, createIfNotExists);
             }
             Debug.LogError("JoinRoom aborted: You must specifiy a room name!");
         }
         return false;
     }
 
-    public static bool JoinRoom(string roomName, bool rejoin = false)
+    public static bool JoinRoom(string roomName)
     {
         if (offlineMode)
         {
@@ -885,10 +824,10 @@ public static class PhotonNetwork
             Debug.LogError("JoinRoom failed. A roomname is required. If you don't know one, how will you join?");
             return false;
         }
-        return networkingPeer.OpJoinRoom(roomName, null, null, createIfNotExists: false, rejoin: rejoin);
+        return networkingPeer.OpJoinRoom(roomName, null, null, createIfNotExists: false);
     }
 
-    public static bool JoinOrCreateRoom(string roomName, RoomOptions roomOptions, TypedLobby typedLobby, bool rejoin = false)
+    public static bool JoinOrCreateRoom(string roomName, RoomOptions roomOptions, TypedLobby typedLobby)
     {
         if (offlineMode)
         {
@@ -912,7 +851,7 @@ public static class PhotonNetwork
             Debug.LogError("JoinOrCreateRoom failed. A roomname is required. If you don't know one, how will you join?");
             return false;
         }
-        return networkingPeer.OpJoinRoom(roomName, roomOptions, typedLobby, createIfNotExists: true, rejoin: rejoin);
+        return networkingPeer.OpJoinRoom(roomName, roomOptions, typedLobby, createIfNotExists: true);
     }
 
     public static bool JoinRandomRoom()
@@ -1231,8 +1170,7 @@ public static class PhotonNetwork
         {
             kickPlayer.Id
         };
-        RaiseEventOptions raiseEventOptions2 = raiseEventOptions;
-        return networkingPeer.OpRaiseEvent(203, null, sendReliable: true, raiseEventOptions2);
+        return networkingPeer.OpRaiseEvent(203, null, sendReliable: true, raiseEventOptions);
     }
 
     public static void Destroy(PhotonView targetView)

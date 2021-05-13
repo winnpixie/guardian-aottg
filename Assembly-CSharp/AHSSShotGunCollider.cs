@@ -52,12 +52,11 @@ public class AHSSShotGunCollider : MonoBehaviour
         }
     }
 
-    private bool checkIfBehind(GameObject titan)
+    private bool CheckIfBehind(GameObject titan)
     {
         Transform transform = titan.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck/head");
         Vector3 vector = base.transform.position - transform.transform.position;
-        Debug.DrawRay(transform.transform.position, -transform.transform.forward * 10f, Color.white, 5f);
-        Debug.DrawRay(transform.transform.position, vector * 10f, Color.green, 5f);
+
         if (Vector3.Angle(-transform.transform.forward, vector) < 100f)
         {
             return true;
@@ -74,7 +73,7 @@ public class AHSSShotGunCollider : MonoBehaviour
 
         switch (other.gameObject.tag)
         {
-            case "playerHitbox":
+            case "playerHitbox": // Another player
                 {
                     if (!FengGameManagerMKII.Level.PVP)
                     {
@@ -108,18 +107,18 @@ public class AHSSShotGunCollider : MonoBehaviour
                     }
                     break;
                 }
-            case "erenHitbox":
+            case "erenHitbox": // Eren, idk where his hitbox is LOL
                 {
                     if (dmg > 0 && !other.gameObject.transform.root.gameObject.GetComponent<TITAN_EREN>().isHit)
                     {
-                        other.gameObject.transform.root.gameObject.GetComponent<TITAN_EREN>().hitByTitan();
+                        other.gameObject.transform.root.gameObject.GetComponent<TITAN_EREN>().HitByTitan();
                     }
                     break;
                 }
-            case "titanneck":
+            case "titanneck": // Normal/Female/Colossal Titan nape
                 {
                     HitBox hitbox = other.gameObject.GetComponent<HitBox>();
-                    if (hitbox == null || !checkIfBehind(hitbox.transform.root.gameObject) || currentHits.Contains(hitbox))
+                    if (hitbox == null || !CheckIfBehind(hitbox.transform.root.gameObject) || currentHits.Contains(hitbox))
                     {
                         return;
                     }
@@ -189,7 +188,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     ShowCriticalHitFX(other.gameObject.transform.position);
                     break;
                 }
-            case "titaneye":
+            case "titaneye": // Titan/Female Titan eyes
                 if (currentHits.Contains(other.gameObject))
                 {
                     return;
@@ -219,7 +218,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     {
                         if (!gameObject.GetComponent<TITAN>().hasDie)
                         {
-                            gameObject.GetComponent<TITAN>().hitEye();
+                            gameObject.GetComponent<TITAN>().HitEye();
                         }
 
                         return;
@@ -233,7 +232,7 @@ public class AHSSShotGunCollider : MonoBehaviour
 
                 ShowCriticalHitFX(other.gameObject.transform.position);
                 break;
-            case "titanankle":
+            case "titanankle": // Normal/Female Titan ankles
                 {
                     if (currentHits.Contains(other.gameObject))
                     {
@@ -250,7 +249,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                         {
                             if (!titan.hasDie)
                             {
-                                titan.hitAnkle();
+                                titan.HitAnkle();
                             }
 
                             return;

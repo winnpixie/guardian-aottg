@@ -12,6 +12,19 @@ public class PanelMultiStart : MonoBehaviour
     public GameObject label_server;
     private int lang = -1;
 
+    private void OnEnable()
+    {
+        Guardian.Mod.UI.OpenScreen(new Guardian.UI.Impl.UIMultiplayer());
+    }
+
+    private void OnDisable()
+    {
+        if (Guardian.Mod.UI.CurrentScreen is Guardian.UI.Impl.UIMultiplayer)
+        {
+            Guardian.Mod.UI.OpenScreen(null);
+        }
+    }
+
     private void Update()
     {
         if (lang != Language.type)

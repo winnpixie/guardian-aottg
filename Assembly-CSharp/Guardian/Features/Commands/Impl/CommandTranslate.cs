@@ -14,7 +14,7 @@ namespace Guardian.Features.Commands.Impl
         {
             if (args.Length > 2)
             {
-                Mod.Instance.StartCoroutine(Translator.Translate(string.Join(" ", args.CopyOfRange(2, args.Length)), args[0], args[1], result =>
+                irc.StartCoroutine(Translator.Translate(string.Join(" ", args.CopyOfRange(2, args.Length)), args[0], args[1], result =>
                 {
                     if (result.Length > 1)
                     {

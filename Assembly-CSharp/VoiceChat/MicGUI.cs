@@ -351,7 +351,7 @@ public class MicGUI : MonoBehaviour
                     {
                         if (!MicEF.Disconnected)
                         {
-                            PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[] { (byte)253 }, true, new RaiseEventOptions
+                            PhotonNetwork.RaiseEvent((byte)173, new byte[] { (byte)253 }, true, new RaiseEventOptions
                             {
                                 Receivers = ReceiverGroup.Others
                             });
@@ -359,7 +359,7 @@ public class MicGUI : MonoBehaviour
                         }
                         else
                         {
-                            PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[0], true, new RaiseEventOptions
+                            PhotonNetwork.RaiseEvent((byte)173, new byte[0], true, new RaiseEventOptions
                             {
                                 Receivers = ReceiverGroup.Others
                             });

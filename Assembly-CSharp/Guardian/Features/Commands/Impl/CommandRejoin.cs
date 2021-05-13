@@ -20,7 +20,7 @@ namespace Guardian.Features.Commands.Impl
             new Thread(() =>
             {
                 while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby) { }
-                PhotonNetwork.JoinRoom(room, true);
+                PhotonNetwork.JoinRoom(room);
             }).Start();
         }
     }

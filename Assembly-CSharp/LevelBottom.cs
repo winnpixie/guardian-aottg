@@ -7,37 +7,26 @@ public class LevelBottom : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!(other.gameObject.tag == "Player"))
+        if (other.gameObject.tag == "Player")
         {
-            return;
-        }
-        if (type == BottomType.Die)
-        {
-            if (other.gameObject.GetComponent<HERO>() == null)
+            switch (type)
             {
-                return;
-            }
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
-            {
-                if (other.gameObject.GetPhotonView().isMine)
-                {
-                    other.gameObject.GetComponent<HERO>().NetDieLocal2(base.rigidbody.velocity * 50f, isBite: false, -1, Guardian.Mod.Properties.LavaDeathMessage.Value);
-                }
-            }
-            else
-            {
-                other.gameObject.GetComponent<HERO>().Die(other.gameObject.rigidbody.velocity * 50f, isBite: false);
-            }
-        }
-        else if (type == BottomType.Teleport)
-        {
-            if (link != null)
-            {
-                other.gameObject.transform.position = link.transform.position;
-            }
-            else
-            {
-                other.gameObject.transform.position = Vector3.zero;
+                case BottomType.Die:
+                    if (other.gameObject.GetComponent<HERO>() != null)
+                    {
+                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+                        {
+                            other.gameObject.GetComponent<HERO>().Die(other.gameObject.rigidbody.velocity * 50f, false);
+                        }
+                        else if (other.gameObject.GetPhotonView().isMine)
+                        {
+                            other.gameObject.GetComponent<HERO>().NetDieLocal2(base.rigidbody.velocity * 50f, isBite: false, -1, Guardian.Mod.Properties.LavaDeathMessage.Value);
+                        }
+                    }
+                    break;
+                case BottomType.Teleport:
+                    other.gameObject.transform.position = link != null ? link.transform.position : Vector3.zero;
+                    break;
             }
         }
     }

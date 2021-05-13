@@ -395,35 +395,35 @@ public class TITAN_EREN : Photon.MonoBehaviour
                             case "attack_combo_001":
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(1.2f, 0.04f);
                                 hitPause = 0.08f;
-                                array[i].gameObject.transform.root.GetComponent<TITAN>().hitR(base.transform.position, hitPause);
+                                array[i].gameObject.transform.root.GetComponent<TITAN>().HitRight(base.transform.position, hitPause);
                                 break;
                             case "attack_combo_002":
                                 hitPause = 0.05f;
-                                array[i].gameObject.transform.root.GetComponent<TITAN>().hitL(base.transform.position, hitPause);
+                                array[i].gameObject.transform.root.GetComponent<TITAN>().HitLeft(base.transform.position, hitPause);
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(1f, 0.03f);
                                 break;
                             case "attack_combo_003":
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(3f, 0.1f);
                                 hitPause = 0.3f;
-                                array[i].gameObject.transform.root.GetComponent<TITAN>().dieHeadBlow(base.transform.position, hitPause);
+                                array[i].gameObject.transform.root.GetComponent<TITAN>().DieHeadBlow(base.transform.position, hitPause);
                                 break;
                             case "attack_kick":
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(3f, 0.1f);
                                 hitPause = 0.2f;
                                 if (array[i].gameObject.transform.root.GetComponent<TITAN>().abnormalType == TitanClass.Crawler)
                                 {
-                                    array[i].gameObject.transform.root.GetComponent<TITAN>().dieBlow(base.transform.position, hitPause);
+                                    array[i].gameObject.transform.root.GetComponent<TITAN>().DieBlow(base.transform.position, hitPause);
                                 }
                                 else
                                 {
                                     Vector3 localScale = array[i].gameObject.transform.root.transform.localScale;
                                     if (localScale.x < 2f)
                                     {
-                                        array[i].gameObject.transform.root.GetComponent<TITAN>().dieBlow(base.transform.position, hitPause);
+                                        array[i].gameObject.transform.root.GetComponent<TITAN>().DieBlow(base.transform.position, hitPause);
                                     }
                                     else
                                     {
-                                        array[i].gameObject.transform.root.GetComponent<TITAN>().hitR(base.transform.position, hitPause);
+                                        array[i].gameObject.transform.root.GetComponent<TITAN>().HitRight(base.transform.position, hitPause);
                                     }
                                 }
                                 break;
@@ -799,7 +799,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
         lifeTimeMax = (lifeTime = 30f);
     }
 
-    public void hitByTitan()
+    public void HitByTitan()
     {
         if (!isHit && !hasDied && !base.animation.IsPlaying("born"))
         {
@@ -890,7 +890,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
     {
         if (base.photonView.isMine)
         {
-            hitByTitan();
+            HitByTitan();
         }
     }
 

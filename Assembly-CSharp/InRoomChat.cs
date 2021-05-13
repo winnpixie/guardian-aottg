@@ -8,6 +8,7 @@ public class InRoomChat : Photon.MonoBehaviour
     public static Rect MessagesRect = new Rect(1f, 0f, 329f, 225f);
     public static Rect ChatBoxRect = new Rect(30f, 575f, 300f, 25f);
     public static List<Message> Messages = new List<Message>();
+    public static List<PhotonPlayer> Ignored = new List<PhotonPlayer>();
     private static readonly Regex Detagger = new Regex("<\\/?(color|size|b|i|material|quad)[^>]*>", RegexOptions.IgnoreCase);
 
     public bool IsVisible = true;
@@ -20,10 +21,6 @@ public class InRoomChat : Photon.MonoBehaviour
     void Awake()
     {
         Instance = this;
-    }
-
-    public void Start()
-    {
         UpdatePosition();
     }
 

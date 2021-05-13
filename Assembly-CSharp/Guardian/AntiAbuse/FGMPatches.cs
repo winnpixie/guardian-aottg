@@ -55,6 +55,40 @@ namespace Guardian.AntiAbuse
             return true;
         }
 
+        // FengGameManangerMKII.refreshPVPStatus
+        public static bool IsPVPStatusRefreshValid(PhotonMessageInfo info)
+        {
+            if (info == null || !info.sender.isMasterClient)
+            {
+                Mod.Logger.Error($"'FengGameManagerMKII.refreshPVPStatus' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
+                {
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        // FengGameManagerMKII.refreshPVPStatus_AHSS
+        public static bool IsAHSSStatusRefreshValid(PhotonMessageInfo info)
+        {
+            if (info == null || !info.sender.isMasterClient)
+            {
+                Mod.Logger.Error($"'FengGameManagerMKII.refreshPVPStatus_AHSS' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
+                {
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
         // FengGameManagerMKII.titanGetKill
         public static bool IsTitanKillValid(PhotonMessageInfo info)
         {

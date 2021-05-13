@@ -6,6 +6,7 @@ using Guardian.Networking;
 using Guardian.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -15,10 +16,10 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static Mod Instance;
-        public static string Build = "04222021-1";
+        public static string Build = "05132021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
+
         public static GamemodeManager Gamemodes = new GamemodeManager();
         public static CommandManager Commands = new CommandManager();
         public static PropertyManager Properties = new PropertyManager();
@@ -26,17 +27,12 @@ namespace Guardian
         public static List<string> HostWhitelist = new List<string>();
         public static Regex BlacklistedTags = new Regex("<(\\/?)(size|material|quad)(.*)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
+        public static long LaunchTime;
 
         private static bool Initialized = false;
         private static bool FirstJoin = true;
 
-        public List<int> Muted = new List<int>();
-        public bool IsMultiMap;
-
-        void Awake()
-        {
-            Instance = this;
-        }
+        public static bool IsMultiMap;
 
         void Start()
         {
@@ -88,6 +84,7 @@ namespace Guardian
 
                 Initialized = true;
 
+                LaunchTime = GameHelper.CurrentTimeMillis();
                 DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
             }
 
@@ -136,12 +133,12 @@ namespace Guardian
 
         void Update()
         {
-            DiscordHelper.RunCallbacks();
-
             if (PhotonNetwork.isMasterClient)
             {
                 Gamemodes.Current.OnUpdate();
             }
+
+            DiscordHelper.RunCallbacks();
         }
 
         void OnLevelWasLoaded(int level)
@@ -253,7 +250,6 @@ namespace Guardian
         {
             // Begin testing with Photon Friends API
             PhotonNetwork.playerName = SystemInfo.deviceUniqueIdentifier;
-            PhotonNetwork.AuthValues = new AuthenticationValues(SystemInfo.deviceUniqueIdentifier);
 
             DiscordHelper.SetPresence(new Discord.Activity
             {
@@ -265,7 +261,6 @@ namespace Guardian
         void OnJoinedRoom()
         {
             IsMultiMap = PhotonNetwork.room.name.Split('`')[1].StartsWith("Multi-Map");
-            Muted = new List<int>();
             FirstJoin = true;
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
@@ -304,23 +299,49 @@ namespace Guardian
             Logger.Error($"OnPhotonRoomJoinFailed ({codeAndMsg[0]} : {codeAndMsg[1]})");
         }
 
+        private static bool WasFullscreen = false;
+
+        // windows minimize functions
+        [DllImport("user32.dll", EntryPoint = "GetActiveWindow")]
+        private static extern int GetActiveWindow();
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(int hWnd, int nCmdShow);
+
         // Attempts to fix some dumb bugs that occur when you alt-tab
         void OnApplicationFocus(bool hasFocus)
         {
-            if (hasFocus && IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
+            if (hasFocus)
             {
-                // Minimap turning white
-                if (Minimap.Instance != null)
+                if (WasFullscreen)
                 {
-                    Minimap.WaitAndTryRecaptureInstance(0.1f);
+                    Screen.fullScreen = true;
+                    Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
+                    WasFullscreen = false;
                 }
 
-                // TPS crosshair ending up where it shouldn't
-                if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS)
+                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
                 {
-                    Screen.lockCursor = false;
-                    Screen.lockCursor = true;
+                    // Minimap turning white
+                    if (Minimap.Instance != null)
+                    {
+                        Minimap.WaitAndTryRecaptureInstance(0.1f);
+                    }
+
+                    // TPS crosshair ending up where it shouldn't
+                    if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS)
+                    {
+                        Screen.lockCursor = false;
+                        Screen.lockCursor = true;
+                    }
                 }
+            }
+            else if (!WasFullscreen)
+            {
+                WasFullscreen = Screen.fullScreen;
+                Screen.fullScreen = false;
+                Screen.SetResolution(IN_GAME_MAIN_CAMERA.WindowWidth, IN_GAME_MAIN_CAMERA.WindowWidth, false);
+
+                ShowWindow(GetActiveWindow(), 2);
             }
         }
 

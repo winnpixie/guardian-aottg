@@ -42,7 +42,7 @@ public class RockThrow : Photon.MonoBehaviour
                     TITAN titan = gameObject.GetComponent<TITAN>();
                     if (titan != null && !titan.hasDie)
                     {
-                        titan.hitAnkle();
+                        titan.HitAnkle();
                         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                         {
                             titan.photonView.RPC("hitAnkleRPC", PhotonTargets.Others, titan.photonView.ownerId);
@@ -57,7 +57,7 @@ public class RockThrow : Photon.MonoBehaviour
                     {
                         if (!eren.isHit)
                         {
-                            eren.hitByTitan();
+                            eren.HitByTitan();
                         }
                     }
                     else

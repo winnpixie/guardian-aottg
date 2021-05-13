@@ -6,7 +6,7 @@ namespace Guardian.Networking
 {
     class NetworkHelper
     {
-        public static PhotonApplication App = PhotonApplication.AoTTG2;
+        public static PhotonApplication App = PhotonApplication.Custom;
         public static PhotonConnection Connection = PhotonConnection.TCP;
 
         public static string GetMasterAddress(CloudRegionCode code)
@@ -74,14 +74,14 @@ namespace Guardian.Networking
 
         public static string GetRegionCode()
         {
-            string masterAddress = PhotonNetwork.networkingPeer.MasterServerAddress.ToUpper();
+            string masterAddress = PhotonNetwork.networkingPeer.MasterServerAddress.ToLower();
 
-            if (masterAddress.Contains("APP-"))
+            if (masterAddress.StartsWith("app-"))
             {
                 return masterAddress.Substr(masterAddress.IndexOf('-') + 1, masterAddress.IndexOf('.') - 1);
             }
 
-            return "???";
+            return "unknown";
         }
     }
 }

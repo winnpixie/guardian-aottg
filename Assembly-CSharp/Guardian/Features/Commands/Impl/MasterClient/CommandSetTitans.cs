@@ -10,34 +10,20 @@ namespace Guardian.Features.Commands.Impl.MasterClient
         {
             if (args.Length > 0)
             {
-                TitanClass? type = null;
-
-                switch (args[0].ToLower())
+                TitanClass? type = args[0].ToLower() switch
                 {
-                    case "normal":
-                        type = TitanClass.Normal;
-                        GameHelper.Broadcast("All non-player titans are now of type NORMAL!");
-                        break;
-                    case "aberrant":
-                        type = TitanClass.Aberrant;
-                        GameHelper.Broadcast("All non-player titans are now of type ABERRANT!");
-                        break;
-                    case "jumper":
-                        type = TitanClass.Jumper;
-                        GameHelper.Broadcast("All non-player titans are now of type JUMPER!");
-                        break;
-                    case "crawler":
-                        type = TitanClass.Crawler;
-                        GameHelper.Broadcast("All non-player titans are now of type CRAWLER!");
-                        break;
-                    case "punk":
-                        type = TitanClass.Punk;
-                        GameHelper.Broadcast("All non-player titans are now of type PUNK!");
-                        break;
-                }
+                    "normal" => TitanClass.Normal,
+                    "aberrant" => TitanClass.Aberrant,
+                    "jumper" => TitanClass.Jumper,
+                    "crawler" => TitanClass.Crawler,
+                    "punk" => TitanClass.Punk,
+                    _ => null
+                };
 
                 if (type != null)
                 {
+                    GameHelper.Broadcast($"All non-player titans are now of type {type.Value}!");
+
                     foreach (TITAN titan in FengGameManagerMKII.Instance.titans)
                     {
                         if (titan.photonView.isMine && type != titan.abnormalType)

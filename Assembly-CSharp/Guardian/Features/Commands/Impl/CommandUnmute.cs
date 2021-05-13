@@ -11,9 +11,9 @@
                 PhotonPlayer player = PhotonPlayer.Find(id);
                 if (player != null)
                 {
-                    if (Mod.Instance.Muted.Contains(id))
+                    if (InRoomChat.Ignored.Contains(player))
                     {
-                        Mod.Instance.Muted.Remove(id);
+                        InRoomChat.Ignored.Remove(player);
                         irc.AddLine($"No longer ignoring chat messages from #{id}.");
                     }
                 }

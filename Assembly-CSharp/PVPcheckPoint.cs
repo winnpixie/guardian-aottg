@@ -22,7 +22,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
     private float hitTestR = 15f;
     private GameObject supply;
     private float syncTimer;
-    private float syncInterval = 0.6f;
+    private float syncInterval = 0.6f; // TODO: Mod, change to 1 second sync instead?
     private float getPtsTimer;
     private float getPtsInterval = 20f;
     public GameObject[] chkPtNextArr;
@@ -132,6 +132,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             Vector3 point = hitInfo.point;
             return point.y;
         }
+
         return 0f;
     }
 
@@ -140,18 +141,25 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         float humanPercent = humanPt / humanPtMax;
         float titanPercent = titanPt / titanPtMax;
 
+        humanCyc.transform.localScale = new Vector3(humanPercent, humanPercent, 1f);
+        titanCyc.transform.localScale = new Vector3(titanPercent, titanPercent, 1f);
+
+        syncTimer += Time.deltaTime;
+
         if (!base.photonView.isMine)
         {
-            humanCyc.transform.localScale = new Vector3(humanPercent, humanPercent, 1f);
-            titanCyc.transform.localScale = new Vector3(titanPercent, titanPercent, 1f);
-            syncTimer += Time.deltaTime;
             if (syncTimer > syncInterval)
             {
                 syncTimer = 0f;
                 CheckIfBeingCaptured();
             }
+
             return;
         }
+
+        float lastHumanPt = humanPt;
+        float lastTitanPt = titanPt;
+
         switch (state)
         {
             case CheckPointState.None:
@@ -228,18 +236,21 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                 }
                 break;
         }
-        syncTimer += Time.deltaTime;
+
         if (syncTimer > syncInterval)
         {
             syncTimer = 0f;
             CheckIfBeingCaptured();
-            SyncPoints();
-        }
-        humanPercent = humanPt / humanPtMax;
-        titanPercent = titanPt / titanPtMax;
 
-        humanCyc.transform.localScale = new Vector3(humanPercent, humanPercent, 1f);
-        titanCyc.transform.localScale = new Vector3(titanPercent, titanPercent, 1f);
+            if (lastHumanPt != humanPt)
+            {
+                base.photonView.RPC("changeHumanPt", PhotonTargets.Others, humanPt);
+            }
+            if (lastTitanPt != titanPt)
+            {
+                base.photonView.RPC("changeTitanPt", PhotonTargets.Others, titanPt);
+            }
+        }
     }
 
     private void CheckIfBeingCaptured()
@@ -291,7 +302,6 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         {
             humanPt = humanPtMax;
             titanPt = 0f;
-            SyncPoints();
             state = CheckPointState.Human;
             base.photonView.RPC("changeState", PhotonTargets.AllBuffered, (int)CheckPointState.Human);
             if (FengGameManagerMKII.Level.Map != "The City I")
@@ -320,7 +330,6 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         {
             titanPt = titanPtMax;
             humanPt = 0f;
-            SyncPoints();
             if (state == CheckPointState.Human && supply != null)
             {
                 PhotonNetwork.Destroy(supply);
@@ -369,7 +378,6 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         if (titanPt <= 0f)
         {
             titanPt = 0f;
-            SyncPoints();
             if (state != CheckPointState.Human)
             {
                 base.photonView.RPC("changeState", PhotonTargets.AllBuffered, (int)CheckPointState.None);
@@ -387,18 +395,11 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         if (humanPt <= 0f)
         {
             humanPt = 0f;
-            SyncPoints();
             if (state != CheckPointState.Titan)
             {
                 base.photonView.RPC("changeState", PhotonTargets.AllBuffered, (int)CheckPointState.None);
             }
         }
-    }
-
-    private void SyncPoints()
-    {
-        base.photonView.RPC("changeTitanPt", PhotonTargets.Others, titanPt);
-        base.photonView.RPC("changeHumanPt", PhotonTargets.Others, humanPt);
     }
 
     public string GetState()

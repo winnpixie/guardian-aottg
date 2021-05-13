@@ -97,7 +97,7 @@ public class EnemyCheckCollider : Photon.MonoBehaviour
         }
         else if (other.gameObject.tag == "erenHitbox" && dmg > 0 && !other.gameObject.transform.root.gameObject.GetComponent<TITAN_EREN>().isHit)
         {
-            other.gameObject.transform.root.gameObject.GetComponent<TITAN_EREN>().hitByTitan();
+            other.gameObject.transform.root.gameObject.GetComponent<TITAN_EREN>().HitByTitan();
         }
     }
 }

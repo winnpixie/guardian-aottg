@@ -90,7 +90,7 @@ internal class LoadbalancingPeer : PhotonPeer
         return OpCustom(OperationCode.CreateGame, dictionary, sendReliable: true);
     }
 
-    public virtual bool OpJoinRoom(string roomName, RoomOptions roomOptions, TypedLobby lobby, bool createIfNotExists, Hashtable playerProperties, bool onGameServer, bool rejoin = false)
+    public virtual bool OpJoinRoom(string roomName, RoomOptions roomOptions, TypedLobby lobby, bool createIfNotExists, Hashtable playerProperties, bool onGameServer)
     {
         Dictionary<byte, object> dictionary = new Dictionary<byte, object>();
         if (!string.IsNullOrEmpty(roomName))
@@ -105,11 +105,6 @@ internal class LoadbalancingPeer : PhotonPeer
                 dictionary[213] = lobby.Name;
                 dictionary[212] = (byte)lobby.Type;
             }
-        }
-
-        if(rejoin)
-        {
-            dictionary[ParameterCode.JoinMode] = (byte)3; // RejoinOnly
         }
 
         if (onGameServer)
@@ -279,11 +274,6 @@ internal class LoadbalancingPeer : PhotonPeer
         }
         if (authValues != null)
         {
-            if (!string.IsNullOrEmpty(authValues.UserId))
-            {
-                dictionary[ParameterCode.UserId] = authValues.UserId;
-            }
-
             if (authValues.AuthType != CustomAuthenticationType.None)
             {
                 if (!base.IsEncryptionAvailable)

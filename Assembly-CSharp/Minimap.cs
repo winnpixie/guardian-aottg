@@ -328,11 +328,22 @@ public class Minimap : MonoBehaviour
     {
         if (minimapRT == null)
         {
-            bool flag = SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.RGB565);
-            minimapRT = new RenderTexture(pixelSize, pixelSize, 16, RenderTextureFormat.RGB565);
-            if (!flag)
+            if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.RGB565))
             {
                 Debug.Log(SystemInfo.graphicsDeviceName + " (" + SystemInfo.graphicsDeviceVendor + ") does not support RGB565 format, the minimap will have transparency issues on certain maps");
+
+                if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.Default))
+                {
+                    Debug.Log(SystemInfo.graphicsDeviceName + " (" + SystemInfo.graphicsDeviceVendor + ") does not support Default format, uhhh... nice?");
+                }
+                else
+                {
+                    minimapRT = new RenderTexture(pixelSize, pixelSize, 16, RenderTextureFormat.Default);
+                }
+            }
+            else
+            {
+                minimapRT = new RenderTexture(pixelSize, pixelSize, 16, RenderTextureFormat.RGB565);
             }
         }
         cam.targetTexture = minimapRT;

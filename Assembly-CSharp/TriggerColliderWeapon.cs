@@ -50,7 +50,7 @@ public class TriggerColliderWeapon : MonoBehaviour
 
         switch (other.gameObject.tag)
         {
-            case "playerHitbox":
+            case "playerHitbox": // Another player
                 {
                     if (!FengGameManagerMKII.Level.PVP)
                     {
@@ -90,7 +90,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     }
                     break;
                 }
-            case "titanneck":
+            case "titanneck": // Normal/Female/Colossal Titan nape
                 {
                     HitBox hitbox = other.gameObject.GetComponent<HitBox>();
                     if (hitbox == null || !checkIfBehind(hitbox.transform.root.gameObject) || currentHits.Contains(hitbox))
@@ -164,7 +164,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     ShowCriticalHitFX();
                     break;
                 }
-            case "titaneye":
+            case "titaneye": // Titan/Female Titan eyes
                 if (currentHits.Contains(other.gameObject))
                 {
                     return;
@@ -195,7 +195,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     {
                         if (!gameObject2.GetComponent<TITAN>().hasDie)
                         {
-                            gameObject2.GetComponent<TITAN>().hitEye();
+                            gameObject2.GetComponent<TITAN>().HitEye();
                         }
 
                         return;
@@ -209,7 +209,7 @@ public class TriggerColliderWeapon : MonoBehaviour
 
                 ShowCriticalHitFX();
                 break;
-            case "titanankle":
+            case "titanankle": // Normal/Female Titan ankles
                 {
                     if (currentHits.Contains(other.gameObject))
                     {
@@ -226,7 +226,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                         {
                             if (!titan.hasDie)
                             {
-                                titan.hitAnkle();
+                                titan.HitAnkle();
                             }
 
                             return;

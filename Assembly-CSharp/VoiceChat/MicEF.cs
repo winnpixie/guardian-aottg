@@ -133,7 +133,7 @@ public class MicEF : MonoBehaviour
                 RecompileSendList();
             }
 
-            PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[0], true, new RaiseEventOptions
+            PhotonNetwork.RaiseEvent((byte)173, new byte[0], true, new RaiseEventOptions
             {
                 TargetActors = new int[] { id }
             });
@@ -168,7 +168,7 @@ public class MicEF : MonoBehaviour
                 }
 
                 // Too lazy to actually put this onto onjoin, so ez pz send that you have mic to everyone every time you use your mic
-                PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[0], true, new RaiseEventOptions
+                PhotonNetwork.RaiseEvent((byte)173, new byte[0], true, new RaiseEventOptions
                 {
                     Receivers = ExitGames.Client.Photon.Lite.ReceiverGroup.Others
                 });
@@ -250,7 +250,7 @@ public class MicEF : MonoBehaviour
                 byte[] bytes = GzipCompress(samples);
                 if (bytes.Length < 12000)
                 {
-                    PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, bytes, false, new RaiseEventOptions
+                    PhotonNetwork.RaiseEvent((byte)173, bytes, false, new RaiseEventOptions
                     {
                         TargetActors = SendList
                     });

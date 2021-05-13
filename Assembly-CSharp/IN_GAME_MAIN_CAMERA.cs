@@ -26,6 +26,9 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public static CAMERA_TYPE CameraMode;
     public static string SingleCharacter;
 
+    public static int WindowWidth = 960;
+    public static int WindowHeight = 600;
+
     public FengCustomInputs inputManager;
     public RotationAxes axes;
     public float minimumX = -360f;
@@ -79,6 +82,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     private void Start()
     {
         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().SetCamera(this);
+
         IsPausing = false;
         SensitivityMulti = PlayerPrefs.GetFloat("MouseSensitivity");
         InvertY = PlayerPrefs.GetInt("invertMouseY");
@@ -360,6 +364,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             head = main_object.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck/head");
             distanceMulti = ((!(head == null)) ? (Vector3.Distance(head.transform.position, main_object.transform.position) * 0.2f) : 1f);
             heightMulti = ((!(head == null)) ? (Vector3.Distance(head.transform.position, main_object.transform.position) * 0.33f) : 1f);
+
             if (resetRotation)
             {
                 base.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
@@ -369,6 +374,10 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             head = main_object.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck/head");
             distanceMulti = (heightMulti = 0.64f);
+
+            // TODO: Mod, needs testing
+            // main_object.rigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
+
             if (resetRotation)
             {
                 base.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
@@ -557,7 +566,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     private Texture2D RTImage2(Camera cam)
     {
-        RenderTexture active = RenderTexture.active;
+        RenderTexture oldActiveRT = RenderTexture.active;
         RenderTexture.active = cam.targetTexture;
         cam.Render();
         Texture2D texture2D = new Texture2D(cam.targetTexture.width, cam.targetTexture.height);
@@ -568,14 +577,16 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             texture2D.SetPixel(0, 0, Color.white);
             texture2D.ReadPixels(new Rect(num, num, cam.targetTexture.width - num, cam.targetTexture.height - num), num2, num2);
             texture2D.Apply();
-            RenderTexture.active = active;
         }
         catch
         {
             texture2D = new Texture2D(1, 1);
             texture2D.SetPixel(0, 0, Color.white);
-            return texture2D;
+        } finally
+        {
+            RenderTexture.active = oldActiveRT;
         }
+
         return texture2D;
     }
 
@@ -596,6 +607,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     public void update2()
     {
+        // Colossal Titan flash
         if (flashDuration > 0f)
         {
             flashDuration -= UnityEngine.Time.deltaTime;
@@ -611,6 +623,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             Screen.lockCursor = false;
             return;
         }
+
+        // Spectator mode
         if (Gametype != GameType.Singleplayer && gameOver)
         {
             if (inputManager.isInputDown[InputCode.Attack1])
@@ -624,35 +638,38 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     SetSpectorMode(val: true);
                 }
             }
+
+            // Spectate next player
             if (inputManager.isInputDown[InputCode.Flare1])
             {
                 GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-                currentPeekPlayerIndex = (currentPeekPlayerIndex + 1) % players.Length;
                 if (players.Length > 0)
                 {
+                    currentPeekPlayerIndex = (currentPeekPlayerIndex + 1) % players.Length;
+
                     SetMainObject(players[currentPeekPlayerIndex]);
                     SetSpectorMode(val: false);
                     lockAngle = false;
-                }
-            }
-            if (inputManager.isInputDown[InputCode.Flare2])
-            {
-                currentPeekPlayerIndex--;
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-                int num2 = players.Length;
-                if (currentPeekPlayerIndex >= num2)
+                } else
                 {
                     currentPeekPlayerIndex = 0;
                 }
-                if (currentPeekPlayerIndex < 0)
+            }
+
+            // Spectate previous player
+            if (inputManager.isInputDown[InputCode.Flare2])
+            {
+                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+                if (players.Length > 0)
                 {
-                    currentPeekPlayerIndex = num2 - 1;
-                }
-                if (num2 > 0)
-                {
+                    currentPeekPlayerIndex = ((currentPeekPlayerIndex - 1) + players.Length) % players.Length;
+
                     SetMainObject(players[currentPeekPlayerIndex]);
                     SetSpectorMode(val: false);
                     lockAngle = false;
+                } else
+                {
+                    currentPeekPlayerIndex = 0;
                 }
             }
             if (spectatorMode)
@@ -660,6 +677,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 return;
             }
         }
+
+        // Pause/unpause
         if (inputManager.isInputDown[InputCode.Pause])
         {
             if (IsPausing)
@@ -685,35 +704,50 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 Screen.lockCursor = false;
             }
         }
+
+        // Update/reposition HUD elements
         if (needSetHUD)
         {
             needSetHUD = false;
+
+            Minimap.OnScreenResolutionChanged();
+
             SetHUDPosition();
             Screen.lockCursor = !Screen.lockCursor;
             Screen.lockCursor = !Screen.lockCursor;
         }
+
+        // Fullscreen toggle
         if (inputManager.isInputDown[InputCode.Fullscreen])
         {
             Screen.fullScreen = !Screen.fullScreen;
             if (Screen.fullScreen)
             {
-                Screen.SetResolution(960, 600, fullscreen: false);
+                Screen.SetResolution(WindowWidth, WindowHeight, fullscreen: false);
             }
             else
             {
+                // Preserve old size values
+                WindowWidth = Screen.width;
+                WindowHeight = Screen.height;
+
                 Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, fullscreen: true);
             }
             needSetHUD = true;
-            Minimap.OnScreenResolutionChanged();
         }
+
+        // Restart/Self-kill button
         if (inputManager.isInputDown[InputCode.Restart])
         {
             Reset();
         }
+
         if (main_object == null)
         {
             return;
         }
+
+        // Change camera mode
         if (inputManager.isInputDown[InputCode.ChangeCamera])
         {
             switch (CameraMode)
@@ -832,7 +866,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             {
                 base.transform.position = hitInfo.point;
             }
-            Debug.DrawLine(head.transform.position - normalized * distanceMulti * 3f, end, Color.red);
         }
         else if (Physics.Linecast(main_object.transform.position + Vector3.up, end, out hitInfo, mask3))
         {

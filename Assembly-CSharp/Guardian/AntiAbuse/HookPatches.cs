@@ -46,5 +46,56 @@
 
             return true;
         }
+
+        // Bullet.netLaunch
+        public static bool IsLaunchValid(PhotonMessageInfo info)
+        {
+            if (info != null)
+            {
+                Mod.Logger.Error($"'Bullet.netLaunch' from #{info.sender.Id}.");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
+                {
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        // Bullet.netUpdatePhase1
+        public static bool IsPhaseUpdateValid(PhotonMessageInfo info)
+        {
+            if (info != null)
+            {
+                Mod.Logger.Error($"'Bullet.netUpdatePhase1' from #{info.sender.Id}.");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
+                {
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        // Bullet.netUpdateLeviSpiral
+        public static bool IsLeviSpiralValid(PhotonMessageInfo info)
+        {
+            if (info != null)
+            {
+                Mod.Logger.Error($"'Bullet.netUpdateLeviSpiral' from #{info.sender.Id}.");
+                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
+                {
+                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
     }
 }

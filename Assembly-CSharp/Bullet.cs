@@ -45,11 +45,11 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     }
     // END Anarchy
 
-    public void launch(Vector3 v, Vector3 v2, string launcher_ref, bool isLeft, GameObject hero, bool leviMode = false)
+    public void Launch(Vector3 v, Vector3 v2, string launcherRef, bool isLeft, GameObject master, bool leviMode = false)
     {
         if (phase != 2)
         {
-            master = hero;
+            this.master = master;
             velocity = v;
             float f = Mathf.Acos(Vector3.Dot(v.normalized, v2.normalized)) * 57.29578f;
             if (Mathf.Abs(f) > 90f)
@@ -60,22 +60,16 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
             {
                 velocity2 = Vector3.Project(v2, v);
             }
-            if (launcher_ref == "hookRefL1")
+
+            myRef = launcherRef switch
             {
-                myRef = hero.GetComponent<HERO>().hookRefL1;
-            }
-            if (launcher_ref == "hookRefL2")
-            {
-                myRef = hero.GetComponent<HERO>().hookRefL2;
-            }
-            if (launcher_ref == "hookRefR1")
-            {
-                myRef = hero.GetComponent<HERO>().hookRefR1;
-            }
-            if (launcher_ref == "hookRefR2")
-            {
-                myRef = hero.GetComponent<HERO>().hookRefR2;
-            }
+                "hookRefL1" => master.GetComponent<HERO>().hookRefL1,
+                "hookRefL2" => master.GetComponent<HERO>().hookRefL2,
+                "hookRefR1" => master.GetComponent<HERO>().hookRefR1,
+                "hookRefR2" => master.GetComponent<HERO>().hookRefR2,
+                _ => null
+            };
+
             nodes = new ArrayList();
             nodes.Add(myRef.transform.position);
             phase = 0;
@@ -83,7 +77,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
             left = isLeft;
             if (IN_GAME_MAIN_CAMERA.Gametype != 0 && base.photonView.isMine)
             {
-                base.photonView.RPC("myMasterIs", PhotonTargets.Others, hero.GetComponent<HERO>().photonView.viewID, launcher_ref);
+                base.photonView.RPC("myMasterIs", PhotonTargets.Others, master.GetComponent<HERO>().photonView.viewID, launcherRef);
                 base.photonView.RPC("setVelocityAndLeft", PhotonTargets.Others, v, velocity2, left);
             }
             base.transform.position = myRef.transform.position;
@@ -97,71 +91,73 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         if (Guardian.AntiAbuse.HookPatches.IsHookMasterSetValid(this, viewId, info))
         {
             master = PhotonView.Find(viewId).gameObject;
-            if (launcherRef == "hookRefL1")
+
+            myRef = launcherRef switch
             {
-                myRef = master.GetComponent<HERO>().hookRefL1;
-            }
-            if (launcherRef == "hookRefL2")
-            {
-                myRef = master.GetComponent<HERO>().hookRefL2;
-            }
-            if (launcherRef == "hookRefR1")
-            {
-                myRef = master.GetComponent<HERO>().hookRefR1;
-            }
-            if (launcherRef == "hookRefR2")
-            {
-                myRef = master.GetComponent<HERO>().hookRefR2;
-            }
+                "hookRefL1" => master.GetComponent<HERO>().hookRefL1,
+                "hookRefL2" => master.GetComponent<HERO>().hookRefL2,
+                "hookRefR1" => master.GetComponent<HERO>().hookRefR1,
+                "hookRefR2" => master.GetComponent<HERO>().hookRefR2,
+                _ => null
+            };
         }
     }
 
     [RPC]
-    private void netLaunch(Vector3 newPosition)
+    private void netLaunch(Vector3 newPosition, PhotonMessageInfo info)
     {
-        nodes = new ArrayList();
-        nodes.Add(newPosition);
-    }
-
-    [RPC]
-    private void netUpdatePhase1(Vector3 newPosition, Vector3 masterPosition)
-    {
-        lineRenderer.SetVertexCount(2);
-        lineRenderer.SetPosition(0, newPosition);
-        lineRenderer.SetPosition(1, masterPosition);
-        base.transform.position = newPosition;
-    }
-
-    [RPC]
-    private void netUpdateLeviSpiral(Vector3 newPosition, Vector3 masterPosition, Vector3 masterrotation)
-    {
-        phase = 2;
-        leviMode = true;
-        getSpiral(masterPosition, masterrotation);
-        Vector3 b = masterPosition - (Vector3)spiralNodes[0];
-        lineRenderer.SetVertexCount((int)((float)spiralNodes.Count - (float)spiralcount * 0.5f));
-        for (int i = 0; (float)i <= (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f; i++)
+        if (Guardian.AntiAbuse.HookPatches.IsLaunchValid(info))
         {
-            if (spiralcount < 5)
+            nodes = new ArrayList();
+            nodes.Add(newPosition);
+        }
+    }
+
+    [RPC]
+    private void netUpdatePhase1(Vector3 newPosition, Vector3 masterPosition, PhotonMessageInfo info)
+    {
+        if (Guardian.AntiAbuse.HookPatches.IsPhaseUpdateValid(info))
+        {
+            lineRenderer.SetVertexCount(2);
+            lineRenderer.SetPosition(0, newPosition);
+            lineRenderer.SetPosition(1, masterPosition);
+            base.transform.position = newPosition;
+        }
+    }
+
+    [RPC]
+    private void netUpdateLeviSpiral(Vector3 newPosition, Vector3 masterPosition, Vector3 masterrotation, PhotonMessageInfo info)
+    {
+        if (Guardian.AntiAbuse.HookPatches.IsLeviSpiralValid(info))
+        {
+            phase = 2;
+            leviMode = true;
+            GetSpiral(masterPosition, masterrotation);
+            Vector3 b = masterPosition - (Vector3)spiralNodes[0];
+            lineRenderer.SetVertexCount((int)((float)spiralNodes.Count - (float)spiralcount * 0.5f));
+            for (int i = 0; (float)i <= (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f; i++)
             {
-                Vector3 vector = (Vector3)spiralNodes[i] + b;
-                float num = (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f;
-                vector = new Vector3(vector.x, vector.y * ((num - (float)i) / num) + newPosition.y * ((float)i / num), vector.z);
-                lineRenderer.SetPosition(i, vector);
-            }
-            else
-            {
-                lineRenderer.SetPosition(i, (Vector3)spiralNodes[i] + b);
+                if (spiralcount < 5)
+                {
+                    Vector3 vector = (Vector3)spiralNodes[i] + b;
+                    float num = (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f;
+                    vector = new Vector3(vector.x, vector.y * ((num - (float)i) / num) + newPosition.y * ((float)i / num), vector.z);
+                    lineRenderer.SetPosition(i, vector);
+                }
+                else
+                {
+                    lineRenderer.SetPosition(i, (Vector3)spiralNodes[i] + b);
+                }
             }
         }
     }
 
-    public bool isHooked()
+    public bool IsHooked()
     {
         return phase == 1;
     }
 
-    private void getSpiral(Vector3 masterposition, Vector3 masterrotation)
+    private void GetSpiral(Vector3 masterposition, Vector3 masterrotation)
     {
         float num = 1.2f;
         float num2 = 30f;
@@ -256,12 +252,8 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         {
             RemoveMe();
         }
-        else
+        else if (!isdestroying)
         {
-            if (isdestroying)
-            {
-                return;
-            }
             if (leviMode)
             {
                 leviShootTime += Time.deltaTime;
@@ -271,102 +263,100 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                     base.gameObject.GetComponent<MeshRenderer>().enabled = false;
                 }
             }
-            if (phase == 0)
+
+            switch(phase)
             {
-                setLinePhase0();
-            }
-            else if (phase == 1)
-            {
-                Vector3 a = base.transform.position - myRef.transform.position;
-                Vector3 vector = base.transform.position + myRef.transform.position;
-                Vector3 a2 = master.rigidbody.velocity;
-                float magnitude = a2.magnitude;
-                float magnitude2 = a.magnitude;
-                int value = (int)((magnitude2 + magnitude) / 5f);
-                value = Mathf.Clamp(value, 2, 6);
-                lineRenderer.SetVertexCount(value);
-                lineRenderer.SetPosition(0, myRef.transform.position);
-                int i = 1;
-                float num = Mathf.Pow(magnitude2, 0.3f);
-                for (; i < value; i++)
-                {
-                    int num2 = value / 2;
-                    float num3 = Mathf.Abs(i - num2);
-                    float f = ((float)num2 - num3) / (float)num2;
-                    f = Mathf.Pow(f, 0.5f);
-                    float num4 = (num + magnitude) * 0.0015f * f;
-                    lineRenderer.SetPosition(i, new Vector3(UnityEngine.Random.Range(0f - num4, num4), UnityEngine.Random.Range(0f - num4, num4), UnityEngine.Random.Range(0f - num4, num4)) + myRef.transform.position + a * ((float)i / (float)value) - Vector3.up * num * 0.05f * f - a2 * 0.001f * f * num);
-                }
-                lineRenderer.SetPosition(value - 1, base.transform.position);
-            }
-            else if (phase == 2)
-            {
-                if (leviMode)
-                {
-                    getSpiral(master.transform.position, master.transform.rotation.eulerAngles);
-                    Vector3 b = myRef.transform.position - (Vector3)spiralNodes[0];
-                    lineRenderer.SetVertexCount((int)((float)spiralNodes.Count - (float)spiralcount * 0.5f));
-                    for (int j = 0; (float)j <= (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f; j++)
+                case 0:
+                    setLinePhase0();
+                    break;
+                case 1:
+                    Vector3 a = base.transform.position - myRef.transform.position;
+                    Vector3 vector = base.transform.position + myRef.transform.position;
+                    Vector3 a2 = master.rigidbody.velocity;
+                    float magnitude = a2.magnitude;
+                    float magnitude2 = a.magnitude;
+                    int value = (int)((magnitude2 + magnitude) / 5f);
+                    value = Mathf.Clamp(value, 2, 6);
+                    lineRenderer.SetVertexCount(value);
+                    lineRenderer.SetPosition(0, myRef.transform.position);
+                    int i = 1;
+                    float num = Mathf.Pow(magnitude2, 0.3f);
+                    for (; i < value; i++)
                     {
-                        if (spiralcount < 5)
+                        int num2 = value / 2;
+                        float num3 = Mathf.Abs(i - num2);
+                        float f = ((float)num2 - num3) / (float)num2;
+                        f = Mathf.Pow(f, 0.5f);
+                        float num4 = (num + magnitude) * 0.0015f * f;
+                        lineRenderer.SetPosition(i, new Vector3(UnityEngine.Random.Range(0f - num4, num4), UnityEngine.Random.Range(0f - num4, num4), UnityEngine.Random.Range(0f - num4, num4)) + myRef.transform.position + a * ((float)i / (float)value) - Vector3.up * num * 0.05f * f - a2 * 0.001f * f * num);
+                    }
+                    lineRenderer.SetPosition(value - 1, base.transform.position);
+                    break;
+                case 2:
+                    if (leviMode)
+                    {
+                        GetSpiral(master.transform.position, master.transform.rotation.eulerAngles);
+                        Vector3 b = myRef.transform.position - (Vector3)spiralNodes[0];
+                        lineRenderer.SetVertexCount((int)((float)spiralNodes.Count - (float)spiralcount * 0.5f));
+                        for (int j = 0; (float)j <= (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f; j++)
                         {
-                            Vector3 position = (Vector3)spiralNodes[j] + b;
-                            float num5 = (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f;
-                            float x = position.x;
-                            float num6 = position.y * ((num5 - (float)j) / num5);
-                            Vector3 position2 = base.gameObject.transform.position;
-                            position = new Vector3(x, num6 + position2.y * ((float)j / num5), position.z);
-                            lineRenderer.SetPosition(j, position);
+                            if (spiralcount < 5)
+                            {
+                                Vector3 position = (Vector3)spiralNodes[j] + b;
+                                float num5 = (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f;
+                                float x = position.x;
+                                float num6 = position.y * ((num5 - (float)j) / num5);
+                                Vector3 position2 = base.gameObject.transform.position;
+                                position = new Vector3(x, num6 + position2.y * ((float)j / num5), position.z);
+                                lineRenderer.SetPosition(j, position);
+                            }
+                            else
+                            {
+                                lineRenderer.SetPosition(j, (Vector3)spiralNodes[j] + b);
+                            }
                         }
-                        else
+                    }
+                    else
+                    {
+                        lineRenderer.SetVertexCount(2);
+                        lineRenderer.SetPosition(0, base.transform.position);
+                        lineRenderer.SetPosition(1, myRef.transform.position);
+                        killTime += Time.deltaTime * 0.2f;
+                        lineRenderer.SetWidth(0.1f - killTime, 0.1f - killTime);
+                        if (killTime > 0.1f)
                         {
-                            lineRenderer.SetPosition(j, (Vector3)spiralNodes[j] + b);
+                            RemoveMe();
                         }
                     }
-                }
-                else
-                {
-                    lineRenderer.SetVertexCount(2);
-                    lineRenderer.SetPosition(0, base.transform.position);
-                    lineRenderer.SetPosition(1, myRef.transform.position);
-                    killTime += Time.deltaTime * 0.2f;
-                    lineRenderer.SetWidth(0.1f - killTime, 0.1f - killTime);
-                    if (killTime > 0.1f)
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    base.gameObject.transform.position += velocity + velocity2 * Time.deltaTime;
+                    ArrayList arrayList = nodes;
+                    Vector3 position3 = base.gameObject.transform.position;
+                    float x2 = position3.x;
+                    Vector3 position4 = base.gameObject.transform.position;
+                    float y = position4.y;
+                    Vector3 position5 = base.gameObject.transform.position;
+                    arrayList.Add(new Vector3(x2, y, position5.z));
+                    Vector3 a3 = myRef.transform.position - (Vector3)nodes[0];
+                    for (int k = 0; k <= nodes.Count - 1; k++)
                     {
-                        RemoveMe();
+                        lineRenderer.SetVertexCount(nodes.Count);
+                        lineRenderer.SetPosition(k, (Vector3)nodes[k] + a3 * Mathf.Pow(0.5f, k));
                     }
-                }
-            }
-            else
-            {
-                if (phase != 4)
-                {
-                    return;
-                }
-                base.gameObject.transform.position += velocity + velocity2 * Time.deltaTime;
-                ArrayList arrayList = nodes;
-                Vector3 position3 = base.gameObject.transform.position;
-                float x2 = position3.x;
-                Vector3 position4 = base.gameObject.transform.position;
-                float y = position4.y;
-                Vector3 position5 = base.gameObject.transform.position;
-                arrayList.Add(new Vector3(x2, y, position5.z));
-                Vector3 a3 = myRef.transform.position - (Vector3)nodes[0];
-                for (int k = 0; k <= nodes.Count - 1; k++)
-                {
-                    lineRenderer.SetVertexCount(nodes.Count);
-                    lineRenderer.SetPosition(k, (Vector3)nodes[k] + a3 * Mathf.Pow(0.5f, k));
-                }
-                killTime2 += Time.deltaTime;
-                if (killTime2 > 0.8f)
-                {
-                    killTime += Time.deltaTime * 0.2f;
-                    lineRenderer.SetWidth(0.1f - killTime, 0.1f - killTime);
-                    if (killTime > 0.1f)
+                    killTime2 += Time.deltaTime;
+                    if (killTime2 > 0.8f)
                     {
-                        RemoveMe();
+                        killTime += Time.deltaTime * 0.2f;
+                        lineRenderer.SetWidth(0.1f - killTime, 0.1f - killTime);
+                        if (killTime > 0.1f)
+                        {
+                            RemoveMe();
+                        }
                     }
-                }
+                    break;
             }
         }
     }
@@ -443,12 +433,8 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                 nodes.Add(new Vector3(base.gameObject.transform.position.x, base.gameObject.transform.position.y, base.gameObject.transform.position.z));
             }
         }
-        else
+        else if (phase == 0)
         {
-            if (phase != 0)
-            {
-                return;
-            }
             CheckTitan();
             base.gameObject.transform.position += velocity * Time.deltaTime * 50f + velocity2 * Time.deltaTime;
             LayerMask mask = 1 << LayerMask.NameToLayer("EnemyBox");
@@ -463,11 +449,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                 {
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                     {
-                        object[] parameters = new object[1]
-                        {
-                            hitInfo.collider.transform.root.gameObject.GetPhotonView().viewID
-                        };
-                        base.photonView.RPC("tieMeToOBJ", PhotonTargets.Others, parameters);
+                        base.photonView.RPC("tieMeToOBJ", PhotonTargets.Others, hitInfo.collider.transform.root.gameObject.GetPhotonView().viewID);
                     }
                     master.GetComponent<HERO>().lastHook = hitInfo.collider.transform.root;
                     base.transform.parent = hitInfo.collider.transform;
@@ -483,13 +465,9 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                 {
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                     {
-                        object[] parameters2 = new object[1]
-                        {
-                            hitInfo.collider.transform.root.gameObject.GetPhotonView().viewID
-                        };
-                        base.photonView.RPC("tieMeToOBJ", PhotonTargets.Others, parameters2);
+                        base.photonView.RPC("tieMeToOBJ", PhotonTargets.Others, hitInfo.collider.transform.root.gameObject.GetPhotonView().viewID);
                     }
-                    master.GetComponent<HERO>().hookToHuman(hitInfo.collider.transform.root.gameObject, base.transform.position);
+                    master.GetComponent<HERO>().HookToHuman(hitInfo.collider.transform.root.gameObject, base.transform.position);
                     base.transform.parent = hitInfo.collider.transform;
                     master.GetComponent<HERO>().lastHook = null;
                 }
@@ -510,20 +488,12 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                         phase = 1;
                         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                         {
-                            object[] parameters3 = new object[1]
-                            {
-                                1
-                            };
-                            base.photonView.RPC("setPhase", PhotonTargets.Others, parameters3);
-                            object[] parameters4 = new object[1]
-                            {
-                                base.transform.position
-                            };
-                            base.photonView.RPC("tieMeTo", PhotonTargets.Others, parameters4);
+                            base.photonView.RPC("setPhase", PhotonTargets.Others, 1);
+                            base.photonView.RPC("tieMeTo", PhotonTargets.Others, base.transform.position);
                         }
                         if (leviMode)
                         {
-                            getSpiral(master.transform.position, master.transform.rotation.eulerAngles);
+                            GetSpiral(master.transform.position, master.transform.rotation.eulerAngles);
                         }
                         flag = true;
                     }
@@ -540,11 +510,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                 phase = 4;
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
-                    object[] parameters5 = new object[1]
-                    {
-                        4
-                    };
-                    base.photonView.RPC("setPhase", PhotonTargets.Others, parameters5);
+                    base.photonView.RPC("setPhase", PhotonTargets.Others, 4);
                 }
             }
         }

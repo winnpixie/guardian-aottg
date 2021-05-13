@@ -92,23 +92,23 @@ public class CannonBall : Photon.MonoBehaviour
                     if (gameObject.name == "head")
                     {
                         component2.photonView.RPC("DieByCannon", component2.photonView.owner, myHero.photonView.viewID);
-                        component2.dieBlow(base.transform.position, 0.2f);
+                        component2.DieBlow(base.transform.position, 0.2f);
                         i = array.Length;
                     }
                 }
                 else if (gameObject.name == "head")
                 {
                     component2.photonView.RPC("DieByCannon", component2.photonView.owner, myHero.photonView.viewID);
-                    component2.dieHeadBlow(base.transform.position, 0.2f);
+                    component2.DieHeadBlow(base.transform.position, 0.2f);
                     i = array.Length;
                 }
                 else if (Random.Range(0f, 1f) < 0.5f)
                 {
-                    component2.hitL(base.transform.position, 0.05f);
+                    component2.HitLeft(base.transform.position, 0.05f);
                 }
                 else
                 {
-                    component2.hitR(base.transform.position, 0.05f);
+                    component2.HitRight(base.transform.position, 0.05f);
                 }
                 destroyMe();
             }

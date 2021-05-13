@@ -93,7 +93,7 @@ public class Horse : Photon.MonoBehaviour
                         {
                             CrossFade("horse_Run", 0.1f);
                         }
-                        if (!myHero.animation.IsPlaying("horse_Run"))
+                        if (!myHero.animation.IsPlaying("horse_run"))
                         {
                             myHero.GetComponent<HERO>().CrossFade("horse_run", 0.1f);
                         }
@@ -105,7 +105,7 @@ public class Horse : Photon.MonoBehaviour
                     }
                     else
                     {
-                        if (!base.animation.IsPlaying("horse_WALK"))
+                        if (!base.animation.IsPlaying("horse_WALK") && base.rigidbody.velocity.magnitude > 1f)
                         {
                             CrossFade("horse_WALK", 0.1f);
                         }
@@ -125,7 +125,7 @@ public class Horse : Photon.MonoBehaviour
                     Idle();
                     if (base.rigidbody.velocity.magnitude > 15f)
                     {
-                        if (!myHero.animation.IsPlaying("horse_Run"))
+                        if (!myHero.animation.IsPlaying("horse_run"))
                         {
                             myHero.GetComponent<HERO>().CrossFade("horse_run", 0.1f);
                         }
@@ -263,7 +263,7 @@ public class Horse : Photon.MonoBehaviour
             }
             else
             {
-                if (!base.animation.IsPlaying("horse_WALK"))
+                if (!base.animation.IsPlaying("horse_WALK") && base.rigidbody.velocity.magnitude > 1f)
                 {
                     CrossFade("horse_WALK", 0.1f);
                 }
@@ -275,15 +275,15 @@ public class Horse : Photon.MonoBehaviour
             }
             return;
         }
-        if (base.animation.IsPlaying("horse_idle1") && base.animation["horse_idle1"].normalizedTime >= 1f)
+        if (base.animation.IsPlaying("horse_idle1") && base.animation["horse_idle1"].normalizedTime >= 1f && !base.animation.IsPlaying("horse_idle0"))
         {
             CrossFade("horse_idle0", 0.1f);
         }
-        if (base.animation.IsPlaying("horse_idle2") && base.animation["horse_idle2"].normalizedTime >= 1f)
+        if (base.animation.IsPlaying("horse_idle2") && base.animation["horse_idle2"].normalizedTime >= 1f && !base.animation.IsPlaying("horse_idle0"))
         {
             CrossFade("horse_idle0", 0.1f);
         }
-        if (base.animation.IsPlaying("horse_idle3") && base.animation["horse_idle3"].normalizedTime >= 1f)
+        if (base.animation.IsPlaying("horse_idle3") && base.animation["horse_idle3"].normalizedTime >= 1f && !base.animation.IsPlaying("horse_idle0"))
         {
             CrossFade("horse_idle0", 0.1f);
         }

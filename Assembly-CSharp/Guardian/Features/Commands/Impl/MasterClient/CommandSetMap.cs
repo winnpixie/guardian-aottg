@@ -8,7 +8,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            if (!Mod.Instance.IsMultiMap)
+            if (!Mod.IsMultiMap)
             {
                 irc.AddLine("This is not a Multi-Map room!".WithColor("FF0000"));
                 return;

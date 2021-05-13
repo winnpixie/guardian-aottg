@@ -23,10 +23,10 @@ public class BTN_START_MULTI_SERVER : MonoBehaviour
             {
                 maxPlayers = max,
                 customRoomProperties = new ExitGames.Client.Photon.Hashtable
-            {
-                { "Map", map },
-                { "Lighting", daylight.ToUpper() }
-            }
+                {
+                    { "Map", map },
+                    { "Lighting", daylight.ToUpper() }
+                }
             }, TypedLobby.Default);
         }
     }

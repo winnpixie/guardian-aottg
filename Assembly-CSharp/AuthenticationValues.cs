@@ -5,7 +5,6 @@ public class AuthenticationValues
     public CustomAuthenticationType AuthType;
     public string AuthParameters;
     public string Secret;
-    public string UserId;
 
     public object AuthPostData
     {
@@ -14,11 +13,6 @@ public class AuthenticationValues
     }
 
     public AuthenticationValues() { }
-
-    public AuthenticationValues(string userId)
-    {
-        this.UserId = userId;
-    }
 
     public virtual void SetAuthPostData(string stringData)
     {

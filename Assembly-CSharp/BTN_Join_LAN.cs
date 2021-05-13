@@ -7,19 +7,26 @@ public class BTN_Join_LAN : MonoBehaviour
 
 	private void OnClick()
 	{
-		string ip = base.transform.parent.Find("InputIP").GetComponent<UIInput>().text;
-		string port = base.transform.parent.Find("InputPort").GetComponent<UIInput>().text;
-		string passwd = base.transform.parent.Find("InputAuthPass").GetComponent<UIInput>().text;
+		string ipStr = base.transform.parent.Find("InputIP").GetComponent<UIInput>().text;
+		string portStr = base.transform.parent.Find("InputPort").GetComponent<UIInput>().text;
+		string passwdStr = base.transform.parent.Find("InputAuthPass").GetComponent<UIInput>().text;
+
 		PhotonNetwork.Disconnect();
-
-		if (int.TryParse(port, out int result) && PhotonNetwork.ConnectToMaster(ip, result, FengGameManagerMKII.ApplicationId, UIMainReferences.Version))
+		if (int.TryParse(portStr, out int port) && PhotonNetwork.ConnectToMaster(ipStr, port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version))
 		{
-			PlayerPrefs.SetString("lastIP", ip);
-			PlayerPrefs.SetString("lastPort", port);
-			PlayerPrefs.SetString("lastAuthPass", passwd);
+			PlayerPrefs.SetString("lastIP", ipStr);
+			PlayerPrefs.SetString("lastPort", portStr);
+			PlayerPrefs.SetString("lastAuthPass", passwdStr);
 
-			FengGameManagerMKII.OnPrivateServer = !PhotonCloud.IsMatch(ip);
-			FengGameManagerMKII.PrivateServerAuthPass = passwd;
+			if (PhotonCloud.IsMatch(ipStr))
+            {
+				Guardian.Mod.Logger.Info("Joining a Photon Cloud server.");
+			} else
+			{
+				Guardian.Mod.Logger.Info("Joining a non-Photon Cloud server.");
+			}
+			FengGameManagerMKII.OnPrivateServer = !PhotonCloud.IsMatch(ipStr);
+			FengGameManagerMKII.PrivateServerAuthPass = passwdStr;
 		}
 	}
 }

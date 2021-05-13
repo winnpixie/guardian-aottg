@@ -8,7 +8,6 @@ public class PhotonPlayer
     public readonly bool isLocal;
     public int Id = -1;
     public bool IsInactive;
-    public string UserId;
 
     public string name
     {

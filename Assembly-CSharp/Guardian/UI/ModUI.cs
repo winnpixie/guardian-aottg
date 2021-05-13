@@ -51,7 +51,11 @@ namespace Guardian.UI
                 }
                 GUILayout.EndScrollView();
 
-                string coords = "N/A";
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label($"FPS: {MathHelper.Floor(1f / Time.smoothDeltaTime)}");
+
+                string coords = "n/a";
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     if (!GameHelper.IsDead(PhotonNetwork.player))
@@ -64,8 +68,11 @@ namespace Guardian.UI
                         }
                     }
                 }
+                GUILayout.Label($"X/Y/Z {coords}");
 
-                GUILayout.Label($"FPS: {MathHelper.Floor(1f / Time.smoothDeltaTime)} X/Y/Z {coords}");
+                GUILayout.Label($"Playtime: {GameHelper.FormatTime(GameHelper.CurrentTimeMillis() - Mod.LaunchTime, false, false)}");
+
+                GUILayout.EndHorizontal();
                 GUILayout.EndArea();
             }
         }

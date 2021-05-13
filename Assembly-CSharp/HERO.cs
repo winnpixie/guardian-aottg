@@ -14,7 +14,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private float invincible = 3f;
     private GameObject myHorse;
     private bool isMounted;
-    // Alternative idle stance
+    // TODO: Mod, alternative idle stance
     private string _standAnimation = "stand";
     private string standAnimation
     {
@@ -231,8 +231,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             if (teamId != 1)
             {
-                object[] parameters = new object[1] { 1 };
-                base.photonView.RPC("setMyTeam", PhotonTargets.AllBuffered, parameters);
+                base.photonView.RPC("setMyTeam", PhotonTargets.AllBuffered, 1);
             }
         }
         else if (RCSettings.PvPMode == 1)
@@ -244,20 +243,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             if (teamId != myTeam)
             {
-                object[] parameters = new object[1]
-                {
-                    myTeam
-                };
-                base.photonView.RPC("setMyTeam", PhotonTargets.AllBuffered, parameters);
+                base.photonView.RPC("setMyTeam", PhotonTargets.AllBuffered, myTeam);
             }
         }
         else if (RCSettings.PvPMode == 2 && teamId != base.photonView.owner.Id)
         {
-            object[] parameters = new object[1]
-            {
-                base.photonView.owner.Id
-            };
-            base.photonView.RPC("setMyTeam", PhotonTargets.AllBuffered, parameters);
+            base.photonView.RPC("setMyTeam", PhotonTargets.AllBuffered, base.photonView.owner.Id);
         }
     }
 
@@ -486,11 +477,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private GameObject FindNearestTitan()
     {
-        GameObject[] array = GameObject.FindGameObjectsWithTag("titan");
         GameObject result = null;
         float num = float.PositiveInfinity;
         Vector3 position = base.transform.position;
-        foreach (GameObject gameObject in array)
+        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("titan"))
         {
             float sqrMagnitude = (gameObject.transform.position - position).sqrMagnitude;
             if (sqrMagnitude < num)
@@ -1149,11 +1139,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             a.Normalize();
             if (mode == 1)
             {
-                component.launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject, leviMode: true);
+                component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject, leviMode: true);
             }
             else
             {
-                component.launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject);
+                component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject);
             }
             launchPointLeft = Vector3.zero;
         }
@@ -1176,16 +1166,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             string launcher_ref = (!useGun) ? "hookRefR1" : "hookRefR2";
             bulletRight.transform.position = gameObject.transform.position;
             Bullet component = bulletRight.GetComponent<Bullet>();
-            float d = single ? 0f : ((!(hit.distance > 50f)) ? (hit.distance * 0.05f) : (hit.distance * 0.3f));
+            float d = single ? 0f : !(hit.distance > 50f) ? (hit.distance * 0.05f) : (hit.distance * 0.3f);
             Vector3 a = hit.point + base.transform.right * d - bulletRight.transform.position;
             a.Normalize();
             if (mode == 1)
             {
-                component.launch(a * 5f, base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: true);
+                component.Launch(a * 5f, base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: true);
             }
             else
             {
-                component.launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject);
+                component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject);
             }
             launchPointRight = Vector3.zero;
         }
@@ -1198,7 +1188,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             if (!attackReleased)
             {
-                continueAnimation();
+                ContinueAnimation();
                 attackReleased = true;
             }
             return;
@@ -1217,7 +1207,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         attackLoop = 0;
         if (!attackReleased)
         {
-            continueAnimation();
+            ContinueAnimation();
             attackReleased = true;
         }
     }
@@ -1237,7 +1227,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         return false;
     }
 
-    private void customAnimationSpeed()
+    private void CustomAnimationSpeed()
     {
         base.animation["attack5"].speed = 1.85f;
         base.animation["changeBlade"].speed = 1.2f;
@@ -1251,11 +1241,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         base.animation["AHSS_gun_reload_r_air"].speed = 0.5f;
     }
 
-    public void pauseAnimation()
+    public void PauseAnimation()
     {
-        foreach (AnimationState item in base.animation)
+        foreach (AnimationState anim in base.animation)
         {
-            item.speed = 0f;
+            anim.speed = 0f;
         }
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
         {
@@ -1263,19 +1253,19 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public void resetAnimationSpeed()
+    public void ResetAnimationSpeed()
     {
-        foreach (AnimationState item in base.animation)
+        foreach (AnimationState anim in base.animation)
         {
-            item.speed = 1f;
+            anim.speed = 1f;
         }
-        customAnimationSpeed();
+        CustomAnimationSpeed();
     }
 
-    public void continueAnimation()
+    public void ContinueAnimation()
     {
-        resetAnimationSpeed();
-        PlayAnimation(currentPlayingClipName());
+        ResetAnimationSpeed();
+        PlayAnimation(GetCurrentAnimationPlaying());
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netContinueAnimation", PhotonTargets.Others);
@@ -1310,29 +1300,29 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             item.speed = 1f;
         }
-        PlayAnimation(currentPlayingClipName());
+        PlayAnimation(GetCurrentAnimationPlaying());
     }
 
-    public string currentPlayingClipName()
+    public string GetCurrentAnimationPlaying()
     {
-        foreach (AnimationState item in base.animation)
+        foreach (AnimationState anim in base.animation)
         {
-            if (base.animation.IsPlaying(item.name))
+            if (base.animation.IsPlaying(anim.name))
             {
-                return item.name;
+                return anim.name;
             }
         }
         return string.Empty;
     }
 
-    public void hookToHuman(GameObject target, Vector3 hookPosition)
+    public void HookToHuman(GameObject target, Vector3 hookPosition)
     {
         ReleaseHookedTarget();
         hookTarget = target;
         hookSomeOne = true;
         if ((bool)target.GetComponent<HERO>())
         {
-            target.GetComponent<HERO>().hookedByHuman(base.photonView.viewID, hookPosition);
+            target.GetComponent<HERO>().HookedByHuman(base.photonView.viewID, hookPosition);
         }
         launchForce = hookPosition - base.transform.position;
         float d = Mathf.Pow(launchForce.magnitude, 0.1f);
@@ -1343,7 +1333,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         base.rigidbody.AddForce(launchForce * d * 0.1f, ForceMode.Impulse);
     }
 
-    public void hookedByHuman(int hooker, Vector3 hookPosition)
+    public void HookedByHuman(int hooker, Vector3 hookPosition)
     {
         base.photonView.RPC("RPCHookedByHuman", base.photonView.owner, hooker, hookPosition);
     }
@@ -1431,7 +1421,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         vector.Normalize();
         vector *= 20f;
-        if (bulletLeft != null && bulletRight != null && bulletLeft.GetComponent<Bullet>().isHooked() && bulletRight.GetComponent<Bullet>().isHooked())
+        if (bulletLeft != null && bulletRight != null && bulletLeft.GetComponent<Bullet>().IsHooked() && bulletRight.GetComponent<Bullet>().IsHooked())
         {
             vector *= 0.8f;
         }
@@ -1711,8 +1701,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netTauntAttack(float tauntTime, float distance = 100f)
     {
-        GameObject[] array = GameObject.FindGameObjectsWithTag("titan");
-        foreach (GameObject gameObject in array)
+        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("titan"))
         {
             if (Vector3.Distance(gameObject.transform.position, base.transform.position) < distance && (bool)gameObject.GetComponent<TITAN>())
             {
@@ -1724,8 +1713,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netlaughAttack()
     {
-        GameObject[] array = GameObject.FindGameObjectsWithTag("titan");
-        foreach (GameObject gameObject in array)
+        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("titan"))
         {
             if (Vector3.Distance(gameObject.transform.position, base.transform.position) < 50f && Vector3.Angle(gameObject.transform.forward, base.transform.position - gameObject.transform.position) < 90f && (bool)gameObject.GetComponent<TITAN>())
             {
@@ -1988,7 +1976,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             StartCoroutine(CoReloadSky());
         }
 
-        // TODO: Flashlight Fix?
+        // TODO: Mod, flashlight Fix?
         if (IN_GAME_MAIN_CAMERA.Lighting == DayLight.Night)
         {
             myFlashlight = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("flashlight"));
@@ -2028,6 +2016,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
+
+        // TODO: Mod, idk might fix
+        LeanBody();
+
         if (!baseAnimation.IsPlaying("attack3_2") && !baseAnimation.IsPlaying("attack5") && !baseAnimation.IsPlaying("special_petra"))
         {
             baseRigidBody.rotation = Quaternion.Lerp(base.gameObject.transform.rotation, targetRotation, Time.deltaTime * 6f);
@@ -2088,7 +2080,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         isRightHandHooked = false;
         if (isLaunchLeft)
         {
-            if (bulletLeft != null && bulletLeft.GetComponent<Bullet>().isHooked())
+            if (bulletLeft != null && bulletLeft.GetComponent<Bullet>().IsHooked())
             {
                 isLeftHandHooked = true;
                 Vector3 vector3 = bulletLeft.transform.position - baseTransform.position;
@@ -2131,7 +2123,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         if (isLaunchRight)
         {
-            if (bulletRight != null && bulletRight.GetComponent<Bullet>().isHooked())
+            if (bulletRight != null && bulletRight.GetComponent<Bullet>().IsHooked())
             {
                 isRightHandHooked = true;
                 Vector3 vector4 = bulletRight.transform.position - baseTransform.position;
@@ -2205,8 +2197,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 {
                     if (state != HERO_STATE.Attack && num == 0f && num2 == 0f && bulletLeft == null && bulletRight == null && state != HERO_STATE.FillGas)
                     {
+                        if (state != HERO_STATE.Land)
+                        {
+                            CrossFade("dash_land", 0.01f);
+                        }
                         state = HERO_STATE.Land;
-                        CrossFade("dash_land", 0.01f);
                     }
                     else
                     {
@@ -2230,7 +2225,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     if (attackAnimation == "attack3_1" && baseAnimation[attackAnimation].normalizedTime >= 1f)
                     {
                         PlayAnimation("attack3_2");
-                        resetAnimationSpeed();
+                        ResetAnimationSpeed();
                         Vector3 zero = Vector3.zero;
                         baseRigidBody.velocity = zero;
                         a = zero;
@@ -2334,7 +2329,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 baseTransform.position = myHorse.transform.position + Vector3.up * 1.65f;
                 baseTransform.rotation = myHorse.transform.rotation;
                 isMounted = true;
-                CrossFade("horse_idle", 0.1f);
+
+                if (!baseAnimation.IsPlaying("horse_idle"))
+                {
+                    CrossFade("horse_idle", 0.1f);
+                }
+
                 myHorse.GetComponent<Horse>().Mount();
             }
             if ((state == HERO_STATE.Idle && !baseAnimation.IsPlaying("dash") && !baseAnimation.IsPlaying("wallrun") && !baseAnimation.IsPlaying("toRoof") && !baseAnimation.IsPlaying("horse_geton") && !baseAnimation.IsPlaying("horse_getoff") && !baseAnimation.IsPlaying("air_release") && !isMounted && (!baseAnimation.IsPlaying("air_hook_l_just") || baseAnimation["air_hook_l_just"].normalizedTime >= 1f) && (!baseAnimation.IsPlaying("air_hook_r_just") || baseAnimation["air_hook_r_just"].normalizedTime >= 1f)) || baseAnimation["dash"].normalizedTime >= 0.99f)
@@ -2432,13 +2432,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     }
                 }
             }
-            if (state == HERO_STATE.Idle && baseAnimation.IsPlaying("air_release") && baseAnimation["air_release"].normalizedTime >= 1f)
+            if ((state == HERO_STATE.Idle && baseAnimation.IsPlaying("air_release") && baseAnimation["air_release"].normalizedTime >= 1f)
+                || (baseAnimation.IsPlaying("horse_getoff") && baseAnimation["horse_getoff"].normalizedTime >= 1f))
             {
-                CrossFade("air_rise", 0.2f);
-            }
-            if (baseAnimation.IsPlaying("horse_getoff") && baseAnimation["horse_getoff"].normalizedTime >= 1f)
-            {
-                CrossFade("air_rise", 0.2f);
+                if (!baseAnimation.IsPlaying("air_rise"))
+                {
+                    CrossFade("air_rise", 0.2f);
+                }
             }
             if (baseAnimation.IsPlaying("toRoof"))
             {
@@ -2563,14 +2563,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (state == HERO_STATE.Attack && (attackAnimation == "attack5" || attackAnimation == "special_petra") && baseAnimation[attackAnimation].normalizedTime > 0.4f && !attackMove)
         {
             attackMove = true;
-            if (launchPointRight.magnitude > 0f)
+            if (launchPointRight.sqrMagnitude > 0f)
             {
                 Vector3 force2 = launchPointRight - baseTransform.position;
                 force2.Normalize();
                 force2 *= 13f;
                 baseRigidBody.AddForce(force2, ForceMode.Impulse);
             }
-            if (attackAnimation == "special_petra" && launchPointLeft.magnitude > 0f)
+            if (attackAnimation == "special_petra" && launchPointLeft.sqrMagnitude > 0f)
             {
                 Vector3 force3 = launchPointLeft - baseTransform.position;
                 force3.Normalize();
@@ -2592,11 +2592,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         bool hookedToSomething = false;
         if (bulletLeft != null || bulletRight != null)
         {
-            if (bulletLeft != null && bulletLeft.transform.position.y > base.gameObject.transform.position.y && isLaunchLeft && bulletLeft.GetComponent<Bullet>().isHooked())
+            if (bulletLeft != null && bulletLeft.transform.position.y > base.gameObject.transform.position.y && isLaunchLeft && bulletLeft.GetComponent<Bullet>().IsHooked())
             {
                 hookedToSomething = true;
             }
-            if (bulletRight != null && bulletRight.transform.position.y > base.gameObject.transform.position.y && isLaunchRight && bulletRight.GetComponent<Bullet>().isHooked())
+            if (bulletRight != null && bulletRight.transform.position.y > base.gameObject.transform.position.y && isLaunchRight && bulletRight.GetComponent<Bullet>().IsHooked())
             {
                 hookedToSomething = true;
             }
@@ -2622,11 +2622,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             UseGas(useGasSpeed * Time.deltaTime);
             if (!smoke_3dmg.enableEmission && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
             {
-                object[] parameters = new object[1]
-                {
-                    true
-                };
-                base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, parameters);
+                base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, true);
             }
             smoke_3dmg.enableEmission = true;
         }
@@ -2634,11 +2630,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             if (smoke_3dmg.enableEmission && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
             {
-                object[] parameters2 = new object[1]
-                {
-                    false
-                };
-                base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, parameters2);
+                base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, false);
             }
             smoke_3dmg.enableEmission = false;
         }
@@ -2659,23 +2651,21 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void UpdateResourceUI()
     {
-        float num = currentGas / totalGas;
-        cachedSprites["gasL1"].fillAmount = currentGas / totalGas;
-        cachedSprites["gasR1"].fillAmount = currentGas / totalGas;
+        float gasPercent = currentGas / totalGas;
+        cachedSprites["gasL1"].fillAmount = gasPercent;
+        cachedSprites["gasR1"].fillAmount = gasPercent;
 
-        cachedSprites["bladeCL"].fillAmount = currentBladeSta / totalBladeSta;
-        cachedSprites["bladeCR"].fillAmount = currentBladeSta / totalBladeSta;
-        if (num <= 0f)
+        if (gasPercent <= 0f)
         {
             cachedSprites["gasL"].color = Color.red;
             cachedSprites["gasR"].color = Color.red;
         }
-        else if (num < 0.25f)
+        else if (gasPercent < 0.25f)
         {
             cachedSprites["gasL"].color = Guardian.Utilities.Colors.Orange;
             cachedSprites["gasR"].color = Guardian.Utilities.Colors.Orange;
         }
-        else if (num < 0.5f)
+        else if (gasPercent < 0.5f)
         {
             cachedSprites["gasL"].color = Color.yellow;
             cachedSprites["gasR"].color = Color.yellow;
@@ -2688,13 +2678,23 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
         if (!useGun)
         {
-            float num2 = currentBladeSta / totalBladeSta;
-            if (num2 <= 0f)
+            float blaPercent = currentBladeSta / totalBladeSta;
+
+            cachedSprites["bladeCL"].fillAmount = blaPercent;
+            cachedSprites["bladeCR"].fillAmount = blaPercent;
+
+            if (blaPercent <= 0f)
             {
                 cachedSprites["bladel1"].color = Color.red;
                 cachedSprites["blader1"].color = Color.red;
             }
-            else if (num2 < 0.3f)
+            else if (blaPercent < 0.25f)
+            {
+
+                cachedSprites["bladel1"].color = Guardian.Utilities.Colors.Orange;
+                cachedSprites["blader1"].color = Guardian.Utilities.Colors.Orange;
+            }
+            else if (blaPercent < 0.5f)
             {
                 cachedSprites["bladel1"].color = Color.yellow;
                 cachedSprites["blader1"].color = Color.yellow;
@@ -2704,6 +2704,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 cachedSprites["bladel1"].color = Color.white;
                 cachedSprites["blader1"].color = Color.white;
             }
+
             if (currentBladeNum <= 4)
             {
                 cachedSprites["bladel5"].enabled = false;
@@ -2714,6 +2715,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 cachedSprites["bladel5"].enabled = true;
                 cachedSprites["blader5"].enabled = true;
             }
+
             if (currentBladeNum <= 3)
             {
                 cachedSprites["bladel4"].enabled = false;
@@ -2724,6 +2726,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 cachedSprites["bladel4"].enabled = true;
                 cachedSprites["blader4"].enabled = true;
             }
+
             if (currentBladeNum <= 2)
             {
                 cachedSprites["bladel3"].enabled = false;
@@ -2734,6 +2737,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 cachedSprites["bladel3"].enabled = true;
                 cachedSprites["blader3"].enabled = true;
             }
+
             if (currentBladeNum <= 1)
             {
                 cachedSprites["bladel2"].enabled = false;
@@ -2744,6 +2748,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 cachedSprites["bladel2"].enabled = true;
                 cachedSprites["blader2"].enabled = true;
             }
+
             if (currentBladeNum <= 0)
             {
                 cachedSprites["bladel1"].enabled = false;
@@ -2757,22 +2762,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         else
         {
-            if (leftGunHasBullet)
-            {
-                cachedSprites["bulletL"].enabled = true;
-            }
-            else
-            {
-                cachedSprites["bulletL"].enabled = false;
-            }
-            if (rightGunHasBullet)
-            {
-                cachedSprites["bulletR"].enabled = true;
-            }
-            else
-            {
-                cachedSprites["bulletR"].enabled = false;
-            }
+            cachedSprites["bulletL"].enabled = leftGunHasBullet;
+            cachedSprites["bulletR"].enabled = rightGunHasBullet;
         }
     }
 
@@ -2799,7 +2790,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         LayerMask layerMask = (int)mask2 | (int)mask;
         if (!Physics.Raycast(ray, out RaycastHit hitInfo, 1E+07f, layerMask.value))
         {
-            // Stop cross-hair freezes?
+            // TODO: Mod, Stop cross-hair freezes?
             // return;
         }
         cross1.transform.localPosition = Input.mousePosition;
@@ -2832,7 +2823,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         labelDistance2.transform.localPosition -= new Vector3(0f, 15f, 0f);
 
-        // TODO: Mod
+        // TODO: Mod, hide hook arrows
         if (Guardian.Mod.Properties.HideHookArrows.Value)
         {
             Vector3 localPosition = Vector3.up * 10000f;
@@ -2997,35 +2988,35 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             Vector3 vector3 = Vector3.zero;
             Vector3 vector4 = Vector3.zero;
-            if (isLaunchLeft && bulletLeft != null && bulletLeft.GetComponent<Bullet>().isHooked())
+            if (isLaunchLeft && bulletLeft != null && bulletLeft.GetComponent<Bullet>().IsHooked())
             {
                 vector3 = bulletLeft.transform.position;
             }
-            if (isLaunchRight && bulletRight != null && bulletRight.GetComponent<Bullet>().isHooked())
+            if (isLaunchRight && bulletRight != null && bulletRight.GetComponent<Bullet>().IsHooked())
             {
                 vector4 = bulletRight.transform.position;
             }
             Vector3 a = Vector3.zero;
-            if (vector3.magnitude != 0f && vector4.magnitude == 0f)
+            if (vector3.sqrMagnitude != 0f && vector4.sqrMagnitude == 0f)
             {
                 a = vector3;
             }
-            else if (vector3.magnitude == 0f && vector4.magnitude != 0f)
+            else if (vector3.sqrMagnitude == 0f && vector4.sqrMagnitude != 0f)
             {
                 a = vector4;
             }
-            else if (vector3.magnitude != 0f && vector4.magnitude != 0f)
+            else if (vector3.sqrMagnitude != 0f && vector4.sqrMagnitude != 0f)
             {
                 a = (vector3 + vector4) * 0.5f;
             }
             Vector3 vector5 = Vector3.Project(a - baseTransform.position, maincamera.transform.up);
             Vector3 b = Vector3.Project(a - baseTransform.position, maincamera.transform.right);
             Quaternion to2;
-            if (a.magnitude > 0f)
+            if (a.sqrMagnitude > 0f)
             {
                 Vector3 to = vector5 + b;
                 float num = Vector3.Angle(a - baseTransform.position, baseRigidBody.velocity) * 0.005f;
-                to2 = Quaternion.Euler(z: ((maincamera.transform.right + b.normalized).magnitude >= 1f) ? ((0f - Vector3.Angle(vector5, to)) * num) : (Vector3.Angle(vector5, to) * num), x: maincamera.transform.rotation.eulerAngles.x, y: maincamera.transform.rotation.eulerAngles.y);
+                to2 = Quaternion.Euler(z: ((maincamera.transform.right + b.normalized).sqrMagnitude >= 1f) ? ((0f - Vector3.Angle(vector5, to)) * num) : (Vector3.Angle(vector5, to) * num), x: maincamera.transform.rotation.eulerAngles.x, y: maincamera.transform.rotation.eulerAngles.y);
             }
             else
             {
@@ -3083,7 +3074,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
         }
         setHookedPplDirection();
-        LeanBody();
+        // LeanBody();
     }
 
     public void update2()
@@ -3116,7 +3107,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         if (myCannonRegion != null)
         {
-            FengGameManagerMKII.Instance.ShowHUDInfoCenter("Press 'Cannon Mount' key to use Cannon.");
+            FengGameManagerMKII.Instance.SetTextCenter("Press 'Cannon Mount' key to use Cannon.");
             if (FengGameManagerMKII.InputRC.isInputCannonDown(InputCodeRC.CannonMount))
             {
                 myCannonRegion.photonView.RPC("RequestControlRPC", PhotonTargets.MasterClient, base.photonView.viewID);
@@ -3160,7 +3151,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     return;
                 }
                 ShowSkillCountDown();
-                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer || (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer && !IN_GAME_MAIN_CAMERA.IsPausing))
+                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer || !IN_GAME_MAIN_CAMERA.IsPausing)
                 {
                     TickSkillCooldown();
                     TickFlareCooldown();
@@ -3422,7 +3413,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         }
                         else if (inputManager.isInputDown[InputCode.Attack0])
                         {
-                            // TODO: Mod, Weapon trail for when you're holding blades down
+                            // TODO: Mod, weapon trail for when you're holding attack down
                             if ((int)FengGameManagerMKII.Settings[92] == 0 && Guardian.Mod.Properties.HoldForBladeTrails.Value)
                             {
                                 leftbladetrail2.Activate();
@@ -3687,7 +3678,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         {
                             if (buttonAttackRelease)
                             {
-                                continueAnimation();
+                                ContinueAnimation();
                                 attackReleased = true;
                             }
                             else if (baseAnimation[attackAnimation].normalizedTime >= 0.32f)
@@ -3695,7 +3686,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 // TODO: Mod, animation-spam fix?
                                 if (baseAnimation[attackAnimation].speed >= 0.1f)
                                 {
-                                    pauseAnimation();
+                                    PauseAnimation();
                                 }
                             }
                         }
@@ -3848,8 +3839,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                     }
                                     else
                                     {
-                                        GameObject[] array = GameObject.FindGameObjectsWithTag("titan");
-                                        foreach (GameObject gameObject2 in array)
+                                        foreach (GameObject gameObject2 in GameObject.FindGameObjectsWithTag("titan"))
                                         {
                                             if (Vector3.Distance(gameObject2.transform.position, baseTransform.position) < 50f && Vector3.Angle(gameObject2.transform.forward, baseTransform.position - gameObject2.transform.position) < 90f && gameObject2.GetComponent<TITAN>() != null)
                                             {
@@ -4200,7 +4190,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         skillCDLast = 1.5f;
         skillId = setup.myCostume.stat.SkillId;
-        customAnimationSpeed();
+        CustomAnimationSpeed();
         switch (skillId)
         {
             case "levi":
@@ -4634,11 +4624,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             hashtable.Add(PhotonPlayerProperty.Dead, true);
             hashtable.Add(PhotonPlayerProperty.Deaths, GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths]) + 1);
             PhotonNetwork.player.SetCustomProperties(hashtable);
-            object[] parameters = new object[1]
-            {
-                (!(titanName == string.Empty)) ? 1 : 0
-            };
-            FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, parameters);
+            FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, (!(titanName == string.Empty)) ? 1 : 0);
             if (viewId != -1)
             {
                 PhotonView photonView2 = PhotonView.Find(viewId);
@@ -4767,11 +4753,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 FengGameManagerMKII.Instance.SendKillInfo(isKillerTitan: true, "[FFCC00][" + info.sender.Id + "] [-]" + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
             }
-            object[] parameters = new object[1]
-            {
-                (!(titanName == string.Empty)) ? 1 : 0
-            };
-            FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, parameters);
+            FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, (!(titanName == string.Empty)) ? 1 : 0);
         }
         GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("hitMeat2"))) : PhotonNetwork.Instantiate("hitMeat2", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
         gameObject.transform.position = base.transform.position;
@@ -4841,7 +4823,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void ClearPopup()
     {
-        FengGameManagerMKII.Instance.ShowHUDInfoCenter(string.Empty);
+        FengGameManagerMKII.Instance.SetTextCenter(string.Empty);
     }
 
     [RPC]
@@ -4864,11 +4846,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             if (smoke_3dmg.enableEmission && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
             {
-                object[] parameters = new object[1]
-                {
-                    false
-                };
-                base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, parameters);
+                base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, false);
             }
             smoke_3dmg.enableEmission = false;
             base.rigidbody.velocity = Vector3.zero;
@@ -4980,11 +4958,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
-            object[] parameters = new object[1]
-            {
-                team
-            };
-            base.photonView.RPC("setMyTeam", PhotonTargets.AllBuffered, parameters);
+            base.photonView.RPC("setMyTeam", PhotonTargets.AllBuffered, team);
             ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
             hashtable.Add(PhotonPlayerProperty.Team, team);
             PhotonNetwork.player.SetCustomProperties(hashtable);
@@ -5013,10 +4987,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         crossR2 = GameObject.Find("crossR2");
         LabelDistance = GameObject.Find("LabelDistance");
         cachedSprites = new Dictionary<string, UISprite>();
-        UnityEngine.Object[] array = UnityEngine.Object.FindObjectsOfType(typeof(GameObject));
-        for (int i = 0; i < array.Length; i++)
+
+        foreach (GameObject gameObject in UnityEngine.Object.FindObjectsOfType(typeof(GameObject)))
         {
-            GameObject gameObject = (GameObject)array[i];
             if (gameObject.GetComponent<UISprite>() != null && gameObject.activeInHierarchy)
             {
                 string name = gameObject.name;

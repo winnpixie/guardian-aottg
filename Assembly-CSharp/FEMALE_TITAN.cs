@@ -224,11 +224,10 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
 
     private GameObject getNearestHero()
     {
-        GameObject[] array = GameObject.FindGameObjectsWithTag("Player");
         GameObject result = null;
         float num = float.PositiveInfinity;
         Vector3 position = base.transform.position;
-        foreach (GameObject gameObject in array)
+        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
         {
             if ((!gameObject.GetComponent<HERO>() || !gameObject.GetComponent<HERO>().HasDied()) && (!gameObject.GetComponent<TITAN_EREN>() || !gameObject.GetComponent<TITAN_EREN>().hasDied))
             {
@@ -263,7 +262,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             {
                 if (!gameObject.GetComponent<TITAN_EREN>().isHit)
                 {
-                    gameObject.GetComponent<TITAN_EREN>().hitByTitan();
+                    gameObject.GetComponent<TITAN_EREN>().HitByTitan();
                 }
                 return gameObject;
             }
@@ -1511,11 +1510,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         else
         {
             FengGameManagerMKII.Instance.SendKillInfo(isKillerTitan: false, (string)photonView.owner.customProperties[PhotonPlayerProperty.Name], isVictimTitan: true, "Female Titan's neck", speed);
-            object[] parameters = new object[1]
-            {
-                speed
-            };
-            FengGameManagerMKII.Instance.photonView.RPC("netShowDamage", photonView.owner, parameters);
+            FengGameManagerMKII.Instance.photonView.RPC("netShowDamage", photonView.owner, speed);
         }
         healthTime = 0.2f;
     }

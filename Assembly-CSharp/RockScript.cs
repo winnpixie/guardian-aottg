@@ -38,14 +38,7 @@ public class RockScript : MonoBehaviour
         base.transform.position = desPt;
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
-            if (FengGameManagerMKII.LAN)
-            {
-                Network.Instantiate(Resources.Load("FX/boom1_CT_KICK"), base.transform.position + Vector3.up * 30f, Quaternion.Euler(270f, 0f, 0f), 0);
-            }
-            else
-            {
-                PhotonNetwork.Instantiate("FX/boom1_CT_KICK", base.transform.position + Vector3.up * 30f, Quaternion.Euler(270f, 0f, 0f), 0);
-            }
+            PhotonNetwork.Instantiate("FX/boom1_CT_KICK", base.transform.position + Vector3.up * 30f, Quaternion.Euler(270f, 0f, 0f), 0);
         }
         else
         {
