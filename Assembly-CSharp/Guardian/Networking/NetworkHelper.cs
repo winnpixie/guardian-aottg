@@ -6,25 +6,8 @@ namespace Guardian.Networking
 {
     class NetworkHelper
     {
-        public static PhotonApplication App = PhotonApplication.Custom;
+        public static PhotonApplication App = PhotonApplication.AoTTG2;
         public static PhotonConnection Connection = PhotonConnection.TCP;
-
-        public static string GetMasterAddress(CloudRegionCode code)
-        {
-            switch (code)
-            {
-                case CloudRegionCode.us:
-                    return "app-us.exitgamescloud.com";
-                case CloudRegionCode.eu:
-                    return "app-eu.exitgamescloud.com";
-                case CloudRegionCode.jp:
-                    return "app-jp.exitgamescloud.com";
-                case CloudRegionCode.asia:
-                    return "app-asia.exitgamescloud.com";
-            }
-
-            return string.Empty;
-        }
 
         public static long GetResponseTime(string server, int port)
         {

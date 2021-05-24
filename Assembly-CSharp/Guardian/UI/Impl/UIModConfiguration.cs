@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Guardian.UI.Impl
 {
-    class UIModSettings : UIBase
+    class UIModConfiguration : UIBase
     {
         private int width = 420;
         private int height = 320;
@@ -52,7 +52,7 @@ namespace Guardian.UI.Impl
         public override void Draw()
         {
             GUILayout.BeginArea(new Rect(5, Screen.height - height - 5, width, height), GSkins.Box);
-            GUILayout.Label("Guardian Settings", GUILayout.Width(width));
+            GUILayout.Label("Mod Configuration", GUILayout.Width(width));
             scrollView = GUILayout.BeginScrollView(scrollView);
             GUILayout.BeginVertical();
 
@@ -105,19 +105,11 @@ namespace Guardian.UI.Impl
             }
             GUILayout.EndVertical();
             GUILayout.EndScrollView();
-
-            GUILayout.BeginHorizontal();
             if (GUILayout.Button("Save & Close", GUILayout.Height(25)))
             {
                 save = true;
                 Mod.UI.OpenScreen(null);
             }
-
-            if (GUILayout.Button("Close (No Saving)", GUILayout.Height(25)))
-            {
-                Mod.UI.OpenScreen(null);
-            }
-            GUILayout.EndHorizontal();
 
             GUILayout.EndArea();
         }

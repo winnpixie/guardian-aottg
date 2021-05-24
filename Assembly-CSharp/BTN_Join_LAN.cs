@@ -25,6 +25,7 @@ public class BTN_Join_LAN : MonoBehaviour
 			{
 				Guardian.Mod.Logger.Info("Joining a non-Photon Cloud server.");
 			}
+
 			FengGameManagerMKII.OnPrivateServer = !PhotonCloud.IsMatch(ipStr);
 			FengGameManagerMKII.PrivateServerAuthPass = passwdStr;
 		}

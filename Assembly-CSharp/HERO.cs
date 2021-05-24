@@ -212,6 +212,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
+    // TODO: Mod, RC's fix
+    private bool cancelGasDisable;
+
     public bool IsInvincible()
     {
         return invincible > 0f;
@@ -1507,7 +1510,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 ReleaseHookedTarget();
             }
         }
+
         sparks.enableEmission = false;
+        cancelGasDisable = true;
     }
 
     private void AimLeftArmTo(Vector3 target)
@@ -2617,22 +2622,32 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, 50f, 0.1f);
         }
-        if (flag)
+
+        // TODO: Mod, gas spam fix
+        if (!cancelGasDisable)
         {
-            UseGas(useGasSpeed * Time.deltaTime);
-            if (!smoke_3dmg.enableEmission && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
+            if (flag)
             {
-                base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, true);
+                UseGas(useGasSpeed * Time.deltaTime);
+                if (!smoke_3dmg.enableEmission && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
+                {
+                    base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, true);
+                }
+                smoke_3dmg.enableEmission = true;
             }
-            smoke_3dmg.enableEmission = true;
+            else
+            {
+                if (smoke_3dmg.enableEmission && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
+                {
+                    base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, false);
+                }
+                smoke_3dmg.enableEmission = false;
+            }
         }
+
         else
         {
-            if (smoke_3dmg.enableEmission && IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
-            {
-                base.photonView.RPC("net3DMGSMOKE", PhotonTargets.Others, false);
-            }
-            smoke_3dmg.enableEmission = false;
+            cancelGasDisable = false;
         }
         if (currentSpeed > 80f)
         {

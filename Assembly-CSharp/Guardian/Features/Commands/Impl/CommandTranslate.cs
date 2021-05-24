@@ -23,6 +23,7 @@ namespace Guardian.Features.Commands.Impl
                     else
                     {
                         irc.AddLine("An error occured while trying to retrieve the translation!".WithColor("FF0000"));
+                        irc.AddLine(result[0].WithColor("FF0000"));
                     }
                 }));
             }

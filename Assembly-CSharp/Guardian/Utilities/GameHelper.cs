@@ -35,7 +35,10 @@ namespace Guardian.Utilities
                     }
                 }
 
-                Mod.Logger.Warn($"Unwhitelisted skin host: {textureHost}");
+                if (textureHost.Length > 0)
+                {
+                    Mod.Logger.Warn($"Unwhitelisted host: {textureHost}");
+                }
             }
 
             return null;

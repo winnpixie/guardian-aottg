@@ -405,7 +405,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public void OnConnectionFail(DisconnectCause cause)
     {
-        UnityEngine.MonoBehaviour.print("OnConnectionFail : " + cause.ToString());
+        UnityEngine.MonoBehaviour.print("OnConnectionFail: " + cause.ToString());
         Screen.lockCursor = false;
         Screen.showCursor = true;
         IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
@@ -415,7 +415,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[2], state: false);
         NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[3], state: false);
         NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[4], state: true);
-        GameObject.Find("LabelDisconnectInfo").GetComponent<UILabel>().text = "OnConnectionFail : " + cause.ToString();
+        GameObject.Find("LabelDisconnectInfo").GetComponent<UILabel>().text = "OnConnectionFail: " + cause.ToString();
     }
 
     public void OnFailedToConnectToPhoton()
@@ -2097,12 +2097,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     currentSpeed = Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity.magnitude;
                     maxSpeed = Mathf.Max(maxSpeed, currentSpeed);
-                    SetTextTopLeft("Current Speed : " + (int)currentSpeed + "\nMax Speed:" + maxSpeed);
+                    SetTextTopLeft("Current Speed: " + (int)currentSpeed + "\nMax Speed: " + maxSpeed);
                 }
             }
             else
             {
-                SetTextTopLeft("Kills:" + single_kills + "\nMax Damage:" + single_maxDamage + "\nTotal Damage:" + single_totalDamage);
+                SetTextTopLeft("Kills: " + single_kills + "\nMax Damage: " + single_maxDamage + "\nTotal Damage: " + single_totalDamage);
 
                 // Game lose messages
                 if (isLosing)
@@ -2157,7 +2157,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 if (!isWinning)
                 {
-                    SetTextTopCenter("Time : " + Guardian.Utilities.GameHelper.FormatTime(timeTotalServer * 10 * 0.1f - 5f, true));
+                    SetTextTopCenter("Time: " + Guardian.Utilities.GameHelper.FormatTime(timeTotalServer * 10 * 0.1f - 5f, true));
                 }
                 if (timeTotalServer < 5f)
                 {
@@ -2173,7 +2173,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
             else
             {
-                SetTextTopCenter("Time : " + (roundTime >= 20f ? Guardian.Utilities.GameHelper.FormatTime(roundTime * 10f * 0.1f - 20f, true) : "WAITING"));
+                SetTextTopCenter("Time: " + (roundTime >= 20f ? Guardian.Utilities.GameHelper.FormatTime(roundTime * 10f * 0.1f - 20f, true) : "WAITING"));
                 if (roundTime < 20f)
                 {
                     SetTextCenter("RACE START IN " + Guardian.Utilities.GameHelper.FormatTime(20f - roundTime, true) + (localRacingResult.Length > 0 ? ("\nLast Round\n" + localRacingResult) : string.Empty));
@@ -2233,18 +2233,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             switch (Level.Mode)
             {
                 case GameMode.ENDLESS_TITAN:
-                    text = "Time : " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer);
+                    text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer);
                     break;
                 case GameMode.KILL_TITAN:
                 case GameMode.None:
                     text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length
-                        + " Time : " + Guardian.Utilities.GameHelper.FormatTime((IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer));
+                        + " Time: " + Guardian.Utilities.GameHelper.FormatTime((IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer));
                     break;
                 case GameMode.SURVIVE_MODE:
-                    text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length + " Wave : " + wave;
+                    text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length + " Wave: " + wave;
                     break;
                 case GameMode.BOSS_FIGHT_CT:
-                    text = "Time : " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer) + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the north gate!";
+                    text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer) + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the north gate!";
                     break;
                 case GameMode.PVP_CAPTURE:
                     string str = "| ";
@@ -2252,13 +2252,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     {
                         str += (PVPcheckPoint.chkPts[i] as PVPcheckPoint).GetState() + " ";
                     }
-                    text = $"[{ColorSet.TitanPlayer}]{PVPtitanScoreMax - PVPtitanScore} [-]{str}| [{ColorSet.Human}]{PVPhumanScoreMax - PVPhumanScore}\n[-]Time : {Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer)}";
+                    text = $"[{ColorSet.TitanPlayer}]{PVPtitanScoreMax - PVPtitanScore} [-]{str}| [{ColorSet.Human}]{PVPhumanScoreMax - PVPhumanScore}\n[-]Time: {Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer)}";
                     break;
             }
 
             if (RCSettings.TeamMode > 0)
             {
-                text += "\n[00FFFF]Cyan: " + Convert.ToString(cyanKills) + "       [FF00FF]Magenta: " + Convert.ToString(magentaKills) + "[FFFFFF]";
+                text += "\n[00FFFF]Cyan: " + Convert.ToString(cyanKills) + " | [FF00FF]Magenta: " + Convert.ToString(magentaKills) + "[FFFFFF]";
             }
             SetTextTopCenter(text);
             text = string.Empty;
@@ -2267,7 +2267,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 if (Level.Mode == GameMode.SURVIVE_MODE)
                 {
-                    text = "Time : " + Guardian.Utilities.GameHelper.FormatTime(timeTotalServer);
+                    text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(timeTotalServer);
                 }
             }
             else
@@ -2278,25 +2278,23 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     case GameMode.KILL_TITAN:
                     case GameMode.BOSS_FIGHT_CT:
                     case GameMode.PVP_CAPTURE:
-                        text = "Humanity " + humanScore + " : Titan " + titanScore;
+                        text = "Humanity " + humanScore + " | Titan " + titanScore;
                         break;
                     case GameMode.SURVIVE_MODE:
-                        text = "Time : " + Guardian.Utilities.GameHelper.FormatTime((time - timeTotalServer));
+                        text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer);
                         break;
                     case GameMode.PVP_AHSS:
-                        for (int j = 0; j < teamScores.Length; j++)
+                        for (int i = 0; i < teamScores.Length; i++)
                         {
-                            string text2 = text;
-                            text = string.Concat(
-                                text2,
-                                (j == 0) ? string.Empty : " : ",
+                            text += string.Concat(
+                                (i == 0) ? string.Empty : " | ",
                                 "Team",
-                                j + 1,
+                                i + 1,
                                 " ",
-                                teamScores[j]
+                                teamScores[i]
                             );
                         }
-                        text += "\nTime : " + Guardian.Utilities.GameHelper.FormatTime((time - timeTotalServer));
+                        text += "\nTime: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer);
                         break;
                 }
             }
@@ -2311,8 +2309,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 _ => "[000000]Unknown"
             };
 
-            AddTextTopRight("\n" + Level.Name + " : " + difficultyTxt);
-            AddTextTopRight("[-]\nCamera : [FFCC00]" + IN_GAME_MAIN_CAMERA.CameraMode + "[-]");
+            AddTextTopRight("\n" + Level.Name + ": " + difficultyTxt);
+            AddTextTopRight("[-]\nCamera: [FFCC00]" + IN_GAME_MAIN_CAMERA.CameraMode + "[-]");
 
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
             {
@@ -2362,19 +2360,25 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         switch (Level.Mode)
         {
             case GameMode.PVP_AHSS:
-                for (int l = 0; l < teamScores.Length; l++)
+                for (int i = 0; i < teamScores.Length; i++)
                 {
-                    gameResults += (l == 0) ? ("Team" + (l + 1) + " " + teamScores[l] + " ") : " : ";
+                    gameResults += string.Concat(
+                        (i == 0) ? string.Empty : " | ",
+                        "Team",
+                        i + 1,
+                        " ",
+                        teamScores[i]
+                    );
                 }
                 break;
             case GameMode.SURVIVE_MODE:
-                gameResults = "Highest Wave : " + highestWave;
+                gameResults = "Highest Wave: " + highestWave;
                 break;
             default:
                 gameResults = string.Concat(
                     "Humanity ",
                     humanScore,
-                    " : Titan ",
+                    " | Titan ",
                     titanScore
                 );
                 break;
@@ -2705,7 +2709,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         int num = Mathf.Min(racingResult.Count, 10);
         for (int i = 0; i < num; i++)
         {
-            localRacingResult += "Rank " + (i + 1) + " : ";
+            localRacingResult += "Rank " + (i + 1) + ": ";
             localRacingResult += (racingResult[i] as RacingResult).name;
             localRacingResult += " - " + Guardian.Utilities.GameHelper.FormatTime((racingResult[i] as RacingResult).time * 100f * 0.01f, true) + '\n';
         }
@@ -2928,7 +2932,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             content += "[FFCC00]";
         }
-        content += "[" + player.Id + "][-] ";
+        content += "#" + player.Id + "[-] ";
 
         if (player.customProperties[PhotonPlayerProperty.Dead] == null)
         {
@@ -7041,6 +7045,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             mipmapping = false;
         }
+
+        // Load skybox skin
         if (skybox[0] != string.Empty || skybox[1] != string.Empty || skybox[2] != string.Empty || skybox[3] != string.Empty || skybox[4] != string.Empty || skybox[5] != string.Empty)
         {
             string key = string.Join(",", skybox);
@@ -7059,10 +7065,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyFront);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex6 = RCextensions.LoadImage(www, mipmapping, 500000);
-                        www.Dispose();
-                        newSky.SetTexture("_FrontTex", skytex6);
+                        using (www)
+                        {
+                            yield return www;
+
+                            Texture2D frontSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            newSky.SetTexture("_FrontTex", frontSkyTex);
+                        }
                     }
                 }
                 if (skyBack.EndsWith(".jpg") || skyBack.EndsWith(".png") || skyBack.EndsWith(".jpeg"))
@@ -7070,10 +7079,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyBack);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex5 = RCextensions.LoadImage(www, mipmapping, 500000);
-                        www.Dispose();
-                        newSky.SetTexture("_BackTex", skytex5);
+                        using (www)
+                        {
+                            yield return www;
+
+                            Texture2D backSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            newSky.SetTexture("_BackTex", backSkyTex);
+                        }
                     }
                 }
                 if (skyLeft.EndsWith(".jpg") || skyLeft.EndsWith(".png") || skyLeft.EndsWith(".jpeg"))
@@ -7081,10 +7093,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyLeft);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex4 = RCextensions.LoadImage(www, mipmapping, 500000);
-                        www.Dispose();
-                        newSky.SetTexture("_LeftTex", skytex4);
+                        using (www)
+                        {
+                            yield return www;
+
+                            Texture2D leftSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            newSky.SetTexture("_LeftTex", leftSkyTex);
+                        }
                     }
                 }
                 if (skyRight.EndsWith(".jpg") || skyRight.EndsWith(".png") || skyRight.EndsWith(".jpeg"))
@@ -7092,10 +7107,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyRight);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex3 = RCextensions.LoadImage(www, mipmapping, 500000);
-                        www.Dispose();
-                        newSky.SetTexture("_RightTex", skytex3);
+                        using (www)
+                        {
+                            yield return www;
+
+                            Texture2D rightSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            newSky.SetTexture("_RightTex", rightSkyTex);
+                        }
                     }
                 }
                 if (skyUp.EndsWith(".jpg") || skyUp.EndsWith(".png") || skyUp.EndsWith(".jpeg"))
@@ -7103,10 +7121,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyUp);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex2 = RCextensions.LoadImage(www, mipmapping, 500000);
-                        www.Dispose();
-                        newSky.SetTexture("_UpTex", skytex2);
+                        using (www)
+                        {
+                            yield return www;
+
+                            Texture2D upSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            newSky.SetTexture("_UpTex", upSkyTex);
+                        }
                     }
                 }
                 if (skyDown.EndsWith(".jpg") || skyDown.EndsWith(".png") || skyDown.EndsWith(".jpeg"))
@@ -7114,10 +7135,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyDown);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex = RCextensions.LoadImage(www, mipmapping, 500000);
-                        www.Dispose();
-                        newSky.SetTexture("_DownTex", skytex);
+                        using (www)
+                        {
+                            yield return www;
+
+                            Texture2D downSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            newSky.SetTexture("_DownTex", downSkyTex);
+                        }
                     }
                 }
                 Camera.main.GetComponent<Skybox>().material = newSky;
@@ -7130,6 +7154,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 SkyMaterial = (Material)LinkHash[1][key];
             }
         }
+
+        // Load ground skin
         if (linkGround.EndsWith(".jpg") || linkGround.EndsWith(".png") || linkGround.EndsWith(".jpeg"))
         {
             foreach (GameObject ground in groundList)
@@ -7138,29 +7164,24 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     try
                     {
-                        Renderer[] componentsInChildren = ground.GetComponentsInChildren<Renderer>();
-                        foreach (Renderer renderer in componentsInChildren)
+                        foreach (Renderer renderer in ground.GetComponentsInChildren<Renderer>())
                         {
                             if (!LinkHash[0].ContainsKey(linkGround))
                             {
                                 WWW www = Guardian.Utilities.GameHelper.CreateWWW(linkGround);
                                 if (www != null)
                                 {
-                                    yield return www;
-                                    Texture2D groundTex = RCextensions.LoadImage(www, mipmapping, 200000);
-                                    www.Dispose();
-
-                                    if (!LinkHash[0].ContainsKey(linkGround))
+                                    using (www)
                                     {
+                                        yield return www;
+
+                                        Texture2D groundTex = RCextensions.LoadImage(www, mipmapping, 200000);
+
                                         unload = true;
                                         renderer.material.mainTexture = groundTex;
                                         LinkHash[0].Add(linkGround, renderer.material);
-                                        renderer.material = (Material)LinkHash[0][linkGround];
                                     }
-                                    else
-                                    {
-                                        renderer.material = (Material)LinkHash[0][linkGround];
-                                    }
+                                    renderer.material = (Material)LinkHash[0][linkGround];
                                 }
                             }
                             else
@@ -7181,14 +7202,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 if (ground != null && ground.renderer != null)
                 {
-                    Renderer[] componentsInChildren2 = ground.GetComponentsInChildren<Renderer>();
-                    foreach (Renderer renderer in componentsInChildren2)
+                    foreach (Renderer renderer in ground.GetComponentsInChildren<Renderer>())
                     {
                         renderer.enabled = false;
                     }
                 }
             }
         }
+
         if (unload)
         {
             UnloadAssets();
@@ -7247,6 +7268,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     Level.Mode = GameMode.None;
                     break;
             }
+
             if (link.Length > 6 && (int)Settings[2] == 1)
             {
                 StartCoroutine(CoClearLevel(link));
@@ -7265,13 +7287,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     private IEnumerator CoLoadSkin(string n, string url, string url2, string[] skybox)
     {
-        bool flag = true;
+        bool mipmapping = true;
         bool unload = false;
+
         if ((int)Settings[63] == 1)
         {
-            flag = false;
+            mipmapping = false;
         }
-        if (skybox.Length > 5 && (!(skybox[0] == string.Empty) || !(skybox[1] == string.Empty) || !(skybox[2] == string.Empty) || !(skybox[3] == string.Empty) || !(skybox[4] == string.Empty) || !(skybox[5] == string.Empty)))
+
+        // Load skybox skin
+        if (skybox.Length > 5 && (skybox[0] != string.Empty || skybox[1] != string.Empty || skybox[2] != string.Empty || skybox[3] != string.Empty || skybox[4] != string.Empty || skybox[5] != string.Empty))
         {
             string key = string.Join(",", skybox);
             if (!LinkHash[1].ContainsKey(key))
@@ -7289,11 +7314,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyFront);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex = RCextensions.LoadImage(www, flag, 500000);
-                        www.Dispose();
-                        skytex.wrapMode = TextureWrapMode.Clamp;
-                        newSky.SetTexture("_FrontTex", skytex);
+                        using (www)
+                        {
+                            yield return www;
+                            Texture2D skytex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            skytex.wrapMode = TextureWrapMode.Clamp;
+                            newSky.SetTexture("_FrontTex", skytex);
+                        }
                     }
                 }
                 if (skyBack.EndsWith(".jpg") || skyBack.EndsWith(".png") || skyBack.EndsWith(".jpeg"))
@@ -7301,11 +7328,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyBack);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex2 = RCextensions.LoadImage(www, flag, 500000);
-                        www.Dispose();
-                        skytex2.wrapMode = TextureWrapMode.Clamp;
-                        newSky.SetTexture("_BackTex", skytex2);
+                        using (www)
+                        {
+                            yield return www;
+                            Texture2D skytex2 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            skytex2.wrapMode = TextureWrapMode.Clamp;
+                            newSky.SetTexture("_BackTex", skytex2);
+                        }
                     }
                 }
                 if (skyLeft.EndsWith(".jpg") || skyLeft.EndsWith(".png") || skyLeft.EndsWith(".jpeg"))
@@ -7313,11 +7342,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyLeft);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex3 = RCextensions.LoadImage(www, flag, 500000);
-                        www.Dispose();
-                        skytex3.wrapMode = TextureWrapMode.Clamp;
-                        newSky.SetTexture("_LeftTex", skytex3);
+                        using (www)
+                        {
+                            yield return www;
+                            Texture2D skytex3 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            skytex3.wrapMode = TextureWrapMode.Clamp;
+                            newSky.SetTexture("_LeftTex", skytex3);
+                        }
                     }
                 }
                 if (skyRight.EndsWith(".jpg") || skyRight.EndsWith(".png") || skyRight.EndsWith(".jpeg"))
@@ -7325,11 +7356,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyRight);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex4 = RCextensions.LoadImage(www, flag, 500000);
-                        www.Dispose();
-                        skytex4.wrapMode = TextureWrapMode.Clamp;
-                        newSky.SetTexture("_RightTex", skytex4);
+                        using (www)
+                        {
+                            yield return www;
+                            Texture2D skytex4 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            skytex4.wrapMode = TextureWrapMode.Clamp;
+                            newSky.SetTexture("_RightTex", skytex4);
+                        }
                     }
                 }
                 if (skyUp.EndsWith(".jpg") || skyUp.EndsWith(".png") || skyUp.EndsWith(".jpeg"))
@@ -7337,11 +7370,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyUp);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex5 = RCextensions.LoadImage(www, flag, 500000);
-                        www.Dispose();
-                        skytex5.wrapMode = TextureWrapMode.Clamp;
-                        newSky.SetTexture("_UpTex", skytex5);
+                        using (www)
+                        {
+                            yield return www;
+                            Texture2D skytex5 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            skytex5.wrapMode = TextureWrapMode.Clamp;
+                            newSky.SetTexture("_UpTex", skytex5);
+                        }
                     }
                 }
                 if (skyDown.EndsWith(".jpg") || skyDown.EndsWith(".png") || skyDown.EndsWith(".jpeg"))
@@ -7349,11 +7384,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyDown);
                     if (www != null)
                     {
-                        yield return www;
-                        Texture2D skytex6 = RCextensions.LoadImage(www, flag, 500000);
-                        www.Dispose();
-                        skytex6.wrapMode = TextureWrapMode.Clamp;
-                        newSky.SetTexture("_DownTex", skytex6);
+                        using (www)
+                        {
+                            yield return www;
+                            Texture2D skytex6 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            skytex6.wrapMode = TextureWrapMode.Clamp;
+                            newSky.SetTexture("_DownTex", skytex6);
+                        }
                     }
                 }
                 Camera.main.GetComponent<Skybox>().material = newSky;
@@ -7366,7 +7403,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 SkyMaterial = (Material)LinkHash[1][key];
             }
         }
-        if (Level.Map.Contains("Forest"))
+
+        if (Level.Map.Contains("Forest")) // Load Forest skin
         {
             string[] strArray = url.Split(',');
             string[] strArray2 = url2.Split(',');
@@ -7387,8 +7425,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 string str10 = strArray2[num7];
                                 try
                                 {
-                                    Renderer[] componentsInChildren = obj4.GetComponentsInChildren<Renderer>();
-                                    foreach (Renderer renderer6 in componentsInChildren)
+                                    foreach (Renderer renderer6 in obj4.GetComponentsInChildren<Renderer>())
                                     {
                                         if (renderer6.name.Contains(S[22]))
                                         {
@@ -7399,20 +7436,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(key2);
                                                     if (www != null)
                                                     {
-                                                        yield return www;
-                                                        Texture2D tex7 = RCextensions.LoadImage(www, flag, 1000000);
-                                                        www.Dispose();
-                                                        if (!LinkHash[2].ContainsKey(key2))
+                                                        using (www)
                                                         {
-                                                            unload = true;
-                                                            renderer6.material.mainTexture = tex7;
-                                                            LinkHash[2].Add(key2, renderer6.material);
-                                                            renderer6.material = (Material)LinkHash[2][key2];
+                                                            yield return www;
+                                                            Texture2D tex7 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                                            if (!LinkHash[2].ContainsKey(key2))
+                                                            {
+                                                                unload = true;
+                                                                renderer6.material.mainTexture = tex7;
+                                                                LinkHash[2].Add(key2, renderer6.material);
+                                                            }
                                                         }
-                                                        else
-                                                        {
-                                                            renderer6.material = (Material)LinkHash[2][key2];
-                                                        }
+                                                        renderer6.material = (Material)LinkHash[2][key2];
                                                     }
                                                 }
                                                 else
@@ -7430,20 +7465,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(str10);
                                                     if (www != null)
                                                     {
-                                                        yield return www;
-                                                        Texture2D tex6 = RCextensions.LoadImage(www, flag, 200000);
-                                                        www.Dispose();
-                                                        if (!LinkHash[0].ContainsKey(str10))
+                                                        using (www)
                                                         {
-                                                            unload = true;
-                                                            renderer6.material.mainTexture = tex6;
-                                                            LinkHash[0].Add(str10, renderer6.material);
-                                                            renderer6.material = (Material)LinkHash[0][str10];
+                                                            yield return www;
+                                                            Texture2D tex6 = RCextensions.LoadImage(www, mipmapping, 200000);
+                                                            if (!LinkHash[0].ContainsKey(str10))
+                                                            {
+                                                                unload = true;
+                                                                renderer6.material.mainTexture = tex6;
+                                                                LinkHash[0].Add(str10, renderer6.material);
+                                                            }
                                                         }
-                                                        else
-                                                        {
-                                                            renderer6.material = (Material)LinkHash[0][str10];
-                                                        }
+                                                        renderer6.material = (Material)LinkHash[0][str10];
                                                     }
                                                 }
                                                 else
@@ -7471,28 +7504,25 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             {
                                 try
                                 {
-                                    Renderer[] componentsInChildren2 = obj4.GetComponentsInChildren<Renderer>();
-                                    foreach (Renderer renderer5 in componentsInChildren2)
+                                    foreach (Renderer renderer5 in obj4.GetComponentsInChildren<Renderer>())
                                     {
                                         if (!LinkHash[0].ContainsKey(str9))
                                         {
                                             WWW www = Guardian.Utilities.GameHelper.CreateWWW(str9);
                                             if (www != null)
                                             {
-                                                yield return www;
-                                                Texture2D tex5 = RCextensions.LoadImage(www, flag, 200000);
-                                                www.Dispose();
-                                                if (!LinkHash[0].ContainsKey(str9))
+                                                using (www)
                                                 {
-                                                    unload = true;
-                                                    renderer5.material.mainTexture = tex5;
-                                                    LinkHash[0].Add(str9, renderer5.material);
-                                                    renderer5.material = (Material)LinkHash[0][str9];
+                                                    yield return www;
+                                                    Texture2D tex5 = RCextensions.LoadImage(www, mipmapping, 200000);
+                                                    if (!LinkHash[0].ContainsKey(str9))
+                                                    {
+                                                        unload = true;
+                                                        renderer5.material.mainTexture = tex5;
+                                                        LinkHash[0].Add(str9, renderer5.material);
+                                                    }
                                                 }
-                                                else
-                                                {
-                                                    renderer5.material = (Material)LinkHash[0][str9];
-                                                }
+                                                renderer5.material = (Material)LinkHash[0][str9];
                                             }
                                         }
                                         else
@@ -7507,8 +7537,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             }
                             else if (str9.ToLower() == "transparent")
                             {
-                                Renderer[] componentsInChildren3 = obj4.GetComponentsInChildren<Renderer>();
-                                foreach (Renderer renderer7 in componentsInChildren3)
+                                foreach (Renderer renderer7 in obj4.GetComponentsInChildren<Renderer>())
                                 {
                                     renderer7.enabled = false;
                                 }
@@ -7521,11 +7550,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
             }
         }
-        else if (Level.Map.Contains("City"))
+        else if (Level.Map.Contains("City")) // Load City skin
         {
             string[] strArray4 = url.Split(',');
             string[] strArray3 = url2.Split(',');
-            _ = strArray3[2];
             int num6 = 0;
             try
             {
@@ -7542,28 +7570,25 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 {
                                     try
                                     {
-                                        Renderer[] componentsInChildren4 = obj3.GetComponentsInChildren<Renderer>();
-                                        foreach (Renderer renderer4 in componentsInChildren4)
+                                        foreach (Renderer renderer4 in obj3.GetComponentsInChildren<Renderer>())
                                         {
                                             if (!LinkHash[0].ContainsKey(str8))
                                             {
                                                 WWW www = Guardian.Utilities.GameHelper.CreateWWW(str8);
                                                 if (www != null)
                                                 {
-                                                    yield return www;
-                                                    Texture2D tex4 = RCextensions.LoadImage(www, flag, 200000);
-                                                    www.Dispose();
-                                                    if (!LinkHash[0].ContainsKey(str8))
+                                                    using (www)
                                                     {
-                                                        unload = true;
-                                                        renderer4.material.mainTexture = tex4;
-                                                        LinkHash[0].Add(str8, renderer4.material);
-                                                        renderer4.material = (Material)LinkHash[0][str8];
+                                                        yield return www;
+                                                        Texture2D tex4 = RCextensions.LoadImage(www, mipmapping, 200000);
+                                                        if (!LinkHash[0].ContainsKey(str8))
+                                                        {
+                                                            unload = true;
+                                                            renderer4.material.mainTexture = tex4;
+                                                            LinkHash[0].Add(str8, renderer4.material);
+                                                        }
                                                     }
-                                                    else
-                                                    {
-                                                        renderer4.material = (Material)LinkHash[0][str8];
-                                                    }
+                                                    renderer4.material = (Material)LinkHash[0][str8];
                                                 }
                                             }
                                             else
@@ -7576,8 +7601,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 }
                                 else if (str8.ToLower() == "transparent")
                                 {
-                                    Renderer[] componentsInChildren3 = obj3.GetComponentsInChildren<Renderer>();
-                                    foreach (Renderer renderer7 in componentsInChildren3)
+                                    foreach (Renderer renderer7 in obj3.GetComponentsInChildren<Renderer>())
                                     {
                                         renderer7.enabled = false;
                                     }
@@ -7593,28 +7617,25 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 {
                                     try
                                     {
-                                        Renderer[] componentsInChildren5 = obj3.GetComponentsInChildren<Renderer>();
-                                        foreach (Renderer renderer3 in componentsInChildren5)
+                                        foreach (Renderer renderer3 in obj3.GetComponentsInChildren<Renderer>())
                                         {
                                             if (!LinkHash[0].ContainsKey(str7))
                                             {
                                                 WWW www = Guardian.Utilities.GameHelper.CreateWWW(str7);
                                                 if (www != null)
                                                 {
-                                                    yield return www;
-                                                    Texture2D tex3 = RCextensions.LoadImage(www, flag, 200000);
-                                                    www.Dispose();
-                                                    if (!LinkHash[0].ContainsKey(str7))
+                                                    using (www)
                                                     {
-                                                        unload = true;
-                                                        renderer3.material.mainTexture = tex3;
-                                                        LinkHash[0].Add(str7, renderer3.material);
-                                                        renderer3.material = (Material)LinkHash[0][str7];
+                                                        Texture2D tex3 = RCextensions.LoadImage(www, mipmapping, 200000);
+                                                        if (!LinkHash[0].ContainsKey(str7))
+                                                        {
+                                                            unload = true;
+                                                            renderer3.material.mainTexture = tex3;
+                                                            LinkHash[0].Add(str7, renderer3.material);
+                                                        }
                                                     }
-                                                    else
-                                                    {
-                                                        renderer3.material = (Material)LinkHash[0][str7];
-                                                    }
+                                                    renderer3.material = (Material)LinkHash[0][str7];
+
                                                 }
                                             }
                                             else
@@ -7639,28 +7660,25 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 {
                                     try
                                     {
-                                        Renderer[] componentsInChildren6 = obj3.GetComponentsInChildren<Renderer>();
-                                        foreach (Renderer renderer2 in componentsInChildren6)
+                                        foreach (Renderer renderer2 in obj3.GetComponentsInChildren<Renderer>())
                                         {
                                             if (!LinkHash[2].ContainsKey(str5))
                                             {
                                                 WWW www = Guardian.Utilities.GameHelper.CreateWWW(str5);
                                                 if (www != null)
                                                 {
-                                                    yield return www;
-                                                    Texture2D tex2 = RCextensions.LoadImage(www, flag, 1000000);
-                                                    www.Dispose();
-                                                    if (!LinkHash[2].ContainsKey(str5))
+                                                    using (www)
                                                     {
-                                                        unload = true;
-                                                        renderer2.material.mainTexture = tex2;
-                                                        LinkHash[2].Add(str5, renderer2.material);
-                                                        renderer2.material = (Material)LinkHash[2][str5];
+                                                        yield return www;
+                                                        Texture2D tex2 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                                        if (!LinkHash[2].ContainsKey(str5))
+                                                        {
+                                                            unload = true;
+                                                            renderer2.material.mainTexture = tex2;
+                                                            LinkHash[2].Add(str5, renderer2.material);
+                                                        }
                                                     }
-                                                    else
-                                                    {
-                                                        renderer2.material = (Material)LinkHash[2][str5];
-                                                    }
+                                                    renderer2.material = (Material)LinkHash[2][str5];
                                                 }
                                             }
                                             else
@@ -7683,28 +7701,25 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             {
                                 try
                                 {
-                                    Renderer[] componentsInChildren7 = obj3.GetComponentsInChildren<Renderer>();
-                                    foreach (Renderer renderer in componentsInChildren7)
+                                    foreach (Renderer renderer in obj3.GetComponentsInChildren<Renderer>())
                                     {
                                         if (!LinkHash[2].ContainsKey(str4))
                                         {
                                             WWW www = Guardian.Utilities.GameHelper.CreateWWW(str4);
                                             if (www != null)
                                             {
-                                                yield return www;
-                                                Texture2D tex = RCextensions.LoadImage(www, flag, 1000000);
-                                                www.Dispose();
-                                                if (!LinkHash[2].ContainsKey(str4))
+                                                using (www)
                                                 {
-                                                    unload = true;
-                                                    renderer.material.mainTexture = tex;
-                                                    LinkHash[2].Add(str4, renderer.material);
-                                                    renderer.material = (Material)LinkHash[2][str4];
+                                                    yield return www;
+                                                    Texture2D tex = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                                    if (!LinkHash[2].ContainsKey(str4))
+                                                    {
+                                                        unload = true;
+                                                        renderer.material.mainTexture = tex;
+                                                        LinkHash[2].Add(str4, renderer.material);
+                                                    }
                                                 }
-                                                else
-                                                {
-                                                    renderer.material = (Material)LinkHash[2][str4];
-                                                }
+                                                renderer.material = (Material)LinkHash[2][str4];
                                             }
                                         }
                                         else
@@ -7762,11 +7777,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     Settings[64] = 101;
                     Application.LoadLevel(2);
                 }
-                else if (GUI.Button(new Rect(num7 + 11f, 45f, 128f, 25f), $"Server : {Guardian.Networking.NetworkHelper.App.Name}"))
+                else if (GUI.Button(new Rect(num7 + 11f, 45f, 128f, 25f), $"Server: {Guardian.Networking.NetworkHelper.App.Name}"))
                 {
                     // TODO: Mod
+                    if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.AoTTG2)
+                    {
+                        Guardian.Networking.NetworkHelper.App = Guardian.Networking.PhotonApplication.Custom;
+                    }
+                    else
+                    {
+                        Guardian.Networking.NetworkHelper.App = Guardian.Networking.PhotonApplication.AoTTG2;
+                    }
                 }
-                else if (GUI.Button(new Rect(num7 + 11f, 75f, 128f, 25f), $"Protocol : {Guardian.Networking.NetworkHelper.Connection.Name}"))
+                else if (GUI.Button(new Rect(num7 + 11f, 75f, 128f, 25f), $"Protocol: {Guardian.Networking.NetworkHelper.Connection.Name}"))
                 {
                     // TODO: Mod
                     switch (Guardian.Networking.NetworkHelper.Connection.Protocol)

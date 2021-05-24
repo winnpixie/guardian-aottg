@@ -24,10 +24,11 @@ namespace Guardian.Utilities
                 else
                 {
                     JSONArray json = JSON.Parse(www.text).AsArray;
+
                     callback.Invoke(new string[]
                     {
-                        json[2].Value,
-                        json[0].AsArray[0].AsArray[0].Value
+                        json[2].Value, // Language
+                        json[0].AsArray[0].AsArray[0].Value // Text
                     });
                 }
             }

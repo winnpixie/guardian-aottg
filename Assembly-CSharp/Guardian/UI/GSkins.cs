@@ -39,16 +39,19 @@ namespace Guardian.UI
                 flatLighter.SetPixel(0, 0, "444444BB".ToColor());
                 flatLighter.Apply();
 
+                // Rectangles
                 Box = new GUIStyle(GUI.skin.box);
                 Box.normal.background = flatNormal;
                 GUI.skin.box = Box;
 
+                // Buttons
                 Button = new GUIStyle(GUI.skin.button);
                 Button.normal.background = flatLight;
                 Button.hover.background = flatLighter;
                 Button.active.background = flatDark;
                 GUI.skin.button = Button;
 
+                // Text fields
                 TextField = new GUIStyle(GUI.skin.textField);
                 TextField.normal.background = flatDark;
                 TextField.hover.background = flatLighter;
@@ -57,6 +60,7 @@ namespace Guardian.UI
                 TextField.active.background = flatLight;
                 GUI.skin.textField = TextField;
 
+                // Text areas
                 TextArea = new GUIStyle(GUI.skin.textArea);
                 TextArea.normal.background = flatDark;
                 TextArea.hover.background = flatLighter;
@@ -65,6 +69,7 @@ namespace Guardian.UI
                 TextArea.active.background = flatLight;
                 GUI.skin.textArea = TextArea;
 
+                // Horizontal scrollbar
                 HorizontalScrollbar = new GUIStyle(GUI.skin.horizontalScrollbar);
                 HorizontalScrollbar.normal.background = flatDark;
                 GUI.skin.horizontalScrollbar = HorizontalScrollbar;
@@ -73,6 +78,7 @@ namespace Guardian.UI
                 HorizontalScrollbarThumb.normal.background = flatLight;
                 GUI.skin.horizontalScrollbarThumb = HorizontalScrollbarThumb;
 
+                // Vertical scrollbar
                 VerticalScrollbar = new GUIStyle(GUI.skin.verticalScrollbar);
                 VerticalScrollbar.normal.background = flatDark;
                 GUI.skin.verticalScrollbar = VerticalScrollbar;

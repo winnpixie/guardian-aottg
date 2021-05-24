@@ -140,7 +140,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
         GameObject gameObject = GameObject.Find("LabelInfoBottomRight");
         gameObject.transform.localPosition = new Vector3((int)((float)Screen.width * 0.5f), (int)((float)(-Screen.height) * 0.5f), 0f);
-        gameObject.GetComponent<UILabel>().text = "Pause : " + GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().inputString[InputCode.Pause] + " ";
+        gameObject.GetComponent<UILabel>().text = "Pause: " + GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().inputString[InputCode.Pause] + " ";
 
         GameObject.Find("LabelInfoTopCenter").transform.localPosition = new Vector3(0f, (int)((float)Screen.height * 0.5f), 0f);
         GameObject.Find("LabelInfoTopRight").transform.localPosition = new Vector3((int)((float)Screen.width * 0.5f), (int)((float)Screen.height * 0.5f), 0f);
@@ -728,8 +728,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             else
             {
                 // Preserve old size values
-                WindowWidth = Screen.width;
-                WindowHeight = Screen.height;
+                WindowWidth = Mathf.Max(640, Screen.width);
+                WindowHeight = Mathf.Max(480, Screen.height);
 
                 Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, fullscreen: true);
             }
@@ -740,11 +740,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         if (inputManager.isInputDown[InputCode.Restart])
         {
             Reset();
-        }
-
-        if (main_object == null)
-        {
-            return;
         }
 
         // Change camera mode
@@ -774,6 +769,12 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             Screen.showCursor = !Screen.showCursor;
         }
+
+        if (main_object == null)
+        {
+            return;
+        }
+
         if (inputManager.isInputDown[InputCode.Focus])
         {
             TriggerAutoLock = !TriggerAutoLock;
@@ -787,6 +788,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 }
             }
         }
+
         if (gameOver)
         {
             if (FengGameManagerMKII.InputRC.isInputHumanDown(InputCodeRC.LiveCamera))

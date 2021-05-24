@@ -6,7 +6,6 @@ using Guardian.Networking;
 using Guardian.Utilities;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -16,18 +15,17 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "05132021";
+        public static string Build = "05242021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
         public static GamemodeManager Gamemodes = new GamemodeManager();
         public static CommandManager Commands = new CommandManager();
         public static PropertyManager Properties = new PropertyManager();
-        public static UI.UIManager UI = new UI.UIManager();
+        public static UI.UIManager UI;
         public static List<string> HostWhitelist = new List<string>();
         public static Regex BlacklistedTags = new Regex("<(\\/?)(size|material|quad)(.*)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
-        public static long LaunchTime;
 
         private static bool Initialized = false;
         private static bool FirstJoin = true;
@@ -67,13 +65,6 @@ namespace Guardian
                 Commands.Load();
                 Properties.Load();
 
-                // Print out debug information
-                Logger.Info($"Version {Build}");
-                Logger.Info($"Unity {Application.unityVersion} on {Application.platform}");
-                Logger.Info($"OS: {SystemInfo.operatingSystem}");
-                Logger.Info($"CPU: {SystemInfo.processorType}");
-                Logger.Info($"GPU: {SystemInfo.graphicsDeviceName}");
-
                 // Property whitelist
                 NetworkPatches.PropertyWhitelist.Add("sender");
                 NetworkPatches.PropertyWhitelist.Add("GuardianMod");
@@ -84,11 +75,10 @@ namespace Guardian
 
                 Initialized = true;
 
-                LaunchTime = GameHelper.CurrentTimeMillis();
                 DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
             }
 
-            base.gameObject.AddComponent<UI.ModUI>();
+            UI = base.gameObject.AddComponent<UI.UIManager>();
             base.gameObject.AddComponent<MicEF>();
 
             DiscordHelper.SetPresence(new Discord.Activity
@@ -99,7 +89,10 @@ namespace Guardian
 
         private IEnumerator CoCheckForUpdate()
         {
-            using (WWW www = new WWW("http://lewd.cf/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()))
+            Logger.Info("Checking for update...");
+            Logger.Info($"Installed: {Build}");
+
+            using (WWW www = new WWW("https://lewd.cf/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis())) // Random long to try and avoid cache issues
             {
                 yield return www;
 
@@ -109,18 +102,23 @@ namespace Guardian
                 }
                 else
                 {
-                    Logger.Info("Latest Version: " + www.text);
+                    string latestVersion = www.text.Split('\n')[0];
+                    Logger.Info("Latest: " + latestVersion);
 
-                    if (!www.text.Split('\n')[0].Equals(Build))
+                    if (!latestVersion.Equals(Build))
                     {
-                        Logger.Error("You are running an outdated build, please update!");
-                        Logger.Error("https://tiny.cc/GuardianMod".WithColor("0099FF"));
+                        Logger.Info($"You are {"OUTDATED".WithColor("FF0000")}, please update!");
+                        Logger.Info("https://tiny.cc/GuardianMod".WithColor("0099FF"));
 
                         try
                         {
-                            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Mod is outdated![-] Please download the latest build from [0099FF]https://tiny.cc/GuardianMod[-]!";
+                            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Please download the latest build from [0099FF]https://tiny.cc/GuardianMod[-]!";
                         }
                         catch { }
+                    }
+                    else
+                    {
+                        Logger.Info($"You are {"UP TO DATE".WithColor("AAFF00")}, yay!");
                     }
                 }
             }
@@ -143,7 +141,7 @@ namespace Guardian
 
         void OnLevelWasLoaded(int level)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || PhotonNetwork.offlineMode)
             {
                 string difficulty = "Training";
                 switch (IN_GAME_MAIN_CAMERA.Difficulty)
@@ -161,11 +159,12 @@ namespace Guardian
 
                 DiscordHelper.SetPresence(new Discord.Activity
                 {
-                    Details = $"Playing in singleplayer.",
+                    Details = $"Playing offline.",
                     State = $"{FengGameManagerMKII.Level.Name} / {difficulty}"
                 });
             }
-            else if (PhotonNetwork.isMasterClient)
+
+            if (PhotonNetwork.isMasterClient)
             {
                 Gamemodes.Current.OnReset();
             }
@@ -248,7 +247,7 @@ namespace Guardian
 
         void OnJoinedLobby()
         {
-            // Begin testing with Photon Friends API
+            // TODO: begin testing with Photon Friends API
             PhotonNetwork.playerName = SystemInfo.deviceUniqueIdentifier;
 
             DiscordHelper.SetPresence(new Discord.Activity
@@ -265,7 +264,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                { "GuardianMod", Build + "-M" },
+                 { "GuardianMod", Build + "-M" },
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');
@@ -283,6 +282,8 @@ namespace Guardian
         {
             Gamemodes.Current.CleanUp();
 
+            PhotonNetwork.SetPlayerCustomProperties(null);
+
             DiscordHelper.SetPresence(new Discord.Activity
             {
                 Details = "Idle..."
@@ -296,29 +297,14 @@ namespace Guardian
 
         void OnPhotonRoomJoinFailed(object[] codeAndMsg)
         {
-            Logger.Error($"OnPhotonRoomJoinFailed ({codeAndMsg[0]} : {codeAndMsg[1]})");
+            Logger.Error($"OnPhotonRoomJoinFailed ({codeAndMsg[0]}: {codeAndMsg[1]})");
         }
-
-        private static bool WasFullscreen = false;
-
-        // windows minimize functions
-        [DllImport("user32.dll", EntryPoint = "GetActiveWindow")]
-        private static extern int GetActiveWindow();
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(int hWnd, int nCmdShow);
 
         // Attempts to fix some dumb bugs that occur when you alt-tab
         void OnApplicationFocus(bool hasFocus)
         {
             if (hasFocus)
             {
-                if (WasFullscreen)
-                {
-                    Screen.fullScreen = true;
-                    Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
-                    WasFullscreen = false;
-                }
-
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
                 {
                     // Minimap turning white
@@ -334,14 +320,6 @@ namespace Guardian
                         Screen.lockCursor = true;
                     }
                 }
-            }
-            else if (!WasFullscreen)
-            {
-                WasFullscreen = Screen.fullScreen;
-                Screen.fullScreen = false;
-                Screen.SetResolution(IN_GAME_MAIN_CAMERA.WindowWidth, IN_GAME_MAIN_CAMERA.WindowWidth, false);
-
-                ShowWindow(GetActiveWindow(), 2);
             }
         }
 

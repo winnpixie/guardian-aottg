@@ -47,7 +47,7 @@ public static class GExtensions
             {
                 if (str[i + 1] == '-' && str[i + 2] == ']') // [-], aka return to previous color in the stack
                 {
-                    string previous = "FFFFFFFF"; // Default to white
+                    string previous = "FFFFFF"; // Default to white
 
                     if (colors.Count > 0)
                     {
@@ -109,18 +109,25 @@ public static class GExtensions
         float b = 0;
         float a = 1f;
 
+        // Red
         if (int.TryParse(str.Substr(0, 1), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int ri))
         {
             r = ri / 255F;
         }
+
+        // Green
         if (int.TryParse(str.Substr(2, 3), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int gi))
         {
             g = gi / 255F;
         }
+
+        // Blue
         if (int.TryParse(str.Substr(4, 5), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int bi))
         {
             b = bi / 255F;
         }
+
+        // Alpha
         if (str.Length == 8 && int.TryParse(str.Substr(6, 7), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int ai))
         {
             a = ai / 255F;
