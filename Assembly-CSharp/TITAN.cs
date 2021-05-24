@@ -109,31 +109,61 @@ public class TITAN : Photon.MonoBehaviour
     public int skinColor;
     private FengGameManagerMKII fengGame;
 
+    private bool shouldLookAtTarget;
+    private bool shouldRotateFast;
+
+    private void UpdateLookStateFromAnimation(string animName)
+    {
+        shouldLookAtTarget = !animName.StartsWith("attack")
+            && !animName.StartsWith("hit")
+            && !animName.StartsWith("eat")
+            && !animName.StartsWith("sit")
+            && !animName.EndsWith("recovery");
+
+        shouldRotateFast = animName.StartsWith("attack")
+            || animName.StartsWith("hit");
+    }
+
     private void PlayAnimation(string aniName)
     {
-        base.animation.Play(aniName);
+        UpdateLookStateFromAnimation(aniName);
+
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
-            base.photonView.RPC("netPlayAnimation", PhotonTargets.Others, aniName);
+            base.photonView.RPC("netPlayAnimation", PhotonTargets.All, aniName);
+        }
+        else
+        {
+            base.animation.Play(aniName);
         }
     }
 
     private void PlayAnimationAt(string aniName, float normalizedTime)
     {
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
+        UpdateLookStateFromAnimation(aniName);
+
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
-            base.photonView.RPC("netPlayAnimationAt", PhotonTargets.Others, aniName, normalizedTime);
+            base.photonView.RPC("netPlayAnimationAt", PhotonTargets.All, aniName, normalizedTime);
+        }
+        else
+        {
+            base.animation.Play(aniName);
+            base.animation[aniName].normalizedTime = normalizedTime;
         }
     }
 
     public void CrossFade(string aniName, float time)
     {
-        base.animation.CrossFade(aniName, time);
+        UpdateLookStateFromAnimation(aniName);
+
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
-            base.photonView.RPC("netCrossFade", PhotonTargets.Others, aniName, time);
+            base.photonView.RPC("netCrossFade", PhotonTargets.All, aniName, time);
+        }
+        else
+        {
+            base.animation.CrossFade(aniName, time);
         }
     }
 
@@ -3386,28 +3416,6 @@ public class TITAN : Photon.MonoBehaviour
         attackDistance = Vector3.Distance(base.transform.position, base.transform.Find("ap_front_ground").position) * 1.65f;
     }
 
-    private bool IsAnimationTypePlaying(string prefix)
-    {
-        foreach (AnimationState anim in base.animation)
-        {
-            if (anim.name.StartsWith(prefix) && base.animation.IsPlaying(anim.name))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private bool ShouldLookAtTarget()
-    {
-        return !IsAnimationTypePlaying("attack")
-            && !IsAnimationTypePlaying("eat")
-            && !IsAnimationTypePlaying("hit")
-            && !IsAnimationTypePlaying("sit")
-            && !base.animation.IsPlaying("idle_recovery");
-    }
-
     public void headMovement2()
     {
         if (!hasDie)
@@ -3501,7 +3509,7 @@ public class TITAN : Photon.MonoBehaviour
                 myDistance = myHero == null ? float.MaxValue : (myHero.transform.position - baseTransform.position).magnitude;
 
                 targetHeadRotation = head.rotation;
-                if (ShouldLookAtTarget() && myHero != null && myDistance < 100f)
+                if (shouldLookAtTarget && myHero != null && myDistance < 100f)
                 {
                     Vector3 vector2 = myHero.transform.position - baseTransform.position;
                     angle = (0f - Mathf.Atan2(vector2.z, vector2.x)) * 57.29578f;
@@ -3513,7 +3521,7 @@ public class TITAN : Photon.MonoBehaviour
                     targetHeadRotation = Quaternion.Euler(head.rotation.eulerAngles.x + value4, head.rotation.eulerAngles.y + value3, head.rotation.eulerAngles.z);
                 }
 
-                if (IsAnimationTypePlaying("attack") || IsAnimationTypePlaying("hit"))
+                if (shouldRotateFast)
                 {
                     oldHeadRotation = Quaternion.Slerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 20f);
                 }
