@@ -3420,95 +3420,12 @@ public class TITAN : Photon.MonoBehaviour
     {
         if (!hasDie)
         {
-            /*
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
-            {
-                if (base.photonView.isMine)
-                {
-                    targetHeadRotation = head.rotation;
-                    bool flag = false;
-                    if (abnormalType != TitanClass.Crawler && state != TitanState.Attack && state != TitanState.Down && state != TitanState.Hit && state != TitanState.Recovering && state != TitanState.Eating && state != TitanState.EyeHit && myDistance < 100f && myHero != null)
-                    {
-                        Vector3 vector = myHero.transform.position - base.transform.position;
-                        angle = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
-                        float value = 0f - Mathf.DeltaAngle(angle, base.transform.rotation.eulerAngles.y - 90f);
-                        value = Mathf.Clamp(value, -40f, 40f);
-                        float y = neck.position.y + myLevel * 2f - myHero.transform.position.y;
-                        float value2 = Mathf.Atan2(y, myDistance) * 57.29578f;
-                        value2 = Mathf.Clamp(value2, -40f, 30f);
-                        targetHeadRotation = Quaternion.Euler(head.rotation.eulerAngles.x + value2, head.rotation.eulerAngles.y + value, head.rotation.eulerAngles.z);
-                        if (!asClientLookTarget)
-                        {
-                            asClientLookTarget = true;
-                            base.photonView.RPC("setIfLookTarget", PhotonTargets.Others, true);
-                        }
-                        flag = true;
-                    }
-                    if (!flag && asClientLookTarget)
-                    {
-                        asClientLookTarget = false;
-                        base.photonView.RPC("setIfLookTarget", PhotonTargets.Others, false);
-                    }
-                    if (state == TitanState.Attack || state == TitanState.Hit || state == TitanState.EyeHit)
-                    {
-                        oldHeadRotation = Quaternion.Lerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 20f);
-                    }
-                    else
-                    {
-                        oldHeadRotation = Quaternion.Lerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 10f);
-                    }
-                }
-                else
-                {
-                    myDistance = myHero == null ? float.MaxValue : (myHero.transform.position - baseTransform.position).magnitude;
-
-                    targetHeadRotation = head.rotation;
-                    if (asClientLookTarget && myHero != null && myDistance < 100f)
-                    {
-                        Vector3 vector2 = myHero.transform.position - baseTransform.position;
-                        angle = (0f - Mathf.Atan2(vector2.z, vector2.x)) * 57.29578f;
-                        float value3 = 0f - Mathf.DeltaAngle(angle, baseTransform.rotation.eulerAngles.y - 90f);
-                        value3 = Mathf.Clamp(value3, -40f, 40f);
-                        float y2 = neck.position.y + myLevel * 2f - myHero.transform.position.y;
-                        float value4 = Mathf.Atan2(y2, myDistance) * 57.29578f;
-                        value4 = Mathf.Clamp(value4, -40f, 30f);
-                        targetHeadRotation = Quaternion.Euler(head.rotation.eulerAngles.x + value4, head.rotation.eulerAngles.y + value3, head.rotation.eulerAngles.z);
-                    }
-                    if (!hasDie)
-                    {
-                        oldHeadRotation = Quaternion.Slerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 10f);
-                    }
-                }
-            }
-            else
-            {
-                targetHeadRotation = head.rotation;
-                if (abnormalType != TitanClass.Crawler && state != TitanState.Attack && state != TitanState.Down && state != TitanState.Hit && state != TitanState.Recovering && state != TitanState.EyeHit && !hasDie && myDistance < 100f && myHero != null)
-                {
-                    Vector3 vector3 = myHero.transform.position - base.transform.position;
-                    angle = (0f - Mathf.Atan2(vector3.z, vector3.x)) * 57.29578f;
-                    float value5 = 0f - Mathf.DeltaAngle(angle, base.transform.rotation.eulerAngles.y - 90f);
-                    value5 = Mathf.Clamp(value5, -40f, 40f);
-                    float y3 = neck.position.y + myLevel * 2f - myHero.transform.position.y;
-                    float value6 = Mathf.Atan2(y3, myDistance) * 57.29578f;
-                    value6 = Mathf.Clamp(value6, -40f, 30f);
-                    targetHeadRotation = Quaternion.Euler(head.rotation.eulerAngles.x + value6, head.rotation.eulerAngles.y + value5, head.rotation.eulerAngles.z);
-                }
-                if (state == TitanState.Attack || state == TitanState.Hit || state == TitanState.EyeHit)
-                {
-                    oldHeadRotation = Quaternion.Lerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 20f);
-                }
-                else
-                {
-                    oldHeadRotation = Quaternion.Lerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 10f);
-                }
-            }*/
+            targetHeadRotation = head.rotation;
 
             if (this.abnormalType != TitanClass.Crawler)
             {
                 myDistance = myHero == null ? float.MaxValue : (myHero.transform.position - baseTransform.position).magnitude;
 
-                targetHeadRotation = head.rotation;
                 if (shouldLookAtTarget && myHero != null && myDistance < 100f)
                 {
                     Vector3 vector2 = myHero.transform.position - baseTransform.position;
@@ -3520,16 +3437,17 @@ public class TITAN : Photon.MonoBehaviour
                     value4 = Mathf.Clamp(value4, -40f, 30f);
                     targetHeadRotation = Quaternion.Euler(head.rotation.eulerAngles.x + value4, head.rotation.eulerAngles.y + value3, head.rotation.eulerAngles.z);
                 }
-
-                if (shouldRotateFast)
-                {
-                    oldHeadRotation = Quaternion.Slerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 20f);
-                }
-                else
-                {
-                    oldHeadRotation = Quaternion.Slerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 10f);
-                }
             }
+
+            if (shouldRotateFast)
+            {
+                oldHeadRotation = Quaternion.Slerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 20f);
+            }
+            else
+            {
+                oldHeadRotation = Quaternion.Slerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 10f);
+            }
+
             head.rotation = oldHeadRotation;
         }
         if (!base.animation.IsPlaying("die_headOff"))

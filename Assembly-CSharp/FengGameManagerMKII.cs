@@ -1208,10 +1208,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         InRoomChat.Messages = new List<InRoomChat.Message>();
         InRoomChat.Ignored = new List<PhotonPlayer>();
 
-        if (!PhotonNetwork.isMasterClient)
-        {
-            base.photonView.RPC("RequireStatus", PhotonTargets.MasterClient);
-        }
         assetCacheTextures = new Dictionary<string, Texture2D>();
         isFirstLoad = true;
 
