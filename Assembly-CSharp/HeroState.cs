@@ -1,15 +1,14 @@
-public enum HERO_STATE
+public enum HeroState
 {
     Idle,
     Attack,
-    GroundDodge,
-    AirDodge,
+    Dodging,
+    Dashing,
     ChangeBlade,
     FillGas,
     ChangeGun,
     Die,
-    Grab,
-    TitanForm,
+    Grabbed,
     Salute,
     Slide,
     Run,

@@ -6,7 +6,9 @@ namespace Guardian.AntiAbuse
 {
     class NetworkPatches
     {
-        public static List<string> PropertyWhitelist = new List<string>();
+        public static List<string> PropertyWhitelist = new List<string>(new string[] {
+            "sender", "GuardianMod"
+        });
         private static List<object> RoomPropertyWhitelist = new List<object>(new object[] {
             (byte)255, (byte)254, (byte)253, (byte)250, (byte)249, (byte)248, "sender", "Map", "Lighting"
         });

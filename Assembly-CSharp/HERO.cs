@@ -52,7 +52,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public GameObject hookRefR2;
     public float currentSpeed;
     private Quaternion targetRotation;
-    private HERO_STATE _state;
+    private HeroState _state;
     public HERO_SETUP setup;
     private GameObject skillCD;
     public float skillCDLast;
@@ -177,7 +177,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public float CameraMultiplier;
     public bool isPhotonCamera;
     public GameObject myFlashlight;
-    public bool isGrabbed => state == HERO_STATE.Grab;
+    public bool isGrabbed => state == HeroState.Grabbed;
 
     // Anarchy
     private float gasMultiplier = 1f;
@@ -196,7 +196,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    private HERO_STATE state
+    private HeroState state
     {
         get
         {
@@ -204,7 +204,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         set
         {
-            if (_state == HERO_STATE.AirDodge || _state == HERO_STATE.GroundDodge)
+            if (_state == HeroState.Dashing || _state == HeroState.Dodging)
             {
                 dashTime = 0f;
             }
@@ -306,7 +306,18 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             Unmount();
         }
-        state = HERO_STATE.Grab;
+
+        // TODO: Mod, remove hooks once grabbed.
+        if (bulletLeft != null)
+        {
+            bulletLeft.GetComponent<Bullet>().RemoveMe();
+        }
+        if (bulletRight != null)
+        {
+            bulletRight.GetComponent<Bullet>().RemoveMe();
+        }
+
+        state = HeroState.Grabbed;
         GetComponent<CapsuleCollider>().isTrigger = true;
         falseAttack();
         titanWhoGrabMe = titan;
@@ -341,13 +352,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         targetRotation = Quaternion.Euler(0f, 0f, 0f);
         base.transform.parent = null;
         GetComponent<CapsuleCollider>().isTrigger = false;
-        state = HERO_STATE.Idle;
+        state = HeroState.Idle;
     }
 
     [RPC]
     private void netSetIsGrabbedFalse()
     {
-        state = HERO_STATE.Idle;
+        state = HeroState.Idle;
     }
 
     [RPC]
@@ -566,7 +577,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    private void checkDashDoubleTap()
+    private void CheckDoubleTapDash()
     {
         if (uTapTime >= 0f)
         {
@@ -648,7 +659,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private float getLeanAngle(Vector3 p, bool left)
     {
-        if (!useGun && state == HERO_STATE.Attack)
+        if (!useGun && state == HeroState.Attack)
         {
             return 0f;
         }
@@ -667,7 +678,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         float target = Mathf.Atan2(x, velocity2.z) * 57.29578f;
         float num4 = Mathf.DeltaAngle(current, target);
         num3 += Mathf.Abs(num4 * 0.5f);
-        if (state != HERO_STATE.Attack)
+        if (state != HeroState.Attack)
         {
             num3 = Mathf.Min(num3, 80f);
         }
@@ -696,7 +707,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         float z = 0f;
         needLean = false;
-        if (!useGun && state == HERO_STATE.Attack && attackAnimation != "attack3_1" && attackAnimation != "attack3_2")
+        if (!useGun && state == HeroState.Attack && attackAnimation != "attack3_1" && attackAnimation != "attack3_2")
         {
             Vector3 velocity = base.rigidbody.velocity;
             float y = velocity.y;
@@ -732,14 +743,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (needLean)
         {
             float num2 = 0f;
-            if (!useGun && state != HERO_STATE.Attack)
+            if (!useGun && state != HeroState.Attack)
             {
                 num2 = currentSpeed * 0.1f;
                 num2 = Mathf.Min(num2, 20f);
             }
             targetRotation = Quaternion.Euler(0f - num2, facingDirection, z);
         }
-        else if (state != HERO_STATE.Attack)
+        else if (state != HeroState.Attack)
         {
             targetRotation = Quaternion.Euler(0f, facingDirection, 0f);
         }
@@ -759,7 +770,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 Vector3 vector = (bulletLeft.transform.position + bulletRight.transform.position) * 0.5f - base.transform.position;
                 facingDirection = Mathf.Atan2(vector.x, vector.z) * 57.29578f;
-                if (useGun && state != HERO_STATE.Attack)
+                if (useGun && state != HeroState.Attack)
                 {
                     Vector3 velocity = base.rigidbody.velocity;
                     float z = velocity.z;
@@ -810,7 +821,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             zero = bulletLeft.transform.position - base.transform.position;
         }
         facingDirection = Mathf.Atan2(zero.x, zero.z) * 57.29578f;
-        if (state != HERO_STATE.Attack)
+        if (state != HeroState.Attack)
         {
             Vector3 velocity3 = base.rigidbody.velocity;
             float z2 = velocity3.z;
@@ -831,11 +842,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void Idle()
     {
-        if (state == HERO_STATE.Attack)
+        if (state == HeroState.Attack)
         {
             falseAttack();
         }
-        state = HERO_STATE.Idle;
+        state = HeroState.Idle;
         CrossFade(standAnimation, 0.1f);
     }
 
@@ -859,7 +870,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void Salute()
     {
-        state = HERO_STATE.Salute;
+        state = HeroState.Salute;
         CrossFade("salute", 0.1f);
     }
 
@@ -869,7 +880,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
-        state = HERO_STATE.ChangeBlade;
+        state = HeroState.ChangeBlade;
         throwedBlades = false;
         if (useGun)
         {
@@ -972,7 +983,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             dashTime = 0.5f;
             CrossFade("dash", 0.1f);
             base.animation["dash"].time = 0.1f;
-            state = HERO_STATE.AirDodge;
+            state = HeroState.Dashing;
             falseAttack();
             base.rigidbody.AddForce(dashV * 40f, ForceMode.VelocityChange);
         }
@@ -1051,7 +1062,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if ((base.animation.IsPlaying(standAnimation) || base.animation.IsPlaying("run") || base.animation.IsPlaying("run_sasha")) && (currentBladeSta != totalBladeSta || currentBladeNum != totalBladeNum || currentGas != totalGas || leftBulletLeft != bulletMAX || rightBulletLeft != bulletMAX))
         {
-            state = HERO_STATE.FillGas;
+            state = HeroState.FillGas;
             CrossFade("supply", 0.1f);
         }
     }
@@ -1114,7 +1125,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             currentBladeSta = 0f;
         }
-        if (state == HERO_STATE.Attack)
+        if (state == HeroState.Attack)
         {
             falseAttack();
         }
@@ -1357,12 +1368,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 base.rigidbody.AddForce(Vector3.up * Mathf.Min(launchForce.magnitude * 0.2f, 10f), ForceMode.Impulse);
             }
             base.rigidbody.AddForce(launchForce * d * 0.1f, ForceMode.Impulse);
-            if (state != HERO_STATE.Grab)
+            if (state != HeroState.Grabbed)
             {
                 dashTime = 1f;
                 CrossFade("dash", 0.05f);
                 base.animation["dash"].time = 0.1f;
-                state = HERO_STATE.AirDodge;
+                state = HeroState.Dashing;
                 falseAttack();
                 facingDirection = Mathf.Atan2(launchForce.x, launchForce.z) * 57.29578f;
                 Quaternion quaternion = Quaternion.Euler(0f, facingDirection, 0f);
@@ -1405,11 +1416,17 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void Launch(Vector3 des, bool left = true, bool leviMode = false)
     {
+        // TODO: Mod, this should fix noclipping when grabbed by a titan right after hooking an object
+        if (state == HeroState.Grabbed)
+        {
+            return;
+        }
+
         if (isMounted)
         {
             Unmount();
         }
-        if (state != HERO_STATE.Attack)
+        if (state != HeroState.Attack)
         {
             Idle();
         }
@@ -1623,7 +1640,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public void MarkDead()
     {
         hasDied = true;
-        state = HERO_STATE.Die;
+        state = HeroState.Die;
     }
 
     public void Die(Vector3 v, bool isBite)
@@ -2029,7 +2046,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             baseRigidBody.rotation = Quaternion.Lerp(base.gameObject.transform.rotation, targetRotation, Time.deltaTime * 6f);
         }
-        if (state == HERO_STATE.Grab)
+        if (state == HeroState.Grabbed)
         {
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             return;
@@ -2172,7 +2189,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (grounded)
         {
             Vector3 a = Vector3.zero;
-            if (state == HERO_STATE.Attack)
+            if (state == HeroState.Attack)
             {
                 switch (attackAnimation)
                 {
@@ -2198,22 +2215,22 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             if (justGrounded)
             {
-                if (state != HERO_STATE.Attack || (attackAnimation != "attack3_1" && attackAnimation != "attack5" && attackAnimation != "special_petra"))
+                if (state != HeroState.Attack || (attackAnimation != "attack3_1" && attackAnimation != "attack5" && attackAnimation != "special_petra"))
                 {
-                    if (state != HERO_STATE.Attack && num == 0f && num2 == 0f && bulletLeft == null && bulletRight == null && state != HERO_STATE.FillGas)
+                    if (state != HeroState.Attack && num == 0f && num2 == 0f && bulletLeft == null && bulletRight == null && state != HeroState.FillGas)
                     {
-                        if (state != HERO_STATE.Land)
+                        if (state != HeroState.Land)
                         {
                             CrossFade("dash_land", 0.01f);
                         }
-                        state = HERO_STATE.Land;
+                        state = HeroState.Land;
                     }
                     else
                     {
                         buttonAttackRelease = true;
-                        if (state != HERO_STATE.Attack && baseRigidBody.velocity.x * baseRigidBody.velocity.x + baseRigidBody.velocity.z * baseRigidBody.velocity.z > speed * speed * 1.5f && state != HERO_STATE.FillGas)
+                        if (state != HeroState.Attack && baseRigidBody.velocity.x * baseRigidBody.velocity.x + baseRigidBody.velocity.z * baseRigidBody.velocity.z > speed * speed * 1.5f && state != HeroState.FillGas)
                         {
-                            state = HERO_STATE.Slide;
+                            state = HeroState.Slide;
                             CrossFade("slide", 0.05f);
                             facingDirection = Mathf.Atan2(baseRigidBody.velocity.x, baseRigidBody.velocity.z) * 57.29578f;
                             targetRotation = Quaternion.Euler(0f, facingDirection, 0f);
@@ -2226,7 +2243,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             switch (state)
             {
-                case HERO_STATE.Attack:
+                case HeroState.Attack:
                     if (attackAnimation == "attack3_1" && baseAnimation[attackAnimation].normalizedTime >= 1f)
                     {
                         PlayAnimation("attack3_2");
@@ -2237,7 +2254,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(0.2f, 0.3f);
                     }
                     break;
-                case HERO_STATE.GroundDodge:
+                case HeroState.Dodging:
                     if (baseAnimation["dodge"].normalizedTime >= 0.2f && baseAnimation["dodge"].normalizedTime < 0.8f)
                     {
                         a = -baseTransform.forward * 2.4f * speed;
@@ -2247,7 +2264,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         a = baseRigidBody.velocity * 0.9f;
                     }
                     break;
-                case HERO_STATE.Idle:
+                case HeroState.Idle:
                     Vector3 vector5 = new Vector3(num, 0f, num2);
                     float num3 = GetGlobalFacingDirection(num, num2);
                     a = GetGlobalFacingVector(num3);
@@ -2274,7 +2291,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     }
                     else
                     {
-                        if (!baseAnimation.IsPlaying(standAnimation) && state != HERO_STATE.Land && !baseAnimation.IsPlaying("jump") && !baseAnimation.IsPlaying("horse_geton") && !baseAnimation.IsPlaying("grabbed"))
+                        if (!baseAnimation.IsPlaying(standAnimation) && state != HeroState.Land && !baseAnimation.IsPlaying("jump") && !baseAnimation.IsPlaying("horse_geton") && !baseAnimation.IsPlaying("grabbed"))
                         {
                             CrossFade(standAnimation, 0.1f);
                             a *= 0f;
@@ -2287,10 +2304,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         targetRotation = Quaternion.Euler(0f, facingDirection, 0f);
                     }
                     break;
-                case HERO_STATE.Land:
+                case HeroState.Land:
                     a = baseRigidBody.velocity * 0.96f;
                     break;
-                case HERO_STATE.Slide:
+                case HeroState.Slide:
                     a = baseRigidBody.velocity * 0.99f;
                     if (currentSpeed < speed * 1.2f)
                     {
@@ -2317,7 +2334,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 float d = 0.6f * gravity * num6 / (2f * num5);
                 force += d * (myHorse.transform.position - baseTransform.position).normalized;
             }
-            if (state != HERO_STATE.Attack || !useGun)
+            if (state != HeroState.Attack || !useGun)
             {
                 baseRigidBody.AddForce(force, ForceMode.VelocityChange);
                 baseRigidBody.rotation = Quaternion.Lerp(base.gameObject.transform.rotation, Quaternion.Euler(0f, facingDirection, 0f), Time.deltaTime * 10f);
@@ -2342,7 +2359,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
                 myHorse.GetComponent<Horse>().Mount();
             }
-            if ((state == HERO_STATE.Idle && !baseAnimation.IsPlaying("dash") && !baseAnimation.IsPlaying("wallrun") && !baseAnimation.IsPlaying("toRoof") && !baseAnimation.IsPlaying("horse_geton") && !baseAnimation.IsPlaying("horse_getoff") && !baseAnimation.IsPlaying("air_release") && !isMounted && (!baseAnimation.IsPlaying("air_hook_l_just") || baseAnimation["air_hook_l_just"].normalizedTime >= 1f) && (!baseAnimation.IsPlaying("air_hook_r_just") || baseAnimation["air_hook_r_just"].normalizedTime >= 1f)) || baseAnimation["dash"].normalizedTime >= 0.99f)
+            if ((state == HeroState.Idle && !baseAnimation.IsPlaying("dash") && !baseAnimation.IsPlaying("wallrun") && !baseAnimation.IsPlaying("toRoof") && !baseAnimation.IsPlaying("horse_geton") && !baseAnimation.IsPlaying("horse_getoff") && !baseAnimation.IsPlaying("air_release") && !isMounted && (!baseAnimation.IsPlaying("air_hook_l_just") || baseAnimation["air_hook_l_just"].normalizedTime >= 1f) && (!baseAnimation.IsPlaying("air_hook_r_just") || baseAnimation["air_hook_r_just"].normalizedTime >= 1f)) || baseAnimation["dash"].normalizedTime >= 0.99f)
             {
                 if (!isLeftHandHooked && !isRightHandHooked && (baseAnimation.IsPlaying("air_hook_l") || baseAnimation.IsPlaying("air_hook_r") || baseAnimation.IsPlaying("air_hook")) && baseRigidBody.velocity.y > 20f)
                 {
@@ -2437,7 +2454,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     }
                 }
             }
-            if ((state == HERO_STATE.Idle && baseAnimation.IsPlaying("air_release") && baseAnimation["air_release"].normalizedTime >= 1f)
+            if ((state == HeroState.Idle && baseAnimation.IsPlaying("air_release") && baseAnimation["air_release"].normalizedTime >= 1f)
                 || (baseAnimation.IsPlaying("horse_getoff") && baseAnimation["horse_getoff"].normalizedTime >= 1f))
             {
                 if (!baseAnimation.IsPlaying("air_rise"))
@@ -2466,7 +2483,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     PlayAnimation("air_rise");
                 }
             }
-            else if (state == HERO_STATE.Idle && isPressDirectionTowardsHero(num, num2) && !inputManager.isInput[InputCode.Jump] && !inputManager.isInput[InputCode.HookLeft] && !inputManager.isInput[InputCode.HookRight] && !inputManager.isInput[InputCode.HookBoth] && IsFrontGrounded() && !baseAnimation.IsPlaying("wallrun") && !baseAnimation.IsPlaying("dodge"))
+            else if (state == HeroState.Idle && isPressDirectionTowardsHero(num, num2) && !inputManager.isInput[InputCode.Jump] && !inputManager.isInput[InputCode.HookLeft] && !inputManager.isInput[InputCode.HookRight] && !inputManager.isInput[InputCode.HookBoth] && IsFrontGrounded() && !baseAnimation.IsPlaying("wallrun") && !baseAnimation.IsPlaying("dodge"))
             {
                 CrossFade("wallrun", 0.1f);
                 wallRunTime = 0f;
@@ -2500,7 +2517,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 globaleFacingVector *= (float)setup.myCostume.stat.Accel / 10f * 2f;
                 if (num == 0f && num2 == 0f)
                 {
-                    if (state == HERO_STATE.Attack)
+                    if (state == HeroState.Attack)
                     {
                         globaleFacingVector *= 0f;
                     }
@@ -2565,7 +2582,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             a4.Normalize();
             baseRigidBody.velocity = a4 * d4;
         }
-        if (state == HERO_STATE.Attack && (attackAnimation == "attack5" || attackAnimation == "special_petra") && baseAnimation[attackAnimation].normalizedTime > 0.4f && !attackMove)
+        if (state == HeroState.Attack && (attackAnimation == "attack5" || attackAnimation == "special_petra") && baseAnimation[attackAnimation].normalizedTime > 0.4f && !attackMove)
         {
             attackMove = true;
             if (launchPointRight.sqrMagnitude > 0f)
@@ -3039,7 +3056,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             maincamera.transform.rotation = Quaternion.Lerp(maincamera.transform.rotation, to2, Time.deltaTime * 2f);
         }
-        if (state == HERO_STATE.Grab && titanWhoGrabMe != null)
+        if (state == HeroState.Grabbed && titanWhoGrabMe != null)
         {
             TITAN titanObj = titanWhoGrabMe.GetComponent<TITAN>();
             if (titanObj != null)
@@ -3128,11 +3145,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 myCannonRegion.photonView.RPC("RequestControlRPC", PhotonTargets.MasterClient, base.photonView.viewID);
             }
         }
-        if (state == HERO_STATE.Grab && !useGun)
+        if (state == HeroState.Grabbed && !useGun)
         {
             if (skillId == "jean")
             {
-                if (state != HERO_STATE.Attack && (inputManager.isInputDown[InputCode.Attack0] || inputManager.isInputDown[InputCode.Attack1]) && escapeTimes > 0 && !baseAnimation.IsPlaying("grabbed_jean"))
+                if (state != HeroState.Attack && (inputManager.isInputDown[InputCode.Attack0] || inputManager.isInputDown[InputCode.Attack1]) && escapeTimes > 0 && !baseAnimation.IsPlaying("grabbed_jean"))
                 {
                     PlayAnimation("grabbed_jean");
                     baseAnimation["grabbed_jean"].time = 0f;
@@ -3209,16 +3226,15 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             UpdateBuffer();
             ExtendedUpdate();
-            if (!grounded && state != HERO_STATE.AirDodge)
+            if (!grounded && state != HeroState.Dashing)
             {
+                // TODO: Mod, eventually add setting to toggle double-tap
                 if ((int)FengGameManagerMKII.Settings[181] == 1)
                 {
                     CheckDashRebind();
                 }
-                else
-                {
-                    checkDashDoubleTap();
-                }
+                CheckDoubleTapDash();
+
                 if (dashD)
                 {
                     dashD = false;
@@ -3244,7 +3260,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     return;
                 }
             }
-            if (grounded && (state == HERO_STATE.Idle || state == HERO_STATE.Slide))
+            if (grounded && (state == HeroState.Idle || state == HeroState.Slide))
             {
                 if (inputManager.isInputDown[InputCode.Jump] && !baseAnimation.IsPlaying("jump") && !baseAnimation.IsPlaying("horse_geton"))
                 {
@@ -3264,7 +3280,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             switch (state)
             {
-                case HERO_STATE.Idle:
+                case HeroState.Idle:
                     if (inputManager.isInputDown[InputCode.Flare1])
                     {
                         ShootFlare(1);
@@ -3532,7 +3548,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             PlayAnimation(attackAnimation);
                             baseAnimation[attackAnimation].time = 0f;
                             buttonAttackRelease = false;
-                            state = HERO_STATE.Attack;
+                            state = HeroState.Attack;
                             if (grounded || attackAnimation == "attack3_1" || attackAnimation == "attack5" || attackAnimation == "special_petra")
                             {
                                 attackReleased = true;
@@ -3667,7 +3683,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         }
                         if (flag3)
                         {
-                            state = HERO_STATE.Attack;
+                            state = HeroState.Attack;
                             CrossFade(attackAnimation, 0.05f);
                             gunDummy.transform.position = baseTransform.position;
                             gunDummy.transform.rotation = baseTransform.rotation;
@@ -3682,7 +3698,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         }
                     }
                     break;
-                case HERO_STATE.Attack:
+                case HeroState.Attack:
                     if (!useGun)
                     {
                         if (!inputManager.isInput[InputCode.Attack0])
@@ -3933,7 +3949,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         }
                     }
                     break;
-                case HERO_STATE.ChangeBlade:
+                case HeroState.ChangeBlade:
                     if (useGun)
                     {
                         if (baseAnimation[reloadAnimation].normalizedTime > 0.22f)
@@ -4026,13 +4042,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         }
                     }
                     break;
-                case HERO_STATE.Salute:
+                case HeroState.Salute:
                     if (baseAnimation["salute"].normalizedTime >= 1f)
                     {
                         Idle();
                     }
                     break;
-                case HERO_STATE.GroundDodge:
+                case HeroState.Dodging:
                     if (baseAnimation.IsPlaying("dodge"))
                     {
                         if (!grounded && baseAnimation["dodge"].normalizedTime > 0.6f)
@@ -4045,13 +4061,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         }
                     }
                     break;
-                case HERO_STATE.Land:
+                case HeroState.Land:
                     if (baseAnimation.IsPlaying("dash_land") && baseAnimation["dash_land"].normalizedTime >= 1f)
                     {
                         Idle();
                     }
                     break;
-                case HERO_STATE.FillGas:
+                case HeroState.FillGas:
                     if (baseAnimation.IsPlaying("supply") && baseAnimation["supply"].normalizedTime >= 1f)
                     {
                         currentBladeSta = totalBladeSta;
@@ -4074,13 +4090,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         Idle();
                     }
                     break;
-                case HERO_STATE.Slide:
+                case HeroState.Slide:
                     if (!grounded)
                     {
                         Idle();
                     }
                     break;
-                case HERO_STATE.AirDodge:
+                case HeroState.Dashing:
                     if (dashTime > 0f)
                     {
                         dashTime -= Time.deltaTime;
@@ -4096,7 +4112,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     }
                     break;
             }
-            if (inputManager.isInput[InputCode.HookLeft] && ((!baseAnimation.IsPlaying("attack3_1") && !baseAnimation.IsPlaying("attack5") && !baseAnimation.IsPlaying("special_petra") && state != HERO_STATE.Grab) || state == HERO_STATE.Idle))
+            if (inputManager.isInput[InputCode.HookLeft] && ((!baseAnimation.IsPlaying("attack3_1") && !baseAnimation.IsPlaying("attack5") && !baseAnimation.IsPlaying("special_petra") && state != HeroState.Grabbed) || state == HeroState.Idle))
             {
                 if (bulletLeft != null)
                 {
@@ -4118,7 +4134,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 QHold = false;
             }
-            if (inputManager.isInput[InputCode.HookRight] && ((!baseAnimation.IsPlaying("attack3_1") && !baseAnimation.IsPlaying("attack5") && !baseAnimation.IsPlaying("special_petra") && state != HERO_STATE.Grab) || state == HERO_STATE.Idle))
+            if (inputManager.isInput[InputCode.HookRight] && ((!baseAnimation.IsPlaying("attack3_1") && !baseAnimation.IsPlaying("attack5") && !baseAnimation.IsPlaying("special_petra") && state != HeroState.Grabbed) || state == HeroState.Idle))
             {
                 if (bulletRight != null)
                 {
@@ -4140,7 +4156,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 EHold = false;
             }
-            if (inputManager.isInput[InputCode.HookBoth] && ((!baseAnimation.IsPlaying("attack3_1") && !baseAnimation.IsPlaying("attack5") && !baseAnimation.IsPlaying("special_petra") && state != HERO_STATE.Grab) || state == HERO_STATE.Idle))
+            if (inputManager.isInput[InputCode.HookBoth] && ((!baseAnimation.IsPlaying("attack3_1") && !baseAnimation.IsPlaying("attack5") && !baseAnimation.IsPlaying("special_petra") && state != HeroState.Grabbed) || state == HeroState.Idle))
             {
                 QHold = true;
                 EHold = true;
@@ -4432,7 +4448,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
-        state = HERO_STATE.GroundDodge;
+        state = HeroState.Dodging;
         if (!offTheWall)
         {
             float num = inputManager.isInput[InputCode.Up] ? 1f : ((!inputManager.isInput[InputCode.Down]) ? 0f : (-1f));

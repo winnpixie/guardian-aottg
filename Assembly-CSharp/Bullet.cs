@@ -264,7 +264,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                 }
             }
 
-            switch(phase)
+            switch (phase)
             {
                 case 0:
                     setLinePhase0();

@@ -15,7 +15,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "05242021-2";
+        public static string Build = "05262021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -66,8 +66,6 @@ namespace Guardian
                 Properties.Load();
 
                 // Property whitelist
-                NetworkPatches.PropertyWhitelist.Add("sender");
-                NetworkPatches.PropertyWhitelist.Add("GuardianMod");
                 foreach (FieldInfo field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
                 {
                     NetworkPatches.PropertyWhitelist.Add((string)field.GetValue(null));
@@ -108,11 +106,11 @@ namespace Guardian
                     if (!latestVersion.Equals(Build))
                     {
                         Logger.Info($"You are {"OUTDATED".WithColor("FF0000")}, please update!");
-                        Logger.Info("https://tiny.cc/GuardianMod".WithColor("0099FF"));
+                        Logger.Info("https://cb.click/GuardianAoT".WithColor("0099FF"));
 
                         try
                         {
-                            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Please download the latest build from [0099FF]https://tiny.cc/GuardianMod[-]!";
+                            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Please download the latest build from [0099FF]https://cb.click/GuardianAoT[-]!";
                         }
                         catch { }
                     }
@@ -191,7 +189,7 @@ namespace Guardian
                 Gamemodes.Current.OnPlayerJoin(player);
             }
 
-            Logger.Info($"[{player.Id}] ".WithColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00FF00"));
+            Logger.Info($"[{player.Id}] " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00FF00"));
         }
 
         void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -201,7 +199,7 @@ namespace Guardian
                 Gamemodes.Current.OnPlayerLeave(player);
             }
 
-            Logger.Info($"[{player.Id}] ".WithColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("FF0000"));
+            Logger.Info($"[{player.Id}] " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("FF0000"));
         }
 
         void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
@@ -247,7 +245,7 @@ namespace Guardian
 
         void OnJoinedLobby()
         {
-            // TODO: begin testing with Photon Friends API
+            // TODO: Begin testing with Photon Friends API
             PhotonNetwork.playerName = SystemInfo.deviceUniqueIdentifier;
 
             DiscordHelper.SetPresence(new Discord.Activity
@@ -264,7 +262,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                 { "GuardianMod", Build }
+                 { "GuardianMod", Build + "-M" }
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');

@@ -61,7 +61,8 @@
             {
                 activity.Assets = new Discord.ActivityAssets
                 {
-                    LargeImage = "main_icon"
+                    LargeImage = "main_icon",
+                    LargeText = "G-Shield by Red"                            
                 };
 
                 activity.Timestamps = new Discord.ActivityTimestamps
