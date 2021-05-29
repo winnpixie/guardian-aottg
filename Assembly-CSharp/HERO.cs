@@ -876,7 +876,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void ChangeBlade()
     {
-        if (useGun && !grounded && FengGameManagerMKII.Level.Mode == GameMode.PVP_AHSS)
+        if (useGun && !grounded && FengGameManagerMKII.Level.Mode == GameMode.TeamDeathmatch)
         {
             return;
         }
@@ -3692,7 +3692,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             facingDirection = gunDummy.transform.rotation.eulerAngles.y;
                             targetRotation = Quaternion.Euler(0f, facingDirection, 0f);
                         }
-                        else if (flag4 && (grounded || (FengGameManagerMKII.Level.Mode != GameMode.PVP_AHSS && RCSettings.AhssReload == 0)))
+                        else if (flag4 && (grounded || (FengGameManagerMKII.Level.Mode != GameMode.TeamDeathmatch && RCSettings.AhssReload == 0)))
                         {
                             ChangeBlade();
                         }
@@ -4240,7 +4240,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 skillCDLast = 120f;
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
-                    if (FengGameManagerMKII.Level.PlayerTitans || FengGameManagerMKII.Level.Mode == GameMode.RACING || FengGameManagerMKII.Level.Mode == GameMode.PVP_CAPTURE || FengGameManagerMKII.Level.Mode == GameMode.TROST)
+                    if (FengGameManagerMKII.Level.PlayerTitans || FengGameManagerMKII.Level.Mode == GameMode.Racing || FengGameManagerMKII.Level.Mode == GameMode.PvPCapture || FengGameManagerMKII.Level.Mode == GameMode.Trost)
                     {
                         skillId = "petra";
                         skillCDLast = 1f;
@@ -4540,7 +4540,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     public void netDie(Vector3 v, bool isBite, int viewId = -1, string titanName = "", bool killByTitan = true, PhotonMessageInfo info = null)
     {
-        if (base.photonView.isMine && info != null && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
+        if (base.photonView.isMine && info != null && FengGameManagerMKII.Level.Mode != GameMode.Colossal)
         {
             if (FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
@@ -4681,7 +4681,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netDie2(int viewId = -1, string titanName = "", PhotonMessageInfo info = null)
     {
-        if (base.photonView.isMine && info != null && FengGameManagerMKII.Level.Mode != GameMode.BOSS_FIGHT_CT)
+        if (base.photonView.isMine && info != null && FengGameManagerMKII.Level.Mode != GameMode.Colossal)
         {
             if (FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
@@ -5124,14 +5124,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             detonate = false;
             skillCDDuration = bombCD;
-            RaycastHit hitInfo = default(RaycastHit);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             LayerMask mask = 1 << LayerMask.NameToLayer("Ground");
             LayerMask mask2 = 1 << LayerMask.NameToLayer("EnemyBox");
             LayerMask layerMask = (int)mask2 | (int)mask;
             currentV = baseTransform.position;
             targetV = currentV + Vector3.forward * 200f;
-            if (Physics.Raycast(ray, out hitInfo, 1000000f, layerMask.value))
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, 1000000f, layerMask.value))
             {
                 targetV = hitInfo.point;
             }

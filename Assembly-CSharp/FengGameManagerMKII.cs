@@ -290,7 +290,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public void SpawnPlayer(string id, string tag = "playerRespawn")
     {
-        if (Level.Mode == GameMode.PVP_CAPTURE)
+        if (Level.Mode == GameMode.PvPCapture)
         {
             SpawnPlayerAt2(id, checkpoint);
             return;
@@ -345,7 +345,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         GameObject[] array = GameObject.FindGameObjectsWithTag(tag);
         GameObject gameObject = array[UnityEngine.Random.Range(0, array.Length)];
         myLastHero = id.ToUpper();
-        GameObject gameObject2 = (Level.Mode != GameMode.PVP_CAPTURE) ? PhotonNetwork.Instantiate("TITAN_VER3.1", gameObject.transform.position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
+        GameObject gameObject2 = (Level.Mode != GameMode.PvPCapture) ? PhotonNetwork.Instantiate("TITAN_VER3.1", gameObject.transform.position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
         mainCam.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObjectTitan(gameObject2);
         gameObject2.GetComponent<TITAN>().nonAI = true;
         gameObject2.GetComponent<TITAN>().speed = 30f;
@@ -513,7 +513,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         switch (Level.Mode)
         {
-            case GameMode.PVP_CAPTURE:
+            case GameMode.PvPCapture:
                 if (id != 0)
                 {
                     PVPtitanScore += 2;
@@ -521,19 +521,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 CheckPvPPoints();
                 base.photonView.RPC("refreshPVPStatus", PhotonTargets.Others, PVPhumanScore, PVPtitanScore);
                 break;
-            case GameMode.ENDLESS_TITAN:
+            case GameMode.Endless:
                 titanScore++;
                 break;
-            case GameMode.KILL_TITAN:
-            case GameMode.SURVIVE_MODE:
-            case GameMode.BOSS_FIGHT_CT:
-            case GameMode.TROST:
+            case GameMode.KillTitans:
+            case GameMode.Survival:
+            case GameMode.Colossal:
+            case GameMode.Trost:
                 if (AreAllPlayersDead())
                 {
                     LoseGame();
                 }
                 break;
-            case GameMode.PVP_AHSS:
+            case GameMode.TeamDeathmatch:
                 if (RCSettings.PvPMode == 0 && RCSettings.BombMode == 0)
                 {
                     if (AreAllPlayersDead())
@@ -721,7 +721,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         switch (Level.Mode)
         {
-            case GameMode.PVP_CAPTURE:
+            case GameMode.PvPCapture:
                 switch (titanName)
                 {
                     case "Titan":
@@ -749,13 +749,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 CheckPvPPoints();
                 base.photonView.RPC("refreshPVPStatus", PhotonTargets.Others, PVPhumanScore, PVPtitanScore);
                 break;
-            case GameMode.KILL_TITAN:
+            case GameMode.KillTitans:
                 if (AreAllTitansDead())
                 {
                     WinGame();
                 }
                 break;
-            case GameMode.SURVIVE_MODE:
+            case GameMode.Survival:
                 if (!AreAllTitansDead())
                 {
                     return;
@@ -809,7 +809,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     SpawnTitanCustom("titanRespawn", abnormal, wave / 5, punk: true);
                 }
                 break;
-            case GameMode.ENDLESS_TITAN:
+            case GameMode.Endless:
                 if (!onPlayerLeave)
                 {
                     humanScore++;
@@ -851,13 +851,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 return false;
             }
         }
-
-        foreach (FEMALE_TITAN annie in femaleTitans)
+        
+        if (femaleTitans.Count > 0)
         {
-            if (!annie.hasDie)
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;
@@ -1380,7 +1377,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         Camera.main.GetComponent<CameraShake>().enabled = false;
         IN_GAME_MAIN_CAMERA.Gametype = GameType.Multiplayer;
 
-        if (Level.Mode == GameMode.TROST)
+        if (Level.Mode == GameMode.Trost)
         {
             GameObject.Find("playerRespawn").SetActive(value: false);
             UnityEngine.Object.Destroy(GameObject.Find("playerRespawn"));
@@ -1389,7 +1386,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             GameObject.Find("door_broke").SetActive(true);
             UnityEngine.Object.Destroy(GameObject.Find("ppl"));
         }
-        else if (Level.Mode == GameMode.BOSS_FIGHT_CT)
+        else if (Level.Mode == GameMode.Colossal)
         {
             GameObject.Find("playerRespawnTrost").SetActive(value: false);
             UnityEngine.Object.Destroy(GameObject.Find("playerRespawnTrost"));
@@ -1401,7 +1398,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         else if ((int)Settings[245] == 0)
         {
             Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
-            if (Level.Mode == GameMode.PVP_CAPTURE)
+            if (Level.Mode == GameMode.PvPCapture)
             {
                 if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.IsTitan]) == 2)
                 {
@@ -1421,7 +1418,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 SpawnPlayer(myLastHero, myLastRespawnTag);
             }
         }
-        if (Level.Mode == GameMode.BOSS_FIGHT_CT)
+        if (Level.Mode == GameMode.Colossal)
         {
             UnityEngine.Object.Destroy(GameObject.Find("rock"));
         }
@@ -1429,7 +1426,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             switch (Level.Mode)
             {
-                case GameMode.TROST:
+                case GameMode.Trost:
                     if (!AreAllPlayersDead())
                     {
                         PhotonNetwork.Instantiate("TITAN_EREN_trost", new Vector3(-200f, 0f, -194f), Quaternion.Euler(0f, 180f, 0f), 0).GetComponent<TITAN_EREN>().rockLift = true;
@@ -1451,15 +1448,15 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                     }
                     break;
-                case GameMode.BOSS_FIGHT_CT:
+                case GameMode.Colossal:
                     if (!AreAllPlayersDead())
                     {
                         PhotonNetwork.Instantiate("COLOSSAL_TITAN", -Vector3.up * 10000f, Quaternion.Euler(0f, 180f, 0f), 0);
                     }
                     break;
-                case GameMode.KILL_TITAN:
-                case GameMode.ENDLESS_TITAN:
-                case GameMode.SURVIVE_MODE:
+                case GameMode.KillTitans:
+                case GameMode.Endless:
+                case GameMode.Survival:
                     if (Level.Name == "Annie" || Level.Name == "Annie II")
                     {
                         GameObject titanRespawnPoint = GameObject.Find("titanRespawn");
@@ -1475,7 +1472,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         SpawnTitanCustom("titanRespawn", abnormalRate, Level.Enemies, punk: false);
                     }
                     break;
-                case GameMode.PVP_CAPTURE:
+                case GameMode.PvPCapture:
                     if (Level.Map == "OutSide")
                     {
                         foreach (GameObject respawnPoint in GameObject.FindGameObjectsWithTag("titanRespawn"))
@@ -1856,12 +1853,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         switch (Level.Mode)
         {
-            case GameMode.PVP_AHSS:
+            case GameMode.TeamDeathmatch:
                 teamWinner = score;
                 teamScores[teamWinner - 1]++;
                 gameEndCD = gameEndTotalCDtime;
                 break;
-            case GameMode.RACING:
+            case GameMode.Racing:
                 if (RCSettings.RacingStatic == 1)
                 {
                     gameEndCD = 1000f;
@@ -1980,7 +1977,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             SetTextTopLeft(playerList);
 
             // Respawn message
-            if (Camera.main != null && Level.Mode != GameMode.RACING && Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver && !needChooseSide && (int)Settings[245] == 0)
+            if (Camera.main != null && Level.Mode != GameMode.Racing && Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver && !needChooseSide && (int)Settings[245] == 0)
             {
                 SetTextCenter("Press [F7D358]" + inputManager.inputString[InputCode.Flare1] + "[-] to spectate the next player. \nPress [F7D358]" + inputManager.inputString[InputCode.Flare2] + "[-] to spectate the previous player.\nPress [F7D358]" + inputManager.inputString[InputCode.Attack1] + "[-] to enter the spectator mode.\n\n\n\n");
                 if (Level.RespawnMode == RespawnMode.Deathmatch || RCSettings.EndlessMode > 0 || ((RCSettings.BombMode == 1 || RCSettings.PvPMode > 0) && RCSettings.PointMode > 0))
@@ -2014,9 +2011,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
 
             // Game lose messages
-            if (isLosing && Level.Mode != GameMode.RACING)
+            if (isLosing && Level.Mode != GameMode.Racing)
             {
-                if (Level.Mode == GameMode.SURVIVE_MODE)
+                if (Level.Mode == GameMode.Survival)
                 {
                     SetTextCenter("Survived " + wave + " Waves!\nGame Restart in " + (int)gameEndCD + "s");
                 }
@@ -2044,13 +2041,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 switch (Level.Mode)
                 {
-                    case GameMode.RACING:
+                    case GameMode.Racing:
                         SetTextCenter(localRacingResult + "\n\nGame Restart in " + (int)gameEndCD + "s");
                         break;
-                    case GameMode.SURVIVE_MODE:
+                    case GameMode.Survival:
                         SetTextCenter("Survived All Waves!\nGame Restart in " + (int)gameEndCD + "s");
                         break;
-                    case GameMode.PVP_AHSS:
+                    case GameMode.TeamDeathmatch:
                         if (RCSettings.PvPMode == 0 && RCSettings.BombMode == 0)
                         {
                             SetTextCenter("Team " + teamWinner + " Wins!\nGame Restart in " + (int)gameEndCD + "s");
@@ -2087,7 +2084,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) // Singleplayer messages
         {
-            if (Level.Mode == GameMode.RACING)
+            if (Level.Mode == GameMode.Racing)
             {
                 if (!isLosing)
                 {
@@ -2103,7 +2100,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 // Game lose messages
                 if (isLosing)
                 {
-                    if (Level.Mode == GameMode.SURVIVE_MODE)
+                    if (Level.Mode == GameMode.Survival)
                     {
                         SetTextCenter("Survived " + wave + " Waves!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                     }
@@ -2119,10 +2116,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 switch (Level.Mode)
                 {
-                    case GameMode.RACING:
+                    case GameMode.Racing:
                         SetTextCenter(Guardian.Utilities.GameHelper.FormatTime((timeTotalServer * 10f) * 0.1f - 5f, true) + "!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                         break;
-                    case GameMode.SURVIVE_MODE:
+                    case GameMode.Survival:
                         SetTextCenter("Survived All Waves!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                         break;
                     default:
@@ -2131,7 +2128,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
             }
 
-            if (Level.Mode == GameMode.RACING)
+            if (Level.Mode == GameMode.Racing)
             {
                 if (!isWinning)
                 {
@@ -2147,7 +2144,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         timeElapse += Time.deltaTime;
         roundTime += Time.deltaTime;
 
-        if (Level.Mode == GameMode.RACING)
+        if (Level.Mode == GameMode.Racing)
         {
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
@@ -2228,21 +2225,21 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             string text = string.Empty;
             switch (Level.Mode)
             {
-                case GameMode.ENDLESS_TITAN:
+                case GameMode.Endless:
                     text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer);
                     break;
-                case GameMode.KILL_TITAN:
+                case GameMode.KillTitans:
                 case GameMode.None:
                     text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length
                         + " Time: " + Guardian.Utilities.GameHelper.FormatTime((IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer));
                     break;
-                case GameMode.SURVIVE_MODE:
+                case GameMode.Survival:
                     text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length + " Wave: " + wave;
                     break;
-                case GameMode.BOSS_FIGHT_CT:
+                case GameMode.Colossal:
                     text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer) + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the north gate!";
                     break;
-                case GameMode.PVP_CAPTURE:
+                case GameMode.PvPCapture:
                     string str = "| ";
                     for (int i = 0; i < PVPcheckPoint.chkPts.Count; i++)
                     {
@@ -2261,7 +2258,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
-                if (Level.Mode == GameMode.SURVIVE_MODE)
+                if (Level.Mode == GameMode.Survival)
                 {
                     text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(timeTotalServer);
                 }
@@ -2270,16 +2267,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 switch (Level.Mode)
                 {
-                    case GameMode.ENDLESS_TITAN:
-                    case GameMode.KILL_TITAN:
-                    case GameMode.BOSS_FIGHT_CT:
-                    case GameMode.PVP_CAPTURE:
+                    case GameMode.Endless:
+                    case GameMode.KillTitans:
+                    case GameMode.Colossal:
+                    case GameMode.PvPCapture:
                         text = "Humanity " + humanScore + " | Titan " + titanScore;
                         break;
-                    case GameMode.SURVIVE_MODE:
+                    case GameMode.Survival:
                         text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer);
                         break;
-                    case GameMode.PVP_AHSS:
+                    case GameMode.TeamDeathmatch:
                         for (int i = 0; i < teamScores.Length; i++)
                         {
                             text += string.Concat(
@@ -2355,7 +2352,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         string gameResults = string.Empty;
         switch (Level.Mode)
         {
-            case GameMode.PVP_AHSS:
+            case GameMode.TeamDeathmatch:
                 for (int i = 0; i < teamScores.Length; i++)
                 {
                     gameResults += string.Concat(
@@ -2367,7 +2364,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     );
                 }
                 break;
-            case GameMode.SURVIVE_MODE:
+            case GameMode.Survival:
                 gameResults = "Highest Wave: " + highestWave;
                 break;
             default:
@@ -2532,7 +2529,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                 }
                 CostumeConverter.ToPhotonData(setup.myCostume, PhotonNetwork.player);
-                if (Level.Mode == GameMode.PVP_CAPTURE)
+                if (Level.Mode == GameMode.PvPCapture)
                 {
                     component.main_object.transform.position += new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20));
                 }
@@ -2570,7 +2567,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
             myLastHero = id.ToUpper();
             GameObject theMainCamera = GameObject.Find("MainCamera");
-            GameObject gameObject2 = (Level.Mode != GameMode.PVP_CAPTURE) ? PhotonNetwork.Instantiate("TITAN_VER3.1", position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
+            GameObject gameObject2 = (Level.Mode != GameMode.PvPCapture) ? PhotonNetwork.Instantiate("TITAN_VER3.1", position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
             theMainCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObjectTitan(gameObject2);
             gameObject2.GetComponent<TITAN>().nonAI = true;
             gameObject2.GetComponent<TITAN>().speed = 30f;
@@ -2628,7 +2625,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         switch (Level.Mode)
         {
-            case GameMode.RACING:
+            case GameMode.Racing:
                 if (RCSettings.RacingStatic == 1)
                 {
                     gameEndCD = 1000f;
@@ -2642,7 +2639,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     base.photonView.RPC("netGameWin", PhotonTargets.Others, 0);
                 }
                 break;
-            case GameMode.PVP_AHSS:
+            case GameMode.TeamDeathmatch:
                 gameEndCD = gameEndTotalCDtime;
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
@@ -5366,7 +5363,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
         CostumeConverter.ToPhotonData(setup.myCostume, PhotonNetwork.player);
-        if (Level.Mode == GameMode.PVP_CAPTURE)
+        if (Level.Mode == GameMode.PvPCapture)
         {
             component.main_object.transform.position += new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20));
         }
@@ -5453,6 +5450,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     base.photonView.RPC("respawnHeroInNewRound", player);
                 }
             }
+
         }
     }
 
@@ -7249,16 +7247,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             switch (gametype)
             {
                 case 0:
-                    Level.Mode = GameMode.KILL_TITAN;
+                    Level.Mode = GameMode.KillTitans;
                     break;
                 case 1:
-                    Level.Mode = GameMode.SURVIVE_MODE;
+                    Level.Mode = GameMode.Survival;
                     break;
                 case 2:
-                    Level.Mode = GameMode.PVP_AHSS;
+                    Level.Mode = GameMode.TeamDeathmatch;
                     break;
                 case 3:
-                    Level.Mode = GameMode.RACING;
+                    Level.Mode = GameMode.Racing;
                     break;
                 case 4:
                     Level.Mode = GameMode.None;
@@ -11388,7 +11386,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             titansToSpawn = RCSettings.MoreTitans;
         }
 
-        if (Level.Mode == GameMode.SURVIVE_MODE)
+        if (Level.Mode == GameMode.Survival)
         {
             if (punk)
             {

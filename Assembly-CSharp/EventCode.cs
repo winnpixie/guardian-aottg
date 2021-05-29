@@ -8,6 +8,7 @@ public class EventCode
     public const byte Match = 227;
     public const byte AppStats = 226;
     public const byte TypedLobbyStats = 224;
+    public const byte AuthEvent = 223;
     [Obsolete("TCP routing was removed after becoming obsolete.")]
     public const byte AzureNodeInfo = 210;
     public const byte Join = byte.MaxValue;

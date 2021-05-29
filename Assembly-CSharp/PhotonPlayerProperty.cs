@@ -1,5 +1,6 @@
 public class PhotonPlayerProperty
 {
+    // Feng Properties
     public static string Name = "name";
     public static string Guild = "guildName";
     public static string Kills = "kills";
@@ -13,15 +14,7 @@ public class PhotonPlayerProperty
     public static string Sex = "sex";
     public static string HeroCostumeId = "heroCostumeId";
     public static string CostumeId = "costumeId";
-    public static string UniformType = "uniform_type";
-    public static string PartChestObjectMesh = "part_chest_object_mesh";
-    public static string PartChestObjectTexture = "part_chest_object_texture";
-    public static string PartChestObject1Mesh = "part_chest_1_object_mesh";
-    public static string PartChest1ObjectTexture = "part_chest_1_object_texture";
-    public static string PartChestSkinnedClothMesh = "part_chest_skinned_cloth_mesh";
-    public static string PartChestSkinnedClothTexture = "part_chest_skinned_cloth_texture";
     public static string Cape = "cape";
-    public static string BodyTexture = "body_texture";
     public static string HairInfo = "hairInfo";
     public static string EyeTextureId = "eye_texture_id";
     public static string BeardTextureId = "beard_texture_id";
@@ -36,6 +29,8 @@ public class PhotonPlayerProperty
     public static string StatBlade = "statBLA";
     public static string StatAccel = "statACL";
     public static string StatSkill = "statSKILL";
+
+    // RC Properties
     public static string RCTeam = "RCteam";
     public static string CurrentLevel = "currentLevel";
     public static string CustomInt = "customInt";

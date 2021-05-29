@@ -2078,8 +2078,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
                     raiseEventOptions.InterestGroup = (byte)view.group;
-                    RaiseEventOptions raiseEventOptions6 = raiseEventOptions;
-                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions6);
+                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions);
                     ExecuteRPC(hashtable, mLocalActor);
                     break;
                 }
@@ -2087,16 +2086,14 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
                     raiseEventOptions.InterestGroup = (byte)view.group;
-                    RaiseEventOptions raiseEventOptions5 = raiseEventOptions;
-                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions5);
+                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions);
                     break;
                 }
             case PhotonTargets.AllBuffered:
                 {
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
                     raiseEventOptions.CachingOption = EventCaching.AddToRoomCache;
-                    RaiseEventOptions raiseEventOptions8 = raiseEventOptions;
-                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions8);
+                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions);
                     ExecuteRPC(hashtable, mLocalActor);
                     break;
                 }
@@ -2104,8 +2101,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
                     raiseEventOptions.CachingOption = EventCaching.AddToRoomCache;
-                    RaiseEventOptions raiseEventOptions7 = raiseEventOptions;
-                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions7);
+                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions);
                     break;
                 }
             case PhotonTargets.MasterClient:
@@ -2117,8 +2113,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     }
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
                     raiseEventOptions.Receivers = ReceiverGroup.MasterClient;
-                    RaiseEventOptions raiseEventOptions4 = raiseEventOptions;
-                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions4);
+                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions);
                     break;
                 }
             case PhotonTargets.AllViaServer:
@@ -2126,8 +2121,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
                     raiseEventOptions.InterestGroup = (byte)view.group;
                     raiseEventOptions.Receivers = ReceiverGroup.All;
-                    RaiseEventOptions raiseEventOptions3 = raiseEventOptions;
-                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions3);
+                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions);
                     break;
                 }
             case PhotonTargets.AllBufferedViaServer:
@@ -2136,8 +2130,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     raiseEventOptions.InterestGroup = (byte)view.group;
                     raiseEventOptions.Receivers = ReceiverGroup.All;
                     raiseEventOptions.CachingOption = EventCaching.AddToRoomCache;
-                    RaiseEventOptions raiseEventOptions2 = raiseEventOptions;
-                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions2);
+                    OpRaiseEvent(200, hashtable, sendReliable: true, raiseEventOptions);
                     break;
                 }
             default:

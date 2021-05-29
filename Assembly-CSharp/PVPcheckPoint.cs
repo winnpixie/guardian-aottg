@@ -63,7 +63,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             Object.Destroy(base.gameObject);
             return;
         }
-        if (FengGameManagerMKII.Level.Mode != GameMode.PVP_CAPTURE)
+        if (FengGameManagerMKII.Level.Mode != GameMode.PvPCapture)
         {
             Object.Destroy(base.gameObject);
             return;

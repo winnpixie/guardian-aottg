@@ -191,7 +191,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             }
             base.animation["turn180"].speed = 0.9f;
         }
-        if (FengGameManagerMKII.Level.Mode == GameMode.PVP_CAPTURE)
+        if (FengGameManagerMKII.Level.Mode == GameMode.PvPCapture)
         {
             NapeArmor = (int)((float)NapeArmor * 0.8f);
         }
@@ -524,15 +524,16 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             if (base.animation["die"].normalizedTime >= 1f)
             {
                 PlayAnimation("die_cry");
-                if (FengGameManagerMKII.Level.Mode != GameMode.PVP_CAPTURE)
+                if (FengGameManagerMKII.Level.Mode != GameMode.PvPCapture)
                 {
                     for (int i = 0; i < 15; i++)
                     {
-                        FengGameManagerMKII.Instance.SpawnTitanRandom("titanRespawn", 50);
-                        gameObject.GetComponent<TITAN>().beTauntedBy(base.gameObject, 20f);
+                        GameObject newTitan = FengGameManagerMKII.Instance.SpawnTitanRandom("titanRespawn", 50);
+                        newTitan.GetComponent<TITAN>().beTauntedBy(base.gameObject, 20f);
                     }
                 }
             }
+
             if (dieTime > 2f && !hasDieSteam)
             {
                 hasDieSteam = true;
@@ -548,7 +549,8 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
                     gameObject3.transform.localScale = base.transform.localScale;
                 }
             }
-            if (dieTime > ((FengGameManagerMKII.Level.Mode != GameMode.PVP_CAPTURE) ? 20f : 5f))
+
+            if (dieTime > ((FengGameManagerMKII.Level.Mode != GameMode.PvPCapture) ? 20f : 5f))
             {
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
@@ -566,6 +568,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             }
             return;
         }
+
         if (attention > 0f)
         {
             attention -= Time.deltaTime;
@@ -629,263 +632,260 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             Vector3 position8 = base.transform.position;
             myDistance = Mathf.Sqrt(num2 + num3 * (z2 - position8.z));
         }
-        if (state == "idle")
+
+        switch(state)
         {
-            if (myHero == null)
-            {
-                return;
-            }
-            float num4 = 0f;
-            float num5 = 0f;
-            Vector3 vector = myHero.transform.position - base.transform.position;
-            num4 = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
-            float current = num4;
-            Vector3 eulerAngles = base.gameObject.transform.rotation.eulerAngles;
-            num5 = 0f - Mathf.DeltaAngle(current, eulerAngles.y - 90f);
-            if (attackTarget(myHero))
-            {
-                return;
-            }
-            if (Mathf.Abs(num5) < 90f)
-            {
-                chase();
-            }
-            else if (UnityEngine.Random.Range(0, 100) < 1)
-            {
-                turn180();
-            }
-            else if (Mathf.Abs(num5) > 100f)
-            {
-                if (UnityEngine.Random.Range(0, 100) < 10)
-                {
-                    turn180();
-                }
-            }
-            else if (Mathf.Abs(num5) > 45f && UnityEngine.Random.Range(0, 100) < 30)
-            {
-                turn(num5);
-            }
-        }
-        else if (state == "attack")
-        {
-            if (!attacked && attackCheckTime != 0f && base.animation["attack_" + attackAnimation].normalizedTime >= attackCheckTime)
-            {
-                attacked = true;
-                fxPosition = base.transform.Find("ap_" + attackAnimation).position;
-                GameObject gameObject6 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !PhotonNetwork.isMasterClient) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/" + fxName), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/" + fxName, fxPosition, fxRotation, 0);
-                gameObject6.transform.localScale = base.transform.localScale;
-                float b = 1f - Vector3.Distance(currentCamera.transform.position, gameObject6.transform.position) * 0.05f;
-                b = Mathf.Min(1f, b);
-                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(b, b);
-            }
-            if (attackCheckTimeA != 0f && ((base.animation["attack_" + attackAnimation].normalizedTime >= attackCheckTimeA && base.animation["attack_" + attackAnimation].normalizedTime <= attackCheckTimeB) || (!attackChkOnce && base.animation["attack_" + attackAnimation].normalizedTime >= attackCheckTimeA)))
-            {
-                if (!attackChkOnce)
-                {
-                    attackChkOnce = true;
-                    playSound("snd_eren_swing" + UnityEngine.Random.Range(1, 3));
-                }
-                RaycastHit[] array2 = checkHitCapsule(checkHitCapsuleStart.position, checkHitCapsuleEnd.position, checkHitCapsuleR);
-                foreach (RaycastHit raycastHit in array2)
-                {
-                    GameObject gameObject7 = raycastHit.collider.gameObject;
-                    if (gameObject7.tag == "Player")
-                    {
-                        killPlayer(gameObject7);
-                    }
-                    if (!(gameObject7.tag == "erenHitbox"))
-                    {
-                        continue;
-                    }
-                    if (attackAnimation == "combo_1")
-                    {
-                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
-                        {
-                            gameObject7.transform.root.gameObject.GetComponent<TITAN_EREN>().hitByFTByServer(1);
-                        }
-                    }
-                    else if (attackAnimation == "combo_2")
-                    {
-                        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
-                        {
-                            gameObject7.transform.root.gameObject.GetComponent<TITAN_EREN>().hitByFTByServer(2);
-                        }
-                    }
-                    else if (attackAnimation == "combo_3" && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
-                    {
-                        gameObject7.transform.root.gameObject.GetComponent<TITAN_EREN>().hitByFTByServer(3);
-                    }
-                }
-                array2 = checkHitCapsule(checkHitCapsuleEndOld, checkHitCapsuleEnd.position, checkHitCapsuleR);
-                foreach (RaycastHit raycastHit2 in array2)
-                {
-                    GameObject gameObject8 = raycastHit2.collider.gameObject;
-                    if (gameObject8.tag == "Player")
-                    {
-                        killPlayer(gameObject8);
-                    }
-                }
-                checkHitCapsuleEndOld = checkHitCapsuleEnd.position;
-            }
-            if (attackAnimation == "jumpCombo_1" && base.animation["attack_" + attackAnimation].normalizedTime >= 0.65f && !startJump && myHero != null)
-            {
-                startJump = true;
-                Vector3 velocity = myHero.rigidbody.velocity;
-                float y = velocity.y;
-                float num6 = -20f;
-                float num7 = gravity;
-                Vector3 position9 = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck").position;
-                float y2 = position9.y;
-                float num8 = (num6 - num7) * 0.5f;
-                float num9 = y;
-                Vector3 position10 = myHero.transform.position;
-                float num10 = position10.y - y2;
-                float d = Mathf.Abs((Mathf.Sqrt(num9 * num9 - 4f * num8 * num10) - num9) / (2f * num8));
-                Vector3 a = myHero.transform.position + myHero.rigidbody.velocity * d + Vector3.up * 0.5f * num6 * d * d;
-                float y3 = a.y;
-                if (num10 < 0f || y3 - y2 < 0f)
-                {
-                    idle();
-                    d = 0.5f;
-                    a = base.transform.position + (y2 + 5f) * Vector3.up;
-                    y3 = a.y;
-                }
-                float num11 = y3 - y2;
-                float num12 = Mathf.Sqrt(2f * num11 / gravity);
-                float value = gravity * num12 + 20f;
-                value = Mathf.Clamp(value, 20f, 90f);
-                Vector3 vector2 = (a - base.transform.position) / d;
-                abnorma_jump_bite_horizon_v = new Vector3(vector2.x, 0f, vector2.z);
-                Vector3 velocity2 = base.rigidbody.velocity;
-                Vector3 a2 = new Vector3(abnorma_jump_bite_horizon_v.x, value, abnorma_jump_bite_horizon_v.z);
-                if (a2.magnitude > 90f)
-                {
-                    a2 = a2.normalized * 90f;
-                }
-                Vector3 force = a2 - velocity2;
-                base.rigidbody.AddForce(force, ForceMode.VelocityChange);
-                Vector3 position11 = base.transform.position;
-                float x3 = position11.x;
-                Vector3 position12 = base.transform.position;
-                Vector2 from = new Vector2(x3, position12.z);
-                Vector3 position13 = myHero.transform.position;
-                float x4 = position13.x;
-                Vector3 position14 = myHero.transform.position;
-                float num13 = Vector2.Angle(from, new Vector2(x4, position14.z));
-                Vector3 position15 = myHero.transform.position;
-                float x5 = position15.x;
-                Vector3 position16 = base.transform.position;
-                float y4 = x5 - position16.x;
-                Vector3 position17 = myHero.transform.position;
-                float z3 = position17.z;
-                Vector3 position18 = base.transform.position;
-                num13 = Mathf.Atan2(y4, z3 - position18.z) * 57.29578f;
-                base.gameObject.transform.rotation = Quaternion.Euler(0f, num13, 0f);
-            }
-            if (attackAnimation == "jumpCombo_3")
-            {
-                if (base.animation["attack_" + attackAnimation].normalizedTime >= 1f && IsGrounded())
-                {
-                    attack("jumpCombo_4");
-                }
-            }
-            else
-            {
-                if (!(base.animation["attack_" + attackAnimation].normalizedTime >= 1f))
+            case "idle":
+                if (myHero == null)
                 {
                     return;
                 }
-                if (nextAttackAnimation != null)
+                float num4 = 0f;
+                float num5 = 0f;
+                Vector3 vector = myHero.transform.position - base.transform.position;
+                num4 = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
+                float current = num4;
+                Vector3 eulerAngles = base.gameObject.transform.rotation.eulerAngles;
+                num5 = 0f - Mathf.DeltaAngle(current, eulerAngles.y - 90f);
+                if (attackTarget(myHero))
                 {
-                    attack(nextAttackAnimation);
-                    if (eren != null)
+                    return;
+                }
+                if (Mathf.Abs(num5) < 90f)
+                {
+                    chase();
+                }
+                else if (UnityEngine.Random.Range(0, 100) < 1)
+                {
+                    turn180();
+                }
+                else if (Mathf.Abs(num5) > 100f)
+                {
+                    if (UnityEngine.Random.Range(0, 100) < 10)
                     {
-                        Transform transform = base.gameObject.transform;
-                        Vector3 eulerAngles2 = Quaternion.LookRotation(eren.transform.position - base.transform.position).eulerAngles;
-                        transform.rotation = Quaternion.Euler(0f, eulerAngles2.y, 0f);
+                        turn180();
+                    }
+                }
+                else if (Mathf.Abs(num5) > 45f && UnityEngine.Random.Range(0, 100) < 30)
+                {
+                    turn(num5);
+                }
+                break;
+            case "attack":
+                if (!attacked && attackCheckTime != 0f && base.animation["attack_" + attackAnimation].normalizedTime >= attackCheckTime)
+                {
+                    attacked = true;
+                    fxPosition = base.transform.Find("ap_" + attackAnimation).position;
+                    GameObject gameObject6 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !PhotonNetwork.isMasterClient) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/" + fxName), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/" + fxName, fxPosition, fxRotation, 0);
+                    gameObject6.transform.localScale = base.transform.localScale;
+                    float b = 1f - Vector3.Distance(currentCamera.transform.position, gameObject6.transform.position) * 0.05f;
+                    b = Mathf.Min(1f, b);
+                    currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(b, b);
+                }
+                if (attackCheckTimeA != 0f && ((base.animation["attack_" + attackAnimation].normalizedTime >= attackCheckTimeA && base.animation["attack_" + attackAnimation].normalizedTime <= attackCheckTimeB) || (!attackChkOnce && base.animation["attack_" + attackAnimation].normalizedTime >= attackCheckTimeA)))
+                {
+                    if (!attackChkOnce)
+                    {
+                        attackChkOnce = true;
+                        playSound("snd_eren_swing" + UnityEngine.Random.Range(1, 3));
+                    }
+                    RaycastHit[] array2 = checkHitCapsule(checkHitCapsuleStart.position, checkHitCapsuleEnd.position, checkHitCapsuleR);
+                    foreach (RaycastHit raycastHit in array2)
+                    {
+                        GameObject gameObject7 = raycastHit.collider.gameObject;
+                        if (gameObject7.tag == "Player")
+                        {
+                            killPlayer(gameObject7);
+                        }
+                        if (!(gameObject7.tag == "erenHitbox"))
+                        {
+                            continue;
+                        }
+                        if (attackAnimation == "combo_1")
+                        {
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
+                            {
+                                gameObject7.transform.root.gameObject.GetComponent<TITAN_EREN>().hitByFTByServer(1);
+                            }
+                        }
+                        else if (attackAnimation == "combo_2")
+                        {
+                            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
+                            {
+                                gameObject7.transform.root.gameObject.GetComponent<TITAN_EREN>().hitByFTByServer(2);
+                            }
+                        }
+                        else if (attackAnimation == "combo_3" && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
+                        {
+                            gameObject7.transform.root.gameObject.GetComponent<TITAN_EREN>().hitByFTByServer(3);
+                        }
+                    }
+                    array2 = checkHitCapsule(checkHitCapsuleEndOld, checkHitCapsuleEnd.position, checkHitCapsuleR);
+                    foreach (RaycastHit raycastHit2 in array2)
+                    {
+                        GameObject gameObject8 = raycastHit2.collider.gameObject;
+                        if (gameObject8.tag == "Player")
+                        {
+                            killPlayer(gameObject8);
+                        }
+                    }
+                    checkHitCapsuleEndOld = checkHitCapsuleEnd.position;
+                }
+                if (attackAnimation == "jumpCombo_1" && base.animation["attack_" + attackAnimation].normalizedTime >= 0.65f && !startJump && myHero != null)
+                {
+                    startJump = true;
+                    Vector3 velocity = myHero.rigidbody.velocity;
+                    float y = velocity.y;
+                    float num6 = -20f;
+                    float num7 = gravity;
+                    Vector3 position9 = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck").position;
+                    float y2 = position9.y;
+                    float num8 = (num6 - num7) * 0.5f;
+                    float num9 = y;
+                    Vector3 position10 = myHero.transform.position;
+                    float num10 = position10.y - y2;
+                    float d = Mathf.Abs((Mathf.Sqrt(num9 * num9 - 4f * num8 * num10) - num9) / (2f * num8));
+                    Vector3 a = myHero.transform.position + myHero.rigidbody.velocity * d + Vector3.up * 0.5f * num6 * d * d;
+                    float y3 = a.y;
+                    if (num10 < 0f || y3 - y2 < 0f)
+                    {
+                        Idle();
+                        d = 0.5f;
+                        a = base.transform.position + (y2 + 5f) * Vector3.up;
+                        y3 = a.y;
+                    }
+                    float num11 = y3 - y2;
+                    float num12 = Mathf.Sqrt(2f * num11 / gravity);
+                    float value = gravity * num12 + 20f;
+                    value = Mathf.Clamp(value, 20f, 90f);
+                    Vector3 vector2 = (a - base.transform.position) / d;
+                    abnorma_jump_bite_horizon_v = new Vector3(vector2.x, 0f, vector2.z);
+                    Vector3 velocity2 = base.rigidbody.velocity;
+                    Vector3 a2 = new Vector3(abnorma_jump_bite_horizon_v.x, value, abnorma_jump_bite_horizon_v.z);
+                    if (a2.magnitude > 90f)
+                    {
+                        a2 = a2.normalized * 90f;
+                    }
+                    Vector3 force = a2 - velocity2;
+                    base.rigidbody.AddForce(force, ForceMode.VelocityChange);
+                    Vector3 position11 = base.transform.position;
+                    float x3 = position11.x;
+                    Vector3 position12 = base.transform.position;
+                    Vector2 from = new Vector2(x3, position12.z);
+                    Vector3 position13 = myHero.transform.position;
+                    float x4 = position13.x;
+                    Vector3 position14 = myHero.transform.position;
+                    float num13 = Vector2.Angle(from, new Vector2(x4, position14.z));
+                    Vector3 position15 = myHero.transform.position;
+                    float x5 = position15.x;
+                    Vector3 position16 = base.transform.position;
+                    float y4 = x5 - position16.x;
+                    Vector3 position17 = myHero.transform.position;
+                    float z3 = position17.z;
+                    Vector3 position18 = base.transform.position;
+                    num13 = Mathf.Atan2(y4, z3 - position18.z) * 57.29578f;
+                    base.gameObject.transform.rotation = Quaternion.Euler(0f, num13, 0f);
+                }
+                if (attackAnimation == "jumpCombo_3")
+                {
+                    if (base.animation["attack_" + attackAnimation].normalizedTime >= 1f && IsGrounded())
+                    {
+                        attack("jumpCombo_4");
                     }
                 }
                 else
                 {
-                    findNearestHero();
-                    idle();
-                }
-            }
-        }
-        else if (state == "grab")
-        {
-            if (base.animation["attack_grab_" + attackAnimation].normalizedTime >= attackCheckTimeA && base.animation["attack_grab_" + attackAnimation].normalizedTime <= attackCheckTimeB && grabbedTarget == null)
-            {
-                GameObject gameObject9 = checkIfHitHand(currentGrabHand);
-                if (gameObject9 != null)
-                {
-                    if (isGrabHandLeft)
+                    if (!(base.animation["attack_" + attackAnimation].normalizedTime >= 1f))
                     {
-                        eatSetL(gameObject9);
-                        grabbedTarget = gameObject9;
+                        return;
+                    }
+                    if (nextAttackAnimation != null)
+                    {
+                        attack(nextAttackAnimation);
+                        if (eren != null)
+                        {
+                            Transform transform = base.gameObject.transform;
+                            Vector3 eulerAngles2 = Quaternion.LookRotation(eren.transform.position - base.transform.position).eulerAngles;
+                            transform.rotation = Quaternion.Euler(0f, eulerAngles2.y, 0f);
+                        }
                     }
                     else
                     {
-                        eatSet(gameObject9);
-                        grabbedTarget = gameObject9;
+                        findNearestHero();
+                        Idle();
                     }
                 }
-            }
-            if (base.animation["attack_grab_" + attackAnimation].normalizedTime > attackCheckTime && (bool)grabbedTarget)
-            {
-                justEatHero(grabbedTarget, currentGrabHand);
-                grabbedTarget = null;
-            }
-            if (base.animation["attack_grab_" + attackAnimation].normalizedTime >= 1f)
-            {
-                idle();
-            }
-        }
-        else if (state == "turn")
-        {
-            base.gameObject.transform.rotation = Quaternion.Lerp(base.gameObject.transform.rotation, Quaternion.Euler(0f, desDeg, 0f), Time.deltaTime * Mathf.Abs(turnDeg) * 0.1f);
-            if (base.animation[turnAnimation].normalizedTime >= 1f)
-            {
-                idle();
-            }
-        }
-        else if (state == "chase")
-        {
-            if ((eren == null || !(myDistance < 35f) || !attackTarget(myHero)) && (!(getNearestHeroDistance() < 50f) || UnityEngine.Random.Range(0, 100) >= 20 || !attackTarget(getNearestHero())) && myDistance < attackDistance - 15f)
-            {
-                idle(UnityEngine.Random.Range(0.05f, 0.2f));
-            }
-        }
-        else if (state == "turn180")
-        {
-            if (base.animation[turnAnimation].normalizedTime >= 1f)
-            {
-                Transform transform2 = base.gameObject.transform;
-                Vector3 eulerAngles3 = base.gameObject.transform.rotation.eulerAngles;
-                float x6 = eulerAngles3.x;
-                Vector3 eulerAngles4 = base.gameObject.transform.rotation.eulerAngles;
-                float y5 = eulerAngles4.y + 180f;
-                Vector3 eulerAngles5 = base.gameObject.transform.rotation.eulerAngles;
-                transform2.rotation = Quaternion.Euler(x6, y5, eulerAngles5.z);
-                idle();
-                PlayAnimation("idle");
-            }
-        }
-        else if (state == "anklehurt")
-        {
-            if (base.animation["legHurt"].normalizedTime >= 1f)
-            {
-                CrossFade("legHurt_loop", 0.2f);
-            }
-            if (base.animation["legHurt_loop"].normalizedTime >= 3f)
-            {
-                CrossFade("legHurt_getup", 0.2f);
-            }
-            if (base.animation["legHurt_getup"].normalizedTime >= 1f)
-            {
-                idle();
-                PlayAnimation("idle");
-            }
+                break;
+            case "grab":
+                if (base.animation["attack_grab_" + attackAnimation].normalizedTime >= attackCheckTimeA && base.animation["attack_grab_" + attackAnimation].normalizedTime <= attackCheckTimeB && grabbedTarget == null)
+                {
+                    GameObject gameObject9 = checkIfHitHand(currentGrabHand);
+                    if (gameObject9 != null)
+                    {
+                        if (isGrabHandLeft)
+                        {
+                            eatSetL(gameObject9);
+                            grabbedTarget = gameObject9;
+                        }
+                        else
+                        {
+                            eatSet(gameObject9);
+                            grabbedTarget = gameObject9;
+                        }
+                    }
+                }
+                if (base.animation["attack_grab_" + attackAnimation].normalizedTime > attackCheckTime && (bool)grabbedTarget)
+                {
+                    justEatHero(grabbedTarget, currentGrabHand);
+                    grabbedTarget = null;
+                }
+                if (base.animation["attack_grab_" + attackAnimation].normalizedTime >= 1f)
+                {
+                    Idle();
+                }
+                break;
+            case "turn":
+                base.gameObject.transform.rotation = Quaternion.Lerp(base.gameObject.transform.rotation, Quaternion.Euler(0f, desDeg, 0f), Time.deltaTime * Mathf.Abs(turnDeg) * 0.1f);
+                if (base.animation[turnAnimation].normalizedTime >= 1f)
+                {
+                    Idle();
+                }
+                break;
+            case "chase":
+                if ((eren == null || !(myDistance < 35f) || !attackTarget(myHero)) && (!(getNearestHeroDistance() < 50f) || UnityEngine.Random.Range(0, 100) >= 20 || !attackTarget(getNearestHero())) && myDistance < attackDistance - 15f)
+                {
+                    Idle(UnityEngine.Random.Range(0.05f, 0.2f));
+                }
+                break;
+            case "turn180":
+                if (base.animation[turnAnimation].normalizedTime >= 1f)
+                {
+                    Transform transform2 = base.gameObject.transform;
+                    Vector3 eulerAngles3 = base.gameObject.transform.rotation.eulerAngles;
+                    float x6 = eulerAngles3.x;
+                    Vector3 eulerAngles4 = base.gameObject.transform.rotation.eulerAngles;
+                    float y5 = eulerAngles4.y + 180f;
+                    Vector3 eulerAngles5 = base.gameObject.transform.rotation.eulerAngles;
+                    transform2.rotation = Quaternion.Euler(x6, y5, eulerAngles5.z);
+                    Idle();
+                    PlayAnimation("idle");
+                }
+                break;
+            case "anklehurt":
+                if (base.animation["legHurt"].normalizedTime >= 1f)
+                {
+                    CrossFade("legHurt_loop", 0.2f);
+                }
+                if (base.animation["legHurt_loop"].normalizedTime >= 3f)
+                {
+                    CrossFade("legHurt_getup", 0.2f);
+                }
+                if (base.animation["legHurt_getup"].normalizedTime >= 1f)
+                {
+                    Idle();
+                    PlayAnimation("idle");
+                }
+                break;
         }
     }
 
@@ -925,46 +925,57 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             oldCorePosition = base.transform.position - base.transform.Find("Amarture/Core").position;
             needFreshCorePosition = false;
         }
-        if ((state == "attack" && isAttackMoveByCore) || state == "hit" || state == "turn180" || state == "anklehurt")
+
+        switch(state)
         {
-            Vector3 a = base.transform.position - base.transform.Find("Amarture/Core").position - oldCorePosition;
-            Rigidbody rigidbody = base.rigidbody;
-            Vector3 a2 = a / Time.deltaTime;
-            Vector3 up = Vector3.up;
-            Vector3 velocity = base.rigidbody.velocity;
-            rigidbody.velocity = a2 + up * velocity.y;
-            oldCorePosition = base.transform.position - base.transform.Find("Amarture/Core").position;
+            case "attack":
+            case "hit":
+            case "turn180":
+            case "anklehurt":
+                if (state != "attack" || isAttackMoveByCore)
+                {
+                    Vector3 a = base.transform.position - base.transform.Find("Amarture/Core").position - oldCorePosition;
+                    Rigidbody rigidbody = base.rigidbody;
+                    Vector3 a2 = a / Time.deltaTime;
+                    Vector3 up = Vector3.up;
+                    Vector3 velocity = base.rigidbody.velocity;
+                    rigidbody.velocity = a2 + up * velocity.y;
+                    oldCorePosition = base.transform.position - base.transform.Find("Amarture/Core").position;
+                }
+                break;
+            case "chase":
+                if (myHero == null)
+                {
+                    return;
+                }
+                Vector3 a3 = base.transform.forward * speed;
+                Vector3 velocity2 = base.rigidbody.velocity;
+                Vector3 force = a3 - velocity2;
+                force.y = 0f;
+                base.rigidbody.AddForce(force, ForceMode.VelocityChange);
+                float num = 0f;
+                Vector3 vector = myHero.transform.position - base.transform.position;
+                num = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
+                float current = num;
+                Vector3 eulerAngles = base.gameObject.transform.rotation.eulerAngles;
+                float num2 = 0f - Mathf.DeltaAngle(current, eulerAngles.y - 90f);
+                Transform transform = base.gameObject.transform;
+                Quaternion rotation = base.gameObject.transform.rotation;
+                Vector3 eulerAngles2 = base.gameObject.transform.rotation.eulerAngles;
+                transform.rotation = Quaternion.Lerp(rotation, Quaternion.Euler(0f, eulerAngles2.y + num2, 0f), speed * Time.deltaTime);
+                break;
+            default:
+                if (grounded && !base.animation.IsPlaying("attack_jumpCombo_1"))
+                {
+                    Rigidbody rigidbody2 = base.rigidbody;
+                    Vector3 velocity3 = base.rigidbody.velocity;
+                    float x = 0f - velocity3.x;
+                    Vector3 velocity4 = base.rigidbody.velocity;
+                    rigidbody2.AddForce(new Vector3(x, 0f, 0f - velocity4.z), ForceMode.VelocityChange);
+                }
+                break;
         }
-        else if (state == "chase")
-        {
-            if (myHero == null)
-            {
-                return;
-            }
-            Vector3 a3 = base.transform.forward * speed;
-            Vector3 velocity2 = base.rigidbody.velocity;
-            Vector3 force = a3 - velocity2;
-            force.y = 0f;
-            base.rigidbody.AddForce(force, ForceMode.VelocityChange);
-            float num = 0f;
-            Vector3 vector = myHero.transform.position - base.transform.position;
-            num = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
-            float current = num;
-            Vector3 eulerAngles = base.gameObject.transform.rotation.eulerAngles;
-            float num2 = 0f - Mathf.DeltaAngle(current, eulerAngles.y - 90f);
-            Transform transform = base.gameObject.transform;
-            Quaternion rotation = base.gameObject.transform.rotation;
-            Vector3 eulerAngles2 = base.gameObject.transform.rotation.eulerAngles;
-            transform.rotation = Quaternion.Lerp(rotation, Quaternion.Euler(0f, eulerAngles2.y + num2, 0f), speed * Time.deltaTime);
-        }
-        else if (grounded && !base.animation.IsPlaying("attack_jumpCombo_1"))
-        {
-            Rigidbody rigidbody2 = base.rigidbody;
-            Vector3 velocity3 = base.rigidbody.velocity;
-            float x = 0f - velocity3.x;
-            Vector3 velocity4 = base.rigidbody.velocity;
-            rigidbody2.AddForce(new Vector3(x, 0f, 0f - velocity4.z), ForceMode.VelocityChange);
-        }
+
         base.rigidbody.AddForce(new Vector3(0f, (0f - gravity) * base.rigidbody.mass, 0f));
     }
 
@@ -1304,7 +1315,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         CrossFade("run", 0.5f);
     }
 
-    private void idle(float sbtime = 0f)
+    private void Idle(float sbtime = 0f)
     {
         this.sbtime = sbtime;
         this.sbtime = Mathf.Max(0.5f, this.sbtime);

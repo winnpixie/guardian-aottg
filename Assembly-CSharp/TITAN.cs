@@ -130,12 +130,10 @@ public class TITAN : Photon.MonoBehaviour
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
-            base.photonView.RPC("netPlayAnimation", PhotonTargets.All, aniName);
+            base.photonView.RPC("netPlayAnimation", PhotonTargets.Others, aniName);
         }
-        else
-        {
-            base.animation.Play(aniName);
-        }
+
+        base.animation.Play(aniName);
     }
 
     private void PlayAnimationAt(string aniName, float normalizedTime)
@@ -144,13 +142,11 @@ public class TITAN : Photon.MonoBehaviour
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
-            base.photonView.RPC("netPlayAnimationAt", PhotonTargets.All, aniName, normalizedTime);
+            base.photonView.RPC("netPlayAnimationAt", PhotonTargets.Others, aniName, normalizedTime);
         }
-        else
-        {
-            base.animation.Play(aniName);
-            base.animation[aniName].normalizedTime = normalizedTime;
-        }
+
+        base.animation.Play(aniName);
+        base.animation[aniName].normalizedTime = normalizedTime;
     }
 
     public void CrossFade(string aniName, float time)
@@ -159,12 +155,10 @@ public class TITAN : Photon.MonoBehaviour
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
-            base.photonView.RPC("netCrossFade", PhotonTargets.All, aniName, time);
+            base.photonView.RPC("netCrossFade", PhotonTargets.Others, aniName, time);
         }
-        else
-        {
-            base.animation.CrossFade(aniName, time);
-        }
+
+        base.animation.CrossFade(aniName, time);
     }
 
     [RPC]
@@ -174,7 +168,8 @@ public class TITAN : Photon.MonoBehaviour
         {
             return;
         }
-        base.animation.Play(aniName);
+
+        PlayAnimation(aniName);
     }
 
     [RPC]
@@ -184,8 +179,8 @@ public class TITAN : Photon.MonoBehaviour
         {
             return;
         }
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
+
+        PlayAnimationAt(aniName, normalizedTime);
     }
 
     [RPC]
@@ -195,7 +190,8 @@ public class TITAN : Photon.MonoBehaviour
         {
             return;
         }
-        base.animation.CrossFade(aniName, time);
+
+        CrossFade(aniName, time);
     }
 
     private int GetPunkNumber()
@@ -3010,7 +3006,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         return;
                     }
-                    if (FengGameManagerMKII.Level.Mode == GameMode.PVP_CAPTURE && PVPfromCheckPt != null && myDistance > chaseDistance)
+                    if (FengGameManagerMKII.Level.Mode == GameMode.PvPCapture && PVPfromCheckPt != null && myDistance > chaseDistance)
                     {
                         SetIdle();
                     }
@@ -3126,7 +3122,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         if (checkPoints.Count == 1)
                         {
-                            if (FengGameManagerMKII.Level.Mode == GameMode.BOSS_FIGHT_CT)
+                            if (FengGameManagerMKII.Level.Mode == GameMode.Colossal)
                             {
                                 FengGameManagerMKII.Instance.LoseGame();
                                 checkPoints = new ArrayList();
@@ -3243,7 +3239,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         int num = 0;
         float num2 = 0.02f * (float)(IN_GAME_MAIN_CAMERA.Difficulty + 1);
-        if (FengGameManagerMKII.Level.Mode == GameMode.PVP_AHSS)
+        if (FengGameManagerMKII.Level.Mode == GameMode.TeamDeathmatch)
         {
             num2 = 100f;
         }
@@ -3301,7 +3297,7 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     num = 1;
                 }
-                if (FengGameManagerMKII.Level.Mode == GameMode.SURVIVE_MODE)
+                if (FengGameManagerMKII.Level.Mode == GameMode.Survival)
                 {
                     int wave = FengGameManagerMKII.Instance.wave;
                     int num3;
@@ -3398,7 +3394,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             chaseDistance *= myDifficulty == 1 ? 1.15f : 1.3f;
         }
-        if (FengGameManagerMKII.Level.Mode == GameMode.ENDLESS_TITAN || FengGameManagerMKII.Level.Mode == GameMode.SURVIVE_MODE)
+        if (FengGameManagerMKII.Level.Mode == GameMode.Endless || FengGameManagerMKII.Level.Mode == GameMode.Survival)
         {
             chaseDistance = 999999f;
         }
