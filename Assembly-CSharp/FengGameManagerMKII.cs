@@ -519,7 +519,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     PVPtitanScore += 2;
                 }
                 CheckPvPPoints();
-                base.photonView.RPC("refreshPVPStatus", PhotonTargets.Others, PVPhumanScore, PVPtitanScore);
+
+                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && PhotonNetwork.isMasterClient)
+                {
+                    base.photonView.RPC("refreshPVPStatus", PhotonTargets.Others, PVPhumanScore, PVPtitanScore);
+                }
                 break;
             case GameMode.Endless:
                 titanScore++;
@@ -851,7 +855,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 return false;
             }
         }
-        
+
         if (femaleTitans.Count > 0)
         {
             return false;

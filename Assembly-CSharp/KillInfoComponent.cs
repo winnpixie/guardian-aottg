@@ -146,6 +146,7 @@ public class KillInfoComponent : MonoBehaviour
             spriteSkeleton.GetComponent<UISprite>().color = new Color(1f, 1f, 1f, alpha);
             spriteSword.GetComponent<UISprite>().color = new Color(1f, 1f, 1f, alpha);
         }
+
         if (groupSmall.activeInHierarchy)
         {
             UILabel component2 = slabelScore.GetComponent<UILabel>();

@@ -35,7 +35,7 @@ public class HERO_DEAD_BODY_SETUP : MonoBehaviour
         }
     }
 
-    public void init(string aniname, float time, BODY_PARTS part)
+    public void Init(string aniname, float time, BODY_PARTS part)
     {
         base.animation.Play(aniname);
         base.animation[aniname].normalizedTime = time;

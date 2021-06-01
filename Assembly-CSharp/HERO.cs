@@ -208,12 +208,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 dashTime = 0f;
             }
+
             _state = value;
         }
     }
 
     // TODO: Mod, RC's fix
     private bool cancelGasDisable;
+    private bool areAnimationsPaused;
 
     public bool IsInvincible()
     {
@@ -261,6 +263,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             GameObject.Find("bulletL" + i).GetComponent<UISprite>().enabled = false;
         }
+
         for (int j = 1; j <= leftBulletLeft; j++)
         {
             GameObject.Find("bulletL" + j).GetComponent<UISprite>().enabled = true;
@@ -273,6 +276,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             GameObject.Find("bulletR" + i).GetComponent<UISprite>().enabled = false;
         }
+
         for (int j = 1; j <= rightBulletLeft; j++)
         {
             GameObject.Find("bulletR" + j).GetComponent<UISprite>().enabled = true;
@@ -371,8 +375,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void attackAccordingToMouse()
     {
-        Vector3 mousePosition = Input.mousePosition;
-        if ((double)mousePosition.x < (double)Screen.width * 0.5)
+        if (Input.mousePosition.x < Screen.width * 0.5)
         {
             attackAnimation = "attack2";
         }
@@ -405,54 +408,42 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
             }
         }
-        if (num > 0f)
-        {
-            attackAnimation = "attack1";
-        }
-        else
-        {
-            attackAnimation = "attack2";
-        }
+
+        attackAnimation = num > 0f ? "attack1" : "attack2";
     }
 
     public void PlayAnimation(string aniName)
     {
-        currentAnimation = aniName;
-        base.animation.Play(aniName);
-        if (PhotonNetwork.connected && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimation", PhotonTargets.Others, aniName);
         }
+
+        LocalPlayAnimation(aniName);
     }
 
     private void PlayAnimationAt(string aniName, float normalizedTime)
     {
-        currentAnimation = aniName;
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
-        if (PhotonNetwork.connected && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimationAt", PhotonTargets.Others, aniName, normalizedTime);
         }
+
+        LocalPlayAnimationAt(aniName, normalizedTime);
     }
 
     public void CrossFade(string aniName, float time)
     {
-        currentAnimation = aniName;
-        base.animation.CrossFade(aniName, time);
-        if (PhotonNetwork.connected && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netCrossFade", PhotonTargets.Others, aniName, time);
         }
+
+        LocalCrossFade(aniName, time);
     }
 
-    [RPC]
-    private void netPlayAnimation(string aniName, PhotonMessageInfo info = null)
+    private void LocalPlayAnimation(string aniName)
     {
-        if (!Guardian.AntiAbuse.HeroPatches.IsAnimationPlayValid(this, info))
-        {
-            return;
-        }
         currentAnimation = aniName;
         if (base.animation != null)
         {
@@ -460,13 +451,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
+    private void LocalPlayAnimationAt(string aniName, float normalizedTime)
     {
-        if (!Guardian.AntiAbuse.HeroPatches.IsAnimationSeekedPlayValid(this, info))
-        {
-            return;
-        }
         currentAnimation = aniName;
         if (base.animation != null)
         {
@@ -475,17 +461,39 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
+    private void LocalCrossFade(string aniName, float time)
     {
-        if (!Guardian.AntiAbuse.HeroPatches.IsCrossFadeValid(this, info))
-        {
-            return;
-        }
         currentAnimation = aniName;
         if (base.animation != null)
         {
             base.animation.CrossFade(aniName, time);
+        }
+    }
+
+    [RPC]
+    private void netPlayAnimation(string aniName, PhotonMessageInfo info = null)
+    {
+        if (Guardian.AntiAbuse.HeroPatches.IsAnimationPlayValid(this, info))
+        {
+            LocalPlayAnimation(aniName);
+        }
+    }
+
+    [RPC]
+    private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
+    {
+        if (Guardian.AntiAbuse.HeroPatches.IsAnimationSeekedPlayValid(this, info))
+        {
+            LocalPlayAnimationAt(aniName, normalizedTime);
+        }
+    }
+
+    [RPC]
+    private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
+    {
+        if (Guardian.AntiAbuse.HeroPatches.IsCrossFadeValid(this, info))
+        {
+            LocalCrossFade(aniName, time);
         }
     }
 
@@ -1257,10 +1265,17 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void PauseAnimation()
     {
+        if (areAnimationsPaused)
+        {
+            return;
+        }
+        areAnimationsPaused = true;
+
         foreach (AnimationState anim in base.animation)
         {
             anim.speed = 0f;
         }
+
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPauseAnimation", PhotonTargets.Others);
@@ -1278,6 +1293,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void ContinueAnimation()
     {
+        if (!areAnimationsPaused)
+        {
+            return;
+        }
+        areAnimationsPaused = false;
+
         ResetAnimationSpeed();
         PlayAnimation(GetCurrentAnimationPlaying());
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && base.photonView.isMine)
@@ -3715,10 +3736,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             else if (baseAnimation[attackAnimation].normalizedTime >= 0.32f)
                             {
                                 // TODO: Mod, animation-spam fix?
-                                if (baseAnimation[attackAnimation].speed >= 0.1f)
-                                {
-                                    PauseAnimation();
-                                }
+                                //if (baseAnimation[attackAnimation].speed >= 0.1f)
+                                //{
+                                PauseAnimation();
+                                //}
                             }
                         }
                         if (attackAnimation == "attack3_1" && currentBladeSta > 0f)
@@ -4375,7 +4396,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         if (myBomb != null)
         {
-            myBomb.destroyMe();
+            myBomb.DestroyMe();
         }
         if (myCannon != null)
         {
@@ -4474,7 +4495,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("Character_parts/AOTTG_HERO_body"), base.transform.position, base.transform.rotation);
         gameObject.gameObject.GetComponent<HERO_SETUP>().myCostume = setup.myCostume;
         gameObject.GetComponent<HERO_SETUP>().isDeadBody = true;
-        gameObject.GetComponent<HERO_DEAD_BODY_SETUP>().init(currentAnimation, base.animation[currentAnimation].normalizedTime, BODY_PARTS.ARM_R);
+        gameObject.GetComponent<HERO_DEAD_BODY_SETUP>().Init(currentAnimation, base.animation[currentAnimation].normalizedTime, BODY_PARTS.ARM_R);
         if (!isBite)
         {
             GameObject gameObject2 = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("Character_parts/AOTTG_HERO_body"), base.transform.position, base.transform.rotation);
@@ -4486,9 +4507,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             gameObject2.GetComponent<HERO_SETUP>().isDeadBody = true;
             gameObject3.GetComponent<HERO_SETUP>().isDeadBody = true;
             gameObject4.GetComponent<HERO_SETUP>().isDeadBody = true;
-            gameObject2.GetComponent<HERO_DEAD_BODY_SETUP>().init(currentAnimation, base.animation[currentAnimation].normalizedTime, BODY_PARTS.UPPER);
-            gameObject3.GetComponent<HERO_DEAD_BODY_SETUP>().init(currentAnimation, base.animation[currentAnimation].normalizedTime, BODY_PARTS.LOWER);
-            gameObject4.GetComponent<HERO_DEAD_BODY_SETUP>().init(currentAnimation, base.animation[currentAnimation].normalizedTime, BODY_PARTS.ARM_L);
+            gameObject2.GetComponent<HERO_DEAD_BODY_SETUP>().Init(currentAnimation, base.animation[currentAnimation].normalizedTime, BODY_PARTS.UPPER);
+            gameObject3.GetComponent<HERO_DEAD_BODY_SETUP>().Init(currentAnimation, base.animation[currentAnimation].normalizedTime, BODY_PARTS.LOWER);
+            gameObject4.GetComponent<HERO_DEAD_BODY_SETUP>().Init(currentAnimation, base.animation[currentAnimation].normalizedTime, BODY_PARTS.ARM_L);
             ApplyForce(gameObject2, v);
             ApplyForce(gameObject3, v);
             ApplyForce(gameObject4, v);
@@ -4601,7 +4622,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             Vector3 localPosition = Vector3.up * 5000f;
             if (myBomb != null)
             {
-                myBomb.destroyMe();
+                myBomb.DestroyMe();
             }
             if (myCannon != null)
             {
@@ -4724,7 +4745,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             Vector3 localPosition = Vector3.up * 5000f;
             if (myBomb != null)
             {
-                myBomb.destroyMe();
+                myBomb.DestroyMe();
             }
             if (myCannon != null)
             {

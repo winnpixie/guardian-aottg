@@ -104,30 +104,48 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
 
     private void PlayAnimation(string aniName)
     {
-        base.animation.Play(aniName);
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
             base.photonView.RPC("netPlayAnimation", PhotonTargets.Others, aniName);
         }
+
+        LocalPlayAnimation(aniName);
     }
 
     private void PlayAnimationAt(string aniName, float normalizedTime)
     {
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
             base.photonView.RPC("netPlayAnimationAt", PhotonTargets.Others, aniName, normalizedTime);
         }
+
+        LocalPlayAnimationAt(aniName, normalizedTime);
     }
 
     private void CrossFade(string aniName, float time)
     {
-        base.animation.CrossFade(aniName, time);
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
         {
             base.photonView.RPC("netCrossFade", PhotonTargets.Others, aniName, time);
         }
+
+        LocalCrossFade(aniName, time);
+    }
+
+    private void LocalPlayAnimation(string aniName)
+    {
+        base.animation.Play(aniName);
+    }
+
+    private void LocalPlayAnimationAt(string aniName, float normalizedTime)
+    {
+        base.animation.Play(aniName);
+        base.animation[aniName].normalizedTime = normalizedTime;
+    }
+
+    private void LocalCrossFade(string aniName, float time)
+    {
+        base.animation.CrossFade(aniName, time);
     }
 
     [RPC]
@@ -135,7 +153,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     {
         if (Guardian.AntiAbuse.ColossalPatches.IsAnimationPlayValid(this, info))
         {
-            base.animation.Play(aniName);
+            LocalPlayAnimation(aniName);
         }
     }
 
@@ -144,8 +162,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     {
         if (Guardian.AntiAbuse.ColossalPatches.IsAnimationSeekedPlayValid(this, info))
         {
-            base.animation.Play(aniName);
-            base.animation[aniName].normalizedTime = normalizedTime;
+            LocalPlayAnimationAt(aniName, normalizedTime);
         }
     }
 
@@ -154,7 +171,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     {
         if (Guardian.AntiAbuse.ColossalPatches.IsCrossFadeValid(this, info))
         {
-            base.animation.CrossFade(aniName, time);
+            LocalCrossFade(aniName, time);
         }
     }
 

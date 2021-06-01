@@ -126,37 +126,52 @@ public class TITAN : Photon.MonoBehaviour
 
     private void PlayAnimation(string aniName)
     {
-        UpdateLookStateFromAnimation(aniName);
-
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimation", PhotonTargets.Others, aniName);
         }
 
-        base.animation.Play(aniName);
+        LocalPlayAnimation(aniName);
     }
 
     private void PlayAnimationAt(string aniName, float normalizedTime)
     {
-        UpdateLookStateFromAnimation(aniName);
-
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimationAt", PhotonTargets.Others, aniName, normalizedTime);
         }
 
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
+        LocalPlayAnimationAt(aniName, normalizedTime);
     }
 
     public void CrossFade(string aniName, float time)
     {
-        UpdateLookStateFromAnimation(aniName);
-
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netCrossFade", PhotonTargets.Others, aniName, time);
         }
+
+        LocalCrossFade(aniName, time);
+    }
+
+    private void LocalPlayAnimation(string aniName)
+    {
+        UpdateLookStateFromAnimation(aniName);
+
+        base.animation.Play(aniName);
+    }
+
+    private void LocalPlayAnimationAt(string aniName, float normalizedTime)
+    {
+        UpdateLookStateFromAnimation(aniName);
+
+        base.animation.Play(aniName);
+        base.animation[aniName].normalizedTime = normalizedTime;
+    }
+
+    private void LocalCrossFade(string aniName, float time)
+    {
+        UpdateLookStateFromAnimation(aniName);
 
         base.animation.CrossFade(aniName, time);
     }
@@ -164,34 +179,29 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.TitanPatches.IsAnimationPlayValid(this, info) && PhotonNetwork.isMasterClient)
+        if (Guardian.AntiAbuse.TitanPatches.IsAnimationPlayValid(this, info))
         {
-            return;
+            LocalPlayAnimation(aniName);
         }
-
-        PlayAnimation(aniName);
     }
 
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.TitanPatches.IsAnimationSeekedPlayValid(this, info) && PhotonNetwork.isMasterClient)
+        if (Guardian.AntiAbuse.TitanPatches.IsAnimationSeekedPlayValid(this, info))
         {
-            return;
+            LocalPlayAnimationAt(aniName, normalizedTime);
         }
 
-        PlayAnimationAt(aniName, normalizedTime);
     }
 
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.TitanPatches.IsCrossFadeValid(this, info) && PhotonNetwork.isMasterClient)
+        if (Guardian.AntiAbuse.TitanPatches.IsCrossFadeValid(this, info))
         {
-            return;
+            LocalCrossFade(aniName, time);
         }
-
-        CrossFade(aniName, time);
     }
 
     private int GetPunkNumber()

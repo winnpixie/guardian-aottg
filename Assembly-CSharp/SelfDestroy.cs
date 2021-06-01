@@ -7,32 +7,18 @@ public class SelfDestroy : Photon.MonoBehaviour
     private void Update()
     {
         CountDown -= Time.deltaTime;
-
         if (CountDown > 0)
         {
             return;
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView == null || base.photonView.viewID == 0)
         {
             Object.Destroy(base.gameObject);
         }
-        else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
+        else if (base.photonView != null && base.photonView.isMine)
         {
-            if (base.photonView != null)
-            {
-                if (base.photonView.viewID == 0)
-                {
-                    Object.Destroy(base.gameObject);
-                }
-                else if (base.photonView.isMine)
-                {
-                    PhotonNetwork.Destroy(base.gameObject);
-                }
-            }
-            else
-            {
-                Object.Destroy(base.gameObject);
-            }
+            PhotonNetwork.Destroy(base.gameObject);
         }
     }
 }

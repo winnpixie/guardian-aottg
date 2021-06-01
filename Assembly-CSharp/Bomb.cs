@@ -97,7 +97,7 @@ public class Bomb : Photon.MonoBehaviour
         }
     }
 
-    public void destroyMe()
+    public void DestroyMe()
     {
         if (base.photonView.isMine)
         {

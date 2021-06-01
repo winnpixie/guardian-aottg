@@ -307,6 +307,7 @@ public class Horse : Photon.MonoBehaviour
                 CrossFade("horse_idle3", 0.1f);
             }
         }
+
         if (dust.GetComponent<ParticleSystem>().enableEmission)
         {
             dust.GetComponent<ParticleSystem>().enableEmission = false;
@@ -316,40 +317,55 @@ public class Horse : Photon.MonoBehaviour
     }
 
     [RPC]
-    private void setDust(bool enable)
+    private void setDust(bool state)
     {
-        if (dust.GetComponent<ParticleSystem>().enableEmission)
-        {
-            dust.GetComponent<ParticleSystem>().enableEmission = enable;
-        }
+        dust.GetComponent<ParticleSystem>().enableEmission = state;
     }
 
     public void PlayAnimation(string aniName)
     {
-        base.animation.Play(aniName);
-        if (PhotonNetwork.connected && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimation", PhotonTargets.Others, aniName);
         }
+
+        LocalPlayAnimation(aniName);
     }
 
     private void PlayAnimationAt(string aniName, float normalizedTime)
     {
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
-        if (PhotonNetwork.connected && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimationAt", PhotonTargets.Others, aniName, normalizedTime);
         }
+
+        LocalPlayAnimationAt(aniName, normalizedTime);
     }
 
     private void CrossFade(string aniName, float time)
     {
-        base.animation.CrossFade(aniName, time);
-        if (PhotonNetwork.connected && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netCrossFade", PhotonTargets.Others, aniName, time);
         }
+
+        LocalCrossFade(aniName, time);
+    }
+
+    private void LocalPlayAnimation(string aniName)
+    {
+        base.animation.Play(aniName);
+    }
+
+    private void LocalPlayAnimationAt(string aniName, float normalizedTime)
+    {
+        base.animation.Play(aniName);
+        base.animation[aniName].normalizedTime = normalizedTime;
+    }
+
+    private void LocalCrossFade(string aniName, float time)
+    {
+        base.animation.CrossFade(aniName, time);
     }
 
     [RPC]
@@ -357,7 +373,7 @@ public class Horse : Photon.MonoBehaviour
     {
         if (Guardian.AntiAbuse.HorsePatches.IsAnimationPlayValid(this, info))
         {
-            base.animation.Play(aniName);
+            LocalPlayAnimation(aniName);
         }
     }
 
@@ -366,8 +382,7 @@ public class Horse : Photon.MonoBehaviour
     {
         if (Guardian.AntiAbuse.HorsePatches.IsAnimationSeekedPlayValid(this, info))
         {
-            base.animation.Play(aniName);
-            base.animation[aniName].normalizedTime = normalizedTime;
+            LocalPlayAnimationAt(aniName, normalizedTime);
         }
     }
 
@@ -376,7 +391,7 @@ public class Horse : Photon.MonoBehaviour
     {
         if (Guardian.AntiAbuse.HorsePatches.IsCrossFadeValid(this, info))
         {
-            base.animation.CrossFade(aniName, time);
+            LocalCrossFade(aniName, time);
         }
     }
 }

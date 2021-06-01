@@ -61,49 +61,66 @@ public class TITAN_EREN : Photon.MonoBehaviour
 
     public void PlayAnimation(string aniName)
     {
-        base.animation.Play(aniName);
-        if (PhotonNetwork.connected && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimation", PhotonTargets.Others, aniName);
         }
+
+        LocalPlayAnimation(aniName);
     }
 
     private void PlayAnimationAt(string aniName, float normalizedTime)
     {
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
-        if (PhotonNetwork.connected && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netPlayAnimationAt", PhotonTargets.Others, aniName, normalizedTime);
         }
+
+        LocalPlayAnimationAt(aniName, normalizedTime);
     }
 
     private void CrossFade(string aniName, float time)
     {
-        base.animation.CrossFade(aniName, time);
-        if (PhotonNetwork.connected && base.photonView.isMine)
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("netCrossFade", PhotonTargets.Others, aniName, time);
         }
+
+        LocalCrossFade(aniName, time);
+    }
+
+    private void LocalPlayAnimation(string aniName)
+    {
+        base.animation.Play(aniName);
+    }
+
+    private void LocalPlayAnimationAt(string aniName, float normalizedTime)
+    {
+        base.animation.Play(aniName);
+        base.animation[aniName].normalizedTime = normalizedTime;
+    }
+
+    private void LocalCrossFade(string aniName, float time)
+    {
+        base.animation.CrossFade(aniName, time);
     }
 
     [RPC]
     private void netPlayAnimation(string aniName)
     {
-        base.animation.Play(aniName);
+        LocalPlayAnimation(aniName);
     }
 
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime)
     {
-        base.animation.Play(aniName);
-        base.animation[aniName].normalizedTime = normalizedTime;
+        LocalPlayAnimationAt(aniName, normalizedTime);
     }
 
     [RPC]
     private void netCrossFade(string aniName, float time)
     {
-        base.animation.CrossFade(aniName, time);
+        LocalCrossFade(aniName, time);
     }
 
     [RPC]
@@ -122,6 +139,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
         {
             return;
         }
+
         if (base.animation.IsPlaying("run"))
         {
             if (base.animation["run"].normalizedTime % 1f > 0.3f && base.animation["run"].normalizedTime % 1f < 0.75f && stepSoundPhase == 2)
@@ -143,6 +161,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
         {
             return;
         }
+
         if (hasDied)
         {
             if (!(base.animation["die"].normalizedTime >= 1f) && !(hitAnimation == "hit_annie_3"))
@@ -187,302 +206,302 @@ public class TITAN_EREN : Photon.MonoBehaviour
                     PhotonNetwork.Destroy(base.photonView);
                 }
             }
+
+            return;
         }
-        else
+
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine)
+            return;
+        }
+        if (isHit)
+        {
+            if (base.animation[hitAnimation].normalizedTime >= 1f)
             {
+                isHit = false;
+                falseAttack();
+                PlayAnimation("idle");
+            }
+            return;
+        }
+        if (lifeTime > 0f)
+        {
+            lifeTime -= Time.deltaTime;
+            if (lifeTime <= 0f)
+            {
+                hasDied = true;
+                PlayAnimation("die");
                 return;
             }
-            if (isHit)
+        }
+        if (grounded && !isAttack && !base.animation.IsPlaying("jump_land") && !isAttack && !base.animation.IsPlaying("born"))
+        {
+            if (inputManager.isInputDown[InputCode.Attack0] || inputManager.isInputDown[InputCode.Attack1])
             {
-                if (base.animation[hitAnimation].normalizedTime >= 1f)
+                bool flag = false;
+                if ((IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.WOW && inputManager.isInput[InputCode.Down]) || inputManager.isInputDown[InputCode.Attack1])
                 {
-                    isHit = false;
-                    falseAttack();
-                    PlayAnimation("idle");
-                }
-                return;
-            }
-            if (lifeTime > 0f)
-            {
-                lifeTime -= Time.deltaTime;
-                if (lifeTime <= 0f)
-                {
-                    hasDied = true;
-                    PlayAnimation("die");
-                    return;
-                }
-            }
-            if (grounded && !isAttack && !base.animation.IsPlaying("jump_land") && !isAttack && !base.animation.IsPlaying("born"))
-            {
-                if (inputManager.isInputDown[InputCode.Attack0] || inputManager.isInputDown[InputCode.Attack1])
-                {
-                    bool flag = false;
-                    if ((IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.WOW && inputManager.isInput[InputCode.Down]) || inputManager.isInputDown[InputCode.Attack1])
+                    if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.WOW && inputManager.isInputDown[InputCode.Attack1] && inputManager.inputKey[11] == KeyCode.Mouse1)
                     {
-                        if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.WOW && inputManager.isInputDown[InputCode.Attack1] && inputManager.inputKey[11] == KeyCode.Mouse1)
-                        {
-                            flag = true;
-                        }
-                        if (!flag)
-                        {
-                            attackAnimation = "attack_kick";
-                        }
-                    }
-                    else
-                    {
-                        attackAnimation = "attack_combo_001";
+                        flag = true;
                     }
                     if (!flag)
                     {
-                        PlayAnimation(attackAnimation);
-                        base.animation[attackAnimation].time = 0f;
-                        isAttack = true;
-                        needFreshCorePosition = true;
-                        if (attackAnimation == "attack_combo_001" || attackAnimation == "attack_combo_001")
-                        {
-                            attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R/hand_R");
-                        }
-                        else if (attackAnimation == "attack_combo_002")
-                        {
-                            attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_L/upper_arm_L/forearm_L/hand_L");
-                        }
-                        else if (attackAnimation == "attack_kick")
-                        {
-                            attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/thigh_R/shin_R/foot_R");
-                        }
-                        hitTargets = new ArrayList();
+                        attackAnimation = "attack_kick";
                     }
                 }
-                if (inputManager.isInputDown[InputCode.Salute])
+                else
                 {
-                    CrossFade("born", 0.1f);
-                    base.animation["born"].normalizedTime = 0.28f;
-                    isPlayRoar = false;
+                    attackAnimation = "attack_combo_001";
                 }
-            }
-            if (!isAttack)
-            {
-                if ((grounded || base.animation.IsPlaying("idle")) && !base.animation.IsPlaying("jump_start") && !base.animation.IsPlaying("jump_air") && !base.animation.IsPlaying("jump_land") && inputManager.isInput[InputCode.HookBoth])
+                if (!flag)
                 {
-                    CrossFade("jump_start", 0.1f);
-                }
-            }
-            else
-            {
-                if (base.animation[attackAnimation].time >= 0.1f && inputManager.isInputDown[InputCode.Attack0])
-                {
-                    isNextAttack = true;
-                }
-                float num = 0f;
-                float num2 = 0f;
-                float num3 = 0f;
-                string text = string.Empty;
-
-                switch (attackAnimation)
-                {
-                    case "attack_combo_001":
-                        num = 0.4f;
-                        num2 = 0.5f;
-                        num3 = 0.66f;
-                        text = "attack_combo_002";
-                        break;
-                    case "attack_combo_002":
-                        num = 0.15f;
-                        num2 = 0.25f;
-                        num3 = 0.43f;
-                        text = "attack_combo_003";
-                        break;
-                    case "attack_combo_003":
-                        num3 = 0f;
-                        num = 0.31f;
-                        num2 = 0.37f;
-                        break;
-                    case "attack_kick":
-                        num3 = 0f;
-                        num = 0.32f;
-                        num2 = 0.38f;
-                        break;
-                    default:
-                        num = 0.5f;
-                        num2 = 0.85f;
-                        break;
-                }
-                if (hitPause > 0f)
-                {
-                    hitPause -= Time.deltaTime;
-                    if (hitPause <= 0f)
-                    {
-                        base.animation[attackAnimation].speed = 1f;
-                        hitPause = 0f;
-                    }
-                }
-                if (num3 > 0f && isNextAttack && base.animation[attackAnimation].normalizedTime >= num3)
-                {
-                    if (hitTargets.Count > 0)
-                    {
-                        Transform transform3 = (Transform)hitTargets[0];
-                        if ((bool)transform3)
-                        {
-                            Transform transform4 = base.transform;
-                            Vector3 eulerAngles = Quaternion.LookRotation(transform3.position - base.transform.position).eulerAngles;
-                            transform4.rotation = Quaternion.Euler(0f, eulerAngles.y, 0f);
-                            Vector3 eulerAngles2 = base.transform.rotation.eulerAngles;
-                            facingDirection = eulerAngles2.y;
-                        }
-                    }
-                    falseAttack();
-                    attackAnimation = text;
-                    CrossFade(attackAnimation, 0.1f);
+                    PlayAnimation(attackAnimation);
                     base.animation[attackAnimation].time = 0f;
-                    base.animation[attackAnimation].speed = 1f;
                     isAttack = true;
                     needFreshCorePosition = true;
-                    if (attackAnimation == "attack_combo_002")
-                    {
-                        attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_L/upper_arm_L/forearm_L/hand_L");
-                    }
-                    else if (attackAnimation == "attack_combo_003")
+                    if (attackAnimation == "attack_combo_001" || attackAnimation == "attack_combo_001")
                     {
                         attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R/hand_R");
                     }
+                    else if (attackAnimation == "attack_combo_002")
+                    {
+                        attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_L/upper_arm_L/forearm_L/hand_L");
+                    }
+                    else if (attackAnimation == "attack_kick")
+                    {
+                        attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/thigh_R/shin_R/foot_R");
+                    }
                     hitTargets = new ArrayList();
                 }
-                if ((base.animation[attackAnimation].normalizedTime >= num && base.animation[attackAnimation].normalizedTime <= num2) || (!attackChkOnce && base.animation[attackAnimation].normalizedTime >= num))
-                {
-                    if (!attackChkOnce)
-                    {
-                        switch (attackAnimation)
-                        {
-                            case "attack_combo_001":
-                                playSound("snd_eren_swing1");
-                                break;
-                            case "attack_combo_002":
-                                playSound("snd_eren_swing2");
-                                break;
-                            case "attack_combo_003":
-                                playSound("snd_eren_swing3");
-                                break;
-                        }
-                        attackChkOnce = true;
-                    }
-                    Collider[] array = Physics.OverlapSphere(attackBox.transform.position, 8f);
-                    for (int i = 0; i < array.Length; i++)
-                    {
-                        if (!array[i].gameObject.transform.root.GetComponent<TITAN>())
-                        {
-                            continue;
-                        }
-                        bool flag2 = false;
-                        for (int j = 0; j < hitTargets.Count; j++)
-                        {
-                            // Compiler was giving me a warning, keep a close eye on this.
-                            if (array[i].gameObject.transform.root == (object)hitTargets[j])
-                            {
-                                flag2 = true;
-                                break;
-                            }
-                        }
-                        if (flag2 || array[i].gameObject.transform.root.GetComponent<TITAN>().hasDie)
-                        {
-                            continue;
-                        }
-                        base.animation[attackAnimation].speed = 0f;
+            }
+            if (inputManager.isInputDown[InputCode.Salute])
+            {
+                CrossFade("born", 0.1f);
+                base.animation["born"].normalizedTime = 0.28f;
+                isPlayRoar = false;
+            }
+        }
+        if (!isAttack)
+        {
+            if ((grounded || base.animation.IsPlaying("idle")) && !base.animation.IsPlaying("jump_start") && !base.animation.IsPlaying("jump_air") && !base.animation.IsPlaying("jump_land") && inputManager.isInput[InputCode.HookBoth])
+            {
+                CrossFade("jump_start", 0.1f);
+            }
+        }
+        else
+        {
+            if (base.animation[attackAnimation].time >= 0.1f && inputManager.isInputDown[InputCode.Attack0])
+            {
+                isNextAttack = true;
+            }
+            float num = 0f;
+            float num2 = 0f;
+            float num3 = 0f;
+            string text = string.Empty;
 
-                        switch (attackAnimation)
+            switch (attackAnimation)
+            {
+                case "attack_combo_001":
+                    num = 0.4f;
+                    num2 = 0.5f;
+                    num3 = 0.66f;
+                    text = "attack_combo_002";
+                    break;
+                case "attack_combo_002":
+                    num = 0.15f;
+                    num2 = 0.25f;
+                    num3 = 0.43f;
+                    text = "attack_combo_003";
+                    break;
+                case "attack_combo_003":
+                    num3 = 0f;
+                    num = 0.31f;
+                    num2 = 0.37f;
+                    break;
+                case "attack_kick":
+                    num3 = 0f;
+                    num = 0.32f;
+                    num2 = 0.38f;
+                    break;
+                default:
+                    num = 0.5f;
+                    num2 = 0.85f;
+                    break;
+            }
+            if (hitPause > 0f)
+            {
+                hitPause -= Time.deltaTime;
+                if (hitPause <= 0f)
+                {
+                    base.animation[attackAnimation].speed = 1f;
+                    hitPause = 0f;
+                }
+            }
+            if (num3 > 0f && isNextAttack && base.animation[attackAnimation].normalizedTime >= num3)
+            {
+                if (hitTargets.Count > 0)
+                {
+                    Transform transform3 = (Transform)hitTargets[0];
+                    if ((bool)transform3)
+                    {
+                        Transform transform4 = base.transform;
+                        Vector3 eulerAngles = Quaternion.LookRotation(transform3.position - base.transform.position).eulerAngles;
+                        transform4.rotation = Quaternion.Euler(0f, eulerAngles.y, 0f);
+                        Vector3 eulerAngles2 = base.transform.rotation.eulerAngles;
+                        facingDirection = eulerAngles2.y;
+                    }
+                }
+                falseAttack();
+                attackAnimation = text;
+                CrossFade(attackAnimation, 0.1f);
+                base.animation[attackAnimation].time = 0f;
+                base.animation[attackAnimation].speed = 1f;
+                isAttack = true;
+                needFreshCorePosition = true;
+                if (attackAnimation == "attack_combo_002")
+                {
+                    attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_L/upper_arm_L/forearm_L/hand_L");
+                }
+                else if (attackAnimation == "attack_combo_003")
+                {
+                    attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R/hand_R");
+                }
+                hitTargets = new ArrayList();
+            }
+            if ((base.animation[attackAnimation].normalizedTime >= num && base.animation[attackAnimation].normalizedTime <= num2) || (!attackChkOnce && base.animation[attackAnimation].normalizedTime >= num))
+            {
+                if (!attackChkOnce)
+                {
+                    switch (attackAnimation)
+                    {
+                        case "attack_combo_001":
+                            playSound("snd_eren_swing1");
+                            break;
+                        case "attack_combo_002":
+                            playSound("snd_eren_swing2");
+                            break;
+                        case "attack_combo_003":
+                            playSound("snd_eren_swing3");
+                            break;
+                    }
+                    attackChkOnce = true;
+                }
+                Collider[] array = Physics.OverlapSphere(attackBox.transform.position, 8f);
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (!array[i].gameObject.transform.root.GetComponent<TITAN>())
+                    {
+                        continue;
+                    }
+                    bool flag2 = false;
+                    for (int j = 0; j < hitTargets.Count; j++)
+                    {
+                        // Compiler was giving me a warning, keep a close eye on this.
+                        if (array[i].gameObject.transform.root == (object)hitTargets[j])
                         {
-                            case "attack_combo_001":
-                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(1.2f, 0.04f);
-                                hitPause = 0.08f;
-                                array[i].gameObject.transform.root.GetComponent<TITAN>().HitRight(base.transform.position, hitPause);
-                                break;
-                            case "attack_combo_002":
-                                hitPause = 0.05f;
-                                array[i].gameObject.transform.root.GetComponent<TITAN>().HitLeft(base.transform.position, hitPause);
-                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(1f, 0.03f);
-                                break;
-                            case "attack_combo_003":
-                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(3f, 0.1f);
-                                hitPause = 0.3f;
-                                array[i].gameObject.transform.root.GetComponent<TITAN>().DieHeadBlow(base.transform.position, hitPause);
-                                break;
-                            case "attack_kick":
-                                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(3f, 0.1f);
-                                hitPause = 0.2f;
-                                if (array[i].gameObject.transform.root.GetComponent<TITAN>().abnormalType == TitanClass.Crawler)
+                            flag2 = true;
+                            break;
+                        }
+                    }
+                    if (flag2 || array[i].gameObject.transform.root.GetComponent<TITAN>().hasDie)
+                    {
+                        continue;
+                    }
+                    base.animation[attackAnimation].speed = 0f;
+
+                    switch (attackAnimation)
+                    {
+                        case "attack_combo_001":
+                            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(1.2f, 0.04f);
+                            hitPause = 0.08f;
+                            array[i].gameObject.transform.root.GetComponent<TITAN>().HitRight(base.transform.position, hitPause);
+                            break;
+                        case "attack_combo_002":
+                            hitPause = 0.05f;
+                            array[i].gameObject.transform.root.GetComponent<TITAN>().HitLeft(base.transform.position, hitPause);
+                            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(1f, 0.03f);
+                            break;
+                        case "attack_combo_003":
+                            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(3f, 0.1f);
+                            hitPause = 0.3f;
+                            array[i].gameObject.transform.root.GetComponent<TITAN>().DieHeadBlow(base.transform.position, hitPause);
+                            break;
+                        case "attack_kick":
+                            currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(3f, 0.1f);
+                            hitPause = 0.2f;
+                            if (array[i].gameObject.transform.root.GetComponent<TITAN>().abnormalType == TitanClass.Crawler)
+                            {
+                                array[i].gameObject.transform.root.GetComponent<TITAN>().DieBlow(base.transform.position, hitPause);
+                            }
+                            else
+                            {
+                                Vector3 localScale = array[i].gameObject.transform.root.transform.localScale;
+                                if (localScale.x < 2f)
                                 {
                                     array[i].gameObject.transform.root.GetComponent<TITAN>().DieBlow(base.transform.position, hitPause);
                                 }
                                 else
                                 {
-                                    Vector3 localScale = array[i].gameObject.transform.root.transform.localScale;
-                                    if (localScale.x < 2f)
-                                    {
-                                        array[i].gameObject.transform.root.GetComponent<TITAN>().DieBlow(base.transform.position, hitPause);
-                                    }
-                                    else
-                                    {
-                                        array[i].gameObject.transform.root.GetComponent<TITAN>().HitRight(base.transform.position, hitPause);
-                                    }
+                                    array[i].gameObject.transform.root.GetComponent<TITAN>().HitRight(base.transform.position, hitPause);
                                 }
-                                break;
-                        }
-                        hitTargets.Add(array[i].gameObject.transform.root);
-                        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
-                        {
-                            PhotonNetwork.Instantiate("hitMeatBIG", (array[i].transform.position + attackBox.position) * 0.5f, Quaternion.Euler(270f, 0f, 0f), 0);
-                        }
-                        else
-                        {
-                            UnityEngine.Object.Instantiate(Resources.Load("hitMeatBIG"), (array[i].transform.position + attackBox.position) * 0.5f, Quaternion.Euler(270f, 0f, 0f));
-                        }
+                            }
+                            break;
                     }
-                }
-                if (base.animation[attackAnimation].normalizedTime >= 1f)
-                {
-                    falseAttack();
-                    PlayAnimation("idle");
-                }
-            }
-            if (base.animation.IsPlaying("jump_land") && base.animation["jump_land"].normalizedTime >= 1f)
-            {
-                CrossFade("idle", 0.1f);
-            }
-            if (base.animation.IsPlaying("born"))
-            {
-                if (base.animation["born"].normalizedTime >= 0.28f && !isPlayRoar)
-                {
-                    isPlayRoar = true;
-                    playSound("snd_eren_roar");
-                }
-                if (base.animation["born"].normalizedTime >= 0.5f && base.animation["born"].normalizedTime <= 0.7f)
-                {
-                    currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(0.5f, 1f);
-                }
-                if (base.animation["born"].normalizedTime >= 1f)
-                {
-                    CrossFade("idle", 0.1f);
+                    hitTargets.Add(array[i].gameObject.transform.root);
                     if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
                     {
-                        if (PhotonNetwork.isMasterClient)
-                        {
-                            base.photonView.RPC("netTauntAttack", PhotonTargets.MasterClient, 10f, 500f);
-                        }
-                        else
-                        {
-                            netTauntAttack(10f, 500f);
-                        }
+                        PhotonNetwork.Instantiate("hitMeatBIG", (array[i].transform.position + attackBox.position) * 0.5f, Quaternion.Euler(270f, 0f, 0f), 0);
+                    }
+                    else
+                    {
+                        UnityEngine.Object.Instantiate(Resources.Load("hitMeatBIG"), (array[i].transform.position + attackBox.position) * 0.5f, Quaternion.Euler(270f, 0f, 0f));
+                    }
+                }
+            }
+            if (base.animation[attackAnimation].normalizedTime >= 1f)
+            {
+                falseAttack();
+                PlayAnimation("idle");
+            }
+        }
+        if (base.animation.IsPlaying("jump_land") && base.animation["jump_land"].normalizedTime >= 1f)
+        {
+            CrossFade("idle", 0.1f);
+        }
+        if (base.animation.IsPlaying("born"))
+        {
+            if (base.animation["born"].normalizedTime >= 0.28f && !isPlayRoar)
+            {
+                isPlayRoar = true;
+                playSound("snd_eren_roar");
+            }
+            if (base.animation["born"].normalizedTime >= 0.5f && base.animation["born"].normalizedTime <= 0.7f)
+            {
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(0.5f, 1f);
+            }
+            if (base.animation["born"].normalizedTime >= 1f)
+            {
+                CrossFade("idle", 0.1f);
+                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
+                {
+                    if (PhotonNetwork.isMasterClient)
+                    {
+                        base.photonView.RPC("netTauntAttack", PhotonTargets.MasterClient, 10f, 500f);
                     }
                     else
                     {
                         netTauntAttack(10f, 500f);
                     }
                 }
+                else
+                {
+                    netTauntAttack(10f, 500f);
+                }
             }
-            showAimUI();
-            showSkillCD();
         }
+        showAimUI();
+        showSkillCD();
     }
 
     private void showSkillCD()

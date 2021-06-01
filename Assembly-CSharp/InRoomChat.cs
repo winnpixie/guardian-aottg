@@ -55,12 +55,8 @@ public class InRoomChat : Photon.MonoBehaviour
         }
     }
 
-    public void OnGUI()
+    private void DrawMessageHistory()
     {
-        if (!IsVisible || !PhotonNetwork.connected)
-        {
-            return;
-        }
 
         if (labelStyle == null)
         {
@@ -116,7 +112,10 @@ public class InRoomChat : Photon.MonoBehaviour
 
         GUILayout.EndScrollView();
         GUILayout.EndArea();
+    }
 
+    private void HandleInput()
+    {
         // Sends chat messages
         KeyCode rcChatKey = FengGameManagerMKII.InputRC.humanKeys[InputCodeRC.Chat];
         if (Event.current.type == EventType.KeyUp && Event.current.keyCode == rcChatKey && rcChatKey != KeyCode.None && !GUI.GetNameOfFocusedControl().Equals(TextFieldName))
@@ -176,7 +175,10 @@ public class InRoomChat : Photon.MonoBehaviour
                 }
             }
         }
+    }
 
+    private void DrawMessageTextField()
+    {
         // Chat text-field
         GUILayout.BeginArea(ChatBoxRect);
         GUILayout.BeginHorizontal();
@@ -184,6 +186,20 @@ public class InRoomChat : Photon.MonoBehaviour
         inputLine = GUILayout.TextField(inputLine, GUILayout.MaxWidth(300));
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
+    }
+
+    public void OnGUI()
+    {
+        if (!IsVisible || !PhotonNetwork.connected)
+        {
+            return;
+        }
+
+        DrawMessageHistory();
+
+        HandleInput();
+
+        DrawMessageTextField();
     }
 
     public static object[] FormatMessage(string input, string name)
@@ -196,30 +212,7 @@ public class InRoomChat : Photon.MonoBehaviour
         string chatColor = Guardian.Mod.Properties.TextColor.Value;
         if (chatColor.Length > 0)
         {
-            if (!chatColor.Contains(","))
-            {
-                input = input.WithColor(chatColor);
-            }
-            else
-            {
-                string[] colors = chatColor.Split(new char[] { ',' }, 2);
-
-                if (colors.Length > 1 && colors[0].IsHex() && colors[1].IsHex())
-                {
-                    input = Detagger.Replace(input, string.Empty);
-
-                    Color startColor = NGUIMath.IntToColor(int.Parse(colors[0] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));
-                    Color endColor = NGUIMath.IntToColor(int.Parse(colors[1] + "FF", System.Globalization.NumberStyles.AllowHexSpecifier, null));
-
-                    string faded = string.Empty;
-                    for (int i = 0; i < input.Length; i++)
-                    {
-                        Color color = Color.Lerp(startColor, endColor, (float)i / (float)input.Length);
-                        faded += $"<color=#{color.ToHex()}>{input[i]}</color>";
-                    }
-                    input = faded;
-                }
-            }
+            input = input.WithColor(chatColor);
         }
 
         // Bold chat

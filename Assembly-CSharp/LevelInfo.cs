@@ -102,7 +102,7 @@ public class LevelInfo
                     Map = "The Forest",
                     Description = "Survive all 20 waves. (No crawlers)",
                     Enemies = 3,
-                    Mode= GameMode.Survival,
+                    Mode = GameMode.Survival,
                     RespawnMode = RespawnMode.Never,
                     HasSupply = true,
                     NoCrawlers = true,

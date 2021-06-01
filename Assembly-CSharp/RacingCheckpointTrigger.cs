@@ -9,6 +9,7 @@ public class RacingCheckpointTrigger : MonoBehaviour
         {
             return;
         }
+
         gameObject = gameObject.transform.root.gameObject;
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && gameObject.GetPhotonView() != null && gameObject.GetPhotonView().isMine)
         {
