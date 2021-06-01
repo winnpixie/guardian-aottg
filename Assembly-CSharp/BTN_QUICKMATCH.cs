@@ -10,11 +10,12 @@ public class BTN_QUICKMATCH : MonoBehaviour
         PhotonNetwork.ConnectToMaster(NetworkHelper.GetBestRegion(), NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
         FengGameManagerMKII.OnPrivateServer = false;
 
-        // TODO: Change functionality since this proves itself to be useless for true randomness
-        new Thread(() =>
+        Thread quickmatchThread = new Thread(() =>
         {
-            while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby) { }
+            while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby && !GThreadPool.ShutdownRequested) { }
             PhotonNetwork.JoinRandomRoom();
-        }).Start();
+        });
+        quickmatchThread.Name = "GThread#Quickmatch";
+        GThreadPool.Enqueue(quickmatchThread);
     }
 }

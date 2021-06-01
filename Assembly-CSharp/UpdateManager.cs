@@ -27,13 +27,9 @@ public class UpdateManager : MonoBehaviour
 	}
 
 	private static UpdateManager mInst;
-
 	private List<UpdateEntry> mOnUpdate = new List<UpdateEntry>();
-
 	private List<UpdateEntry> mOnLate = new List<UpdateEntry>();
-
 	private List<UpdateEntry> mOnCoro = new List<UpdateEntry>();
-
 	private BetterList<DestroyEntry> mDest = new BetterList<DestroyEntry>();
 
 	private float mTime;

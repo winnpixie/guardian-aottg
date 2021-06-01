@@ -4,15 +4,10 @@ using UnityEngine;
 public class LagPosition : MonoBehaviour
 {
 	public int updateOrder;
-
 	public Vector3 speed = new Vector3(10f, 10f, 10f);
-
 	public bool ignoreTimeScale;
-
 	private Transform mTrans;
-
 	private Vector3 mRelative;
-
 	private Vector3 mAbsolute;
 
 	private void Start()

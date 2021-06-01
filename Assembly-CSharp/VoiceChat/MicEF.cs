@@ -176,7 +176,8 @@ public class MicEF : MonoBehaviour
                 clip = Microphone.Start(DeviceName, true, 100, (int)Frequency);
 
                 ThreadId = UnityEngine.Random.Range(0, int.MaxValue);
-                new Thread(() =>
+
+                GThreadPool.Enqueue(new Thread(() =>
                 {
                     try
                     {
@@ -200,7 +201,7 @@ public class MicEF : MonoBehaviour
                     {
                         print(e);
                     }
-                }).Start();
+                }));
             }
         }
     }

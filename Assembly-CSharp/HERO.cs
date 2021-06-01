@@ -1886,6 +1886,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             myHorse.GetComponent<Horse>().myHero = base.gameObject;
             myHorse.GetComponent<TITAN_CONTROLLER>().isHorse = true;
         }
+
         sparks = baseTransform.Find("slideSparks").GetComponent<ParticleSystem>();
         smoke_3dmg = baseTransform.Find("3dmg_smoke").GetComponent<ParticleSystem>();
         baseTransform.localScale = new Vector3(myScale, myScale, myScale);
@@ -2038,6 +2039,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 myFlashlight.transform.position = baseTransform.position + Vector3.up;
             }
             myFlashlight.transform.rotation = Quaternion.Euler(353f, 0f, 0f);
+        }
+
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
+        {
+            base.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         }
 
         bombImmune = false;
@@ -2997,7 +3003,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public void setSkillHUDPosition2()
+    public void SetSkillHUDPosition2()
     {
         skillCD = GameObject.Find("skill_cd_" + skillIDHUD);
         if (skillCD != null)

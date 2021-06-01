@@ -51,7 +51,7 @@ public class Language
     public static string[] btn_quit = new string[25];
     public static string[] choose_region_server = new string[25];
 
-    public static void init()
+    public static void Init()
     {
         string text = ((TextAsset)Resources.Load("lang")).text;
         string[] lines = text.Split('\n');
@@ -226,85 +226,85 @@ public class Language
     }
 
     // I tried to convert this to a switch statement and it all became Hebrew so... yeah..
-    public static int GetLangIndex(string txt)
+    public static int GetLangIndex(string lang)
     {
-        if (txt == "ENGLISH")
+        if (lang == "ENGLISH")
         {
             return 0;
         }
-        if (txt == "SPANISH")
+        if (lang == "SPANISH")
         {
             return 2;
         }
-        if (txt == "POLSKI")
+        if (lang == "POLSKI")
         {
             return 3;
         }
-        if (txt == "ITALIANO")
+        if (lang == "ITALIANO")
         {
             return 4;
         }
-        if (txt == "NORWEGIAN")
+        if (lang == "NORWEGIAN")
         {
             return 5;
         }
-        if (txt == "PORTUGUESE")
+        if (lang == "PORTUGUESE")
         {
             return 6;
         }
-        if (txt == "PORTUGUESE_BR")
+        if (lang == "PORTUGUESE_BR")
         {
             return 7;
         }
-        if (txt == "SLOVAK")
+        if (lang == "SLOVAK")
         {
             return 10;
         }
-        if (txt == "GERMAN")
+        if (lang == "GERMAN")
         {
             return 11;
         }
-        if (txt == "FRANCAIS")
+        if (lang == "FRANCAIS")
         {
             return 12;
         }
-        if (txt == "TÜRKÇE")
+        if (lang == "TÜRKÇE")
         {
             return 13;
         }
-        if (txt == "ARABIC")
+        if (lang == "ARABIC")
         {
             return 14;
         }
-        if (txt == "Thai")
+        if (lang == "Thai")
         {
             return 15;
         }
-        if (txt == "Русский")
+        if (lang == "Русский")
         {
             return 16;
         }
-        if (txt == "NEDERLANDS")
+        if (lang == "NEDERLANDS")
         {
             return 17;
         }
-        if (txt == "Hebrew")
+        if (lang == "Hebrew")
         {
             return 18;
         }
-        if (txt == "DANSK")
+        if (lang == "DANSK")
         {
             return 19;
         }
-        if (txt == "简体中文")
+        if (lang == "简体中文")
         {
             return 1;
         }
-        if (txt == "繁體中文_台")
+        if (lang == "繁體中文_台")
         {
             return 8;
         }
-        if (txt == "繁體中文_港")
+        if (lang == "繁體中文_港")
         {
             return 9;
         }

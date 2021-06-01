@@ -17,6 +17,7 @@
   <PropertyGroup>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <Authors>The Attack on Titan Tribute Game Community</Authors>
+    <RootNamespace>global</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Anarchy.Custom">

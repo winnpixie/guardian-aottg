@@ -2455,7 +2455,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                         setup.CreateCharacterComponent();
                         hero.SetStat2();
-                        hero.setSkillHUDPosition2();
+                        hero.SetSkillHUDPosition2();
                     }
                     else
                     {
@@ -2473,7 +2473,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 setup.myCostume.stat = HeroStat.GetInfo(HeroCostume.Costumes[num].name.ToUpper());
                                 setup.CreateCharacterComponent();
                                 hero.SetStat2();
-                                hero.setSkillHUDPosition2();
+                                hero.SetSkillHUDPosition2();
                                 break;
                             }
                         }
@@ -2505,7 +2505,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                     setup.CreateCharacterComponent();
                     hero.SetStat2();
-                    hero.setSkillHUDPosition2();
+                    hero.SetSkillHUDPosition2();
                 }
                 else
                 {
@@ -2527,7 +2527,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             setup.myCostume.stat = HeroStat.GetInfo(HeroCostume.Costumes[num2].name.ToUpper());
                             setup.CreateCharacterComponent();
                             hero.SetStat2();
-                            hero.setSkillHUDPosition2();
+                            hero.SetSkillHUDPosition2();
                             break;
                         }
                     }
@@ -5339,7 +5339,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
             setup.CreateCharacterComponent();
             hero.SetStat2();
-            hero.setSkillHUDPosition2();
+            hero.SetSkillHUDPosition2();
         }
         else
         {
@@ -5361,7 +5361,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     setup.myCostume.stat = HeroStat.GetInfo(HeroCostume.Costumes[num].name.ToUpper());
                     setup.CreateCharacterComponent();
                     hero.SetStat2();
-                    hero.setSkillHUDPosition2();
+                    hero.SetSkillHUDPosition2();
                     break;
                 }
             }

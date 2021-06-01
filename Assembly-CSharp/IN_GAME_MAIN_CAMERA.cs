@@ -101,7 +101,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             CameraDistance = PlayerPrefs.GetFloat("cameraDistance") + 0.3f;
         }
-        createSnapShotRT2();
+        CreateSnapshotRT2();
     }
 
     public void SetLighting(DayLight val)
@@ -121,7 +121,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 base.gameObject.GetComponent<Skybox>().material = skyBoxDAWN;
                 break;
             case DayLight.Night:
-                /* TODO: Flashlight is now handled in HERO#Start()*/
+                /* TODO: Mod, Flashlight is now handled in HERO#Start()*/
                 RenderSettings.ambientLight = FengColor.AmbientNight;
                 GameObject.Find("mainLight").GetComponent<Light>().color = FengColor.Night;
                 base.gameObject.GetComponent<Skybox>().material = skyBoxNIGHT;
@@ -175,11 +175,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             if (Gametype == GameType.Singleplayer)
             {
-                main_object.GetComponent<HERO>().setSkillHUDPosition2();
+                main_object.GetComponent<HERO>().SetSkillHUDPosition2();
             }
             else if (main_object.GetPhotonView() != null && main_object.GetPhotonView().isMine)
             {
-                main_object.GetComponent<HERO>().setSkillHUDPosition2();
+                main_object.GetComponent<HERO>().SetSkillHUDPosition2();
             }
         }
 
@@ -188,7 +188,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             base.gameObject.GetComponent<Camera>().aspect = Screen.width / Screen.height;
         }
 
-        createSnapShotRT2();
+        CreateSnapshotRT2();
     }
 
     public void Flash()
@@ -893,7 +893,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
     }
 
-    public void createSnapShotRT2()
+    public void CreateSnapshotRT2()
     {
         if (snapshotRT != null)
         {

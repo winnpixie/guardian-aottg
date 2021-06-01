@@ -15,7 +15,7 @@ public class LanguageChangeListener : MonoBehaviour
                 PlayerPrefs.SetInt("language", 0);
                 Language.type = 0;
             }
-            Language.init();
+            Language.Init();
             GetComponent<UIPopupList>().selection = Language.GetLang(Language.type);
         }
         else

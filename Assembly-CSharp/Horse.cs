@@ -20,12 +20,22 @@ public class Horse : Photon.MonoBehaviour
     {
         State = "mounted";
         base.gameObject.GetComponent<TITAN_CONTROLLER>().enabled = true;
+
+        if (myHero != null)
+        {
+            myHero.rigidbody.interpolation = RigidbodyInterpolation.None;
+        }
     }
 
     public void Unmount()
     {
         State = "idle";
         base.gameObject.GetComponent<TITAN_CONTROLLER>().enabled = false;
+
+        if (myHero != null)
+        {
+            myHero.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        }
     }
 
     private void Follow()
@@ -57,6 +67,7 @@ public class Horse : Photon.MonoBehaviour
         {
             PhotonNetwork.Destroy(base.gameObject);
         }
+
         switch (State)
         {
             case "mounted":
@@ -68,6 +79,7 @@ public class Horse : Photon.MonoBehaviour
                 myHero.transform.position = base.transform.position + Vector3.up * 1.68f;
                 myHero.transform.rotation = base.transform.rotation;
                 myHero.rigidbody.velocity = base.rigidbody.velocity;
+
                 if (controller.targetDirection != -874f)
                 {
                     base.gameObject.transform.rotation = Quaternion.Lerp(base.gameObject.transform.rotation, Quaternion.Euler(0f, controller.targetDirection, 0f), 100f * Time.deltaTime / (base.rigidbody.velocity.magnitude + 20f));
@@ -87,6 +99,7 @@ public class Horse : Photon.MonoBehaviour
                             base.rigidbody.AddForce((0f - speed) * base.rigidbody.velocity.normalized, ForceMode.Acceleration);
                         }
                     }
+
                     if (base.rigidbody.velocity.magnitude > 8f)
                     {
                         if (!base.animation.IsPlaying("horse_Run"))
@@ -135,6 +148,7 @@ public class Horse : Photon.MonoBehaviour
                         myHero.GetComponent<HERO>().CrossFade("horse_idle", 0.1f);
                     }
                 }
+
                 if ((controller.isAttackDown || controller.isAttackIIDown) && IsGrounded())
                 {
                     base.rigidbody.AddForce(Vector3.up * 25f, ForceMode.VelocityChange);
@@ -146,6 +160,7 @@ public class Horse : Photon.MonoBehaviour
                     Unmount();
                     return;
                 }
+
                 if (base.rigidbody.velocity.magnitude > 8f)
                 {
                     if (!base.animation.IsPlaying("horse_Run"))
@@ -170,6 +185,7 @@ public class Horse : Photon.MonoBehaviour
                         base.photonView.RPC("setDust", PhotonTargets.Others, false);
                     }
                 }
+
                 float horizontalAngle = FengMath.GetHorizontalAngle(base.transform.position, setPoint);
                 Vector3 eulerAngles = base.gameObject.transform.rotation.eulerAngles;
                 float num = 0f - Mathf.DeltaAngle(horizontalAngle, eulerAngles.y - 90f);
@@ -177,6 +193,7 @@ public class Horse : Photon.MonoBehaviour
                 Quaternion rotation = base.gameObject.transform.rotation;
                 Vector3 eulerAngles2 = base.gameObject.transform.rotation.eulerAngles;
                 transform.rotation = Quaternion.Lerp(rotation, Quaternion.Euler(0f, eulerAngles2.y + num, 0f), 200f * Time.deltaTime / (base.rigidbody.velocity.magnitude + 20f));
+
                 if (Vector3.Distance(setPoint, base.transform.position) < 20f)
                 {
                     base.rigidbody.AddForce(base.transform.forward * speed * 0.7f, ForceMode.Acceleration);
@@ -193,6 +210,7 @@ public class Horse : Photon.MonoBehaviour
                         base.rigidbody.AddForce((0f - speed) * base.rigidbody.velocity.normalized, ForceMode.Acceleration);
                     }
                 }
+
                 timeElapsed += Time.deltaTime;
                 if (timeElapsed > 0.6f)
                 {
@@ -202,14 +220,17 @@ public class Horse : Photon.MonoBehaviour
                         Follow();
                     }
                 }
+
                 if (Vector3.Distance(myHero.transform.position, base.transform.position) < 5f)
                 {
                     Unmount();
                 }
+
                 if (Vector3.Distance(setPoint, base.transform.position) < 5f)
                 {
                     Unmount();
                 }
+
                 awayTimer += Time.deltaTime;
                 if (awayTimer > 6f)
                 {
@@ -235,6 +256,7 @@ public class Horse : Photon.MonoBehaviour
                 }
                 break;
         }
+
         base.rigidbody.AddForce(new Vector3(0f, -50f * base.rigidbody.mass, 0f));
     }
 
@@ -275,22 +297,27 @@ public class Horse : Photon.MonoBehaviour
             }
             return;
         }
+
         if (base.animation.IsPlaying("horse_idle1") && base.animation["horse_idle1"].normalizedTime >= 1f && !base.animation.IsPlaying("horse_idle0"))
         {
             CrossFade("horse_idle0", 0.1f);
         }
+
         if (base.animation.IsPlaying("horse_idle2") && base.animation["horse_idle2"].normalizedTime >= 1f && !base.animation.IsPlaying("horse_idle0"))
         {
             CrossFade("horse_idle0", 0.1f);
         }
+
         if (base.animation.IsPlaying("horse_idle3") && base.animation["horse_idle3"].normalizedTime >= 1f && !base.animation.IsPlaying("horse_idle0"))
         {
             CrossFade("horse_idle0", 0.1f);
         }
+
         if (!base.animation.IsPlaying("horse_idle0") && !base.animation.IsPlaying("horse_idle1") && !base.animation.IsPlaying("horse_idle2") && !base.animation.IsPlaying("horse_idle3"))
         {
             CrossFade("horse_idle0", 0.1f);
         }
+
         if (base.animation.IsPlaying("horse_idle0"))
         {
             int num = Random.Range(0, 10000);
@@ -313,6 +340,7 @@ public class Horse : Photon.MonoBehaviour
             dust.GetComponent<ParticleSystem>().enableEmission = false;
             base.photonView.RPC("setDust", PhotonTargets.Others, false);
         }
+
         base.rigidbody.AddForce(-base.rigidbody.velocity, ForceMode.VelocityChange);
     }
 

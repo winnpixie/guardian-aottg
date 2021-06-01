@@ -9,13 +9,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using UnityEngine;
 
 namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "06012021";
+        public static string Build = "06012021-1";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -29,6 +30,7 @@ namespace Guardian
 
         private static bool Initialized = false;
         private static bool FirstJoin = true;
+        private static bool IsProgramQuitting;
 
         public static bool IsMultiMap;
 
@@ -36,6 +38,17 @@ namespace Guardian
         {
             if (!Initialized)
             {
+                // Initiate GThreadPool
+                new Thread(() =>
+                {
+                    while (!IsProgramQuitting)
+                    {
+                        GThreadPool.Poll();
+                    }
+
+                    GThreadPool.Clear();
+                }).Start();
+
                 // Check for an update before doing anything
                 StartCoroutine(CoCheckForUpdate());
 
@@ -105,7 +118,7 @@ namespace Guardian
 
                     if (!latestVersion.Equals(Build))
                     {
-                        Logger.Info($"You are {"OUTDATED".WithColor("FF0000")}, please update!");
+                        Logger.Info($"You are {"OUTDATED :(".WithColor("FF0000")}, please update!");
                         Logger.Info("https://cb.click/GuardianAoT".WithColor("0099FF"));
 
                         try
@@ -116,7 +129,7 @@ namespace Guardian
                     }
                     else
                     {
-                        Logger.Info($"You are {"UP TO DATE".WithColor("AAFF00")}, yay!");
+                        Logger.Info($"You are {"UP TO DATE :)".WithColor("AAFF00")}, yay!");
                     }
                 }
             }
@@ -323,6 +336,8 @@ namespace Guardian
 
         void OnApplicationQuit()
         {
+            IsProgramQuitting = true;
+
             Properties.Save();
 
             DiscordHelper.Shutdown();

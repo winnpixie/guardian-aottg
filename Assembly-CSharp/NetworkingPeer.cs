@@ -1486,7 +1486,6 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                 ParameterInfo[] methodParameters = method.GetParameters();
                                 if (this.CheckTypeMatch(methodParameters, callParameterTypes))
                                 {
-                                    object[] _params = parameters;
                                     if (methodParameters.Length > 0 && methodParameters[methodParameters.Length - 1].ParameterType == typeof(PhotonMessageInfo))
                                     {
                                         if (callParameterTypes.Length == methodParameters.Length)
@@ -1498,12 +1497,13 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                             }
                                             break;
                                         }
-                                        object[] tmp = new object[_params.Length + 1];
-                                        _params.CopyTo(tmp, 0);
-                                        tmp[tmp.Length - 1] = new PhotonMessageInfo(sender, timestamp, photonView);
-                                        _params = tmp;
+
+                                        object[] tmp = new object[parameters.Length + 1];
+                                        Array.Resize(ref parameters, parameters.Length + 1);
+                                        parameters[parameters.Length - 1] = new PhotonMessageInfo(sender, timestamp, photonView);
                                     }
-                                    object returnVal = method.Invoke(behaviour, _params);
+
+                                    object returnVal = method.Invoke(behaviour, parameters);
                                     if (method.ReturnType == typeof(IEnumerator))
                                     {
                                         behaviour.StartCoroutine((IEnumerator)returnVal);
@@ -3148,7 +3148,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     object obj6 = eventData[252];
                     if (!(obj6 is int[]))
                     {
-                        break;
+                        return;
                     }
                     int[] array = (int[])obj6;
                     foreach (int num11 in array)
@@ -3165,7 +3165,10 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     SendMonoMessage(PhotonNetworkingMessage.OnJoinedRoom);
                     break;
                 }
-            case EventCode.ErrorInfo:
+            case EventCode.AuthEvent: // Token Refresh/Caching
+                // TODO: Implement
+                break;
+            case EventCode.ErrorInfo: // Photon Server Errors
                 {
                     object obj = eventData[ParameterCode.Info];
                     if (obj != null && obj is string)
@@ -3269,7 +3272,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     PhotonNetwork.OnEventCall(eventData.Code, content, actorNr);
                 }
-                else if (actorNr != -1) // -1 = Server
+                else if (actorNr == -1) // -1 = Server
+                {
+                    Guardian.Mod.Logger.Warn($"Unknown Event {eventData.Code} ({base.ByteCountCurrentDispatch} total bytes) from SERVER.");
+                }
+                else
                 {
                     Guardian.Mod.Logger.Error($"Event {eventData.Code} ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                     if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
@@ -3277,10 +3284,6 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         FengGameManagerMKII.IgnoreList.Add(sender.Id);
                     }
                     return;
-                }
-                else
-                {
-                    Guardian.Mod.Logger.Error($"Event {eventData.Code} ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                 }
                 break;
         }
