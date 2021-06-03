@@ -447,6 +447,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             timeTotalServer = time2;
             startRacing = startRacin;
             endRacing = shouldEndRacing;
+
             if (startRacing && (bool)GameObject.Find("door"))
             {
                 GameObject.Find("door").SetActive(value: false);
@@ -2600,7 +2601,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public void LoseGame()
     {
-        if (isWinning || isLosing)
+        if (isWinning || isLosing || (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !PhotonNetwork.isMasterClient))
         {
             return;
         }
@@ -2619,7 +2620,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public void WinGame()
     {
-        if (isLosing || isWinning)
+        if (isLosing || isWinning || (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !PhotonNetwork.isMasterClient))
         {
             return;
         }

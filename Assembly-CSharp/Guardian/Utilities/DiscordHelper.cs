@@ -43,13 +43,15 @@
             }
         }
 
-        public static void Shutdown()
+        public static void Dispose()
         {
             if (DiscordInstance != null)
             {
-                DiscordInstance.Dispose();
-
-                DiscordInstance = null;
+                DiscordInstance.GetActivityManager().ClearActivity((result) =>
+                {
+                    DiscordInstance.Dispose();
+                    DiscordInstance = null;
+                });
             }
         }
 
@@ -62,7 +64,7 @@
                 activity.Assets = new Discord.ActivityAssets
                 {
                     LargeImage = "main_icon",
-                    LargeText = "G-Shield by Red"                            
+                    LargeText = "G-Shield by Red"
                 };
 
                 activity.Timestamps = new Discord.ActivityTimestamps

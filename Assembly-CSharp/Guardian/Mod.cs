@@ -16,7 +16,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "06012021-1";
+        public static string Build = "06022021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -103,13 +103,25 @@ namespace Guardian
             Logger.Info("Checking for update...");
             Logger.Info($"Installed: {Build}");
 
-            using (WWW www = new WWW("https://lewd.cf/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis())) // Random long to try and avoid cache issues
+            using (WWW www = new WWW("https://summie.tk/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis())) // Random long to try and avoid cache issues
             {
                 yield return www;
 
                 if (www.error != null)
                 {
                     Logger.Error(www.error);
+
+                    Logger.Error($"\nIf error persists, re-download the latest build and/or join the Discord!");
+                    Logger.Info("Download:".WithColor("0099FF"));
+                    Logger.Info($"\t- {"https://cb.click/GuardianAoT".WithColor("0099FF")}");
+                    Logger.Info("Discord:".WithColor("0099FF"));
+                    Logger.Info($"\t- {"https://discord.com/invite/JGzTdWm".WithColor("0099FF")}");
+
+                    try
+                    {
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "Could not compare versions, if error persists, re-download from [0099FF]https://cb.click/GuardianAoT[-]!";
+                    }
+                    catch { }
                 }
                 else
                 {
@@ -119,11 +131,12 @@ namespace Guardian
                     if (!latestVersion.Equals(Build))
                     {
                         Logger.Info($"You are {"OUTDATED :(".WithColor("FF0000")}, please update!");
-                        Logger.Info("https://cb.click/GuardianAoT".WithColor("0099FF"));
+                        Logger.Info("Download:");
+                        Logger.Info($"\t- {"https://cb.click/GuardianAoT".WithColor("0099FF")}");
 
                         try
                         {
-                            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Please download the latest build from [0099FF]https://cb.click/GuardianAoT[-]!";
+                            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Download the latest build from [0099FF]https://cb.click/GuardianAoT[-]!";
                         }
                         catch { }
                     }
@@ -340,7 +353,7 @@ namespace Guardian
 
             Properties.Save();
 
-            DiscordHelper.Shutdown();
+            DiscordHelper.Dispose();
         }
     }
 }
