@@ -12,7 +12,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private ParticleSystem sparks;
     private ParticleSystem smoke_3dmg;
     private float invincible = 3f;
-    private GameObject myHorse;
+    public GameObject myHorse;
     private bool isMounted;
     // TODO: Mod, alternative idle stance
     private string _standAnimation = "stand";
@@ -2041,7 +2041,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             myFlashlight.transform.rotation = Quaternion.Euler(353f, 0f, 0f);
         }
 
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
+        if ((IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine) && Guardian.Mod.Properties.InterpolateBody.Value)
         {
             base.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         }
@@ -3010,6 +3010,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             skillCD.transform.localPosition = GameObject.Find("skill_cd_bottom").transform.localPosition;
         }
+
         if (useGun && RCSettings.BombMode == 0)
         {
             skillCD.transform.localPosition = Vector3.up * 5000f;
@@ -3964,12 +3965,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 UnityEngine.Object.Instantiate(Resources.Load(text), baseTransform.position + baseTransform.up * 0.8f - baseTransform.right * 0.1f, baseTransform.rotation);
                             }
                         }
-                        if (baseAnimation[attackAnimation].normalizedTime >= 1f)
-                        {
-                            falseAttack();
-                            Idle();
-                        }
-                        if (!baseAnimation.IsPlaying(attackAnimation))
+
+                        if (!baseAnimation.IsPlaying(attackAnimation) || baseAnimation[attackAnimation].normalizedTime >= 1f)
                         {
                             falseAttack();
                             Idle();
@@ -4078,11 +4075,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 case HeroState.Dodging:
                     if (baseAnimation.IsPlaying("dodge"))
                     {
-                        if (!grounded && baseAnimation["dodge"].normalizedTime > 0.6f)
-                        {
-                            Idle();
-                        }
-                        if (baseAnimation["dodge"].normalizedTime >= 1f)
+                        if ((!grounded && baseAnimation["dodge"].normalizedTime > 0.6f) || baseAnimation["dodge"].normalizedTime >= 1f)
                         {
                             Idle();
                         }

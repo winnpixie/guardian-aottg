@@ -25,51 +25,28 @@ namespace Xft
 		}
 
 		public static string Version = "1.0.1";
-
 		public Transform PointStart;
-
 		public Transform PointEnd;
-
 		public int MaxFrame = 14;
-
 		public int Granularity = 60;
-
 		public float Fps = 60f;
-
 		public Color MyColor = Color.white;
-
 		public Material MyMaterial;
-
 		protected float mTrailWidth;
-
 		protected Element mHeadElem = new Element();
-
 		protected List<Element> mSnapshotList = new List<Element>();
-
 		protected Spline mSpline = new Spline();
-
 		protected float mFadeT = 1f;
-
 		protected bool mIsFading;
-
 		protected float mFadeTime = 1f;
-
 		protected float mElapsedTime;
-
 		protected float mFadeElapsedime;
-
 		protected GameObject mMeshObj;
-
 		protected VertexPool mVertexPool;
-
 		protected VertexPool.VertexSegment mVertexSegment;
-
 		protected bool mInited;
-
 		public float UpdateInterval => 1f / Fps;
-
 		public Vector3 CurHeadPos => (PointStart.position + PointEnd.position) / 2f;
-
 		public float TrailWidth => mTrailWidth;
 
 		public void Init()

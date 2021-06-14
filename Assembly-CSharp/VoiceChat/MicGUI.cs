@@ -382,9 +382,10 @@ public class MicGUI : MonoBehaviour
                         MicEF.AutoMute = false;
                         PlayerPrefs.SetString("voiceAutoMute", "false");
                         MicEF.AutoConnect = true;
-                        PlayerPrefs.SetString("voiceAutoConnect", "true");
+                        PlayerPrefs.SetString("voiceAutoConnect", "false");
                         MicEF.ToggleMic = false;
                         PlayerPrefs.SetString("voiceToggleMic", "false");
+
                         foreach (MicPlayer player in MicEF.Users.Values)
                         {
                             player.volume = 1f;

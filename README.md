@@ -8,26 +8,39 @@ Download "[Guardian.zip](https://github.com/alerithe/guardian/raw/master/Guardia
 This mod has everything\* RiceCake's mod (RC mod) has, and more.
 
 - Improved protection against abusive users.
-- Improved UI.
-- In-Game Voice Chat!
-- A boat-load of new settings:
+- Improved/Re-colored UI
+    - Rather than the iconic RC blue, the UI is a much darker transparent gray.
+- In-game Voice Chat! 
+    - V to talk, baskslash (`\`) to open the configuration menu.
+- A boat-load of new settings (Escape key to open the configuration menu):
     - **Master Client**
         - Endless Titans
+            - Causes new titans to spawn a few seconds after one dies.
         - Infinite Room Time
-        - "OG" Punk Mohawks
+            - Prevents rooms from expiring, allowing one to host indefinitely.
+        - "OG"/Vanilla Punk Mohawks
+            - Allows you to toggle between using normal titan hair (RC), or vibrant mohawks (Feng).
     - **Player**
-        - Toggle idle animation between Blade and AHSS
+        - Toggle idle animation
+            - Causes both blade users to use the AHSS idle stance.
         - Toggle between normal and "cross" gas burst
-        - Toggle visibility of hook arrows next to crosshair
+            - Changes your gas burst from the normal poof of gas to two red lines that criss-cross.
+        - Toggle visibility of hook arrows
+            - Hides the hook indicator arrows that tend to fly across your screen violently, they indicate where your double-hook button will attempt to hook.
         - Allow blade trails to activate just by holding down Attack
+            - Allows your blade trail to be seen when you're holding down attack, rather than only once you release. 
         - Change the opacity of name(s) of others and yourself
-        - Custom message in kill-feed for when your press the Suicide/Reset key
-        - Custom message in kill-feed for when you die to Lava
-        - Set your own minimum damage that only affects you
+            - Could improve visibility by allowing  nametags to be see-through.
+        - Custom suicide message
+            - Displays a custom message in the kill-feed when you press the Suicide/Reset key.
+        - Custom lava death message
+            - Displays a custom message in the kill-feed when you die to lava
+        - Set your own minimum damage
+            - Allows you to enforce a minimum damage requirement upon yourself, regardless of the room you're in. It *WILL NOT* override the current rooms minimum if it is lower than it.
     - **Chat**
-        - Custom join message for when you enter a room
+        - Custom join message upon room entry
         - Custom name
-        - Custom chat color (separate two colors with a `,` to fade)
+        - Custom chat color
         - Bold and/or Italic name
         - Bold and/or Italic message
         - Prefix and/or message suffix

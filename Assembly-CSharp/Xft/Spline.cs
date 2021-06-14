@@ -6,9 +6,7 @@ namespace Xft
 	public class Spline
 	{
 		private List<SplineControlPoint> mControlPoints = new List<SplineControlPoint>();
-
 		private List<SplineControlPoint> mSegments = new List<SplineControlPoint>();
-
 		public int Granularity = 20;
 
 		public SplineControlPoint this[int index]
@@ -24,7 +22,6 @@ namespace Xft
 		}
 
 		public List<SplineControlPoint> Segments => mSegments;
-
 		public List<SplineControlPoint> ControlPoints => mControlPoints;
 
 		public SplineControlPoint NextControlPoint(SplineControlPoint controlpoint)

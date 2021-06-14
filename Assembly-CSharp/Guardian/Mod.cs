@@ -27,10 +27,10 @@ namespace Guardian
         public static List<string> HostWhitelist = new List<string>();
         public static Regex BlacklistedTags = new Regex("<(\\/?)(size|material|quad)(.*)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
+        public static bool IsProgramQuitting = false;
 
         private static bool Initialized = false;
         private static bool FirstJoin = true;
-        private static bool IsProgramQuitting;
 
         public static bool IsMultiMap;
 
@@ -38,17 +38,6 @@ namespace Guardian
         {
             if (!Initialized)
             {
-                // Initiate GThreadPool
-                new Thread(() =>
-                {
-                    while (!IsProgramQuitting)
-                    {
-                        GThreadPool.Poll();
-                    }
-
-                    GThreadPool.Clear();
-                }).Start();
-
                 // Check for an update before doing anything
                 StartCoroutine(CoCheckForUpdate());
 
@@ -119,7 +108,7 @@ namespace Guardian
 
                     try
                     {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "Could not compare versions, if error persists, re-download from [0099FF]https://cb.click/GuardianAoT[-]!";
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "Could not verify version, if error persists, re-download from [0099FF]https://cb.click/GuardianAoT[-]!";
                     }
                     catch { }
                 }
@@ -288,7 +277,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                 { "GuardianMod", Build + "-M" }
+                 { "GuardianMod", Build }//+ "-M" }
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');

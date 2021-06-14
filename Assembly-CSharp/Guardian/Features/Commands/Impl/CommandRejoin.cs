@@ -17,13 +17,13 @@ namespace Guardian.Features.Commands.Impl
             PhotonNetwork.Disconnect();
             PhotonNetwork.ConnectToMaster(host, port, Networking.NetworkHelper.App.Id, UIMainReferences.Version);
 
-            Thread relogThread = new Thread(() =>
-            {
-                while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby && !GThreadPool.ShutdownRequested) { }
-                PhotonNetwork.JoinRoom(room);
-            });
-            relogThread.Name = "GThread#Relog";
-            GThreadPool.Enqueue(relogThread);
+            new Thread(() =>
+             {
+                 while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby
+                     && IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop
+                     && !Mod.IsProgramQuitting) { }
+                 PhotonNetwork.JoinRoom(room);
+             }).Start();
         }
     }
 }

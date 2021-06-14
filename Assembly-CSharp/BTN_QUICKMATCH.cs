@@ -10,12 +10,12 @@ public class BTN_QUICKMATCH : MonoBehaviour
         PhotonNetwork.ConnectToMaster(NetworkHelper.GetBestRegion(), NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
         FengGameManagerMKII.OnPrivateServer = false;
 
-        Thread quickmatchThread = new Thread(() =>
+        new Thread(() =>
         {
-            while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby && !GThreadPool.ShutdownRequested) { }
+            while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby
+                && IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop
+                && !Guardian.Mod.IsProgramQuitting) { }
             PhotonNetwork.JoinRandomRoom();
-        });
-        quickmatchThread.Name = "GThread#Quickmatch";
-        GThreadPool.Enqueue(quickmatchThread);
+        }).Start();
     }
 }

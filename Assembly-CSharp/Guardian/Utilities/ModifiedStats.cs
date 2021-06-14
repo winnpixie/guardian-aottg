@@ -16,10 +16,12 @@ namespace Guardian.Utilities
             {
                 stats.Add('g');
             }
+
             if ((val & INFINITE_BLADES) == INFINITE_BLADES)
             {
                 stats.Add('b');
             }
+
             if ((val & INFINITE_AHSS_AMMO) == INFINITE_AHSS_AMMO)
             {
                 stats.Add('a');
@@ -32,7 +34,7 @@ namespace Guardian.Utilities
         {
             int stats = 0;
 
-            /* Legacy Code.
+            /* Legacy code, kept in the event that I do ever bring this back.
             if (Mod.Properties.InfiniteGas.Value)
             {
                 stats |= INFINITE_GAS;

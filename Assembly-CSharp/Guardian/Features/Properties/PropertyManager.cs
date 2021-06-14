@@ -18,6 +18,7 @@ namespace Guardian.Features.Properties
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
         public Property<bool> HideHookArrows = new Property<bool>("Player_HideHookArrows", new string[0], false);
         public Property<bool> HoldForBladeTrails = new Property<bool>("Player_HoldForBladeTrails", new string[0], true);
+        public Property<bool> InterpolateBody = new Property<bool>("Player_InterpolateBody", new string[0], true);
         public Property<float> OpacityOfOwnName = new Property<float>("Player_OpacityOfOwnName", new string[0], 1.0f);
         public Property<float> OpacityOfOtherNames = new Property<float>("Player_OpacityOfOtherNames", new string[0], 1.0f);
         public Property<string> SuicideMessage = new Property<string>("Player_SuicideMessage", new string[0], "[FFFFFF]Suicide[-]");
@@ -62,6 +63,21 @@ namespace Guardian.Features.Properties
             base.Add(AlternateBurst);
             base.Add(HideHookArrows);
             base.Add(HoldForBladeTrails);
+
+            InterpolateBody.OnValueChanged = () =>
+            {
+                foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
+                {
+                    if (hero.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+                    {
+                        if (hero.myHorse == null || !hero.myHorse.GetComponent<Horse>().GetComponent<TITAN_CONTROLLER>().enabled)
+                        {
+                            hero.rigidbody.interpolation = InterpolateBody.Value ? UnityEngine.RigidbodyInterpolation.Interpolate : UnityEngine.RigidbodyInterpolation.None;
+                        }
+                    }
+                }
+            };
+            base.Add(InterpolateBody);
 
             OpacityOfOwnName.OnValueChanged = () =>
             {
