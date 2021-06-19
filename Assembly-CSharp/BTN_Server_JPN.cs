@@ -14,7 +14,7 @@ public class BTN_Server_JPN : MonoBehaviour
         }
         else
         {
-            PhotonNetwork.ConnectToMaster("app-jp.exitgamescloud.com", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
+            PhotonNetwork.ConnectToMaster("app-sa.exitgames.com", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
             FengGameManagerMKII.OnPrivateServer = false;
         }
     }
