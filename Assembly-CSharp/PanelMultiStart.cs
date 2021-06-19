@@ -15,6 +15,8 @@ public class PanelMultiStart : MonoBehaviour
     private void OnEnable()
     {
         Guardian.Mod.UI.OpenScreen(new Guardian.UI.Impl.UIMultiplayer());
+
+        GameObject.Find("ButtonServer4").gameObject.transform.localPosition = new Vector3(-110f, -85f, 0f);
     }
 
     private void OnDisable()
@@ -35,7 +37,7 @@ public class PanelMultiStart : MonoBehaviour
             label_server_US.GetComponent<UILabel>().text = Language.btn_server_US[Language.type];
             label_server_EU.GetComponent<UILabel>().text = Language.btn_server_EU[Language.type];
             label_server_ASIA.GetComponent<UILabel>().text = Language.btn_server_ASIA[Language.type];
-            label_server_JAPAN.GetComponent<UILabel>().text = Language.btn_server_JAPAN[Language.type];
+            label_server_JAPAN.GetComponent<UILabel>().text = "SA"; // Language.btn_server_JAPAN[Language.type];
             label_QUICK_MATCH.GetComponent<UILabel>().text = Language.btn_QUICK_MATCH[Language.type];
             label_server.GetComponent<UILabel>().text = Language.choose_region_server[Language.type];
         }

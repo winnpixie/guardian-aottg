@@ -2122,7 +2122,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 switch (Level.Mode)
                 {
                     case GameMode.Racing:
-                        SetTextCenter(Guardian.Utilities.GameHelper.FormatTime((timeTotalServer * 10f) * 0.1f - 5f, true) + "!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
+                        SetTextCenter(((timeTotalServer * 10f) * 0.1f - 5f) + "!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                         break;
                     case GameMode.Survival:
                         SetTextCenter("Survived All Waves!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
@@ -2155,11 +2155,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 if (!isWinning)
                 {
-                    SetTextTopCenter("Time: " + Guardian.Utilities.GameHelper.FormatTime(timeTotalServer * 10 * 0.1f - 5f, true));
+                    SetTextTopCenter("Time: " + (timeTotalServer * 10 * 0.1f - 5f));
                 }
                 if (timeTotalServer < 5f)
                 {
-                    SetTextCenter("RACE START IN " + Guardian.Utilities.GameHelper.FormatTime(5f - timeTotalServer, true));
+                    SetTextCenter("RACE START IN " + (5f - timeTotalServer));
                 }
                 else if (!startRacing)
                 {
@@ -2171,10 +2171,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
             else
             {
-                SetTextTopCenter("Time: " + (roundTime >= 20f ? Guardian.Utilities.GameHelper.FormatTime(roundTime * 10f * 0.1f - 20f, true) : "WAITING"));
+                SetTextTopCenter("Time: " + (roundTime >= 20f ? (roundTime * 10f * 0.1f - 20f).ToString() : "WAITING"));
                 if (roundTime < 20f)
                 {
-                    SetTextCenter("RACE START IN " + Guardian.Utilities.GameHelper.FormatTime(20f - roundTime, true) + (localRacingResult.Length > 0 ? ("\nLast Round\n" + localRacingResult) : string.Empty));
+                    SetTextCenter("RACE START IN " + (20f - roundTime) + (localRacingResult.Length > 0 ? ("\nLast Round\n" + localRacingResult) : string.Empty));
                 }
                 else if (!startRacing)
                 {
@@ -2231,18 +2231,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             switch (Level.Mode)
             {
                 case GameMode.Endless:
-                    text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer);
+                    text = "Time: " + (int)(time - timeTotalServer);
                     break;
                 case GameMode.KillTitans:
                 case GameMode.None:
                     text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length
-                        + " Time: " + Guardian.Utilities.GameHelper.FormatTime((IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer));
+                        + " Time: " + (int)(IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer);
                     break;
                 case GameMode.Survival:
                     text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length + " Wave: " + wave;
                     break;
                 case GameMode.Colossal:
-                    text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer) + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the north gate!";
+                    text = "Time: " + (int)(time - timeTotalServer) + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the north gate!";
                     break;
                 case GameMode.PvPCapture:
                     string str = "| ";
@@ -2250,7 +2250,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     {
                         str += (PVPcheckPoint.chkPts[i] as PVPcheckPoint).GetState() + " ";
                     }
-                    text = $"[{ColorSet.TitanPlayer}]{PVPtitanScoreMax - PVPtitanScore} [-]{str}| [{ColorSet.Human}]{PVPhumanScoreMax - PVPhumanScore}\n[-]Time: {Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer)}";
+                    text = $"[{ColorSet.TitanPlayer}]{PVPtitanScoreMax - PVPtitanScore} [-]{str}| [{ColorSet.Human}]{PVPhumanScoreMax - PVPhumanScore}\n[-]Time: {(int)(time - timeTotalServer)}";
                     break;
             }
 
@@ -2265,7 +2265,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 if (Level.Mode == GameMode.Survival)
                 {
-                    text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(timeTotalServer);
+                    text = "Time: " + (int)timeTotalServer;
                 }
             }
             else
@@ -2279,7 +2279,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         text = "Humanity " + humanScore + " | Titan " + titanScore;
                         break;
                     case GameMode.Survival:
-                        text = "Time: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer);
+                        text = "Time: " + (int)(time - timeTotalServer);
                         break;
                     case GameMode.TeamDeathmatch:
                         for (int i = 0; i < teamScores.Length; i++)
@@ -2292,7 +2292,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 teamScores[i]
                             );
                         }
-                        text += "\nTime: " + Guardian.Utilities.GameHelper.FormatTime(time - timeTotalServer);
+                        text += "\nTime: " + (int)(time - timeTotalServer);
                         break;
                 }
             }
@@ -2709,7 +2709,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             localRacingResult += "Rank " + (i + 1) + ": ";
             localRacingResult += (racingResult[i] as RacingResult).name;
-            localRacingResult += " - " + Guardian.Utilities.GameHelper.FormatTime((racingResult[i] as RacingResult).time * 100f * 0.01f, true) + '\n';
+            localRacingResult += " - " + ((racingResult[i] as RacingResult).time * 100f * 0.01f) + '\n';
         }
         base.photonView.RPC("netRefreshRacingResult", PhotonTargets.All, localRacingResult);
     }

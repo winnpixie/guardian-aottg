@@ -8,7 +8,7 @@ public class BTN_ServerUS : MonoBehaviour
 
         if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.AoTTG2)
         {
-            PhotonNetwork.ConnectToMaster("us.aot2.cf", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
+            PhotonNetwork.ConnectToMaster("us.aottg.tk", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
             FengGameManagerMKII.OnPrivateServer = true;
         } else
         {

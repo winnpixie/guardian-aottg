@@ -9,14 +9,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading;
 using UnityEngine;
 
 namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "06022021";
+        public static string Build = "06192021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -101,9 +100,9 @@ namespace Guardian
                     Logger.Error(www.error);
 
                     Logger.Error($"\nIf error persists, re-download the latest build and/or join the Discord!");
-                    Logger.Info("Download:".WithColor("0099FF"));
+                    Logger.Info("Download:");
                     Logger.Info($"\t- {"https://cb.click/GuardianAoT".WithColor("0099FF")}");
-                    Logger.Info("Discord:".WithColor("0099FF"));
+                    Logger.Info("Discord:");
                     Logger.Info($"\t- {"https://discord.com/invite/JGzTdWm".WithColor("0099FF")}");
 
                     try
@@ -277,7 +276,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                 { "GuardianMod", Build }//+ "-M" }
+                 { "GuardianMod", Build + "-M" }
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');

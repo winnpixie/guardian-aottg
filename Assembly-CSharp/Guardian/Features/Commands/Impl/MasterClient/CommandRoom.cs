@@ -15,7 +15,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 if (args[0].Equals("time", StringComparison.OrdinalIgnoreCase) && int.TryParse(args[1], out int time))
                 {
                     FengGameManagerMKII.Instance.AddTime(time);
-                    GameHelper.Broadcast($"Added {GameHelper.FormatTime(time, false).WithColor("FFFFFF")} to the clock!");
+                    GameHelper.Broadcast($"Added {time}s to the clock!");
                 }
 
                 // Max players

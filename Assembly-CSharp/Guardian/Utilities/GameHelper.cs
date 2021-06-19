@@ -148,20 +148,8 @@ namespace Guardian.Utilities
             return (long)DateTime.UtcNow.Subtract(Epoch).TotalMilliseconds;
         }
 
-        public static string FormatTime(float time, bool precise = false, bool isSeconds = true)
+        public static string FormatTimeOld(float time, bool precise = false, bool isSeconds = true)
         {
-            if (Mod.Properties.LegacyTimeFormat.Value)
-            {
-                float secs = isSeconds ? time : (time / 1000f);
-
-                if (!precise)
-                {
-                    secs = MathHelper.Floor(secs);
-                }
-
-                return secs > 1 ? secs + " secs" : secs + " sec";
-            }
-
             string output = string.Empty;
 
             if (isSeconds)
