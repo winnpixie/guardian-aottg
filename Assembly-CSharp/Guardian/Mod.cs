@@ -15,7 +15,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "06192021-2";
+        public static string Build = "06202021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -276,7 +276,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                 { "GuardianMod", Build + "-M" }
+                 { "GuardianMod", Build }//+ "-M" }
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');
