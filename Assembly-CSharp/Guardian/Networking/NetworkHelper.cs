@@ -8,10 +8,11 @@ namespace Guardian.Networking
     {
         public static PhotonApplication App = PhotonApplication.AoTTG2;
         public static PhotonConnection Connection = PhotonConnection.TCP;
+        public static bool IsCloud = false;
 
-        public static long GetResponseTime(string server, int port)
+        public static long GetResponseTime(string addr, int port)
         {
-            IPHostEntry entry = Dns.GetHostEntry(server);
+            IPHostEntry entry = Dns.GetHostEntry(addr);
             Stopwatch sw = new Stopwatch();
 
             foreach (IPAddress address in entry.AddressList)
@@ -36,13 +37,13 @@ namespace Guardian.Networking
 
         public static string GetBestRegion()
         {
-            string[] regions = new string[] { "us", "eu", "asia", "jp" };
+            string[] regions = new string[] { "us", "eu", "asia", "jp", "sa" };
             string bestRegion = string.Empty;
             long lowestPing = long.MaxValue;
 
             foreach (string code in regions)
             {
-                string address = $"app-{code}.exitgamescloud.com";
+                string address = $"app-{code}.exitgames.com";
                 long ping = GetResponseTime(address, 4530);
 
                 if (ping != -1 && ping < lowestPing)

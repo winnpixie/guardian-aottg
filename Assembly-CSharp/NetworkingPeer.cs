@@ -2771,7 +2771,8 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             && eventData.Code != 254
             && (eventData.Code != 203 || (!sender.isMasterClient && sender.isLocal))
             && (eventData.Code != 208 || !sender.isMasterClient)
-            && eventData.Code != 253)
+            && eventData.Code != 253
+            && (eventData.Code != 199 || !FengGameManagerMKII.OnPrivateServer))
         {
             return;
         }
@@ -3417,7 +3418,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
     public void CheckLAN()
     {
-        if (FengGameManagerMKII.OnPrivateServer && MasterServerAddress != null && MasterServerAddress != string.Empty && mGameserver != null && mGameserver != string.Empty && MasterServerAddress.Contains(":") && mGameserver.Contains(":"))
+        if ((FengGameManagerMKII.OnPrivateServer || !Guardian.Networking.NetworkHelper.IsCloud) && MasterServerAddress != null && MasterServerAddress != string.Empty && mGameserver != null && mGameserver != string.Empty && MasterServerAddress.Contains(":") && mGameserver.Contains(":"))
         {
             mGameserver = MasterServerAddress.Split(':')[0] + ":" + mGameserver.Split(':')[1];
         }

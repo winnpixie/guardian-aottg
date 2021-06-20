@@ -1,21 +1,21 @@
 using UnityEngine;
 
+// TODO: Japan region gone forever?
 public class BTN_Server_JPN : MonoBehaviour
 {
     private void OnClick()
     {
         PhotonNetwork.Disconnect();
+        FengGameManagerMKII.OnPrivateServer = false;
+        Guardian.Networking.NetworkHelper.IsCloud = true;
 
-        // TODO: Convert Japan button to South America
-        if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.AoTTG2)
+        if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.Custom)
         {
-            PhotonNetwork.ConnectToMaster("sa.aottg.tk", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
-            FengGameManagerMKII.OnPrivateServer = true;
+            PhotonNetwork.ConnectToMaster("app-jp.exitgamescloud.com", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
         }
         else
         {
-            PhotonNetwork.ConnectToMaster("app-sa.exitgames.com", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
-            FengGameManagerMKII.OnPrivateServer = false;
+            PhotonNetwork.ConnectToMaster("app-jp.exitgamescloud.com", Guardian.Networking.NetworkHelper.Connection.Port, "b92ae2ae-b815-4f37-806a-58b4f58573ff", UIMainReferences.Version);
         }
     }
 }

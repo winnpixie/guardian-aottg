@@ -15,7 +15,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "06192021-1";
+        public static string Build = "06192021-2";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -101,13 +101,13 @@ namespace Guardian
 
                     Logger.Error($"\nIf error persists, re-download the latest build and/or join the Discord!");
                     Logger.Info("Download:");
-                    Logger.Info($"\t- {"https://cb.click/GuardianAoT".WithColor("0099FF")}");
+                    Logger.Info($"\t- {"https://cb.run/GuardianAoT".WithColor("0099FF")}");
                     Logger.Info("Discord:");
                     Logger.Info($"\t- {"https://discord.com/invite/JGzTdWm".WithColor("0099FF")}");
 
                     try
                     {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "Could not verify version, if error persists, re-download from [0099FF]https://cb.click/GuardianAoT[-]!";
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "Could not verify version, if error persists, re-download from [0099FF]https://cb.run/GuardianAoT[-]!";
                     }
                     catch { }
                 }
@@ -120,11 +120,11 @@ namespace Guardian
                     {
                         Logger.Info($"You are {"OUTDATED :(".WithColor("FF0000")}, please update!");
                         Logger.Info("Download:");
-                        Logger.Info($"\t- {"https://cb.click/GuardianAoT".WithColor("0099FF")}");
+                        Logger.Info($"\t- {"https://cb.run/GuardianAoT".WithColor("0099FF")}");
 
                         try
                         {
-                            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Download the latest build from [0099FF]https://cb.click/GuardianAoT[-]!";
+                            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Download the latest build from [0099FF]https://cb.run/GuardianAoT[-]!";
                         }
                         catch { }
                     }

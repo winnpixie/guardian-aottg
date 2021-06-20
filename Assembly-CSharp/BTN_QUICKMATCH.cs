@@ -9,6 +9,7 @@ public class BTN_QUICKMATCH : MonoBehaviour
         PhotonNetwork.Disconnect();
         PhotonNetwork.ConnectToMaster(NetworkHelper.GetBestRegion(), NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
         FengGameManagerMKII.OnPrivateServer = false;
+        NetworkHelper.IsCloud = FengGameManagerMKII.ApplicationId.Length > 0;
 
         new Thread(() =>
         {

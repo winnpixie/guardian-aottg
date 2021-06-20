@@ -14,6 +14,7 @@ namespace Guardian.Features.Properties
         public Property<bool> OGPunkHair = new Property<bool>("MC_OGPunkHair", new string[0], true);
 
         // Player
+        public Property<bool> DoubleTapBurst = new Property<bool>("Player_DoubleTapBurst", new string[0], true);
         public Property<bool> AlternateIdle = new Property<bool>("Player_AHSSIdle", new string[0], false);
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
         public Property<bool> HideHookArrows = new Property<bool>("Player_HideHookArrows", new string[0], false);
@@ -58,6 +59,7 @@ namespace Guardian.Features.Properties
             base.Add(OGPunkHair);
 
             // Player
+            base.Add(DoubleTapBurst);
             base.Add(AlternateIdle);
             base.Add(AlternateBurst);
             base.Add(HideHookArrows);

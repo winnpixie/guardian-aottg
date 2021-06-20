@@ -3256,12 +3256,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             ExtendedUpdate();
             if (!grounded && state != HeroState.Dashing)
             {
-                // TODO: Mod, eventually add setting to toggle double-tap
+                // TODO: Mod, fix rebind disabling double-tap
                 if ((int)FengGameManagerMKII.Settings[181] == 1)
                 {
                     CheckDashRebind();
                 }
-                CheckDoubleTapDash();
+
+                if (Guardian.Mod.Properties.DoubleTapBurst.Value)
+                {
+                    CheckDoubleTapDash();
+                }
 
                 if (dashD)
                 {
