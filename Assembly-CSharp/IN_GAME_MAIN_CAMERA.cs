@@ -23,7 +23,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public static DayLight Lighting = DayLight.Dawn;
     public static bool UsingTitan;
     public static float CameraDistance = 0.6f;
-    public static CAMERA_TYPE CameraMode;
+    public static CameraType CameraMode;
     public static string SingleCharacter;
 
     public static int WindowWidth = 960;
@@ -117,7 +117,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 break;
             case DayLight.Dawn:
                 RenderSettings.ambientLight = FengColor.AmbientDawn;
-                GameObject.Find("mainLight").GetComponent<Light>().color = FengColor.AmbientDawn;
+                GameObject.Find("mainLight").GetComponent<Light>().color = FengColor.Dawn;
                 base.gameObject.GetComponent<Skybox>().material = skyBoxDAWN;
                 break;
             case DayLight.Night:
@@ -127,6 +127,12 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 base.gameObject.GetComponent<Skybox>().material = skyBoxNIGHT;
                 break;
         }
+
+        if (FengGameManagerMKII.SkyMaterial != null && FengGameManagerMKII.SkyMaterial != base.gameObject.GetComponent<Skybox>().material)
+        {
+            base.gameObject.GetComponent<Skybox>().material = FengGameManagerMKII.SkyMaterial;
+        }
+
         snapShotCamera.gameObject.GetComponent<Skybox>().material = base.gameObject.GetComponent<Skybox>().material;
     }
 
@@ -242,7 +248,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
         switch (CameraMode)
         {
-            case CAMERA_TYPE.WOW:
+            case CameraType.WOW:
                 {
                     if (Input.GetKey(KeyCode.Mouse1))
                     {
@@ -256,7 +262,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     }
                     break;
                 }
-            case CAMERA_TYPE.TPS:
+            case CameraType.TPS:
                 {
                     if (!inputManager.menuOn)
                     {
@@ -271,7 +277,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     }
                     break;
                 }
-            case CAMERA_TYPE.ORIGINAL:
+            case CameraType.Original:
                 {
                     float num = 0f;
                     Vector3 mousePosition = Input.mousePosition;
@@ -294,10 +300,19 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 }
         }
 
-        base.transform.position -= base.transform.forward * distance * distanceMulti * distanceOffsetMulti;
-        if (CameraDistance < 0.65f)
+        // TODO: Mod, god awful FPS camera
+        if (Guardian.Mod.Properties.FPSCamera.Value)
         {
-            base.transform.position += base.transform.right * Mathf.Max((0.6f - CameraDistance) * 2f, 0.65f);
+            base.transform.position = head == null ? main_object.transform.position : head.transform.position;
+            base.transform.position += base.transform.up * (heightMulti / 2f);
+            base.transform.position += base.transform.forward;
+        } else
+        {
+            base.transform.position -= base.transform.forward * distance * distanceMulti * distanceOffsetMulti;
+            if (CameraDistance < 0.65f)
+            {
+                base.transform.position += base.transform.right * Mathf.Max((0.6f - CameraDistance) * 2f, 0.65f);
+            }
         }
     }
 
@@ -370,9 +385,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             head = main_object.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck/head");
             distanceMulti = (heightMulti = 0.64f);
-
-            // TODO: Mod, needs testing
-            // main_object.rigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
 
             if (resetRotation)
             {
@@ -578,7 +590,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             texture2D = new Texture2D(1, 1);
             texture2D.SetPixel(0, 0, Color.white);
-        } finally
+        }
+        finally
         {
             RenderTexture.active = oldActiveRT;
         }
@@ -646,7 +659,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     SetMainObject(players[currentPeekPlayerIndex]);
                     SetSpectorMode(val: false);
                     lockAngle = false;
-                } else
+                }
+                else
                 {
                     currentPeekPlayerIndex = 0;
                 }
@@ -663,7 +677,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     SetMainObject(players[currentPeekPlayerIndex]);
                     SetSpectorMode(val: false);
                     lockAngle = false;
-                } else
+                }
+                else
                 {
                     currentPeekPlayerIndex = 0;
                 }
@@ -743,16 +758,16 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             switch (CameraMode)
             {
-                case CAMERA_TYPE.TPS:
-                    CameraMode = CAMERA_TYPE.ORIGINAL;
+                case CameraType.TPS:
+                    CameraMode = CameraType.Original;
                     Screen.lockCursor = false;
                     break;
-                case CAMERA_TYPE.ORIGINAL:
-                    CameraMode = CAMERA_TYPE.WOW;
+                case CameraType.Original:
+                    CameraMode = CameraType.WOW;
                     Screen.lockCursor = false;
                     break;
-                case CAMERA_TYPE.WOW:
-                    CameraMode = CAMERA_TYPE.TPS;
+                case CameraType.WOW:
+                    CameraMode = CameraType.TPS;
                     Screen.lockCursor = true;
                     break;
             }

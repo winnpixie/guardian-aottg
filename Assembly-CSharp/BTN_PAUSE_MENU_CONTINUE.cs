@@ -32,7 +32,7 @@ public class BTN_PAUSE_MENU_CONTINUE : MonoBehaviour
             return;
         }
         IN_GAME_MAIN_CAMERA.IsPausing = false;
-        if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS)
+        if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS)
         {
             Screen.showCursor = false;
             Screen.lockCursor = true;

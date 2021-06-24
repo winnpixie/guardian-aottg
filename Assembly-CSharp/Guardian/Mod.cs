@@ -15,7 +15,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "06202021";
+        public static string Build = "06232021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -276,7 +276,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                 { "GuardianMod", Build }//+ "-M" }
+                 { "GuardianMod", Build + "-M" }
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');
@@ -326,7 +326,7 @@ namespace Guardian
                     }
 
                     // TPS crosshair ending up where it shouldn't
-                    if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS)
+                    if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS)
                     {
                         Screen.lockCursor = false;
                         Screen.lockCursor = true;

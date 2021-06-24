@@ -217,6 +217,45 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private bool cancelGasDisable;
     private bool areAnimationsPaused;
 
+    // TODO: RC reel smoothing
+    private float reelInAxis;
+    private float reelOutAxis;
+    private float reelOutScrollTimeLeft;
+
+    private void UpdateReelInput()
+    {
+        float scrollDir = Input.GetAxis("Mouse ScrollWheel") * 5555f;
+
+        reelOutScrollTimeLeft -= Time.deltaTime;
+        if (reelOutScrollTimeLeft <= 0f)
+        {
+            reelOutAxis = 0f;
+        }
+
+        if (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) || (scrollDir < 0f))
+        {
+            reelInAxis = -1f;
+        }
+        if (((int)FengGameManagerMKII.Settings[116] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) || scrollDir > 0f)
+        {
+            reelOutAxis = 1f;
+
+            if (scrollDir > 0f)
+            {
+                reelOutScrollTimeLeft = Guardian.Mod.Properties.ReelOutScrollSmoothing.Value;
+            }
+        }
+    }
+
+    private float GetReelAxis()
+    {
+        if (reelInAxis != 0f)
+        {
+            return reelInAxis;
+        }
+        return reelOutAxis;
+    }
+
     public bool IsInvincible()
     {
         return invincible > 0f;
@@ -764,7 +803,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    private void setHookedPplDirection()
+    private void SetHookedPplDirection()
     {
         almostSingleHook = false;
         if (isRightHandHooked && isLeftHandHooked)
@@ -2017,7 +2056,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             inputManager = GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>();
             LoadSkin();
             hasspawn = true;
-            StartCoroutine(CoReloadSky());
         }
 
         // TODO: Mod, flashlight Fix?
@@ -2067,6 +2105,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
 
         // TODO: Mod, idk might fix
+        SetHookedPplDirection();
         LeanBody();
 
         if (!baseAnimation.IsPlaying("attack3_2") && !baseAnimation.IsPlaying("attack5") && !baseAnimation.IsPlaying("special_petra"))
@@ -2578,9 +2617,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d2 = currentSpeed + 0.1f;
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             Vector3 current2 = (bulletRight.transform.position + bulletLeft.transform.position) * 0.5f - baseTransform.position;
-            float num10 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
-            num10 = Mathf.Clamp(num10, -0.8f, 0.8f);
-            float num11 = 1f + num10;
+            float reelDir = GetReelAxis();
+            reelDir = Mathf.Clamp(reelDir, -0.8f, 0.8f);
+            float num11 = 1f + reelDir;
             Vector3 a2 = Vector3.RotateTowards(current2, baseRigidBody.velocity, 1.53938f * num11, 1.53938f * num11);
             a2.Normalize();
             baseRigidBody.velocity = a2 * d2;
@@ -2590,9 +2629,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d3 = currentSpeed + 0.1f;
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             Vector3 current3 = bulletLeft.transform.position - baseTransform.position;
-            float num12 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
-            num12 = Mathf.Clamp(num12, -0.8f, 0.8f);
-            float num13 = 1f + num12;
+            float reelDir = GetReelAxis();
+            reelDir = Mathf.Clamp(reelDir, -0.8f, 0.8f);
+            float num13 = 1f + reelDir;
             Vector3 a3 = Vector3.RotateTowards(current3, baseRigidBody.velocity, 1.53938f * num13, 1.53938f * num13);
             a3.Normalize();
             baseRigidBody.velocity = a3 * d3;
@@ -2602,9 +2641,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d4 = currentSpeed + 0.1f;
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
             Vector3 current4 = bulletRight.transform.position - baseTransform.position;
-            float num14 = (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) ? (-1f) : (((int)FengGameManagerMKII.Settings[116] != 1 || !FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) ? (Input.GetAxis("Mouse ScrollWheel") * 5555f) : 1f));
-            num14 = Mathf.Clamp(num14, -0.8f, 0.8f);
-            float num15 = 1f + num14;
+            float reelDir = GetReelAxis();
+            reelDir = Mathf.Clamp(reelDir, -0.8f, 0.8f);
+            float num15 = 1f + reelDir;
             Vector3 a4 = Vector3.RotateTowards(current4, baseRigidBody.velocity, 1.53938f * num15, 1.53938f * num15);
             a4.Normalize();
             baseRigidBody.velocity = a4 * d4;
@@ -2706,6 +2745,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             speedFXPS.enableEmission = false;
         }
+
+        reelInAxis = 0f;
     }
 
     private void UpdateResourceUI()
@@ -3133,7 +3174,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 ArmRightArmTo(bulletRight.transform.position);
             }
         }
-        setHookedPplDirection();
+        // SetHookedPplDirection();
         // LeanBody();
     }
 
@@ -3165,6 +3206,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
+
+        UpdateReelInput();
+
         if (myCannonRegion != null)
         {
             FengGameManagerMKII.Instance.SetTextCenter("Press 'Cannon Mount' key to use Cannon.");
@@ -4997,15 +5041,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (info.sender.isMasterClient)
         {
             base.transform.position = new Vector3(posX, posY, posZ);
-        }
-    }
-
-    public IEnumerator CoReloadSky()
-    {
-        yield return new WaitForSeconds(0.5f);
-        if (FengGameManagerMKII.SkyMaterial != null && Camera.main.GetComponent<Skybox>().material != FengGameManagerMKII.SkyMaterial)
-        {
-            Camera.main.GetComponent<Skybox>().material = FengGameManagerMKII.SkyMaterial;
         }
     }
 

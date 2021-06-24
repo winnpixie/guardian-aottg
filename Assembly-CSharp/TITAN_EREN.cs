@@ -239,9 +239,9 @@ public class TITAN_EREN : Photon.MonoBehaviour
             if (inputManager.isInputDown[InputCode.Attack0] || inputManager.isInputDown[InputCode.Attack1])
             {
                 bool flag = false;
-                if ((IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.WOW && inputManager.isInput[InputCode.Down]) || inputManager.isInputDown[InputCode.Attack1])
+                if ((IN_GAME_MAIN_CAMERA.CameraMode == CameraType.WOW && inputManager.isInput[InputCode.Down]) || inputManager.isInputDown[InputCode.Attack1])
                 {
-                    if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.WOW && inputManager.isInputDown[InputCode.Attack1] && inputManager.inputKey[11] == KeyCode.Mouse1)
+                    if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.WOW && inputManager.isInputDown[InputCode.Attack1] && inputManager.inputKey[11] == KeyCode.Mouse1)
                     {
                         flag = true;
                     }

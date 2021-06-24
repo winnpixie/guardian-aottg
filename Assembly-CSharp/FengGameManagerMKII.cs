@@ -247,6 +247,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 if (PhotonNetwork.connected)
                 {
                     component.text = component.text + " Ping: " + PhotonNetwork.GetPing() + "ms";
+                } else
+                {
+                    component.text = "Disconnected";
                 }
             }
         }
@@ -310,7 +313,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             { PhotonPlayerProperty.IsTitan, 1 }
         };
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
         Screen.showCursor = false;
         SetTextCenter("The game has started for 60 seconds.\n please wait for next round.\n Click Right Mouse Key to Enter or Exit the Spectator Mode.");
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
@@ -329,7 +332,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             { PhotonPlayerProperty.IsTitan, 2 }
         };
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
         Screen.showCursor = true;
         SetTextCenter("The game has started for 60 seconds.\n please wait for next round.\n Click Right Mouse Key to Enter or Exit the Spectator Mode.");
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
@@ -364,7 +367,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             { PhotonPlayerProperty.IsTitan, 2 }
         };
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
         Screen.showCursor = true;
         SetTextCenter(string.Empty);
     }
@@ -1366,7 +1369,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             Camera.main.GetComponent<SpectatorMovement>().disable = true;
             Camera.main.GetComponent<MouseLook>().disable = true;
             SpawnPlayer(IN_GAME_MAIN_CAMERA.SingleCharacter.ToUpper());
-            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
             Screen.showCursor = false;
             int abnormal = 90;
             if (difficulty == 1)
@@ -1402,7 +1405,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         else if ((int)Settings[245] == 0)
         {
-            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
             if (Level.Mode == GameMode.PvPCapture)
             {
                 if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.IsTitan]) == 2)
@@ -2548,7 +2551,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             mainCam.GetComponent<SpectatorMovement>().disable = true;
             mainCam.GetComponent<MouseLook>().disable = true;
             component.gameOver = false;
-            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
             Screen.showCursor = false;
             isLosing = false;
             SetTextCenter(string.Empty);
@@ -2589,7 +2592,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             hashtable.Add("dead", false);
             hashtable.Add(PhotonPlayerProperty.IsTitan, 2);
             PhotonNetwork.player.SetCustomProperties(hashtable);
-            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
             Screen.showCursor = true;
             SetTextCenter(string.Empty);
         }
@@ -2785,17 +2788,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    public IEnumerator CoWaitAndReloadSky()
-    {
-        yield return new WaitForSeconds(0.5f);
-        if (SkyMaterial != null && Camera.main.GetComponent<Skybox>().material != SkyMaterial)
-        {
-            Camera.main.GetComponent<Skybox>().material = SkyMaterial;
-        }
-        Screen.lockCursor = !Screen.lockCursor;
-        Screen.lockCursor = !Screen.lockCursor;
-    }
-
     public void EnterSpecMode(bool enter)
     {
         if (enter)
@@ -2857,7 +2849,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[3], state: false);
             needChooseSide = false;
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().enabled = true;
-            if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.ORIGINAL)
+            if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.Original)
             {
                 Screen.lockCursor = false;
                 Screen.showCursor = false;
@@ -2873,7 +2865,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: false);
             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
-            StartCoroutine(CoWaitAndReloadSky());
+
+            Screen.lockCursor = !Screen.lockCursor;
+            Screen.lockCursor = !Screen.lockCursor;
         }
         else
         {
@@ -5382,7 +5376,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         cam.GetComponent<SpectatorMovement>().disable = true;
         cam.GetComponent<MouseLook>().disable = true;
         component.gameOver = false;
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
         Screen.showCursor = false;
         isLosing = false;
         SetTextCenter(string.Empty);
@@ -5412,7 +5406,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         hashtable.Add("dead", true);
         hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
         Screen.showCursor = false;
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
         cam.enabled = true;
@@ -5428,7 +5422,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         hashtable.Add("dead", true);
         hashtable.Add(PhotonPlayerProperty.IsTitan, 2);
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS;
+        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
         Screen.showCursor = true;
         SetTextCenter("Syncing spawn locations...");
         IN_GAME_MAIN_CAMERA cam = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>();
@@ -7052,7 +7046,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             if (!LinkHash[1].ContainsKey(key))
             {
                 unload = true;
-                Material newSky = Camera.main.GetComponent<Skybox>().material;
+                Material newSky = new Material(Camera.main.GetComponent<Skybox>().material);
                 string skyFront = skybox[0];
                 string skyBack = skybox[1];
                 string skyLeft = skybox[2];
@@ -7301,7 +7295,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             if (!LinkHash[1].ContainsKey(key))
             {
                 unload = true;
-                Material newSky = Camera.main.GetComponent<Skybox>().material;
+                Material newSky = new Material(Camera.main.GetComponent<Skybox>().material);
                 string skyFront = skybox[0];
                 string skyBack = skybox[1];
                 string skyLeft = skybox[2];
@@ -11288,7 +11282,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         return;
                     }
                     IN_GAME_MAIN_CAMERA.IsPausing = false;
-                    if (IN_GAME_MAIN_CAMERA.CameraMode == CAMERA_TYPE.TPS)
+                    if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS)
                     {
                         Screen.showCursor = false;
                         Screen.lockCursor = true;

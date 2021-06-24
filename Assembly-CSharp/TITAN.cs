@@ -1582,10 +1582,6 @@ public class TITAN : Photon.MonoBehaviour
                 FindNearestHero2();
             }
             controller = base.gameObject.GetComponent<TITAN_CONTROLLER>();
-            if (nonAI)
-            {
-                StartCoroutine(CoReloadSky());
-            }
         }
         if (maxHealth == 0 && RCSettings.HealthMode > 0)
         {
@@ -3532,15 +3528,6 @@ public class TITAN : Photon.MonoBehaviour
     public void MoveTo(float posX, float posY, float posZ)
     {
         base.transform.position = new Vector3(posX, posY, posZ);
-    }
-
-    public IEnumerator CoReloadSky()
-    {
-        yield return new WaitForSeconds(0.5f);
-        if (FengGameManagerMKII.SkyMaterial != null && Camera.main.GetComponent<Skybox>().material != FengGameManagerMKII.SkyMaterial)
-        {
-            Camera.main.GetComponent<Skybox>().material = FengGameManagerMKII.SkyMaterial;
-        }
     }
 
     public void Cache()

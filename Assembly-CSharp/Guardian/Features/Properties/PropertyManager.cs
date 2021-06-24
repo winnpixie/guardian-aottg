@@ -20,6 +20,8 @@ namespace Guardian.Features.Properties
         public Property<bool> HideHookArrows = new Property<bool>("Player_HideHookArrows", new string[0], false);
         public Property<bool> HoldForBladeTrails = new Property<bool>("Player_HoldForBladeTrails", new string[0], true);
         public Property<bool> InterpolateBody = new Property<bool>("Player_InterpolateBody", new string[0], true);
+        public Property<bool> FPSCamera = new Property<bool>("Player_FPSCamera", new string[0], false);
+        public Property<float> ReelOutScrollSmoothing = new Property<float>("Player_ReelOutScrollSmoothing", new string[0], 0.2f);
         public Property<float> OpacityOfOwnName = new Property<float>("Player_OpacityOfOwnName", new string[0], 1.0f);
         public Property<float> OpacityOfOtherNames = new Property<float>("Player_OpacityOfOtherNames", new string[0], 1.0f);
         public Property<string> SuicideMessage = new Property<string>("Player_SuicideMessage", new string[0], "[FFFFFF]Suicide[-]");
@@ -79,6 +81,9 @@ namespace Guardian.Features.Properties
                 }
             };
             base.Add(InterpolateBody);
+
+            base.Add(FPSCamera);
+            base.Add(ReelOutScrollSmoothing);
 
             OpacityOfOwnName.OnValueChanged = () =>
             {
