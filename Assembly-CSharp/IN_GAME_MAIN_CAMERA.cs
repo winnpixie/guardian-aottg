@@ -117,7 +117,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 break;
             case DayLight.Dawn:
                 RenderSettings.ambientLight = FengColor.AmbientDawn;
-                GameObject.Find("mainLight").GetComponent<Light>().color = FengColor.Dawn;
+                GameObject.Find("mainLight").GetComponent<Light>().color = FengColor.AmbientDawn;
                 base.gameObject.GetComponent<Skybox>().material = skyBoxDAWN;
                 break;
             case DayLight.Night:

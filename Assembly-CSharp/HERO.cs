@@ -2727,11 +2727,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 smoke_3dmg.enableEmission = false;
             }
         }
-
         else
         {
             cancelGasDisable = false;
         }
+
         if (currentSpeed > 80f)
         {
             if (!speedFXPS.enableEmission)

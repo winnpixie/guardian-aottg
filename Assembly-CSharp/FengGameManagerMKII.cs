@@ -247,7 +247,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 if (PhotonNetwork.connected)
                 {
                     component.text = component.text + " Ping: " + PhotonNetwork.GetPing() + "ms";
-                } else
+                }
+                else
                 {
                     component.text = "Disconnected";
                 }
@@ -7548,176 +7549,92 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             string[] strArray4 = url.Split(',');
             string[] strArray3 = url2.Split(',');
             int num6 = 0;
-            try
+            foreach (GameObject obj3 in UnityEngine.Object.FindObjectsOfType(typeof(GameObject)))
             {
-                foreach (GameObject obj3 in UnityEngine.Object.FindObjectsOfType(typeof(GameObject)))
+                if (obj3 != null && obj3.name.Contains("Cube_") && obj3.transform.parent.gameObject.tag != "Player")
                 {
-                    if (obj3 != null && obj3.name.Contains("Cube_") && obj3.transform.parent.gameObject.tag != "Player")
+                    if (obj3.name.EndsWith("001"))
                     {
-                        if (obj3.name.EndsWith("001"))
+                        if (strArray3.Length > 0 && strArray3[0] != null)
                         {
-                            if (strArray3.Length > 0 && strArray3[0] != null)
-                            {
-                                string str8 = strArray3[0];
-                                if (str8.EndsWith(".jpg") || str8.EndsWith(".png") || str8.EndsWith(".jpeg"))
-                                {
-                                    try
-                                    {
-                                        foreach (Renderer renderer4 in obj3.GetComponentsInChildren<Renderer>())
-                                        {
-                                            if (!LinkHash[0].ContainsKey(str8))
-                                            {
-                                                WWW www = Guardian.Utilities.GameHelper.CreateWWW(str8);
-                                                if (www != null)
-                                                {
-                                                    using (www)
-                                                    {
-                                                        yield return www;
-                                                        Texture2D tex4 = RCextensions.LoadImage(www, mipmapping, 200000);
-                                                        if (!LinkHash[0].ContainsKey(str8))
-                                                        {
-                                                            unload = true;
-                                                            renderer4.material.mainTexture = tex4;
-                                                            LinkHash[0].Add(str8, renderer4.material);
-                                                        }
-                                                    }
-                                                    renderer4.material = (Material)LinkHash[0][str8];
-                                                }
-                                            }
-                                            else
-                                            {
-                                                renderer4.material = (Material)LinkHash[0][str8];
-                                            }
-                                        }
-                                    }
-                                    finally { }
-                                }
-                                else if (str8.ToLower() == "transparent")
-                                {
-                                    foreach (Renderer renderer7 in obj3.GetComponentsInChildren<Renderer>())
-                                    {
-                                        renderer7.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                        else if (obj3.name.EndsWith("006") || obj3.name.EndsWith("007") || obj3.name.EndsWith("015") || obj3.name.EndsWith("000") || (obj3.name.EndsWith("002") && obj3.transform.position.x == 0f && obj3.transform.position.y == 0f && obj3.transform.position.z == 0f))
-                        {
-                            if (strArray3.Length > 0 && strArray3[1] != null)
-                            {
-                                string str7 = strArray3[1];
-                                if (str7.EndsWith(".jpg") || str7.EndsWith(".png") || str7.EndsWith(".jpeg"))
-                                {
-                                    try
-                                    {
-                                        foreach (Renderer renderer3 in obj3.GetComponentsInChildren<Renderer>())
-                                        {
-                                            if (!LinkHash[0].ContainsKey(str7))
-                                            {
-                                                WWW www = Guardian.Utilities.GameHelper.CreateWWW(str7);
-                                                if (www != null)
-                                                {
-                                                    using (www)
-                                                    {
-                                                        Texture2D tex3 = RCextensions.LoadImage(www, mipmapping, 200000);
-                                                        if (!LinkHash[0].ContainsKey(str7))
-                                                        {
-                                                            unload = true;
-                                                            renderer3.material.mainTexture = tex3;
-                                                            LinkHash[0].Add(str7, renderer3.material);
-                                                        }
-                                                    }
-                                                    renderer3.material = (Material)LinkHash[0][str7];
-
-                                                }
-                                            }
-                                            else
-                                            {
-                                                renderer3.material = (Material)LinkHash[0][str7];
-                                            }
-                                        }
-                                    }
-                                    finally
-                                    {
-                                    }
-                                }
-                            }
-                        }
-                        else if (obj3.name.EndsWith("005") || obj3.name.EndsWith("003") || (obj3.name.EndsWith("002") && (obj3.transform.position.x != 0f || obj3.transform.position.y != 0f || obj3.transform.position.z != 0f) && n.Length > num6))
-                        {
-                            string str6 = n.Substring(num6, 1);
-                            if (int.TryParse(str6, out int num5) && num5 >= 0 && num5 < 8 && strArray4.Length >= 8 && strArray4[num5] != null)
-                            {
-                                string str5 = strArray4[num5];
-                                if (str5.EndsWith(".jpg") || str5.EndsWith(".png") || str5.EndsWith(".jpeg"))
-                                {
-                                    try
-                                    {
-                                        foreach (Renderer renderer2 in obj3.GetComponentsInChildren<Renderer>())
-                                        {
-                                            if (!LinkHash[2].ContainsKey(str5))
-                                            {
-                                                WWW www = Guardian.Utilities.GameHelper.CreateWWW(str5);
-                                                if (www != null)
-                                                {
-                                                    using (www)
-                                                    {
-                                                        yield return www;
-                                                        Texture2D tex2 = RCextensions.LoadImage(www, mipmapping, 1000000);
-                                                        if (!LinkHash[2].ContainsKey(str5))
-                                                        {
-                                                            unload = true;
-                                                            renderer2.material.mainTexture = tex2;
-                                                            LinkHash[2].Add(str5, renderer2.material);
-                                                        }
-                                                    }
-                                                    renderer2.material = (Material)LinkHash[2][str5];
-                                                }
-                                            }
-                                            else
-                                            {
-                                                renderer2.material = (Material)LinkHash[2][str5];
-                                            }
-                                        }
-                                    }
-                                    finally
-                                    {
-                                    }
-                                }
-                            }
-                            num6++;
-                        }
-                        else if ((obj3.name.EndsWith("019") || obj3.name.EndsWith("020")) && strArray3.Length > 2 && strArray3[2] != null)
-                        {
-                            string str4 = strArray3[2];
-                            if (str4.EndsWith(".jpg") || str4.EndsWith(".png") || str4.EndsWith(".jpeg"))
+                            string str8 = strArray3[0];
+                            if (str8.EndsWith(".jpg") || str8.EndsWith(".png") || str8.EndsWith(".jpeg"))
                             {
                                 try
                                 {
-                                    foreach (Renderer renderer in obj3.GetComponentsInChildren<Renderer>())
+                                    foreach (Renderer renderer4 in obj3.GetComponentsInChildren<Renderer>())
                                     {
-                                        if (!LinkHash[2].ContainsKey(str4))
+                                        if (!LinkHash[0].ContainsKey(str8))
                                         {
-                                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(str4);
+                                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(str8);
                                             if (www != null)
                                             {
                                                 using (www)
                                                 {
                                                     yield return www;
-                                                    Texture2D tex = RCextensions.LoadImage(www, mipmapping, 1000000);
-                                                    if (!LinkHash[2].ContainsKey(str4))
+
+                                                    Texture2D tex4 = RCextensions.LoadImage(www, mipmapping, 200000);
+                                                    if (!LinkHash[0].ContainsKey(str8))
                                                     {
                                                         unload = true;
-                                                        renderer.material.mainTexture = tex;
-                                                        LinkHash[2].Add(str4, renderer.material);
+                                                        renderer4.material.mainTexture = tex4;
+                                                        LinkHash[0].Add(str8, renderer4.material);
                                                     }
                                                 }
-                                                renderer.material = (Material)LinkHash[2][str4];
+                                                renderer4.material = (Material)LinkHash[0][str8];
                                             }
                                         }
                                         else
                                         {
-                                            renderer.material = (Material)LinkHash[2][str4];
+                                            renderer4.material = (Material)LinkHash[0][str8];
+                                        }
+                                    }
+                                }
+                                finally { }
+                            }
+                            else if (str8.ToLower() == "transparent")
+                            {
+                                foreach (Renderer renderer7 in obj3.GetComponentsInChildren<Renderer>())
+                                {
+                                    renderer7.enabled = false;
+                                }
+                            }
+                        }
+                    }
+                    else if (obj3.name.EndsWith("006") || obj3.name.EndsWith("007") || obj3.name.EndsWith("015") || obj3.name.EndsWith("000") || (obj3.name.EndsWith("002") && obj3.transform.position.x == 0f && obj3.transform.position.y == 0f && obj3.transform.position.z == 0f))
+                    {
+                        if (strArray3.Length > 0 && strArray3[1] != null)
+                        {
+                            string str7 = strArray3[1];
+                            if (str7.EndsWith(".jpg") || str7.EndsWith(".png") || str7.EndsWith(".jpeg"))
+                            {
+                                try
+                                {
+                                    foreach (Renderer renderer3 in obj3.GetComponentsInChildren<Renderer>())
+                                    {
+                                        if (!LinkHash[0].ContainsKey(str7))
+                                        {
+                                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(str7);
+                                            if (www != null)
+                                            {
+                                                using (www)
+                                                {
+                                                    yield return www;
+
+                                                    Texture2D tex3 = RCextensions.LoadImage(www, mipmapping, 200000);
+                                                    if (!LinkHash[0].ContainsKey(str7))
+                                                    {
+                                                        unload = true;
+                                                        renderer3.material.mainTexture = tex3;
+                                                        LinkHash[0].Add(str7, renderer3.material);
+                                                    }
+                                                }
+                                                renderer3.material = (Material)LinkHash[0][str7];
+                                            }
+                                        }
+                                        else
+                                        {
+                                            renderer3.material = (Material)LinkHash[0][str7];
                                         }
                                     }
                                 }
@@ -7727,10 +7644,92 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             }
                         }
                     }
+                    else if (obj3.name.EndsWith("005") || obj3.name.EndsWith("003") || (obj3.name.EndsWith("002") && (obj3.transform.position.x != 0f || obj3.transform.position.y != 0f || obj3.transform.position.z != 0f) && n.Length > num6))
+                    {
+                        string str6 = n.Substring(num6, 1);
+                        if (int.TryParse(str6, out int num5) && num5 >= 0 && num5 < 8 && strArray4.Length >= 8 && strArray4[num5] != null)
+                        {
+                            string str5 = strArray4[num5];
+                            if (str5.EndsWith(".jpg") || str5.EndsWith(".png") || str5.EndsWith(".jpeg"))
+                            {
+                                try
+                                {
+                                    foreach (Renderer renderer2 in obj3.GetComponentsInChildren<Renderer>())
+                                    {
+                                        if (!LinkHash[2].ContainsKey(str5))
+                                        {
+                                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(str5);
+                                            if (www != null)
+                                            {
+                                                using (www)
+                                                {
+                                                    yield return www;
+
+                                                    Texture2D tex2 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                                    if (!LinkHash[2].ContainsKey(str5))
+                                                    {
+                                                        unload = true;
+                                                        renderer2.material.mainTexture = tex2;
+                                                        LinkHash[2].Add(str5, renderer2.material);
+                                                    }
+                                                }
+                                                renderer2.material = (Material)LinkHash[2][str5];
+                                            }
+                                        }
+                                        else
+                                        {
+                                            renderer2.material = (Material)LinkHash[2][str5];
+                                        }
+                                    }
+                                }
+                                finally
+                                {
+                                }
+                            }
+                        }
+                        num6++;
+                    }
+                    else if ((obj3.name.EndsWith("019") || obj3.name.EndsWith("020")) && strArray3.Length > 2 && strArray3[2] != null)
+                    {
+                        string str4 = strArray3[2];
+                        if (str4.EndsWith(".jpg") || str4.EndsWith(".png") || str4.EndsWith(".jpeg"))
+                        {
+                            try
+                            {
+                                foreach (Renderer renderer in obj3.GetComponentsInChildren<Renderer>())
+                                {
+                                    if (!LinkHash[2].ContainsKey(str4))
+                                    {
+                                        WWW www = Guardian.Utilities.GameHelper.CreateWWW(str4);
+                                        if (www != null)
+                                        {
+                                            using (www)
+                                            {
+                                                yield return www;
+
+                                                Texture2D tex = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                                if (!LinkHash[2].ContainsKey(str4))
+                                                {
+                                                    unload = true;
+                                                    renderer.material.mainTexture = tex;
+                                                    LinkHash[2].Add(str4, renderer.material);
+                                                }
+                                            }
+                                            renderer.material = (Material)LinkHash[2][str4];
+                                        }
+                                    }
+                                    else
+                                    {
+                                        renderer.material = (Material)LinkHash[2][str4];
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                            }
+                        }
+                    }
                 }
-            }
-            finally
-            {
             }
         }
 
