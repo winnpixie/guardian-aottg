@@ -18,7 +18,7 @@ public static class RCextensions
             if (width < 4 || !MathHelper.IsPowerOf2(width))
             {
                 imgSize = 4;
-                width = Math.Min(width, 1023);
+                width = Math.Min(width, 2047);
 
                 if (imgSize < width)
                 {
@@ -28,7 +28,7 @@ public static class RCextensions
             else if (height < 4 || !MathHelper.IsPowerOf2(height))
             {
                 imgSize = 4;
-                height = Math.Min(height, 1023);
+                height = Math.Min(height, 2047);
 
                 if (imgSize < height)
                 {
