@@ -35,10 +35,9 @@ public class UIMainReferences : MonoBehaviour
             IsFirstLaunch = false;
 
             Version = FengVersion;
-            GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("InputManagerController"));
-            gameObject.name = "InputManagerController";
-            UnityEngine.Object.DontDestroyOnLoad(gameObject);
-            FengGameManagerMKII.S = "verified343,hair,character_eye,glass,character_face,character_head,character_hand,character_body,character_arm,character_leg,character_chest,character_cape,character_brand,character_3dmg,r,character_blade_l,character_3dmg_gas_r,character_blade_r,3dmg_smoke,HORSE,hair,body_001,Cube,Plane_031,mikasa_asset,character_cap_,character_gun".Split(',');
+            GameObject inputController = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("InputManagerController"));
+            inputController.name = "InputManagerController";
+            UnityEngine.Object.DontDestroyOnLoad(inputController);
             LoginFengKAI.LoginState = LoginState.LoggedOut;
 
             StartCoroutine(CoLoadAssets());

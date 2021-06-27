@@ -283,7 +283,6 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
     public IEnumerator loadskinE(int hair, int eye, string hairlink)
     {
         bool unload = false;
@@ -311,19 +310,17 @@ public class TITAN_SETUP : Photon.MonoBehaviour
                     if (link != null)
                     {
                         yield return link;
-                        Texture2D tex = RCextensions.LoadImage(link, flag, 200000);
+
+                        // TODO: Old limit: 200KB
+                        Texture2D tex = RCextensions.LoadImage(link, flag, 300000);
                         link.Dispose();
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(hairlink))
                         {
                             unload = true;
                             obj2.renderer.material.mainTexture = tex;
                             FengGameManagerMKII.LinkHash[0].Add(hairlink, obj2.renderer.material);
-                            obj2.renderer.material = (Material)FengGameManagerMKII.LinkHash[0][hairlink];
                         }
-                        else
-                        {
-                            obj2.renderer.material = (Material)FengGameManagerMKII.LinkHash[0][hairlink];
-                        }
+                        obj2.renderer.material = (Material)FengGameManagerMKII.LinkHash[0][hairlink];
                     }
                 }
                 else

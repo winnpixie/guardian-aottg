@@ -17,7 +17,36 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public static ExitGames.Client.Photon.Hashtable ImATitan;
     public static ExitGames.Client.Photon.Hashtable[] LinkHash;
     public static object[] Settings;
-    public static string[] S;
+    public static string[] S =
+    {
+        "verified343",          // 0
+        "hair",                 // 1
+        "character_eye",        // 2
+        "glass",                // 3
+        "character_face",       // 4
+        "character_head",       // 5
+        "character_hand",       // 6
+        "character_body",       // 7
+        "character_arm",        // 8
+        "character_leg",        // 9
+        "character_chest",      // 10
+        "character_cape",       // 11
+        "character_brand",      // 12
+        "character_3dmg",       // 13
+        "r",                    // 14
+        "character_blade_l",    // 15
+        "character_3dmg_gas_r", // 16
+        "character_blade_r",    // 17
+        "3dmg_smoke",           // 18
+        "HORSE",                // 19
+        "hair",                 // 20
+        "body_001",             // 21
+        "Cube",                 // 22
+        "Plane_031",            // 23
+        "mikasa_asset",         // 24
+        "character_cap_",       // 25
+        "character_gun"         // 26
+    };
     public static AssetBundle RCAssets;
     public static bool IsAssetLoaded;
     public static InputManagerRC InputRC;
@@ -7054,6 +7083,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 string skyRight = skybox[3];
                 string skyUp = skybox[4];
                 string skyDown = skybox[5];
+
+                // TODO: Old limit: 500KB
                 if (skyFront.EndsWith(".jpg") || skyFront.EndsWith(".png") || skyFront.EndsWith(".jpeg"))
                 {
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyFront);
@@ -7063,7 +7094,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             yield return www;
 
-                            Texture2D frontSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D frontSkyTex = RCextensions.LoadImage(www, mipmapping, 2000000);
                             newSky.SetTexture("_FrontTex", frontSkyTex);
                         }
                     }
@@ -7077,7 +7108,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             yield return www;
 
-                            Texture2D backSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D backSkyTex = RCextensions.LoadImage(www, mipmapping, 2000000);
                             newSky.SetTexture("_BackTex", backSkyTex);
                         }
                     }
@@ -7091,7 +7122,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             yield return www;
 
-                            Texture2D leftSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D leftSkyTex = RCextensions.LoadImage(www, mipmapping, 2000000);
                             newSky.SetTexture("_LeftTex", leftSkyTex);
                         }
                     }
@@ -7105,7 +7136,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             yield return www;
 
-                            Texture2D rightSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D rightSkyTex = RCextensions.LoadImage(www, mipmapping, 2000000);
                             newSky.SetTexture("_RightTex", rightSkyTex);
                         }
                     }
@@ -7119,7 +7150,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             yield return www;
 
-                            Texture2D upSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D upSkyTex = RCextensions.LoadImage(www, mipmapping, 2000000);
                             newSky.SetTexture("_UpTex", upSkyTex);
                         }
                     }
@@ -7133,7 +7164,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             yield return www;
 
-                            Texture2D downSkyTex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D downSkyTex = RCextensions.LoadImage(www, mipmapping, 2000000);
                             newSky.SetTexture("_DownTex", downSkyTex);
                         }
                     }
@@ -7303,6 +7334,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 string skyRight = skybox[3];
                 string skyUp = skybox[4];
                 string skyDown = skybox[5];
+
+                // TODO: Old limit: 500KB
                 if (skyFront.EndsWith(".jpg") || skyFront.EndsWith(".png") || skyFront.EndsWith(".jpeg"))
                 {
                     WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyFront);
@@ -7311,7 +7344,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         using (www)
                         {
                             yield return www;
-                            Texture2D skytex = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D skytex = RCextensions.LoadImage(www, mipmapping, 2000000);
                             skytex.wrapMode = TextureWrapMode.Clamp;
                             newSky.SetTexture("_FrontTex", skytex);
                         }
@@ -7325,7 +7358,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         using (www)
                         {
                             yield return www;
-                            Texture2D skytex2 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D skytex2 = RCextensions.LoadImage(www, mipmapping, 2000000);
                             skytex2.wrapMode = TextureWrapMode.Clamp;
                             newSky.SetTexture("_BackTex", skytex2);
                         }
@@ -7339,7 +7372,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         using (www)
                         {
                             yield return www;
-                            Texture2D skytex3 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D skytex3 = RCextensions.LoadImage(www, mipmapping, 2000000);
                             skytex3.wrapMode = TextureWrapMode.Clamp;
                             newSky.SetTexture("_LeftTex", skytex3);
                         }
@@ -7353,7 +7386,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         using (www)
                         {
                             yield return www;
-                            Texture2D skytex4 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D skytex4 = RCextensions.LoadImage(www, mipmapping, 2000000);
                             skytex4.wrapMode = TextureWrapMode.Clamp;
                             newSky.SetTexture("_RightTex", skytex4);
                         }
@@ -7367,7 +7400,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         using (www)
                         {
                             yield return www;
-                            Texture2D skytex5 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D skytex5 = RCextensions.LoadImage(www, mipmapping, 2000000);
                             skytex5.wrapMode = TextureWrapMode.Clamp;
                             newSky.SetTexture("_UpTex", skytex5);
                         }
@@ -7381,7 +7414,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         using (www)
                         {
                             yield return www;
-                            Texture2D skytex6 = RCextensions.LoadImage(www, mipmapping, 500000);
+                            Texture2D skytex6 = RCextensions.LoadImage(www, mipmapping, 2000000);
                             skytex6.wrapMode = TextureWrapMode.Clamp;
                             newSky.SetTexture("_DownTex", skytex6);
                         }
@@ -7433,7 +7466,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                                         using (www)
                                                         {
                                                             yield return www;
-                                                            Texture2D tex7 = RCextensions.LoadImage(www, mipmapping, 1000000);
+
+                                                            // TODO: Old limit: 1MB
+                                                            Texture2D tex7 = RCextensions.LoadImage(www, mipmapping, 2000000);
                                                             if (!LinkHash[2].ContainsKey(key2))
                                                             {
                                                                 unload = true;
@@ -7462,7 +7497,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                                         using (www)
                                                         {
                                                             yield return www;
-                                                            Texture2D tex6 = RCextensions.LoadImage(www, mipmapping, 200000);
+
+                                                            // TODO: Old limit: 200KB
+                                                            Texture2D tex6 = RCextensions.LoadImage(www, mipmapping, 500000);
                                                             if (!LinkHash[0].ContainsKey(str10))
                                                             {
                                                                 unload = true;
@@ -7508,7 +7545,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                                 using (www)
                                                 {
                                                     yield return www;
-                                                    Texture2D tex5 = RCextensions.LoadImage(www, mipmapping, 200000);
+
+                                                    // TODO: Old limit: 200KB
+                                                    Texture2D tex5 = RCextensions.LoadImage(www, mipmapping, 500000);
                                                     if (!LinkHash[0].ContainsKey(str9))
                                                     {
                                                         unload = true;
@@ -7540,9 +7579,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                 }
             }
-            finally
-            {
-            }
+            finally { }
         }
         else if (Level.Map.Contains("City")) // Load City skin
         {
@@ -7573,7 +7610,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                                 {
                                                     yield return www;
 
-                                                    Texture2D tex4 = RCextensions.LoadImage(www, mipmapping, 200000);
+                                                    // TODO: Old limit: 200KB
+                                                    Texture2D tex4 = RCextensions.LoadImage(www, mipmapping, 500000);
                                                     if (!LinkHash[0].ContainsKey(str8))
                                                     {
                                                         unload = true;
@@ -7621,7 +7659,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                                 {
                                                     yield return www;
 
-                                                    Texture2D tex3 = RCextensions.LoadImage(www, mipmapping, 200000);
+                                                    // TODO: Old limit: 200KB
+                                                    Texture2D tex3 = RCextensions.LoadImage(www, mipmapping, 500000);
                                                     if (!LinkHash[0].ContainsKey(str7))
                                                     {
                                                         unload = true;
@@ -7665,7 +7704,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                                 {
                                                     yield return www;
 
-                                                    Texture2D tex2 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                                    // TODO: Old limit: 1MB
+                                                    Texture2D tex2 = RCextensions.LoadImage(www, mipmapping, 2000000);
                                                     if (!LinkHash[2].ContainsKey(str5))
                                                     {
                                                         unload = true;
@@ -7682,9 +7722,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                         }
                                     }
                                 }
-                                finally
-                                {
-                                }
+                                finally { }
                             }
                         }
                         num6++;
@@ -7707,7 +7745,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                             {
                                                 yield return www;
 
-                                                Texture2D tex = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                                // TODO: Old limit: 1MB
+                                                Texture2D tex = RCextensions.LoadImage(www, mipmapping, 2000000);
                                                 if (!LinkHash[2].ContainsKey(str4))
                                                 {
                                                     unload = true;
@@ -7724,9 +7763,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     }
                                 }
                             }
-                            finally
-                            {
-                            }
+                            finally { }
                         }
                     }
                 }

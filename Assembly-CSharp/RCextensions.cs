@@ -1,36 +1,42 @@
 using System;
 using UnityEngine;
+using Guardian.Utilities;
 
 public static class RCextensions
 {
-    public static Texture2D LoadImage(WWW link, bool mipmap, int size)
+    public static Texture2D LoadImage(WWW link, bool mipmap, int maxFileSize)
     {
         Texture2D output = new Texture2D(4, 4, TextureFormat.DXT1, mipmap);
-        if (link.size < size)
+
+        if (link.size < maxFileSize)
         {
             Texture2D texture = link.texture;
             int width = texture.width;
             int height = texture.height;
-            int num = 0;
-            if (width < 4 || (width & (width - 1)) != 0)
+            int imgSize = 0;
+
+            if (width < 4 || !MathHelper.IsPowerOf2(width))
             {
-                num = 4;
+                imgSize = 4;
                 width = Math.Min(width, 1023);
-                while (num < width)
+
+                if (imgSize < width)
                 {
-                    num *= 2;
+                    imgSize = MathHelper.NextPowerOf2(width);
                 }
             }
-            else if (height < 4 || (height & (height - 1)) != 0)
+            else if (height < 4 || !MathHelper.IsPowerOf2(height))
             {
-                num = 4;
+                imgSize = 4;
                 height = Math.Min(height, 1023);
-                while (num < height)
+
+                if (imgSize < height)
                 {
-                    num *= 2;
+                    imgSize = MathHelper.NextPowerOf2(height);
                 }
             }
-            if (num == 0)
+
+            if (imgSize == 0)
             {
                 try
                 {
@@ -42,22 +48,24 @@ public static class RCextensions
                     link.LoadImageIntoTexture(output);
                 }
             }
-            else if (num >= 4)
+            else if (imgSize >= 4)
             {
-                Texture2D resized = new Texture2D(4, 4, TextureFormat.DXT1, mipmap: false);
+                Texture2D resized = new Texture2D(4, 4, TextureFormat.DXT1, mipmap);
                 link.LoadImageIntoTexture(resized);
+
                 try
                 {
-                    resized.Resize(num, num, TextureFormat.DXT1, mipmap);
+                    resized.Resize(imgSize, imgSize, TextureFormat.DXT1, mipmap);
                 }
                 catch
                 {
-                    resized.Resize(num, num, TextureFormat.DXT1, false);
+                    resized.Resize(imgSize, imgSize, TextureFormat.DXT1, hasMipMap: false);
                 }
                 resized.Apply();
                 output = resized;
             }
         }
+
         return output;
     }
 

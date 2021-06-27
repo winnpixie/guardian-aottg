@@ -166,7 +166,6 @@ public class AHSSShotGunCollider : MonoBehaviour
                                 if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)
                                 {
                                     currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startSnapShot2(hitbox.transform.position, damage, hitbox.transform.root.gameObject, 0.02f);
-                                    titan.asClientLookTarget = false;
                                 }
                                 titan.photonView.RPC("titanGetHit", titan.photonView.owner, base.transform.root.gameObject.GetPhotonView().viewID, damage);
                             }

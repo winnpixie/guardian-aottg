@@ -20,22 +20,12 @@ public class Horse : Photon.MonoBehaviour
     {
         State = "mounted";
         base.gameObject.GetComponent<TITAN_CONTROLLER>().enabled = true;
-
-        if (myHero != null)
-        {
-            myHero.rigidbody.interpolation = RigidbodyInterpolation.None;
-        }
     }
 
     public void Unmount()
     {
         State = "idle";
         base.gameObject.GetComponent<TITAN_CONTROLLER>().enabled = false;
-
-        if (myHero != null && Guardian.Mod.Properties.InterpolateBody.Value)
-        {
-            myHero.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-        }
     }
 
     private void Follow()

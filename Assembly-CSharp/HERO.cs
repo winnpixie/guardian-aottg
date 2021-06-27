@@ -2079,11 +2079,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             myFlashlight.transform.rotation = Quaternion.Euler(353f, 0f, 0f);
         }
 
-        if ((IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine) && Guardian.Mod.Properties.InterpolateBody.Value)
-        {
-            base.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-        }
-
         bombImmune = false;
         if (RCSettings.BombMode == 1)
         {
@@ -2103,10 +2098,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
-
-        // TODO: Mod, idk might fix
-        SetHookedPplDirection();
-        LeanBody();
 
         if (!baseAnimation.IsPlaying("attack3_2") && !baseAnimation.IsPlaying("attack5") && !baseAnimation.IsPlaying("special_petra"))
         {
@@ -3174,8 +3165,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 ArmRightArmTo(bulletRight.transform.position);
             }
         }
-        // SetHookedPplDirection();
-        // LeanBody();
+
+        SetHookedPplDirection();
+        LeanBody();
     }
 
     public void update2()
@@ -3790,11 +3782,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             }
                             else if (baseAnimation[attackAnimation].normalizedTime >= 0.32f)
                             {
-                                // TODO: Mod, animation-spam fix?
-                                //if (baseAnimation[attackAnimation].speed >= 0.1f)
-                                //{
                                 PauseAnimation();
-                                //}
                             }
                         }
                         if (attackAnimation == "attack3_1" && currentBladeSta > 0f)
@@ -5392,33 +5380,33 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public IEnumerator CoLoadSkin(int horse, string url)
+    public IEnumerator CoLoadSkin(int horseViewId, string url)
     {
         while (!hasspawn)
         {
             yield return null;
         }
-        bool flag = true;
+        bool mipmapping = true;
         bool unload = false;
         if ((int)FengGameManagerMKII.Settings[63] == 1)
         {
-            flag = false;
+            mipmapping = false;
         }
         string[] strArray = url.Split(',');
-        bool flaggas = false;
+        bool gasSkinsEnabled = false;
         if ((int)FengGameManagerMKII.Settings[15] == 0)
         {
-            flaggas = true;
+            gasSkinsEnabled = true;
         }
         bool hasHorses = false;
         if (FengGameManagerMKII.Level.Horses || RCSettings.HorseMode == 1)
         {
             hasHorses = true;
         }
-        bool flagtrail = false;
+        bool trailSkinsEnabled = false;
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
-            flagtrail = true;
+            trailSkinsEnabled = true;
         }
         if (setup.part_hair_1 != null)
         {
@@ -5427,12 +5415,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                 {
-                    WWW link2 = Guardian.Utilities.GameHelper.CreateWWW(strArray[1]);
-                    if (link2 != null)
+                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[1]);
+                    if (www != null)
                     {
-                        yield return link2;
-                        Texture2D tex3 = RCextensions.LoadImage(link2, flag, 200000);
-                        link2.Dispose();
+                        yield return www;
+                        Texture2D tex3 = RCextensions.LoadImage(www, mipmapping, 200000);
+                        www.Dispose();
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                         {
                             unload = true;
@@ -5467,12 +5455,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
                 {
-                    WWW link3 = Guardian.Utilities.GameHelper.CreateWWW(strArray[7]);
-                    if (link3 != null)
+                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[7]);
+                    if (www != null)
                     {
-                        yield return link3;
-                        Texture2D tex4 = RCextensions.LoadImage(link3, flag, 200000);
-                        link3.Dispose();
+                        yield return www;
+                        Texture2D tex4 = RCextensions.LoadImage(www, mipmapping, 200000);
+                        www.Dispose();
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
                         {
                             unload = true;
@@ -5503,12 +5491,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
                 {
-                    WWW link4 = Guardian.Utilities.GameHelper.CreateWWW(strArray[6]);
-                    if (link4 != null)
+                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[6]);
+                    if (www != null)
                     {
-                        yield return link4;
-                        Texture2D tex5 = RCextensions.LoadImage(link4, flag, 500000);
-                        link4.Dispose();
+                        yield return www;
+                        Texture2D tex5 = RCextensions.LoadImage(www, mipmapping, 500000);
+                        www.Dispose();
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
                         {
                             unload = true;
@@ -5534,21 +5522,22 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         try
         {
-            Renderer[] componentsInChildren = GetComponentsInChildren<Renderer>();
-            foreach (Renderer renderer4 in componentsInChildren)
+            foreach (Renderer renderer4 in GetComponentsInChildren<Renderer>())
             {
-                if (renderer4.name.Contains(FengGameManagerMKII.S[1]))
+                if (renderer4.name.Contains(FengGameManagerMKII.S[1])) // Hair
                 {
                     if (strArray[1].EndsWith(".jpg") || strArray[1].EndsWith(".png") || strArray[1].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                         {
-                            WWW link5 = Guardian.Utilities.GameHelper.CreateWWW(strArray[1]);
-                            if (link5 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[1]);
+                            if (www != null)
                             {
-                                yield return link5;
-                                Texture2D tex6 = RCextensions.LoadImage(link5, flag, 200000);
-                                link5.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 200KB
+                                Texture2D tex6 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                                 {
                                     unload = true;
@@ -5576,18 +5565,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name.Contains(FengGameManagerMKII.S[2]))
+                else if (renderer4.name.Contains(FengGameManagerMKII.S[2])) // Eyes
                 {
                     if (strArray[2].EndsWith(".jpg") || strArray[2].EndsWith(".png") || strArray[2].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[2]))
                         {
-                            WWW link6 = Guardian.Utilities.GameHelper.CreateWWW(strArray[2]);
-                            if (link6 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[2]);
+                            if (www != null)
                             {
-                                yield return link6;
-                                Texture2D tex7 = RCextensions.LoadImage(link6, flag, 200000);
-                                link6.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 200KB
+                                Texture2D tex7 = RCextensions.LoadImage(www, mipmapping, 500000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[2]))
                                 {
                                     unload = true;
@@ -5613,18 +5604,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name.Contains(FengGameManagerMKII.S[3]))
+                else if (renderer4.name.Contains(FengGameManagerMKII.S[3])) // Glasses
                 {
                     if (strArray[3].EndsWith(".jpg") || strArray[3].EndsWith(".png") || strArray[3].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[3]))
                         {
-                            WWW link7 = Guardian.Utilities.GameHelper.CreateWWW(strArray[3]);
-                            if (link7 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[3]);
+                            if (www != null)
                             {
-                                yield return link7;
-                                Texture2D tex8 = RCextensions.LoadImage(link7, flag, 200000);
-                                link7.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 200KB
+                                Texture2D tex8 = RCextensions.LoadImage(www, mipmapping, 500000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[3]))
                                 {
                                     unload = true;
@@ -5650,18 +5643,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name.Contains(FengGameManagerMKII.S[4]))
+                else if (renderer4.name.Contains(FengGameManagerMKII.S[4])) // Face
                 {
                     if (strArray[4].EndsWith(".jpg") || strArray[4].EndsWith(".png") || strArray[4].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[4]))
                         {
-                            WWW link8 = Guardian.Utilities.GameHelper.CreateWWW(strArray[4]);
-                            if (link8 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[4]);
+                            if (www != null)
                             {
-                                yield return link8;
-                                Texture2D tex16 = RCextensions.LoadImage(link8, flag, 200000);
-                                link8.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 200KB
+                                Texture2D tex16 = RCextensions.LoadImage(www, mipmapping, 500000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[4]))
                                 {
                                     unload = true;
@@ -5687,18 +5682,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name.Contains(FengGameManagerMKII.S[5]) || renderer4.name.Contains(FengGameManagerMKII.S[6]) || renderer4.name.Contains(FengGameManagerMKII.S[10]))
+                else if (renderer4.name.Contains(FengGameManagerMKII.S[5]) || renderer4.name.Contains(FengGameManagerMKII.S[6]) || renderer4.name.Contains(FengGameManagerMKII.S[10])) // Skin?
                 {
                     if (strArray[5].EndsWith(".jpg") || strArray[5].EndsWith(".png") || strArray[5].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[5]))
                         {
-                            WWW link16 = Guardian.Utilities.GameHelper.CreateWWW(strArray[5]);
-                            if (link16 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[5]);
+                            if (www != null)
                             {
-                                yield return link16;
-                                Texture2D tex15 = RCextensions.LoadImage(link16, flag, 200000);
-                                link16.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 200KB
+                                Texture2D tex15 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[5]))
                                 {
                                     unload = true;
@@ -5722,18 +5719,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name.Contains(FengGameManagerMKII.S[7]) || renderer4.name.Contains(FengGameManagerMKII.S[8]) || renderer4.name.Contains(FengGameManagerMKII.S[9]) || renderer4.name.Contains(FengGameManagerMKII.S[24]))
+                else if (renderer4.name.Contains(FengGameManagerMKII.S[7]) || renderer4.name.Contains(FengGameManagerMKII.S[8]) || renderer4.name.Contains(FengGameManagerMKII.S[9]) || renderer4.name.Contains(FengGameManagerMKII.S[24])) // Costume?
                 {
                     if (strArray[6].EndsWith(".jpg") || strArray[6].EndsWith(".png") || strArray[6].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
                         {
-                            WWW link15 = Guardian.Utilities.GameHelper.CreateWWW(strArray[6]);
-                            if (link15 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[6]);
+                            if (www != null)
                             {
-                                yield return link15;
-                                Texture2D tex14 = RCextensions.LoadImage(link15, flag, 500000);
-                                link15.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 500KB
+                                Texture2D tex14 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
                                 {
                                     unload = true;
@@ -5757,18 +5756,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name.Contains(FengGameManagerMKII.S[11]) || renderer4.name.Contains(FengGameManagerMKII.S[12]))
+                else if (renderer4.name.Contains(FengGameManagerMKII.S[11]) || renderer4.name.Contains(FengGameManagerMKII.S[12])) // Cape
                 {
                     if (strArray[7].EndsWith(".jpg") || strArray[7].EndsWith(".png") || strArray[7].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
                         {
-                            WWW link14 = Guardian.Utilities.GameHelper.CreateWWW(strArray[7]);
-                            if (link14 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[7]);
+                            if (www != null)
                             {
-                                yield return link14;
-                                Texture2D tex13 = RCextensions.LoadImage(link14, flag, 200000);
-                                link14.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 200KB
+                                Texture2D tex13 = RCextensions.LoadImage(www, mipmapping, 500000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
                                 {
                                     unload = true;
@@ -5792,18 +5793,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name.Contains(FengGameManagerMKII.S[15]) || ((renderer4.name.Contains(FengGameManagerMKII.S[13]) || renderer4.name.Contains(FengGameManagerMKII.S[26])) && !renderer4.name.Contains("_r")))
+                else if (renderer4.name.Contains(FengGameManagerMKII.S[15]) || ((renderer4.name.Contains(FengGameManagerMKII.S[13]) || renderer4.name.Contains(FengGameManagerMKII.S[26])) && !renderer4.name.Contains("_r"))) // Blade/Gun & 3DMG (Left)
                 {
                     if (strArray[8].EndsWith(".jpg") || strArray[8].EndsWith(".png") || strArray[8].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[8]))
                         {
-                            WWW link13 = Guardian.Utilities.GameHelper.CreateWWW(strArray[8]);
-                            if (link13 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[8]);
+                            if (www != null)
                             {
-                                yield return link13;
-                                Texture2D tex12 = RCextensions.LoadImage(link13, flag, 500000);
-                                link13.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 500KB
+                                Texture2D tex12 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[8]))
                                 {
                                     unload = true;
@@ -5827,18 +5830,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name.Contains(FengGameManagerMKII.S[17]) || renderer4.name.Contains(FengGameManagerMKII.S[16]) || (renderer4.name.Contains(FengGameManagerMKII.S[26]) && renderer4.name.Contains("_r")))
+                else if (renderer4.name.Contains(FengGameManagerMKII.S[16]) || renderer4.name.Contains(FengGameManagerMKII.S[17]) || (renderer4.name.Contains(FengGameManagerMKII.S[26]) && renderer4.name.Contains("_r"))) // Blade/Gun & 3DMG (Right)
                 {
                     if (strArray[9].EndsWith(".jpg") || strArray[9].EndsWith(".png") || strArray[9].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[9]))
                         {
-                            WWW link12 = Guardian.Utilities.GameHelper.CreateWWW(strArray[9]);
-                            if (link12 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[9]);
+                            if (www != null)
                             {
-                                yield return link12;
-                                Texture2D tex11 = RCextensions.LoadImage(link12, flag, 500000);
-                                link12.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 500KB
+                                Texture2D tex11 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[9]))
                                 {
                                     unload = true;
@@ -5862,18 +5867,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name == FengGameManagerMKII.S[18] && flaggas)
+                else if (renderer4.name == FengGameManagerMKII.S[18] && gasSkinsEnabled) // Gas
                 {
                     if (strArray[10].EndsWith(".jpg") || strArray[10].EndsWith(".png") || strArray[10].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[10]))
                         {
-                            WWW link11 = Guardian.Utilities.GameHelper.CreateWWW(strArray[10]);
-                            if (link11 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[10]);
+                            if (www != null)
                             {
-                                yield return link11;
-                                Texture2D tex10 = RCextensions.LoadImage(link11, flag, 200000);
-                                link11.Dispose();
+                                yield return www;
+
+                                // TODO: Old limit: 200KB
+                                Texture2D tex10 = RCextensions.LoadImage(www, mipmapping, 500000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[10]))
                                 {
                                     unload = true;
@@ -5897,18 +5904,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer4.enabled = false;
                     }
                 }
-                else if (renderer4.name.Contains(FengGameManagerMKII.S[25]))
+                else if (renderer4.name.Contains(FengGameManagerMKII.S[25])) // Hoodie?
                 {
                     if (strArray[11].EndsWith(".jpg") || strArray[11].EndsWith(".png") || strArray[11].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[11]))
                         {
-                            WWW link10 = Guardian.Utilities.GameHelper.CreateWWW(strArray[11]);
-                            if (link10 != null)
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[11]);
+                            if (www != null)
                             {
-                                yield return link10;
-                                Texture2D tex9 = RCextensions.LoadImage(link10, flag, 200000);
-                                link10.Dispose();
+                                yield return www;
+                                
+                                // TODO: Old limit: 200KB
+                                Texture2D tex9 = RCextensions.LoadImage(www, mipmapping, 500000);
+                                www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[11]))
                                 {
                                     unload = true;
@@ -5933,13 +5942,44 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     }
                 }
             }
+
+            if (trailSkinsEnabled && (strArray[12].EndsWith(".jpg") || strArray[12].EndsWith(".png") || strArray[12].EndsWith(".jpeg"))) // Weapon Trail
+            {
+                if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[12]))
+                {
+                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[12]);
+                    if (www != null)
+                    {
+                        yield return www;
+
+                        // TODO: Old limit: 200KB
+                        Texture2D tex = RCextensions.LoadImage(www, mipmapping, 500000);
+                        www.Dispose();
+                        unload = true;
+                        leftbladetrail.MyMaterial.mainTexture = tex;
+                        rightbladetrail.MyMaterial.mainTexture = tex;
+                        FengGameManagerMKII.LinkHash[0].Add(strArray[12], leftbladetrail.MyMaterial);
+                        leftbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                        rightbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                        leftbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                        rightbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                    }
+                }
+                else
+                {
+                    leftbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                    rightbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                    leftbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                    rightbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                }
+            }
         }
-        finally
+        finally { }
+
+        // Horse
+        if (hasHorses && horseViewId >= 0)
         {
-        }
-        if (hasHorses && horse >= 0)
-        {
-            GameObject theHorse = PhotonView.Find(horse).gameObject;
+            GameObject theHorse = PhotonView.Find(horseViewId).gameObject;
             if (theHorse != null)
             {
                 try
@@ -5953,12 +5993,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             {
                                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[0]))
                                 {
-                                    WWW link9 = Guardian.Utilities.GameHelper.CreateWWW(strArray[0]);
-                                    if (link9 != null)
+                                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[0]);
+                                    if (www != null)
                                     {
-                                        yield return link9;
-                                        Texture2D tex2 = RCextensions.LoadImage(link9, flag, 500000);
-                                        link9.Dispose();
+                                        yield return www;
+
+                                        // TODO: Old limit: 500KB
+                                        Texture2D tex2 = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                        www.Dispose();
                                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[0]))
                                         {
                                             unload = true;
@@ -5984,39 +6026,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         }
                     }
                 }
-                finally
-                {
-                }
+                finally { }
             }
         }
-        if (flagtrail && (strArray[12].EndsWith(".jpg") || strArray[12].EndsWith(".png") || strArray[12].EndsWith(".jpeg")))
-        {
-            if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[12]))
-            {
-                WWW link = Guardian.Utilities.GameHelper.CreateWWW(strArray[12]);
-                if (link != null)
-                {
-                    yield return link;
-                    Texture2D tex = RCextensions.LoadImage(link, flag, 200000);
-                    link.Dispose();
-                    unload = true;
-                    leftbladetrail.MyMaterial.mainTexture = tex;
-                    rightbladetrail.MyMaterial.mainTexture = tex;
-                    FengGameManagerMKII.LinkHash[0].Add(strArray[12], leftbladetrail.MyMaterial);
-                    leftbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                    rightbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                    leftbladetrail2.MyMaterial = leftbladetrail.MyMaterial;
-                    rightbladetrail2.MyMaterial = leftbladetrail.MyMaterial;
-                }
-            }
-            else
-            {
-                leftbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                rightbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                leftbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                rightbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-            }
-        }
+
         if (unload)
         {
             FengGameManagerMKII.Instance.UnloadAssets();

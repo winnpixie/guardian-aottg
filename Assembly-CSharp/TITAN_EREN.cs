@@ -1184,41 +1184,45 @@ public class TITAN_EREN : Photon.MonoBehaviour
         {
             yield return null;
         }
+
         bool flag = true;
         bool unload = false;
         if ((int)FengGameManagerMKII.Settings[63] == 1)
         {
             flag = false;
         }
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        foreach (Renderer renderer31 in renderers)
+
+        try
         {
-            if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
+            foreach (Renderer renderer31 in GetComponentsInChildren<Renderer>())
             {
-                WWW link = Guardian.Utilities.GameHelper.CreateWWW(url);
-                if (link != null)
+                if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
                 {
-                    yield return link;
-                    Texture2D tex = RCextensions.LoadImage(link, flag, 1000000);
-                    link.Dispose();
-                    if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
+                    WWW link = Guardian.Utilities.GameHelper.CreateWWW(url);
+                    if (link != null)
                     {
-                        unload = true;
-                        renderer31.material.mainTexture = tex;
-                        FengGameManagerMKII.LinkHash[2].Add(url, renderer31.material);
-                        renderer31.material = (Material)FengGameManagerMKII.LinkHash[2][url];
-                    }
-                    else
-                    {
+                        yield return link;
+
+                        // TODO: Old limit: 1MB
+                        Texture2D tex = RCextensions.LoadImage(link, flag, 2000000);
+                        link.Dispose();
+                        if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
+                        {
+                            unload = true;
+                            renderer31.material.mainTexture = tex;
+                            FengGameManagerMKII.LinkHash[2].Add(url, renderer31.material);
+                        }
                         renderer31.material = (Material)FengGameManagerMKII.LinkHash[2][url];
                     }
                 }
-            }
-            else
-            {
-                renderer31.material = (Material)FengGameManagerMKII.LinkHash[2][url];
+                else
+                {
+                    renderer31.material = (Material)FengGameManagerMKII.LinkHash[2][url];
+                }
             }
         }
+        finally { }
+
         if (unload)
         {
             FengGameManagerMKII.Instance.UnloadAssets();

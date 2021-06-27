@@ -1507,7 +1507,6 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netDie()
     {
-        asClientLookTarget = false;
         if (!hasDie)
         {
             hasDie = true;
@@ -3752,6 +3751,7 @@ public class TITAN : Photon.MonoBehaviour
         {
             yield return null;
         }
+
         bool flag = true;
         bool unload = false;
         if ((int)FengGameManagerMKII.Settings[63] == 1)
@@ -3760,8 +3760,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         try
         {
-            Renderer[] componentsInChildren = GetComponentsInChildren<Renderer>();
-            foreach (Renderer renderer in componentsInChildren)
+            foreach (Renderer renderer in GetComponentsInChildren<Renderer>())
             {
                 if (renderer.name.Contains("eye"))
                 {
@@ -3777,7 +3776,9 @@ public class TITAN : Photon.MonoBehaviour
                             if (link2 != null)
                             {
                                 yield return link2;
-                                Texture2D tex2 = RCextensions.LoadImage(link2, flag, 200000);
+
+                                // TODO: Old limit: 200KB
+                                Texture2D tex2 = RCextensions.LoadImage(link2, flag, 500000);
                                 link2.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(eye))
                                 {
@@ -3786,12 +3787,8 @@ public class TITAN : Photon.MonoBehaviour
                                     renderer.material.mainTextureOffset = new Vector2(0f, 0f);
                                     renderer.material.mainTexture = tex2;
                                     FengGameManagerMKII.LinkHash[0].Add(eye, renderer.material);
-                                    renderer.material = (Material)FengGameManagerMKII.LinkHash[0][eye];
                                 }
-                                else
-                                {
-                                    renderer.material = (Material)FengGameManagerMKII.LinkHash[0][eye];
-                                }
+                                renderer.material = (Material)FengGameManagerMKII.LinkHash[0][eye];
                             }
                         }
                         else
@@ -3808,7 +3805,9 @@ public class TITAN : Photon.MonoBehaviour
                         if (link != null)
                         {
                             yield return link;
-                            Texture2D tex = RCextensions.LoadImage(link, flag, 1000000);
+
+                            // TODO: Old limit: 1MB (current)
+                            Texture2D tex = RCextensions.LoadImage(link, flag, 2000000);
                             link.Dispose();
                             if (!FengGameManagerMKII.LinkHash[2].ContainsKey(body))
                             {
@@ -3816,12 +3815,8 @@ public class TITAN : Photon.MonoBehaviour
                                 renderer.material = mainMaterial.GetComponent<SkinnedMeshRenderer>().material;
                                 renderer.material.mainTexture = tex;
                                 FengGameManagerMKII.LinkHash[2].Add(body, renderer.material);
-                                renderer.material = (Material)FengGameManagerMKII.LinkHash[2][body];
                             }
-                            else
-                            {
-                                renderer.material = (Material)FengGameManagerMKII.LinkHash[2][body];
-                            }
+                            renderer.material = (Material)FengGameManagerMKII.LinkHash[2][body];
                         }
                     }
                     else

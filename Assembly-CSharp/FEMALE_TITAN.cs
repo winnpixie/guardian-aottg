@@ -1647,14 +1647,15 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         {
             yield return null;
         }
+
         bool flag = true;
         bool unload = false;
         if ((int)FengGameManagerMKII.Settings[63] == 1)
         {
             flag = false;
         }
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        foreach (Renderer renderer31 in renderers)
+
+        foreach (Renderer renderer31 in GetComponentsInChildren<Renderer>())
         {
             if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
             {
@@ -1662,19 +1663,17 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
                 if (link != null)
                 {
                     yield return link;
-                    Texture2D tex = RCextensions.LoadImage(link, flag, 1000000);
+
+                    // TODO: Old limit: 1MB
+                    Texture2D tex = RCextensions.LoadImage(link, flag, 2000000);
                     link.Dispose();
                     if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
                     {
                         unload = true;
                         renderer31.material.mainTexture = tex;
                         FengGameManagerMKII.LinkHash[2].Add(url, renderer31.material);
-                        renderer31.material = (Material)FengGameManagerMKII.LinkHash[2][url];
                     }
-                    else
-                    {
-                        renderer31.material = (Material)FengGameManagerMKII.LinkHash[2][url];
-                    }
+                    renderer31.material = (Material)FengGameManagerMKII.LinkHash[2][url];
                 }
             }
             else
@@ -1682,6 +1681,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
                 renderer31.material = (Material)FengGameManagerMKII.LinkHash[2][url];
             }
         }
+
         if (unload)
         {
             FengGameManagerMKII.Instance.UnloadAssets();

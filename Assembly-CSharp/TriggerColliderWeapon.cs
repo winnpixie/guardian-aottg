@@ -42,7 +42,8 @@ public class TriggerColliderWeapon : MonoBehaviour
             if (other.gameObject.transform.root.gameObject.tag == "titan")
             {
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.GetComponent<HERO>().slashHit.Play();
-                GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) ? ((GameObject)Object.Instantiate(Resources.Load("hitMeat"))) : PhotonNetwork.Instantiate("hitMeat", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
+                GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) ?
+                    ((GameObject)Object.Instantiate(Resources.Load("hitMeat"))) : PhotonNetwork.Instantiate("hitMeat", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
                 gameObject.transform.position = base.transform.position;
                 base.transform.root.GetComponent<HERO>().UseBlade();
             }
@@ -137,9 +138,9 @@ public class TriggerColliderWeapon : MonoBehaviour
                             if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)
                             {
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startSnapShot2(hitbox.transform.position, damage, hitbox.transform.root.gameObject, 0.02f);
-                                titan.asClientLookTarget = false;
                             }
                             titan.photonView.RPC("titanGetHit", titan.photonView.owner, base.transform.root.gameObject.GetPhotonView().viewID, damage);
+                            SpawnNapeMeat(currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity, hitbox.transform.root);
                         }
                     }
                     else if ((bool)hitbox.transform.root.GetComponent<FEMALE_TITAN>())
