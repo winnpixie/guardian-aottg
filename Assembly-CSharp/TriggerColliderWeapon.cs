@@ -140,7 +140,11 @@ public class TriggerColliderWeapon : MonoBehaviour
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().startSnapShot2(hitbox.transform.position, damage, hitbox.transform.root.gameObject, 0.02f);
                             }
                             titan.photonView.RPC("titanGetHit", titan.photonView.owner, base.transform.root.gameObject.GetPhotonView().viewID, damage);
-                            SpawnNapeMeat(currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity, hitbox.transform.root);
+
+                            if (Guardian.Mod.Properties.MultiplayerNapeMeat.Value)
+                            {
+                                SpawnNapeMeat(currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity, hitbox.transform.root);
+                            }
                         }
                     }
                     else if ((bool)hitbox.transform.root.GetComponent<FEMALE_TITAN>())

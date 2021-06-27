@@ -39,6 +39,7 @@ namespace Guardian.Features.Properties
         public Property<bool> ItalicText = new Property<bool>("Chat_ItalicText", new string[0], false);
 
         // Visual
+        public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], true);
         public Property<bool> ChatBackground = new Property<bool>("Visual_ShowChatBackground", new string[0], true);
         public Property<bool> LogBackground = new Property<bool>("Visual_ShowLogBackground", new string[0], true);
 
@@ -128,6 +129,7 @@ namespace Guardian.Features.Properties
             base.Add(UseRichPresence);
 
             // Visual
+            base.Add(MultiplayerNapeMeat);
             base.Add(ChatBackground);
             base.Add(LogBackground);
 
