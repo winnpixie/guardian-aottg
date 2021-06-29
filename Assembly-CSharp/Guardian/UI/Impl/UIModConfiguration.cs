@@ -108,7 +108,7 @@ namespace Guardian.UI.Impl
             if (GUILayout.Button("Save & Close", GUILayout.Height(25)))
             {
                 save = true;
-                Mod.UI.OpenScreen(null);
+                Mod.Menus.OpenScreen(null);
             }
 
             GUILayout.EndArea();

@@ -15,14 +15,14 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "06272021-2";
+        public static string Build = "06292021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
         public static GamemodeManager Gamemodes = new GamemodeManager();
         public static CommandManager Commands = new CommandManager();
         public static PropertyManager Properties = new PropertyManager();
-        public static UI.UIManager UI;
+        public static UI.UIManager Menus;
         public static List<string> HostWhitelist = new List<string>();
         public static Regex BlacklistedTags = new Regex("<(\\/?)(size|material|quad)(.*)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
@@ -66,6 +66,8 @@ namespace Guardian
                 Commands.Load();
                 Properties.Load();
 
+                UI.WindowManager.IsExclusiveFullscreen = Properties.ExclusiveFullscreen.Value;
+
                 // Property whitelist
                 foreach (FieldInfo field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
                 {
@@ -77,7 +79,7 @@ namespace Guardian
                 DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
             }
 
-            UI = base.gameObject.AddComponent<UI.UIManager>();
+            Menus = base.gameObject.AddComponent<UI.UIManager>();
             base.gameObject.AddComponent<MicEF>();
 
             DiscordHelper.SetPresence(new Discord.Activity
@@ -313,6 +315,8 @@ namespace Guardian
         // Attempts to fix some dumb bugs that occur when you alt-tab
         void OnApplicationFocus(bool hasFocus)
         {
+            UI.WindowManager.HandleWindowFocusEvent(hasFocus);
+
             if (hasFocus)
             {
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)

@@ -27,14 +27,14 @@ namespace Guardian.UI
         {
             GSkins.InitSkins();
 
-            if (Input.GetKeyDown(KeyCode.Escape) && GUI.GetNameOfFocusedControl().Length == 0 && Mod.UI.CurrentScreen == null)
+            if (Input.GetKeyDown(KeyCode.Escape) && GUI.GetNameOfFocusedControl().Length == 0 && Mod.Menus.CurrentScreen == null)
             {
-                Mod.UI.OpenScreen(new UIModConfiguration());
+                Mod.Menus.OpenScreen(new UIModConfiguration());
             }
 
-            if (Mod.UI.CurrentScreen != null)
+            if (Mod.Menus.CurrentScreen != null)
             {
-                Mod.UI.CurrentScreen.Draw();
+                Mod.Menus.CurrentScreen.Draw();
             }
 
             if (Mod.Properties.ShowLog.Value && !Application.loadedLevelName.Equals("SnapShot"))

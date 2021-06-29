@@ -13,6 +13,6 @@ public class Btn_to_Main_from_CC : MonoBehaviour
         Object.Destroy(GameObject.Find("MultiplayerManager"));
         Application.LoadLevel("menu");
 
-        Guardian.Mod.UI.OpenScreen(null);
+        Guardian.Mod.Menus.OpenScreen(null);
     }
 }

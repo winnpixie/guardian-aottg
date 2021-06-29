@@ -15,7 +15,7 @@ public class PanelMultiStart : MonoBehaviour
 
     private void OnEnable()
     {
-        Guardian.Mod.UI.OpenScreen(new Guardian.UI.Impl.UIMultiplayer());
+        Guardian.Mod.Menus.OpenScreen(new Guardian.UI.Impl.UIMultiplayer());
 
         if (latinAmerBtn == null)
         {
@@ -32,9 +32,9 @@ public class PanelMultiStart : MonoBehaviour
 
     private void OnDisable()
     {
-        if (Guardian.Mod.UI.CurrentScreen is Guardian.UI.Impl.UIMultiplayer)
+        if (Guardian.Mod.Menus.CurrentScreen is Guardian.UI.Impl.UIMultiplayer)
         {
-            Guardian.Mod.UI.OpenScreen(null);
+            Guardian.Mod.Menus.OpenScreen(null);
         }
     }
 

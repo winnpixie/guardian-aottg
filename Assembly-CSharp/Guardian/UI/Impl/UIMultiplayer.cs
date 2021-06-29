@@ -8,7 +8,7 @@ namespace Guardian.UI.Impl
         {
             if (GUI.Button(new Rect(Screen.width / 2 - 50, 15, 100, 30), "Offline Mode"))
             {
-                Mod.UI.OpenScreen(null);
+                Mod.Menus.OpenScreen(null);
 
                 PhotonNetwork.Disconnect();
                 PhotonNetwork.offlineMode = true;
