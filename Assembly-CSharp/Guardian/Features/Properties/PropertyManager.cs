@@ -12,6 +12,7 @@ namespace Guardian.Features.Properties
         public Property<bool> EndlessTitans = new Property<bool>("MC_EndlessTitans", new string[0], false);
         public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], false);
         public Property<bool> OGPunkHair = new Property<bool>("MC_OGPunkHair", new string[0], true);
+        public Property<bool> DeadlyHooks = new Property<bool>("MC_DeadlyHooks", new string[0], false);
 
         // Player
         public Property<bool> DoubleTapBurst = new Property<bool>("Player_DoubleTapBurst", new string[0], true);
@@ -19,7 +20,6 @@ namespace Guardian.Features.Properties
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
         public Property<bool> HideHookArrows = new Property<bool>("Player_HideHookArrows", new string[0], false);
         public Property<bool> HoldForBladeTrails = new Property<bool>("Player_HoldForBladeTrails", new string[0], true);
-        public Property<bool> FPSCamera = new Property<bool>("Player_FPSCamera", new string[0], false);
         public Property<float> ReelOutScrollSmoothing = new Property<float>("Player_ReelOutScrollSmoothing", new string[0], 0.2f);
         public Property<float> OpacityOfOwnName = new Property<float>("Player_OpacityOfOwnName", new string[0], 1.0f);
         public Property<float> OpacityOfOtherNames = new Property<float>("Player_OpacityOfOtherNames", new string[0], 1.0f);
@@ -40,6 +40,7 @@ namespace Guardian.Features.Properties
 
         // Visual
         public Property<bool> ExclusiveFullscreen = new Property<bool>("Visual_ExclusiveFullscreen", new string[0], false);
+        public Property<bool> FPSCamera = new Property<bool>("Visual_FPSCamera", new string[0], false);
         public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], true);
         public Property<bool> ChatBackground = new Property<bool>("Visual_ShowChatBackground", new string[0], true);
         public Property<bool> LogBackground = new Property<bool>("Visual_ShowLogBackground", new string[0], true);
@@ -60,6 +61,7 @@ namespace Guardian.Features.Properties
             base.Add(EndlessTitans);
             base.Add(InfiniteRoom);
             base.Add(OGPunkHair);
+            base.Add(DeadlyHooks);
 
             // Player
             base.Add(DoubleTapBurst);
@@ -67,8 +69,6 @@ namespace Guardian.Features.Properties
             base.Add(AlternateBurst);
             base.Add(HideHookArrows);
             base.Add(HoldForBladeTrails);
-
-            base.Add(FPSCamera);
             base.Add(ReelOutScrollSmoothing);
 
             OpacityOfOwnName.OnValueChanged = () =>
@@ -145,6 +145,7 @@ namespace Guardian.Features.Properties
             };
             base.Add(ExclusiveFullscreen);
 
+            base.Add(FPSCamera);
             base.Add(MultiplayerNapeMeat);
             base.Add(ChatBackground);
             base.Add(LogBackground);

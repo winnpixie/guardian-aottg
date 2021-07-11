@@ -7,7 +7,7 @@ namespace Guardian.Networking
     class NetworkHelper
     {
         public static PhotonApplication App = PhotonApplication.AoTTG2;
-        public static PhotonConnection Connection = PhotonConnection.TCP;
+        public static PhotonConnection Connection = PhotonConnection.UDP;
         public static bool IsCloud = false;
 
         public static long GetResponseTime(string addr, int port)

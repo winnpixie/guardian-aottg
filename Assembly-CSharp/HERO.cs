@@ -5914,7 +5914,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             if (www != null)
                             {
                                 yield return www;
-                                
+
                                 // TODO: Old limit: 200KB
                                 Texture2D tex9 = RCextensions.LoadImage(www, mipmapping, 500000);
                                 www.Dispose();

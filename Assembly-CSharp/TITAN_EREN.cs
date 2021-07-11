@@ -48,9 +48,11 @@ public class TITAN_EREN : Photon.MonoBehaviour
 
     private void OnDestroy()
     {
-        if (GameObject.Find("MultiplayerManager") != null)
+        GameObject mm = GameObject.Find("MultiplayerManager");
+
+        if (mm != null)
         {
-            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().RemoveEren(this);
+            mm.GetComponent<FengGameManagerMKII>().RemoveEren(this);
         }
     }
 
@@ -1135,6 +1137,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
     private void Start()
     {
         loadskin();
+
         FengGameManagerMKII.Instance.AddEren(this);
         if (rockLift)
         {

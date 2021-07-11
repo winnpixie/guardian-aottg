@@ -58,9 +58,11 @@ namespace Guardian.Utilities
             }
 
             // Anarchy
-            if (player.IsAnarchy)
+            if (player.IsAnarchy
+                || (player.customProperties.ContainsKey("AnarchyFlags") && player.customProperties["AnarchyFlags"] is int)
+                || (player.customProperties.ContainsKey("AnarchyAbuseFlags") && player.customProperties["AnarchyAbuseFlags"] is int))
             {
-                mods.Add("[FFFFFF][Anarchy]");
+                mods.Add("[00BBCC][Anarchy]");
             }
 
             // KnK
@@ -89,8 +91,8 @@ namespace Guardian.Utilities
 
             // Guardian (mine!!)
             /* Notes:
-             * "GuardianMod" int = legacy Guardian identifier
-             * "Stats" int = legacy Guardian feature
+             *  "GuardianMod" int = legacy Guardian identifier
+             *  "Stats" int = legacy Guardian feature
              */
             if (properties.ContainsKey("GuardianMod"))
             {
@@ -121,7 +123,7 @@ namespace Guardian.Utilities
             }
 
             // Alice-RC
-            for(int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 if (player.customProperties.ContainsKey($"CO_SLOT_{i}") && player.customProperties[$"CO_SLOT_{i}"] is string)
                 {
@@ -131,12 +133,12 @@ namespace Guardian.Utilities
             }
 
             // ZMOD
-            if ((properties.ContainsKey("ZMOD") && properties["ZMOD"] is string)
-                || (properties.ContainsKey("idleGas") && properties["idleGas"] is bool)
+            if (properties.ContainsKey("ZMOD") && properties["ZMOD"] is string
+                && ((properties.ContainsKey("idleGas") && properties["idleGas"] is bool)
                 || (properties.ContainsKey("idleEffect") && properties["idleEffect"] is string)
                 || (properties.ContainsKey("infGas") && properties["infGas"] is bool)
                 || (properties.ContainsKey("infBlades") && properties["infBlades"] is bool)
-                || (properties.ContainsKey("infAHSS") && properties["infAHSS"] is bool))
+                || (properties.ContainsKey("infAHSS") && properties["infAHSS"] is bool)))
             {
                 List<string> tags = new List<string>();
                 if (properties.ContainsKey("infGas") && (bool)properties["infGas"])
@@ -155,8 +157,32 @@ namespace Guardian.Utilities
                 mods.Add($"[550055][ZMOD[FFFFFF]({string.Join(",", tags.ToArray())})[-]]");
             }
 
+            // Xeres
+            if (properties.ContainsKey("Xeres") && GExtensions.AsString(properties["Xeres"]).Equals("yo mama perhaps")
+                && ((properties.ContainsKey("infGas") && properties["infGas"] is bool)
+                || (properties.ContainsKey("infBlades") && properties["infBlades"] is bool)
+                || (properties.ContainsKey("infAHSS") && properties["infAHSS"] is bool)))
+            {
+                List<string> tags = new List<string>();
+                if (properties.ContainsKey("infGas") && (bool)properties["infGas"])
+                {
+                    tags.Add("infGas");
+                }
+                if (properties.ContainsKey("infBlades") && (bool)properties["infBlades"])
+                {
+                    tags.Add("infBla");
+                }
+                if (properties.ContainsKey("infAHSS") && (bool)properties["infAHSS"])
+                {
+                    tags.Add("infAhss");
+                }
+
+                mods.Add($"[000000][Xeres[FFFFFF]({string.Join(",", tags.ToArray())})[-]]");
+            }
+
+            // AllStar
             if ((properties.ContainsKey("A.S Guard") && properties["A.S Guard"] is int)
-                || (properties.ContainsKey("Allstar Mod") && properties["Allstar Mod"] is int))
+                    || (properties.ContainsKey("Allstar Mod") && properties["Allstar Mod"] is int))
             {
                 mods.Add("[FFFFFF][[FF0000]A[-]llStar]");
             }

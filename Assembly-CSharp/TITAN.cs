@@ -1612,13 +1612,22 @@ public class TITAN : Photon.MonoBehaviour
         float distance = float.PositiveInfinity;
         Vector3 position = baseTransform.position;
 
-        // TODO: Mod, change this to allow searching of Eren also while using the less intensive FGM 'heroes' field
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
+        foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
         {
-            float sqrDist = (gameObject.transform.position - position).sqrMagnitude;
+            float sqrDist = (hero.transform.position - position).sqrMagnitude;
             if (sqrDist < distance)
             {
-                target = gameObject;
+                target = hero.gameObject;
+                distance = sqrDist;
+            }
+        }
+
+        foreach (TITAN_EREN eren in FengGameManagerMKII.Instance.erenTitans)
+        {
+            float sqrDist = (eren.transform.position - position).sqrMagnitude;
+            if (sqrDist < distance)
+            {
+                target = eren.gameObject;
                 distance = sqrDist;
             }
         }
@@ -1633,18 +1642,33 @@ public class TITAN : Photon.MonoBehaviour
         Vector3 position = baseTransform.position;
         float num3 = (abnormalType != 0) ? 180f : 100f;
 
-        // TODO: Mod, change this to allow searching of Eren also while using the less intensive FGM 'heroes' field
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
+        foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
         {
-            float sqrDist = (gameObject.transform.position - position).sqrMagnitude;
+            float sqrDist = (hero.transform.position - position).sqrMagnitude;
             if (sqrDist < distance)
             {
-                Vector3 vector = gameObject.transform.position - baseTransform.position;
+                Vector3 vector = hero.transform.position - baseTransform.position;
                 float num2 = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
                 float num4 = 0f - Mathf.DeltaAngle(num2, baseGameObjectTransform.rotation.eulerAngles.y - 90f);
                 if (Mathf.Abs(num4) < num3)
                 {
-                    target = gameObject;
+                    target = hero.gameObject;
+                    distance = sqrDist;
+                }
+            }
+        }
+
+        foreach (TITAN_EREN eren in FengGameManagerMKII.Instance.erenTitans)
+        {
+            float sqrDist = (eren.transform.position - position).sqrMagnitude;
+            if (sqrDist < distance)
+            {
+                Vector3 vector = eren.transform.position - baseTransform.position;
+                float num2 = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
+                float num4 = 0f - Mathf.DeltaAngle(num2, baseGameObjectTransform.rotation.eulerAngles.y - 90f);
+                if (Mathf.Abs(num4) < num3)
+                {
+                    target = eren.gameObject;
                     distance = sqrDist;
                 }
             }
@@ -2298,6 +2322,7 @@ public class TITAN : Photon.MonoBehaviour
                 }
             }
         }
+
         if (hasDie)
         {
             dieTime += Time.deltaTime;
@@ -2333,6 +2358,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             return;
         }
+
         if (myDifficulty < 0)
         {
             return;
@@ -2406,6 +2432,7 @@ public class TITAN : Photon.MonoBehaviour
                 GameObject.Find("stamina_titan").transform.localScale = new Vector3(stamina, 16f);
             }
         }
+
         switch (state)
         {
             case TitanState.Laughing:
@@ -3640,7 +3667,8 @@ public class TITAN : Photon.MonoBehaviour
             PhotonNetwork.Instantiate("FX/Thunder", vector, Quaternion.Euler(270f, 0f, 0f), 0);
             PhotonNetwork.Instantiate("FX/boom1", vector, Quaternion.Euler(270f, 0f, 0f), 0);
         }
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
+
+        foreach (GameObject gameObject in FengGameManagerMKII.Instance.heroes)
         {
             if ((gameObject.transform.position - vector).magnitude < (float)RCSettings.ExplodeMode)
             {

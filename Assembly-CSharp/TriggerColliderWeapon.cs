@@ -79,6 +79,7 @@ public class TriggerColliderWeapon : MonoBehaviour
 
                             return;
                         }
+
                         if (!hero.HasDied() && !hero.isGrabbed)
                         {
                             if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)

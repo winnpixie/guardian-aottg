@@ -20,7 +20,6 @@ public class UIMainReferences : MonoBehaviour
     public static string Version = "01042015";
     public static string FengVersion = "01042015";
 
-    public static AssetBundle Ext;
     public static Texture2D AOT_2_LOGO;
 
     private void Start()

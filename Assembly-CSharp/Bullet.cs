@@ -237,12 +237,28 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         base.transform.position = p;
     }
 
+
+    private void HandleHookToObj(int viewId)
+    {
+        PhotonView pv = PhotonView.Find(viewId);
+
+        if (Guardian.Mod.Properties.DeadlyHooks.Value && PhotonNetwork.isMasterClient
+            && pv != null && pv.gameObject.GetComponent<HERO>())
+        {
+            pv.gameObject.GetComponent<HERO>().photonView.RPC("netDie2", pv.owner, -1, "[FF0000]Deadly Hooks");
+            pv.gameObject.GetComponent<HERO>().MarkDead();
+        }
+    }
+
     [RPC]
     private void tieMeToOBJ(int id, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.HookPatches.IsHookTieValid(this, id, info))
         {
             base.transform.parent = PhotonView.Find(id).gameObject.transform;
+
+            // TODO: Mod
+            HandleHookToObj(id);
         }
     }
 
@@ -465,7 +481,10 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                 {
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                     {
-                        base.photonView.RPC("tieMeToOBJ", PhotonTargets.Others, hitInfo.collider.transform.root.gameObject.GetPhotonView().viewID);
+                        int viewId = hitInfo.collider.transform.root.gameObject.GetPhotonView().viewID;
+                        base.photonView.RPC("tieMeToOBJ", PhotonTargets.Others, viewId);
+
+                        HandleHookToObj(viewId);
                     }
                     master.GetComponent<HERO>().HookToHuman(hitInfo.collider.transform.root.gameObject, base.transform.position);
                     base.transform.parent = hitInfo.collider.transform;
