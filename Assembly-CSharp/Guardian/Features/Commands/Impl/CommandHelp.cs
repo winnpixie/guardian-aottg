@@ -1,15 +1,15 @@
-﻿using System;
-
-namespace Guardian.Features.Commands.Impl
+﻿namespace Guardian.Features.Commands.Impl
 {
     class CommandHelp : Command
     {
+        private int CommandsPerPage = 7;
+
         public CommandHelp() : base("help", new string[] { "?", "commands" }, "[page/command]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            int maxPages = (Mod.Commands.Elements.Count - 1) / 7;
             int page = 0;
+            int pages = Utilities.MathHelper.Ceil((float)Mod.Commands.Elements.Count / CommandsPerPage);
 
             if (args.Length > 0)
             {
@@ -24,25 +24,23 @@ namespace Guardian.Features.Commands.Impl
                 }
                 else if (int.TryParse(args[0], out int thePage))
                 {
-                    page = thePage;
-                    if (page < 1)
-                    {
-                        page = 1;
-                    }
-                    if (page > maxPages + 1)
-                    {
-                        page = maxPages + 1;
-                    }
-                    page -= 1;
+                    page = Utilities.MathHelper.Clamp(thePage, 1, pages) - 1;
                 }
             }
 
-            int endIndex = Math.Min((page + 1) * 7, Mod.Commands.Elements.Count);
-            irc.AddLine($"Commands (Page {page + 1}/{maxPages + 1})".WithColor("AAFF00").AsBold());
+            irc.AddLine($"Commands (Page {page + 1}/{pages})".WithColor("AAFF00").AsBold());
             irc.AddLine("<arg> = Required, [arg] = Optional".WithColor("AAAAAA").AsBold());
-            for (int i = page * 7; i < endIndex; ++i)
+
+            for (int i = 0; i < CommandsPerPage; i++)
             {
-                Command command = Mod.Commands.Elements[i];
+                int index = i + (page * CommandsPerPage);
+
+                if (index >= Mod.Commands.Elements.Count)
+                {
+                    break;
+                }
+
+                Command command = Mod.Commands.Elements[index];
                 string msg = "> ".WithColor("00FF00").AsBold() + $"/{command.Name} {command.Usage}";
 
                 if (command.MasterClient)

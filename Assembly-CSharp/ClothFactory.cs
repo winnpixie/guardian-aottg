@@ -52,8 +52,10 @@ public static class ClothFactory
         gameObject2.renderer.material.color = color;
         parentFollow = gameObject2.AddComponent<ParentFollow>();
         parentFollow.SetParent(reference.transform);
-        value = new List<GameObject>();
-        value.Add(gameObject2);
+        value = new List<GameObject>
+        {
+            gameObject2
+        };
         ClothCache.Add(name, value);
         return gameObject2;
     }

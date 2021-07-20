@@ -70,8 +70,10 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                 _ => null
             };
 
-            nodes = new ArrayList();
-            nodes.Add(myRef.transform.position);
+            nodes = new ArrayList
+            {
+                myRef.transform.position
+            };
             phase = 0;
             this.leviMode = leviMode;
             left = isLeft;
@@ -243,10 +245,17 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         PhotonView pv = PhotonView.Find(viewId);
 
         if (Guardian.Mod.Properties.DeadlyHooks.Value && PhotonNetwork.isMasterClient
-            && pv != null && pv.gameObject.GetComponent<HERO>())
+            && pv != null && pv.gameObject.GetComponent<HERO>() != null)
         {
-            pv.gameObject.GetComponent<HERO>().photonView.RPC("netDie2", pv.owner, -1, "[FF0000]Deadly Hooks");
+            string killer = GExtensions.AsString(photonView.owner.customProperties[PhotonPlayerProperty.Name]);
+            if (killer.Uncolored().Length < 1)
+            {
+                killer = "Player";
+            }
+            killer += $" [FFCC00]({photonView.owner.Id})[FFFFFF]";
+
             pv.gameObject.GetComponent<HERO>().MarkDead();
+            pv.gameObject.GetComponent<HERO>().photonView.RPC("netDie2", pv.owner, -1, $"{killer}'s hooks");
         }
     }
 

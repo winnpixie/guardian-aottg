@@ -28,18 +28,16 @@ namespace CompressString
 		{
 			//Discarded unreachable code: IL_006d
 			byte[] array = Convert.FromBase64String(compressedText);
-			using (MemoryStream memoryStream = new MemoryStream())
-			{
-				int num = BitConverter.ToInt32(array, 0);
-				memoryStream.Write(array, 4, array.Length - 4);
-				byte[] array2 = new byte[num];
-				memoryStream.Position = 0L;
-				using (GZipStream gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
-				{
-					gZipStream.Read(array2, 0, array2.Length);
-				}
-				return Encoding.UTF8.GetString(array2);
-			}
-		}
+            using MemoryStream memoryStream = new MemoryStream();
+            int num = BitConverter.ToInt32(array, 0);
+            memoryStream.Write(array, 4, array.Length - 4);
+            byte[] array2 = new byte[num];
+            memoryStream.Position = 0L;
+            using (GZipStream gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+            {
+                gZipStream.Read(array2, 0, array2.Length);
+            }
+            return Encoding.UTF8.GetString(array2);
+        }
 	}
 }

@@ -1198,14 +1198,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d = single ? 0f : ((!(hit.distance > 50f)) ? (hit.distance * 0.05f) : (hit.distance * 0.3f));
             Vector3 a = hit.point - base.transform.right * d - bulletLeft.transform.position;
             a.Normalize();
-            if (mode == 1)
-            {
-                component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject, leviMode: true);
-            }
-            else
-            {
-                component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject);
-            }
+            component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject, leviMode: mode == 1);
             launchPointLeft = Vector3.zero;
         }
     }
@@ -1230,14 +1223,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d = single ? 0f : !(hit.distance > 50f) ? (hit.distance * 0.05f) : (hit.distance * 0.3f);
             Vector3 a = hit.point + base.transform.right * d - bulletRight.transform.position;
             a.Normalize();
-            if (mode == 1)
-            {
-                component.Launch(a * 5f, base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: true);
-            }
-            else
-            {
-                component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject);
-            }
+            component.Launch(a * 5f, base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: mode == 1);
             launchPointRight = Vector3.zero;
         }
     }

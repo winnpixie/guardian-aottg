@@ -39,7 +39,6 @@ namespace Guardian.Features.Properties
         public Property<bool> ItalicText = new Property<bool>("Chat_ItalicText", new string[0], false);
 
         // Visual
-        public Property<bool> ExclusiveFullscreen = new Property<bool>("Visual_ExclusiveFullscreen", new string[0], false);
         public Property<bool> FPSCamera = new Property<bool>("Visual_FPSCamera", new string[0], false);
         public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], true);
         public Property<bool> ChatBackground = new Property<bool>("Visual_ShowChatBackground", new string[0], true);
@@ -130,21 +129,6 @@ namespace Guardian.Features.Properties
             base.Add(UseRichPresence);
 
             // Visual
-            ExclusiveFullscreen.OnValueChanged = () =>
-            {
-                string customDataPath = UnityEngine.Application.dataPath + "/Resources/FSData/mainData";
-                string loadedDataPath = UnityEngine.Application.dataPath + "/mainData";
-                if (ExclusiveFullscreen.Value)
-                {
-                    File.Copy(customDataPath + "EXFS", loadedDataPath, true);
-                }
-                else
-                {
-                    File.Copy(customDataPath + "WFS", loadedDataPath, true);
-                }
-            };
-            base.Add(ExclusiveFullscreen);
-
             base.Add(FPSCamera);
             base.Add(MultiplayerNapeMeat);
             base.Add(ChatBackground);

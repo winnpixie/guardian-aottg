@@ -1968,6 +1968,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             CoreEditor();
             return;
         }
+
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && needChooseSide)
         {
             if (inputManager.isInputDown[InputCode.Flare1])
@@ -1995,6 +1996,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     Camera.main.GetComponent<MouseLook>().disable = true;
                 }
             }
+
             if (inputManager.isInputDown[15] && !inputManager.menuOn)
             {
                 Screen.showCursor = true;
@@ -2004,7 +2006,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 inputManager.menuOn = true;
             }
         }
-        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer)
+
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop)
         {
             return;
         }
@@ -2059,6 +2062,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     SetTextCenter("Humanity Failed!\nGame Restart in " + (int)gameEndCD + "s");
                 }
+
                 if (gameEndCD <= 0f)
                 {
                     gameEndCD = 0f;
@@ -2092,17 +2096,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                         else
                         {
-                            SetTextCenter(string.Concat(
-                                "Round Ended!\nGame Restart in ",
-                                (int)gameEndCD,
-                                "s")
-                            );
+                            SetTextCenter("Round Ended!\nGame Restart in " + (int)gameEndCD + "s");
                         }
                         break;
                     default:
                         SetTextCenter("Humanity Wins!\nGame Restart in " + (int)gameEndCD + "s");
                         break;
                 }
+
                 if (gameEndCD <= 0f)
                 {
                     gameEndCD = 0f;
@@ -2237,6 +2238,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     racingDoors = null;
                 }
             }
+
             if (Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver && !needChooseSide && CustomLevelLoaded)
             {
                 myRespawnTime += Time.deltaTime;
@@ -2664,14 +2666,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         switch (Level.Mode)
         {
             case GameMode.Racing:
-                if (RCSettings.RacingStatic == 1)
-                {
-                    gameEndCD = 1000f;
-                }
-                else
-                {
-                    gameEndCD = 20f;
-                }
+                gameEndCD = RCSettings.RacingStatic == 1 ? 1000f : 20f;
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     base.photonView.RPC("netGameWin", PhotonTargets.Others, 0);
@@ -2781,13 +2776,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public void DestroyAllExistingCloths()
     {
-        Cloth[] array = UnityEngine.Object.FindObjectsOfType<Cloth>();
-        if (array.Length > 0)
+        foreach (Cloth cloth in UnityEngine.Object.FindObjectsOfType<Cloth>())
         {
-            for (int i = 0; i < array.Length; i++)
-            {
-                ClothFactory.DisposeObject(array[i].gameObject);
-            }
+            ClothFactory.DisposeObject(cloth.gameObject);
         }
     }
 
@@ -2805,6 +2796,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         yield return new WaitForSeconds(5f);
         string name = GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
+
         if (PreservedPlayerKDR.ContainsKey(name))
         {
             int[] array = PreservedPlayerKDR[name];
@@ -2954,14 +2946,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             content += "[FFCC00]";
         }
-        content += "#" + player.Id + "[-] ";
+        content += "[" + player.Id + "][-] ";
 
         if (player.customProperties[PhotonPlayerProperty.Dead] == null)
         {
             content += $"[FF0000]({(player.Id < 0 ? "Connecting" : "Invisible")})[-] ";
         }
-
-        if (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]))
+        else if (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]))
         {
             content += "[" + ColorSet.Red + "]*dead*[-] ";
         }
@@ -3199,13 +3190,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             {
                                 continue;
                             }
-                            for (int k = 0; k < heroes.Count; k++)
+
+                            foreach (HERO hero in heroes)
                             {
-                                HERO hero = (HERO)heroes[k];
                                 if (hero.photonView.owner == player)
                                 {
                                     hero.MarkDead();
-                                    hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "noswitchingfagt");
+                                    hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "No Switching."); // noswitchingfagt
                                 }
                             }
                         }
@@ -3430,7 +3421,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     private ExitGames.Client.Photon.Hashtable CheckGameGUI()
     {
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
+        ExitGames.Client.Photon.Hashtable gameSettings = new ExitGames.Client.Photon.Hashtable();
         if ((int)Settings[200] > 0)
         {
             Settings[192] = 0;
@@ -3442,7 +3433,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 Settings[201] = "1";
             }
-            hashtable.Add("infection", result);
+            gameSettings.Add("infection", result);
             if (RCSettings.InfectionMode != result)
             {
                 ImATitan.Clear();
@@ -3472,15 +3463,15 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         if ((int)Settings[192] > 0)
         {
-            hashtable.Add("bomb", (int)Settings[192]);
+            gameSettings.Add("bomb", (int)Settings[192]);
         }
         if ((int)Settings[235] > 0)
         {
-            hashtable.Add("globalDisableMinimap", (int)Settings[235]);
+            gameSettings.Add("globalDisableMinimap", (int)Settings[235]);
         }
         if ((int)Settings[193] > 0)
         {
-            hashtable.Add("team", (int)Settings[193]);
+            gameSettings.Add("team", (int)Settings[193]);
             if (RCSettings.TeamMode != (int)Settings[193])
             {
                 int num2 = 1;
@@ -3503,130 +3494,130 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         if ((int)Settings[226] > 0)
         {
-            int result = 50;
-            if (!int.TryParse((string)Settings[227], out result) || result > 1000 || result < 0)
+            int maxPoints = 50;
+            if (!int.TryParse((string)Settings[227], out maxPoints) || maxPoints > 1000 || maxPoints < 0)
             {
                 Settings[227] = "50";
             }
-            hashtable.Add("point", result);
+            gameSettings.Add("point", maxPoints);
         }
         if ((int)Settings[194] > 0)
         {
-            hashtable.Add("rock", (int)Settings[194]);
+            gameSettings.Add("rock", (int)Settings[194]);
         }
         if ((int)Settings[195] > 0)
         {
-            int result = 30;
-            if (!int.TryParse((string)Settings[196], out result) || result > 100 || result < 0)
+            int explodeRadius = 30;
+            if (!int.TryParse((string)Settings[196], out explodeRadius) || explodeRadius > 100 || explodeRadius < 0)
             {
                 Settings[196] = "30";
             }
-            hashtable.Add("explode", result);
+            gameSettings.Add("explode", explodeRadius);
         }
         if ((int)Settings[197] > 0)
         {
-            int result2 = 100;
-            int result3 = 200;
-            if (!int.TryParse((string)Settings[198], out result2) || result2 > 100000 || result2 < 0)
+            int minHealth = 100;
+            int maxHealth = 200;
+            if (!int.TryParse((string)Settings[198], out minHealth) || minHealth > 100000 || minHealth < 0)
             {
                 Settings[198] = "100";
             }
-            if (!int.TryParse((string)Settings[199], out result3) || result3 > 100000 || result3 < 0)
+            if (!int.TryParse((string)Settings[199], out maxHealth) || maxHealth > 100000 || maxHealth < 0)
             {
                 Settings[199] = "200";
             }
-            hashtable.Add("healthMode", (int)Settings[197]);
-            hashtable.Add("healthLower", result2);
-            hashtable.Add("healthUpper", result3);
+            gameSettings.Add("healthMode", (int)Settings[197]);
+            gameSettings.Add("healthLower", minHealth);
+            gameSettings.Add("healthUpper", maxHealth);
         }
         if ((int)Settings[202] > 0)
         {
-            hashtable.Add("eren", (int)Settings[202]);
+            gameSettings.Add("eren", (int)Settings[202]);
         }
         if ((int)Settings[203] > 0)
         {
-            int result = 1;
-            if (!int.TryParse((string)Settings[204], out result) || result > 50 || result < 0)
+            int titanCount = 1;
+            if (!int.TryParse((string)Settings[204], out titanCount) || titanCount > 50 || titanCount < 0)
             {
                 Settings[204] = "1";
             }
-            hashtable.Add("titanc", result);
+            gameSettings.Add("titanc", titanCount);
         }
         if ((int)Settings[205] > 0)
         {
-            int result = 1000;
-            if (!int.TryParse((string)Settings[206], out result) || result > 100000 || result < 0)
+            int minDamage = 1000;
+            if (!int.TryParse((string)Settings[206], out minDamage) || minDamage > 100000 || minDamage < 0)
             {
                 Settings[206] = "1000";
             }
-            hashtable.Add("damage", result);
+            gameSettings.Add("damage", minDamage);
         }
         if ((int)Settings[207] > 0)
         {
-            float result4 = 1f;
-            float result5 = 3f;
-            if (!float.TryParse((string)Settings[208], out result4) || !(result4 <= 100f) || !(result4 >= 0f))
+            float minSize = 1f;
+            float maxSize = 3f;
+            if (!float.TryParse((string)Settings[208], out minSize) || !(minSize <= 100f) || !(minSize >= 0f))
             {
                 Settings[208] = "1.0";
             }
-            if (!float.TryParse((string)Settings[209], out result5) || !(result5 <= 100f) || !(result5 >= 0f))
+            if (!float.TryParse((string)Settings[209], out maxSize) || !(maxSize <= 100f) || !(maxSize >= 0f))
             {
                 Settings[209] = "3.0";
             }
-            hashtable.Add("sizeMode", (int)Settings[207]);
-            hashtable.Add("sizeLower", result4);
-            hashtable.Add("sizeUpper", result5);
+            gameSettings.Add("sizeMode", (int)Settings[207]);
+            gameSettings.Add("sizeLower", minSize);
+            gameSettings.Add("sizeUpper", maxSize);
         }
         if ((int)Settings[210] > 0)
         {
-            float result4 = 20f;
-            float result5 = 20f;
-            float result6 = 20f;
-            float result7 = 20f;
-            float result8 = 20f;
-            if (!float.TryParse((string)Settings[211], out result4) || !(result4 >= 0f))
+            float normalRate = 20f;
+            float abbyRate = 20f;
+            float jumperRate = 20f;
+            float crawlerRate = 20f;
+            float punkRate = 20f;
+            if (!float.TryParse((string)Settings[211], out normalRate) || !(normalRate >= 0f))
             {
                 Settings[211] = "20.0";
             }
-            if (!float.TryParse((string)Settings[212], out result5) || !(result5 >= 0f))
+            if (!float.TryParse((string)Settings[212], out abbyRate) || !(abbyRate >= 0f))
             {
                 Settings[212] = "20.0";
             }
-            if (!float.TryParse((string)Settings[213], out result6) || !(result6 >= 0f))
+            if (!float.TryParse((string)Settings[213], out jumperRate) || !(jumperRate >= 0f))
             {
                 Settings[213] = "20.0";
             }
-            if (!float.TryParse((string)Settings[214], out result7) || !(result7 >= 0f))
+            if (!float.TryParse((string)Settings[214], out crawlerRate) || !(crawlerRate >= 0f))
             {
                 Settings[214] = "20.0";
             }
-            if (!float.TryParse((string)Settings[215], out result8) || !(result8 >= 0f))
+            if (!float.TryParse((string)Settings[215], out punkRate) || !(punkRate >= 0f))
             {
                 Settings[215] = "20.0";
             }
-            if (result4 + result5 + result6 + result7 + result8 > 100f)
+            if (normalRate + abbyRate + jumperRate + crawlerRate + punkRate > 100f)
             {
                 Settings[211] = "20.0";
                 Settings[212] = "20.0";
                 Settings[213] = "20.0";
                 Settings[214] = "20.0";
                 Settings[215] = "20.0";
-                result4 = 20f;
-                result5 = 20f;
-                result6 = 20f;
-                result7 = 20f;
-                result8 = 20f;
+                normalRate = 20f;
+                abbyRate = 20f;
+                jumperRate = 20f;
+                crawlerRate = 20f;
+                punkRate = 20f;
             }
-            hashtable.Add("spawnMode", (int)Settings[210]);
-            hashtable.Add("nRate", result4);
-            hashtable.Add("aRate", result5);
-            hashtable.Add("jRate", result6);
-            hashtable.Add("cRate", result7);
-            hashtable.Add("pRate", result8);
+            gameSettings.Add("spawnMode", (int)Settings[210]);
+            gameSettings.Add("nRate", normalRate);
+            gameSettings.Add("aRate", abbyRate);
+            gameSettings.Add("jRate", jumperRate);
+            gameSettings.Add("cRate", crawlerRate);
+            gameSettings.Add("pRate", punkRate);
         }
         if ((int)Settings[216] > 0)
         {
-            hashtable.Add("horse", (int)Settings[216]);
+            gameSettings.Add("horse", (int)Settings[216]);
         }
         if ((int)Settings[217] > 0)
         {
@@ -3635,56 +3626,57 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 Settings[218] = "1";
             }
-            hashtable.Add("waveModeOn", (int)Settings[217]);
-            hashtable.Add("waveModeNum", result);
+            gameSettings.Add("waveModeOn", (int)Settings[217]);
+            gameSettings.Add("waveModeNum", result);
         }
         if ((int)Settings[219] > 0)
         {
-            hashtable.Add("friendly", (int)Settings[219]);
+            gameSettings.Add("friendly", (int)Settings[219]);
         }
         if ((int)Settings[220] > 0)
         {
-            hashtable.Add("pvp", (int)Settings[220]);
+            gameSettings.Add("pvp", (int)Settings[220]);
         }
         if ((int)Settings[221] > 0)
         {
-            int result = 20;
-            if (!int.TryParse((string)Settings[222], out result) || result > 1000000 || result < 0)
+            int maxWaves = 20;
+            if (!int.TryParse((string)Settings[222], out maxWaves) || maxWaves > 1000000 || maxWaves < 0)
             {
                 Settings[222] = "20";
             }
-            hashtable.Add("maxwave", result);
+            gameSettings.Add("maxwave", maxWaves);
         }
         if ((int)Settings[223] > 0)
         {
-            int result = 5;
-            if (!int.TryParse((string)Settings[224], out result) || result > 1000000 || result < 5)
+            int respawnTime = 5;
+            if (!int.TryParse((string)Settings[224], out respawnTime) || respawnTime > 1000000 || respawnTime < 5)
             {
                 Settings[224] = "5";
             }
-            hashtable.Add("endless", result);
+            gameSettings.Add("endless", respawnTime);
         }
         if ((string)Settings[225] != string.Empty)
         {
-            hashtable.Add("motd", (string)Settings[225]);
+            gameSettings.Add("motd", (string)Settings[225]);
         }
         if ((int)Settings[228] > 0)
         {
-            hashtable.Add("ahssReload", (int)Settings[228]);
+            gameSettings.Add("ahssReload", (int)Settings[228]);
         }
         if ((int)Settings[229] > 0)
         {
-            hashtable.Add("punkWaves", (int)Settings[229]);
+            gameSettings.Add("punkWaves", (int)Settings[229]);
         }
         if ((int)Settings[261] > 0)
         {
-            hashtable.Add("deadlycannons", (int)Settings[261]);
+            gameSettings.Add("deadlycannons", (int)Settings[261]);
         }
         if (RCSettings.RacingStatic > 0)
         {
-            hashtable.Add("asoracing", 1);
+            gameSettings.Add("asoracing", 1);
         }
-        return hashtable;
+
+        return gameSettings;
     }
 
     private IEnumerator CoLogin()
@@ -3692,6 +3684,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         WWWForm myForm = new WWWForm();
         myForm.AddField("userid", UsernameField);
         myForm.AddField("password", PasswordField);
+        
         using (WWW www = new WWW("http://fenglee.com/game/aog/require_user_info.php", myForm))
         {
             yield return www;
@@ -5448,9 +5441,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public void NOTSpawnNonAITitanRC(string id)
     {
         myLastHero = id.ToUpper();
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add("dead", true);
-        hashtable.Add(PhotonPlayerProperty.IsTitan, 2);
+        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable
+        {
+            { "dead", true },
+            { PhotonPlayerProperty.IsTitan, 2 }
+        };
         PhotonNetwork.player.SetCustomProperties(hashtable);
         Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
         Screen.showCursor = true;
@@ -5696,16 +5691,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         timeTotalServer -= time;
     }
 
+    [Obsolete("Use FengGameManagerMKII.Chat instead.")]
     [RPC]
     private void ChatPM(string sender, string content, PhotonMessageInfo info)
     {
-        // TODO: Mod
-        if (InRoomChat.Ignored.Contains(info.sender))
-        {
-            return;
-        }
-
-        InRoomChat.Instance.AddMessage($"FROM [{info.sender.Id}]".WithColor("FFCC00"), content);
+        Chat(content, $"FROM [{info.sender.Id}]".WithColor("FFCC00"), info);
     }
 
     [RPC]
@@ -5857,6 +5847,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             GUI.FocusControl(null);
         }
+
         if (selectedObj != null)
         {
             float d = 0.2f;
@@ -5919,6 +5910,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     selectedObj.transform.Rotate(Vector3.right * d);
                 }
             }
+
             if (InputRC.isInputLevel(InputCodeRC.LevelPlace))
             {
                 LinkHash[3].Add(selectedObj.GetInstanceID(), selectedObj.name + "," + Convert.ToString(selectedObj.transform.position.x) + "," + Convert.ToString(selectedObj.transform.position.y) + "," + Convert.ToString(selectedObj.transform.position.z) + "," + Convert.ToString(selectedObj.transform.rotation.x) + "," + Convert.ToString(selectedObj.transform.rotation.y) + "," + Convert.ToString(selectedObj.transform.rotation.z) + "," + Convert.ToString(selectedObj.transform.rotation.w));
@@ -5926,6 +5918,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 Camera.main.GetComponent<MouseLook>().enabled = true;
                 Screen.lockCursor = true;
             }
+
             if (InputRC.isInputLevel(InputCodeRC.LevelDelete))
             {
                 UnityEngine.Object.Destroy(selectedObj);
@@ -5936,6 +5929,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
             return;
         }
+
         if (Screen.lockCursor)
         {
             float d2 = 100f;
@@ -5973,6 +5967,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 transform.position -= transform.up * d2 * Time.deltaTime;
             }
         }
+
         if (InputRC.isInputLevelDown(InputCodeRC.LevelCursor))
         {
             if (Screen.lockCursor)
@@ -5986,10 +5981,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 Screen.lockCursor = true;
             }
         }
+
         if (!Input.GetKeyDown(KeyCode.Mouse0) || Screen.lockCursor || GUIUtility.hotControl != 0 || ((!(Input.mousePosition.x > 300f) || !(Input.mousePosition.x < (float)Screen.width - 300f)) && !((float)Screen.height - Input.mousePosition.y > 600f)))
         {
             return;
         }
+
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitInfo))
         {
             Transform transform2 = hitInfo.transform;
@@ -6012,7 +6009,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     private void LoadConfig()
     {
-        object[] array = new object[270]
+        object[] configArray = new object[270]
         {
             PlayerPrefs.GetInt("human", 1),
             PlayerPrefs.GetInt("titan", 1),
@@ -6047,35 +6044,35 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             PlayerPrefs.GetString("titaneye5", string.Empty),
             0,
             PlayerPrefs.GetInt("titanR", 0),
-            PlayerPrefs.GetString("tree1", "http://i.imgur.com/QhvQaOY.png"),
-            PlayerPrefs.GetString("tree2", "http://i.imgur.com/QhvQaOY.png"),
-            PlayerPrefs.GetString("tree3", "http://i.imgur.com/k08IX81.png"),
-            PlayerPrefs.GetString("tree4", "http://i.imgur.com/k08IX81.png"),
-            PlayerPrefs.GetString("tree5", "http://i.imgur.com/JQPNchU.png"),
-            PlayerPrefs.GetString("tree6", "http://i.imgur.com/JQPNchU.png"),
-            PlayerPrefs.GetString("tree7", "http://i.imgur.com/IZdYWv4.png"),
-            PlayerPrefs.GetString("tree8", "http://i.imgur.com/IZdYWv4.png"),
-            PlayerPrefs.GetString("leaf1", "http://i.imgur.com/oFGV5oL.png"),
-            PlayerPrefs.GetString("leaf2", "http://i.imgur.com/oFGV5oL.png"),
-            PlayerPrefs.GetString("leaf3", "http://i.imgur.com/mKzawrQ.png"),
-            PlayerPrefs.GetString("leaf4", "http://i.imgur.com/mKzawrQ.png"),
-            PlayerPrefs.GetString("leaf5", "http://i.imgur.com/Ymzavsi.png"),
-            PlayerPrefs.GetString("leaf6", "http://i.imgur.com/Ymzavsi.png"),
-            PlayerPrefs.GetString("leaf7", "http://i.imgur.com/oQfD1So.png"),
-            PlayerPrefs.GetString("leaf8", "http://i.imgur.com/oQfD1So.png"),
-            PlayerPrefs.GetString("forestG", "http://i.imgur.com/IsDTn7x.png"),
+            PlayerPrefs.GetString("tree1", string.Empty),
+            PlayerPrefs.GetString("tree2", string.Empty),
+            PlayerPrefs.GetString("tree3", string.Empty),
+            PlayerPrefs.GetString("tree4", string.Empty),
+            PlayerPrefs.GetString("tree5", string.Empty),
+            PlayerPrefs.GetString("tree6", string.Empty),
+            PlayerPrefs.GetString("tree7", string.Empty),
+            PlayerPrefs.GetString("tree8", string.Empty),
+            PlayerPrefs.GetString("leaf1", string.Empty),
+            PlayerPrefs.GetString("leaf2", string.Empty),
+            PlayerPrefs.GetString("leaf3", string.Empty),
+            PlayerPrefs.GetString("leaf4", string.Empty),
+            PlayerPrefs.GetString("leaf5", string.Empty),
+            PlayerPrefs.GetString("leaf6", string.Empty),
+            PlayerPrefs.GetString("leaf7", string.Empty),
+            PlayerPrefs.GetString("leaf8", string.Empty),
+            PlayerPrefs.GetString("forestG", string.Empty),
             PlayerPrefs.GetInt("forestR", 0),
-            PlayerPrefs.GetString("house1", "http://i.imgur.com/wuy77R8.png"),
-            PlayerPrefs.GetString("house2", "http://i.imgur.com/wuy77R8.png"),
-            PlayerPrefs.GetString("house3", "http://i.imgur.com/wuy77R8.png"),
-            PlayerPrefs.GetString("house4", "http://i.imgur.com/wuy77R8.png"),
-            PlayerPrefs.GetString("house5", "http://i.imgur.com/wuy77R8.png"),
-            PlayerPrefs.GetString("house6", "http://i.imgur.com/wuy77R8.png"),
-            PlayerPrefs.GetString("house7", "http://i.imgur.com/wuy77R8.png"),
-            PlayerPrefs.GetString("house8", "http://i.imgur.com/wuy77R8.png"),
-            PlayerPrefs.GetString("cityG", "http://i.imgur.com/Mr9ZXip.png"),
-            PlayerPrefs.GetString("cityW", "http://i.imgur.com/Tm7XfQP.png"),
-            PlayerPrefs.GetString("cityH", "http://i.imgur.com/Q3YXkNM.png"),
+            PlayerPrefs.GetString("house1", string.Empty),
+            PlayerPrefs.GetString("house2", string.Empty),
+            PlayerPrefs.GetString("house3", string.Empty),
+            PlayerPrefs.GetString("house4", string.Empty),
+            PlayerPrefs.GetString("house5", string.Empty),
+            PlayerPrefs.GetString("house6", string.Empty),
+            PlayerPrefs.GetString("house7", string.Empty),
+            PlayerPrefs.GetString("house8", string.Empty),
+            PlayerPrefs.GetString("cityG", string.Empty),
+            PlayerPrefs.GetString("cityW", string.Empty),
+            PlayerPrefs.GetString("cityH", string.Empty),
             PlayerPrefs.GetInt("skinQ", 0),
             PlayerPrefs.GetInt("skinQL", 0),
             0,
@@ -6286,53 +6283,49 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             null
         };
         InputRC = new InputManagerRC();
-        InputRC.setInputHuman(InputCodeRC.ReelIn, (string)array[98]);
-        InputRC.setInputHuman(InputCodeRC.ReelOut, (string)array[99]);
-        InputRC.setInputHuman(InputCodeRC.Dash, (string)array[182]);
-        InputRC.setInputHuman(InputCodeRC.MapMaximize, (string)array[232]);
-        InputRC.setInputHuman(InputCodeRC.MapToggle, (string)array[233]);
-        InputRC.setInputHuman(InputCodeRC.MapReset, (string)array[234]);
-        InputRC.setInputHuman(InputCodeRC.Chat, (string)array[236]);
-        InputRC.setInputHuman(InputCodeRC.LiveCamera, (string)array[262]);
-        if (!Enum.IsDefined(typeof(KeyCode), (string)array[232]))
+        InputRC.setInputHuman(InputCodeRC.ReelIn, (string)configArray[98]);
+        InputRC.setInputHuman(InputCodeRC.ReelOut, (string)configArray[99]);
+        InputRC.setInputHuman(InputCodeRC.Dash, (string)configArray[182]);
+        InputRC.setInputHuman(InputCodeRC.MapMaximize, (string)configArray[232]);
+        InputRC.setInputHuman(InputCodeRC.MapToggle, (string)configArray[233]);
+        InputRC.setInputHuman(InputCodeRC.MapReset, (string)configArray[234]);
+        InputRC.setInputHuman(InputCodeRC.Chat, (string)configArray[236]);
+        InputRC.setInputHuman(InputCodeRC.LiveCamera, (string)configArray[262]);
+        if (!Enum.IsDefined(typeof(KeyCode), (string)configArray[232]))
         {
-            array[232] = "None";
+            configArray[232] = "None";
         }
-        if (!Enum.IsDefined(typeof(KeyCode), (string)array[233]))
+        if (!Enum.IsDefined(typeof(KeyCode), (string)configArray[233]))
         {
-            array[233] = "None";
+            configArray[233] = "None";
         }
-        if (!Enum.IsDefined(typeof(KeyCode), (string)array[234]))
+        if (!Enum.IsDefined(typeof(KeyCode), (string)configArray[234]))
         {
-            array[234] = "None";
+            configArray[234] = "None";
         }
         for (int i = 0; i < 15; i++)
         {
-            InputRC.setInputTitan(i, (string)array[101 + i]);
+            InputRC.setInputTitan(i, (string)configArray[101 + i]);
         }
         for (int i = 0; i < 16; i++)
         {
-            InputRC.setInputLevel(i, (string)array[117 + i]);
+            InputRC.setInputLevel(i, (string)configArray[117 + i]);
         }
         for (int i = 0; i < 7; i++)
         {
-            InputRC.setInputHorse(i, (string)array[237 + i]);
+            InputRC.setInputHorse(i, (string)configArray[237 + i]);
         }
         for (int i = 0; i < 7; i++)
         {
-            InputRC.setInputCannon(i, (string)array[254 + i]);
+            InputRC.setInputCannon(i, (string)configArray[254 + i]);
         }
-        InputRC.setInputLevel(InputCodeRC.LevelFast, (string)array[161]);
+        InputRC.setInputLevel(InputCodeRC.LevelFast, (string)configArray[161]);
         Application.targetFrameRate = -1;
-        if (int.TryParse((string)array[184], out int result) && result > 0)
+        if (int.TryParse((string)configArray[184], out int result) && result > 0)
         {
             Application.targetFrameRate = result;
         }
-        QualitySettings.vSyncCount = 0;
-        if ((int)array[183] == 1)
-        {
-            QualitySettings.vSyncCount = 1;
-        }
+        QualitySettings.vSyncCount = (int)configArray[183] == 1 ? 1 : 0;
         AudioListener.volume = PlayerPrefs.GetFloat("vol", 1f);
         QualitySettings.masterTextureLimit = PlayerPrefs.GetInt("skinQ", 0);
         LinkHash = new ExitGames.Client.Photon.Hashtable[5]
@@ -6343,7 +6336,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             new ExitGames.Client.Photon.Hashtable(),
             new ExitGames.Client.Photon.Hashtable()
         };
-        Settings = array;
+        Settings = configArray;
         scroll = Vector2.zero;
         scroll2 = Vector2.zero;
         distanceSlider = PlayerPrefs.GetFloat("cameraDistance", 1f);

@@ -39,7 +39,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public bool gameOver;
     public AudioSource bgmusic;
     private float flashDuration;
-    private bool needSetHUD;
+    public bool needSetHUD;
     private GameObject lockTarget;
     public Material skyBoxDAY;
     public Material skyBoxDAWN;
@@ -306,7 +306,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             base.transform.position = head == null ? main_object.transform.position : head.transform.position;
             base.transform.position += base.transform.up * (heightMulti / 2f);
             base.transform.position += base.transform.forward;
-        } else
+        }
+        else
         {
             base.transform.position -= base.transform.forward * distance * distanceMulti * distanceOffsetMulti;
             if (CameraDistance < 0.65f)

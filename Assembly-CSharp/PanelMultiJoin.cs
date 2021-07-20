@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -163,7 +162,7 @@ public class PanelMultiJoin : MonoBehaviour
         {
             pageLabel = GameObject.Find("LabelServerListPage").GetComponent<UILabel>();
         }
-        pageLabel.text = currentPage + "/" + totalPage;
+        pageLabel.text = currentPage + " / " + totalPage;
     }
 
     public void PageUp()

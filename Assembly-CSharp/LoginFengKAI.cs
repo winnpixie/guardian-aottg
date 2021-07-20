@@ -169,19 +169,17 @@ public class LoginFengKAI : MonoBehaviour
         form.AddField("password", password);
         form.AddField("password2", password2);
 
-        using (WWW www = new WWW(ChangePasswordURL, form))
+        using WWW www = new WWW(ChangePasswordURL, form);
+        yield return www;
+        if (www.error != null)
         {
-            yield return www;
-            if (www.error != null)
-            {
-                print(www.error);
-            }
-            output.GetComponent<UILabel>().text = www.text;
-            if (www.text.Contains("Thanks, your password changed successfully"))
-            {
-                NGUITools.SetActive(panelChangePassword, state: false);
-                NGUITools.SetActive(panelLogin, state: true);
-            }
+            print(www.error);
+        }
+        output.GetComponent<UILabel>().text = www.text;
+        if (www.text.Contains("Thanks, your password changed successfully"))
+        {
+            NGUITools.SetActive(panelChangePassword, state: false);
+            NGUITools.SetActive(panelLogin, state: true);
         }
     }
 

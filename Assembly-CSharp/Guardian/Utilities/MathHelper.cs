@@ -17,6 +17,17 @@ namespace Guardian.Utilities
             return n <= val ? n : n - 1;
         }
 
+        public static int Ceil(float val)
+        {
+            int n = (int)val;
+            return n >= val ? n : n + 1;
+        }
+
+        public static int Clamp(int val, int min, int max)
+        {
+            return val < min ? min : val > max ? max : val;
+        }
+
         // Min-inclusive, max-exclusive
         public static int RandomInt(int min, int max)
         {

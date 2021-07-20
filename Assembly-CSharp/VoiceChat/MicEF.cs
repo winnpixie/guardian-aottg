@@ -288,22 +288,16 @@ public class MicEF : MonoBehaviour
         if (bytes == null)
             return null;
 
-        using (MemoryStream inStream = new MemoryStream(bytes))
-        {
-            using (GZipInputStream gzis = new GZipInputStream(inStream))
-            {
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    byte[] buffer = new byte[4096];
-                    StreamUtils.Copy(gzis, outStream, buffer);
+        using MemoryStream inStream = new MemoryStream(bytes);
+        using GZipInputStream gzis = new GZipInputStream(inStream);
+        using MemoryStream outStream = new MemoryStream();
+        byte[] buffer = new byte[4096];
+        StreamUtils.Copy(gzis, outStream, buffer);
 
-                    byte[] decompressed = outStream.ToArray(); // Converts the stream to byte array
-                    float[] data = new float[decompressed.Length / 4]; // float uses 4 bytes (32 bits)
-                    Buffer.BlockCopy(decompressed, 0, data, 0, decompressed.Length); // Converts the decompressed bytes into the float[]
+        byte[] decompressed = outStream.ToArray(); // Converts the stream to byte array
+        float[] data = new float[decompressed.Length / 4]; // float uses 4 bytes (32 bits)
+        Buffer.BlockCopy(decompressed, 0, data, 0, decompressed.Length); // Converts the decompressed bytes into the float[]
 
-                    return data;
-                }
-            }
-        }
+        return data;
     }
 }

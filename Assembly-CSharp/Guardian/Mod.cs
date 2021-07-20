@@ -15,7 +15,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "07112021";
+        public static string Build = "07192021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -49,6 +49,7 @@ namespace Guardian
                     HostWhitelist.Add("cdn.discord.com");
                     HostWhitelist.Add("media.discordapp.net");
                     HostWhitelist.Add("i.gyazo.com");
+
                     File.WriteAllLines(HostWhitelistPath, HostWhitelist.ToArray());
                 }
                 LoadSkinHostWhitelist();
@@ -66,8 +67,6 @@ namespace Guardian
                 Commands.Load();
                 Properties.Load();
 
-                UI.WindowManager.IsExclusiveFullscreen = Properties.ExclusiveFullscreen.Value;
-
                 // Property whitelist
                 foreach (FieldInfo field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
                 {
@@ -75,6 +74,8 @@ namespace Guardian
                 }
 
                 Initialized = true;
+
+                UI.WindowManager.SetWindowTextA(UI.WindowManager.GetActiveWindow(), "Guardian Mod [AoTTG]");
 
                 DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
             }
@@ -93,45 +94,43 @@ namespace Guardian
             Logger.Info("Checking for update...");
             Logger.Info($"Installed: {Build}");
 
-            using (WWW www = new WWW("https://summie.tk/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis())) // Random long to try and avoid cache issues
+            using WWW www = new WWW("https://summie.tk/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
+            yield return www;
+
+            if (www.error != null)
             {
-                yield return www;
+                Logger.Error(www.error);
 
-                if (www.error != null)
+                Logger.Error($"\nIf errors persist, contact me on Discord!");
+                Logger.Info("Discord:");
+                Logger.Info($"\t- {"https://cb.run/FFT".WithColor("0099FF")}");
+
+                try
                 {
-                    Logger.Error(www.error);
+                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "Could not verify version. If errors persists, contact me @ [0099FF]https://cb.run/FFT[-]!";
+                }
+                catch { }
+            }
+            else
+            {
+                string latestVersion = www.text.Split('\n')[0];
+                Logger.Info("Latest: " + latestVersion);
 
-                    Logger.Error($"\nIf errors persist, contact me on Discord!");
-                    Logger.Info("Discord:");
-                    Logger.Info($"\t- {"https://cb.run/FFT".WithColor("0099FF")}");
+                if (!latestVersion.Equals(Build))
+                {
+                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().WithColor("FF0000")}, please update!");
+                    Logger.Info("Download:");
+                    Logger.Info($"\t- {"https://cb.run/GuardianAoT".WithColor("0099FF")}");
 
                     try
                     {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "Could not verify version. If errors persists, contact me @ [0099FF]https://cb.run/FFT[-]!";
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Download the latest build @ [0099FF]https://cb.run/GuardianAoT[-]!";
                     }
                     catch { }
                 }
                 else
                 {
-                    string latestVersion = www.text.Split('\n')[0];
-                    Logger.Info("Latest: " + latestVersion);
-
-                    if (!latestVersion.Equals(Build))
-                    {
-                        Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().WithColor("FF0000")}, please update!");
-                        Logger.Info("Download:");
-                        Logger.Info($"\t- {"https://cb.run/GuardianAoT".WithColor("0099FF")}");
-
-                        try
-                        {
-                            GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Download the latest build @ [0099FF]https://cb.run/GuardianAoT[-]!";
-                        }
-                        catch { }
-                    }
-                    else
-                    {
-                        Logger.Info($"You are {"UP TO DATE".AsBold().AsItalic().WithColor("AAFF00")}, yay!");
-                    }
+                    Logger.Info($"You are {"UP TO DATE".AsBold().AsItalic().WithColor("AAFF00")}, yay!");
                 }
             }
         }
@@ -230,25 +229,25 @@ namespace Guardian
             if (!FirstJoin)
             {
                 PhotonPlayer sender = null;
-                if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer)
+                if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer player)
                 {
-                    sender = (PhotonPlayer)propertiesThatChanged["sender"];
+                    sender = player;
                 }
 
                 if (sender == null || sender.isMasterClient)
                 {
-                    if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string && IsMultiMap)
+                    if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string mapName && IsMultiMap)
                     {
-                        LevelInfo levelInfo = LevelInfo.GetInfo((string)propertiesThatChanged["Map"]);
+                        LevelInfo levelInfo = LevelInfo.GetInfo(mapName);
                         if (levelInfo != null)
                         {
                             FengGameManagerMKII.Level = levelInfo;
                         }
                     }
 
-                    if (propertiesThatChanged.ContainsKey("Lighting") && propertiesThatChanged["Lighting"] is string)
+                    if (propertiesThatChanged.ContainsKey("Lighting") && propertiesThatChanged["Lighting"] is string lightLevel)
                     {
-                        if (GExtensions.TryParseEnum((string)propertiesThatChanged["Lighting"], out DayLight time))
+                        if (GExtensions.TryParseEnum(lightLevel, out DayLight time))
                         {
                             Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetLighting(time);
                         }
@@ -276,7 +275,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                 { "GuardianMod", Build + "-M" }
+                 { "GuardianMod", Build }
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');

@@ -588,10 +588,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         }
         if (sync && !OpRaiseEvent(208, new ExitGames.Client.Photon.Hashtable
         {
-            {
-                (byte)1,
-                playerId
-            }
+            { (byte)1, playerId }
         }, sendReliable: true, null))
         {
             return false;

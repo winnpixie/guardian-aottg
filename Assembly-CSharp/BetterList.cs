@@ -127,7 +127,7 @@ public class BetterList<T>
 				if (@default.Equals(buffer[i], item))
 				{
 					size--;
-					buffer[i] = default(T);
+					buffer[i] = default;
 					for (int j = i; j < size; j++)
 					{
 						buffer[j] = buffer[j + 1];
@@ -157,7 +157,7 @@ public class BetterList<T>
 		if (buffer != null && size != 0)
 		{
 			T result = buffer[--size];
-			buffer[size] = default(T);
+			buffer[size] = default;
 			return result;
 		}
 		return default(T);
