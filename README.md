@@ -1,4 +1,4 @@
-# Guardian
+# Guardian [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T33LM92)
 A free and open-source Attack on Titan Tribute Game mod that aims to provide a safer experience and enticing features!
 
 ## Where can I get/download Guardian?
@@ -20,7 +20,11 @@ This mod has everything\* RiceCake's mod (RC mod) has, and more.
             - Prevents rooms from expiring, allowing one to host indefinitely.
         - "OG"/Vanilla Punk Mohawks
             - Allows you to toggle between using normal titan hair (RC), or vibrant mohawks (Feng).
+        - Deadly  Hooks
+            - Makes hooks more 'realistic' by killing players instead of grappling to them.
     - **Player**
+        - Toggle Double-Tap Burst
+            - Enable/disable double-tap to gas burst.
         - Toggle idle animation
             - Causes both blade users to use the AHSS idle stance.
         - Toggle between normal and "cross" gas burst
@@ -28,7 +32,9 @@ This mod has everything\* RiceCake's mod (RC mod) has, and more.
         - Toggle visibility of hook arrows
             - Hides the hook indicator arrows that tend to fly across your screen violently, they indicate where your double-hook button will attempt to hook.
         - Allow blade trails to activate just by holding down Attack
-            - Allows your blade trail to be seen when you're holding down attack, rather than only once you release. 
+            - Allows your blade trail to be seen when you're holding down attack, rather than only once you release.
+        - Reel out smoothing
+            - Makes scroll-wheel reel-out a viable option again.
         - Change the opacity of name(s) of others and yourself
             - Could improve visibility by allowing  nametags to be see-through.
         - Custom suicide message
@@ -45,6 +51,10 @@ This mod has everything\* RiceCake's mod (RC mod) has, and more.
         - Bold and/or Italic message
         - Prefix and/or message suffix
     - **Visual**
+        - FPS Camera
+            - First Person-View (experimental).
+        - Nape Meat in Multiplayer
+            - Adds nape meat slices into multiplayer (buggy).
         - Change the time display to use a easier-to-read format
         - Toggle the visibility of chat and log backgrounds
     - **Miscellaneous**
