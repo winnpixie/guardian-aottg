@@ -178,7 +178,7 @@ namespace Guardian.AntiAbuse
 
                     if (keys.Count > 0)
                     {
-                        Mod.Logger.Error($"#{sender.Id} applied foreign properties to you.");
+                        Mod.Logger.Error($"#{(sender == null ? "?" : sender.Id.ToString())} applied foreign properties to you.");
                         string propertiesModified = string.Join(", ", keys.Select(k => $"{{{k}={properties[k]}}}").ToArray());
                         Mod.Logger.Error($"Properties: {propertiesModified}");
 
@@ -186,7 +186,7 @@ namespace Guardian.AntiAbuse
                         keys.ForEach(v => nullified.Add(v, null));
                         PhotonNetwork.player.SetCustomProperties(nullified);
 
-                        if (!FengGameManagerMKII.IgnoreList.Contains(sender.Id))
+                        if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                         {
                             FengGameManagerMKII.IgnoreList.Add(sender.Id);
                         }
@@ -200,10 +200,9 @@ namespace Guardian.AntiAbuse
             // Remove invalid properties
             if (PhotonNetwork.isMasterClient)
             {
-                if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer)
+                if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer sender)
                 {
-                    PhotonPlayer sender = (PhotonPlayer)propertiesThatChanged["sender"];
-                    if (!sender.isLocal && !sender.isMasterClient)
+                    if (sender == null || (!sender.isLocal && !sender.isMasterClient))
                     {
                         propertiesThatChanged.StripKeysWithNullValues();
                         List<object> keys = propertiesThatChanged.Keys.ToList();

@@ -179,6 +179,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public GameObject myFlashlight;
     public bool isGrabbed => state == HeroState.Grabbed;
 
+    private Material oldEyeMaterial;
+
     // Anarchy
     private float gasMultiplier = 1f;
     public float GasUsageModifier
@@ -5394,9 +5396,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             trailSkinsEnabled = true;
         }
-        if (setup.part_hair_1 != null)
+        if (setup.part_hair_1 != null) // Hair
         {
             Renderer renderer = setup.part_hair_1.renderer;
+            renderer.enabled = true;
             if (strArray[1].EndsWith(".jpg") || strArray[1].EndsWith(".png") || strArray[1].EndsWith(".jpeg"))
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
@@ -5434,9 +5437,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 renderer.enabled = false;
             }
         }
-        if (setup.part_cape != null)
+        if (setup.part_cape != null) // Cape
         {
             Renderer renderer2 = setup.part_cape.renderer;
+            renderer2.enabled = true;
             if (strArray[7].EndsWith(".jpg") || strArray[7].EndsWith(".png") || strArray[7].EndsWith(".jpeg"))
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
@@ -5473,6 +5477,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (setup.part_chest_3 != null)
         {
             Renderer renderer3 = setup.part_chest_3.renderer;
+            renderer3.enabled = true;
             if (strArray[6].EndsWith(".jpg") || strArray[6].EndsWith(".png") || strArray[6].EndsWith(".jpeg"))
             {
                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
@@ -5510,6 +5515,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             foreach (Renderer renderer4 in GetComponentsInChildren<Renderer>())
             {
+                renderer4.enabled = true;
                 if (renderer4.name.Contains(FengGameManagerMKII.S[1])) // Hair
                 {
                     if (strArray[1].EndsWith(".jpg") || strArray[1].EndsWith(".png") || strArray[1].EndsWith(".jpeg"))
@@ -5553,6 +5559,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
                 else if (renderer4.name.Contains(FengGameManagerMKII.S[2])) // Eyes
                 {
+                    if (oldEyeMaterial != null)
+                    {
+                        renderer4.material = oldEyeMaterial;
+                    } else
+                    {
+                        oldEyeMaterial = renderer4.material;
+                    }
+
                     if (strArray[2].EndsWith(".jpg") || strArray[2].EndsWith(".png") || strArray[2].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[2]))
@@ -5568,10 +5582,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[2]))
                                 {
                                     unload = true;
-                                    renderer4.material.mainTextureScale = renderer4.material.mainTextureScale * 8f;
-                                    renderer4.material.mainTextureOffset = new Vector2(0f, 0f);
-                                    renderer4.material.mainTexture = tex7;
-                                    FengGameManagerMKII.LinkHash[0].Add(strArray[2], renderer4.material);
+                                    Material eyeMat = new Material(renderer4.material);
+                                    eyeMat.mainTextureScale = renderer4.material.mainTextureScale * 8f;
+                                    eyeMat.mainTextureOffset = new Vector2(0f, 0f);
+                                    eyeMat.mainTexture = tex7;
+                                    FengGameManagerMKII.LinkHash[0].Add(strArray[2], eyeMat);
                                     renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[2]];
                                 }
                                 else
@@ -5973,6 +5988,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     Renderer[] componentsInChildren2 = theHorse.GetComponentsInChildren<Renderer>();
                     foreach (Renderer renderer5 in componentsInChildren2)
                     {
+                        renderer5.enabled = true;
                         if (renderer5.name.Contains(FengGameManagerMKII.S[19]))
                         {
                             if (strArray[0].EndsWith(".jpg") || strArray[0].EndsWith(".png") || strArray[0].EndsWith(".jpeg"))

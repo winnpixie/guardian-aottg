@@ -15,13 +15,13 @@ namespace Guardian.UI
         public static GUIStyle VerticalScrollbar;
         public static GUIStyle VerticalScrollbarThumb;
 
-        private static bool Loaded;
+        private static bool s_initialized;
 
         public static void InitSkins()
         {
-            if (!Loaded)
+            if (!s_initialized)
             {
-                Loaded = true;
+                s_initialized = true;
 
                 Texture2D flatNormal = new Texture2D(1, 1);
                 flatNormal.SetPixel(0, 0, "222222BB".ToColor());

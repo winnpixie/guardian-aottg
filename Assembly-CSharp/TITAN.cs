@@ -229,7 +229,7 @@ public class TITAN : Photon.MonoBehaviour
         if (!hasload)
         {
             hasload = true;
-            loadskin();
+            LoadSkin();
         }
         switch (type)
         {
@@ -3687,7 +3687,7 @@ public class TITAN : Photon.MonoBehaviour
         }
     }
 
-    public void loadskin()
+    public void LoadSkin()
     {
         skin = 86;
         eye = false;
@@ -3790,7 +3790,8 @@ public class TITAN : Photon.MonoBehaviour
         {
             foreach (Renderer renderer in GetComponentsInChildren<Renderer>())
             {
-                if (renderer.name.Contains("eye"))
+                renderer.enabled = true;
+                if (renderer.name.Contains("eye")) // Eyes
                 {
                     if (eye.ToLower() == "transparent")
                     {
@@ -3825,7 +3826,7 @@ public class TITAN : Photon.MonoBehaviour
                         }
                     }
                 }
-                else if (renderer.name == "hair" && (body.EndsWith(".jpg") || body.EndsWith(".png") || body.EndsWith(".jpeg")))
+                else if (renderer.name == "hair" && (body.EndsWith(".jpg") || body.EndsWith(".png") || body.EndsWith(".jpeg"))) // Body
                 {
                     if (!FengGameManagerMKII.LinkHash[2].ContainsKey(body))
                     {

@@ -15,7 +15,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "07192021";
+        public static string Build = "08112021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -26,16 +26,16 @@ namespace Guardian
         public static List<string> HostWhitelist = new List<string>();
         public static Regex BlacklistedTags = new Regex("<(\\/?)(size|material|quad)(.*)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
+        public static bool IsMultiMap = false;
         public static bool IsProgramQuitting = false;
 
-        private static bool Initialized = false;
-        private static bool FirstJoin = true;
+        private static bool s_initialized = false;
+        private static bool s_firstJoin = true;
 
-        public static bool IsMultiMap;
 
         void Start()
         {
-            if (!Initialized)
+            if (!s_initialized)
             {
                 // Check for an update before doing anything
                 StartCoroutine(CoCheckForUpdate());
@@ -73,7 +73,7 @@ namespace Guardian
                     NetworkPatches.PropertyWhitelist.Add((string)field.GetValue(null));
                 }
 
-                Initialized = true;
+                s_initialized = true;
 
                 UI.WindowManager.SetWindowTextA(UI.WindowManager.GetActiveWindow(), "Guardian Mod [AoTTG]");
 
@@ -180,9 +180,9 @@ namespace Guardian
                 Gamemodes.Current.OnReset();
             }
 
-            if (FirstJoin)
+            if (s_firstJoin)
             {
-                FirstJoin = false;
+                s_firstJoin = false;
                 string joinMessage = Properties.JoinMessage.Value.Colored();
                 if (joinMessage.Uncolored().Length <= 0)
                 {
@@ -226,7 +226,7 @@ namespace Guardian
         {
             NetworkPatches.OnRoomPropertyModification(propertiesThatChanged);
 
-            if (!FirstJoin)
+            if (!s_firstJoin)
             {
                 PhotonPlayer sender = null;
                 if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer player)
@@ -271,7 +271,7 @@ namespace Guardian
         void OnJoinedRoom()
         {
             IsMultiMap = PhotonNetwork.room.name.Split('`')[1].StartsWith("Multi-Map");
-            FirstJoin = true;
+            s_firstJoin = true;
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
@@ -308,7 +308,22 @@ namespace Guardian
 
         void OnPhotonRoomJoinFailed(object[] codeAndMsg)
         {
-            Logger.Error($"OnPhotonRoomJoinFailed ({codeAndMsg[0]}: {codeAndMsg[1]})");
+            Logger.Error($"OnPhotonRoomJoinFailed");
+
+            foreach (object obj in codeAndMsg)
+            {
+                Logger.Error($" - {obj}");
+            }
+        }
+
+        void OnPhotonCreateRoomFailed(object[] codeAndMsg)
+        {
+            Logger.Error($"OnPhotonCreateRoomFailed");
+
+            foreach (object obj in codeAndMsg)
+            {
+                Logger.Error($" - {obj}");
+            }
         }
 
         // Attempts to fix some dumb bugs that occur when you alt-tab

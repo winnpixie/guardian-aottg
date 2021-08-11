@@ -4,25 +4,25 @@ namespace Guardian.Utilities
 {
     class ModifiedStats
     {
-        public static readonly byte INFINITE_GAS = 1;
-        public static readonly byte INFINITE_BLADES = 2;
-        public static readonly byte INFINITE_AHSS_AMMO = 4;
+        public static readonly byte InfiniteGas = 1;
+        public static readonly byte InfiniteBlades = 2;
+        public static readonly byte InfiniteAhssAmmo = 4;
 
         public static List<char> FromInt(int val)
         {
             List<char> stats = new List<char>();
 
-            if ((val & INFINITE_GAS) == INFINITE_GAS)
+            if ((val & InfiniteGas) == InfiniteGas)
             {
                 stats.Add('g');
             }
 
-            if ((val & INFINITE_BLADES) == INFINITE_BLADES)
+            if ((val & InfiniteBlades) == InfiniteBlades)
             {
                 stats.Add('b');
             }
 
-            if ((val & INFINITE_AHSS_AMMO) == INFINITE_AHSS_AMMO)
+            if ((val & InfiniteAhssAmmo) == InfiniteAhssAmmo)
             {
                 stats.Add('a');
             }

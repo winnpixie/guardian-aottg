@@ -20,8 +20,6 @@ public class UIMainReferences : MonoBehaviour
     public static string Version = "01042015";
     public static string FengVersion = "01042015";
 
-    public static Texture2D AOT_2_LOGO;
-
     private void Start()
     {
         string rcBuild = "8/12/2015";
@@ -48,12 +46,6 @@ public class UIMainReferences : MonoBehaviour
         AssetBundleCreateRequest abcr = AssetBundle.CreateFromMemory(File.ReadAllBytes(Application.dataPath + "/RCAssets.unity3d"));
         yield return abcr;
         FengGameManagerMKII.RCAssets = abcr.assetBundle;
-
-        using (WWW www = new WWW("file:///" + Application.dataPath + "/Resources/Textures/patreon.png"))
-        {
-            yield return www;
-            AOT_2_LOGO = www.texture;
-        }
 
         FengGameManagerMKII.IsAssetLoaded = true;
     }

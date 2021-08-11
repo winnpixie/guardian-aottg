@@ -789,39 +789,6 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             return false;
         }
 
-        /*
-        if (eventCode == 200)
-        {
-            try
-            {
-                ExitGames.Client.Photon.Hashtable rpcData = customEventContent as ExitGames.Client.Photon.Hashtable;
-
-                string rpcName = string.Empty;
-
-                if (rpcData.ContainsKey((byte)5))
-                {
-                    int i = (byte)rpcData[(byte)5];
-                    if (i < rpcShortcuts.Count)
-                    {
-                        rpcName = PhotonNetwork.PhotonServerSettings.RpcList[i];
-                    }
-                }
-                else
-                {
-                    rpcName = (string)rpcData[(byte)3];
-                }
-
-                if (rpcName.Length > 0)
-                {
-                    int pvId = (int)rpcData[(byte)0];
-                    object[] args = (object[])rpcData[(byte)4] ?? new object[0];
-
-                    Guardian.Mod.Logger.Info($"{rpcName}({string.Join(", ", args.Select(x => x is string ? $"\"{x}\"" : x.ToString()).ToArray())}) | {PhotonView.Find(pvId).name}");
-                }
-            }
-            catch { }
-        }*/
-
         return base.OpRaiseEvent(eventCode, customEventContent, sendReliable, raiseEventOptions);
     }
 
@@ -2862,7 +2829,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             case PunEvent.CloseConnection:
                 if (sender != null && sender.isMasterClient && !sender.isLocal)
                 {
-                    PhotonNetwork.LeaveRoom();
+                    // PhotonNetwork.LeaveRoom();
                 }
                 break;
             case PunEvent.Destroy:
@@ -3232,7 +3199,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         {
                             if (MicEF.MuteList.Contains(sender.Id)) // In case they didn't remove you for some reason
                             {
-                                PhotonNetwork.networkingPeer.OpRaiseEvent((byte)173, new byte[] { (byte)254 }, true, new RaiseEventOptions
+                                this.OpRaiseEvent((byte)173, new byte[] { (byte)254 }, true, new RaiseEventOptions
                                 {
                                     TargetActors = new int[] { sender.Id }
                                 });

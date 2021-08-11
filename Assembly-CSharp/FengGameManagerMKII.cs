@@ -3684,7 +3684,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         WWWForm myForm = new WWWForm();
         myForm.AddField("userid", UsernameField);
         myForm.AddField("password", PasswordField);
-        
+
         using (WWW www = new WWW("http://fenglee.com/game/aog/require_user_info.php", myForm))
         {
             yield return www;
@@ -6345,7 +6345,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         transparencySlider = 1f;
     }
 
-    private void LoadSkin()
+    public void LoadSkin()
     {
         if ((int)Settings[64] >= 100)
         {
@@ -6534,7 +6534,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 else
                 {
-                    string[] array5 = Regex.Replace(CurrentScript, "\\s+", string.Empty).Replace("\r\n", string.Empty).Replace("\n", string.Empty).Replace("\r", string.Empty).Split(';');
+                    string[] array5 = Regex.Replace(CurrentScript, "\\s+", string.Empty).Replace("\r\n", string.Empty).Replace('\n', '\0').Replace('\r', '\0').Split(';');
                     for (int i = 0; i < Mathf.FloorToInt((array5.Length - 1) / 100) + 1; i++)
                     {
                         string[] array6;
@@ -7026,21 +7026,22 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         for (int i = 0; i < levelCache.Count; i++)
         {
-            foreach (PhotonPlayer player2 in players)
+            foreach (PhotonPlayer player in players)
             {
-                if (player2.customProperties[PhotonPlayerProperty.CurrentLevel] != null && CurrentLevel.Length > 0 && GExtensions.AsString(player2.customProperties[PhotonPlayerProperty.CurrentLevel]) == CurrentLevel)
+                if (player.customProperties[PhotonPlayerProperty.CurrentLevel] != null && CurrentLevel.Length > 0 && GExtensions.AsString(player.customProperties[PhotonPlayerProperty.CurrentLevel]) == CurrentLevel)
                 {
                     if (i == 0)
                     {
                         string[] array = new string[1] { "loadcached" };
-                        base.photonView.RPC("customlevelRPC", player2, new object[] { array });
+                        base.photonView.RPC("customlevelRPC", player, new object[] { array });
                     }
                 }
                 else
                 {
-                    base.photonView.RPC("customlevelRPC", player2, new object[] { levelCache[i] });
+                    base.photonView.RPC("customlevelRPC", player, new object[] { levelCache[i] });
                 }
             }
+
             if (i > 0)
             {
                 yield return new WaitForSeconds(0.75f);
@@ -7174,6 +7175,17 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Load ground skin
+        foreach (GameObject ground in groundList)
+        {
+            if (ground != null && ground.renderer != null)
+            {
+                foreach (Renderer renderer in ground.GetComponentsInChildren<Renderer>())
+                {
+                    renderer.enabled = true;
+                }
+            }
+        }
+
         if (linkGround.EndsWith(".jpg") || linkGround.EndsWith(".png") || linkGround.EndsWith(".jpeg"))
         {
             foreach (GameObject ground in groundList)
@@ -7435,6 +7447,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     if (obj4 != null)
                     {
+                        foreach (Renderer renderer in obj4.GetComponentsInChildren<Renderer>())
+                        {
+                            renderer.enabled = true;
+                        }
+
                         if (obj4.name.Contains("TREE") && n.Length > startIndex + 1)
                         {
                             string str12 = n.Substring(startIndex, 1);
@@ -7772,7 +7789,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public void OnGUI()
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop && Application.loadedLevelName != "characterCreation")
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop && Application.loadedLevelName != "characterCreation" && Application.loadedLevelName != "SnapShot")
         {
             if (IsAssetLoaded)
             {
@@ -7786,7 +7803,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     return;
                 }
                 // TODO: Mod
-                if (GUI.Button(new Rect(10, 190, 220, 150), UIMainReferences.AOT_2_LOGO))
+                if (GUI.Button(new Rect(10, 190, 220, 150), Guardian.Utilities.ResourceHelper.Find<Texture2D>("Textures/patreon.png")))
                 {
                     Application.OpenURL("https://www.patreon.com/aottg2");
                 }

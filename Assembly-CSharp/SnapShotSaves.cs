@@ -34,26 +34,36 @@ public class SnapShotSaves
 
     public static int GetCurrentIndex()
     {
+        Init();
+
         return CurrentIndex;
     }
 
     public static int GetLength()
     {
+        Init();
+
         return Images.Count;
     }
 
     public static Texture2D GetCurrentImage()
     {
+        Init();
+
         return Images.Count > 0 ? Images[CurrentIndex] : null;
     }
 
     public static int GetCurrentDamage()
     {
+        Init();
+
         return Damages.Count > 0 ? Damages[CurrentIndex] : 0;
     }
 
     public static Texture2D GetNextImage()
     {
+        Init();
+
         if (Images.Count == 0)
         {
             return GetCurrentImage();
@@ -65,6 +75,8 @@ public class SnapShotSaves
 
     public static Texture2D GetPreviousImage()
     {
+        Init();
+
         if (Images.Count == 0)
         {
             return GetCurrentImage();

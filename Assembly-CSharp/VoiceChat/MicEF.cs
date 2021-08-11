@@ -111,13 +111,17 @@ public class MicEF : MonoBehaviour
     // Resets the player stuff on restarts
     private void OnLevelWasLoaded(int level)
     {
-        if (Camera.main.gameObject.GetComponent<AudioSource>() == null)
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
         {
-            Camera.main.gameObject.AddComponent<AudioSource>();
-        }
-        foreach (KeyValuePair<int, MicPlayer> entry in MicEF.Users)
-        {
-            entry.Value.RefreshInformation();
+            if (Camera.main.gameObject.GetComponent<AudioSource>() == null)
+            {
+                Camera.main.gameObject.AddComponent<AudioSource>();
+            }
+
+            foreach (KeyValuePair<int, MicPlayer> entry in MicEF.Users)
+            {
+                entry.Value.RefreshInformation();
+            }
         }
     }
 

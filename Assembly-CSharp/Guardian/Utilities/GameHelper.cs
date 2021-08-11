@@ -7,7 +7,7 @@ namespace Guardian.Utilities
     class GameHelper
     {
         public static readonly Vector2 ScrollBottom = new Vector2(0, float.MaxValue);
-        private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime s_epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public static void Broadcast(string message)
         {
@@ -145,7 +145,7 @@ namespace Guardian.Utilities
         // C# equivalent of java.lang.System#currentTimeMillis()
         public static long CurrentTimeMillis()
         {
-            return (long)DateTime.UtcNow.Subtract(Epoch).TotalMilliseconds;
+            return (long)DateTime.UtcNow.Subtract(s_epoch).TotalMilliseconds;
         }
 
         public static string FormatTimeOld(float time, bool precise = false, bool isSeconds = true)

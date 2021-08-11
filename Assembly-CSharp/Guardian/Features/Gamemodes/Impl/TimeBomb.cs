@@ -6,18 +6,18 @@ namespace Guardian.Features.Gamemodes.Impl
 {
     class TimeBomb : Gamemode
     {
-        private Property<int> StartTime = new Property<int>("Gamemodes_TimeBomb:StartTime", new string[0], 90);
-        public Dictionary<int, int> LifeTimes;
-        private long LastUpdate;
+        private Dictionary<int, int> _lifeTimes;
+        private Property<int> _startTime = new Property<int>("Gamemodes_TimeBomb:StartTime", new string[0], 90);
+        private long _lastUpdate;
 
         public TimeBomb() : base("TimeBomb", new string[0])
         {
-            Mod.Properties.Add(StartTime);
+            Mod.Properties.Add(_startTime);
         }
 
         public override void CleanUp()
         {
-            LifeTimes.Clear();
+            _lifeTimes.Clear();
 
             if (PhotonNetwork.inRoom)
             {
@@ -38,26 +38,26 @@ namespace Guardian.Features.Gamemodes.Impl
 
         public override void OnReset()
         {
-            LifeTimes = new Dictionary<int, int>();
-            LastUpdate = GameHelper.CurrentTimeMillis() + 1000;
+            _lifeTimes = new Dictionary<int, int>();
+            _lastUpdate = GameHelper.CurrentTimeMillis() + 1000;
 
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
-                LifeTimes.Add(player.Id, StartTime.Value);
+                _lifeTimes.Add(player.Id, _startTime.Value);
             }
 
             GameHelper.Broadcast("Tick-Tock! Time-Bomb mode is enabled, kill titans to stay alive!");
-            GameHelper.Broadcast($"Everyone has been given a {StartTime.Value} second starting time.");
+            GameHelper.Broadcast($"Everyone has been given a {_startTime.Value} second starting time.");
         }
 
         public override void OnUpdate()
         {
-            if (GameHelper.CurrentTimeMillis() - LastUpdate >= 1000)
+            if (GameHelper.CurrentTimeMillis() - _lastUpdate >= 1000)
             {
-                Dictionary<int, int> newTimes = new Dictionary<int, int>(LifeTimes);
-                LastUpdate = GameHelper.CurrentTimeMillis();
+                Dictionary<int, int> newTimes = new Dictionary<int, int>(_lifeTimes);
+                _lastUpdate = GameHelper.CurrentTimeMillis();
 
-                foreach (KeyValuePair<int, int> entry in LifeTimes)
+                foreach (KeyValuePair<int, int> entry in _lifeTimes)
                 {
                     PhotonPlayer player = PhotonPlayer.Find(entry.Key);
                     if (player != null)
@@ -103,30 +103,30 @@ namespace Guardian.Features.Gamemodes.Impl
                     }
                 }
 
-                LifeTimes = newTimes;
+                _lifeTimes = newTimes;
             }
         }
 
         public override void OnPlayerJoin(PhotonPlayer player)
         {
             FengGameManagerMKII.Instance.photonView.RPC("Chat", player, "Tick-Tock! Time-Bomb mode is enabled, kill titans to stay alive!", string.Empty);
-            LifeTimes.Add(player.Id, StartTime.Value);
+            _lifeTimes.Add(player.Id, _startTime.Value);
         }
 
         public override void OnPlayerLeave(PhotonPlayer player)
         {
-            LifeTimes.Remove(player.Id);
+            _lifeTimes.Remove(player.Id);
         }
 
         public override void OnPlayerKilled(HERO hero, int killerId, bool wasKilledByTitan)
         {
-            LifeTimes[hero.photonView.owner.Id] = StartTime.Value;
+            _lifeTimes[hero.photonView.owner.Id] = _startTime.Value;
         }
 
         public override void OnTitanKilled(TITAN titan, PhotonPlayer killer, int damage)
         {
             int timeBonus = damage / 100;
-            LifeTimes[killer.Id] += timeBonus;
+            _lifeTimes[killer.Id] += timeBonus;
 
             FengGameManagerMKII.Instance.photonView.RPC("Chat", killer, $"+{timeBonus}s Time Bonus!".WithColor("00FF00"), string.Empty);
         }

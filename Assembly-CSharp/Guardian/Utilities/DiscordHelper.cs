@@ -4,17 +4,17 @@
     {
         public static long StartTime;
 
-        private static Discord.Discord DiscordInstance;
+        private static Discord.Discord s_discordInstance;
 
         public static void Initialize()
         {
-            if (DiscordInstance == null && Mod.Properties.UseRichPresence.Value)
+            if (s_discordInstance == null && Mod.Properties.UseRichPresence.Value)
             {
                 try
                 {
-                    DiscordInstance = new Discord.Discord(721934748825550931L, (ulong)Discord.CreateFlags.NoRequireDiscord);
+                    s_discordInstance = new Discord.Discord(721934748825550931L, (ulong)Discord.CreateFlags.NoRequireDiscord);
 
-                    DiscordInstance.SetLogHook(Discord.LogLevel.Debug, (logLevel, message) =>
+                    s_discordInstance.SetLogHook(Discord.LogLevel.Debug, (logLevel, message) =>
                     {
                         switch (logLevel)
                         {
@@ -37,21 +37,30 @@
 
         public static void RunCallbacks()
         {
-            if (DiscordInstance != null)
+            if (s_discordInstance != null)
             {
-                DiscordInstance.RunCallbacks();
+                try
+                {
+                    s_discordInstance.RunCallbacks();
+                }
+                finally { }
             }
         }
 
         public static void Dispose()
         {
-            if (DiscordInstance != null)
+            if (s_discordInstance != null)
             {
-                DiscordInstance.GetActivityManager().ClearActivity((result) =>
+                try
                 {
-                    DiscordInstance.Dispose();
-                    DiscordInstance = null;
-                });
+                    s_discordInstance.GetActivityManager().ClearActivity((result) =>
+                    {
+                        s_discordInstance.Dispose();
+                        s_discordInstance = null;
+                    });
+                }
+                finally { }
+
             }
         }
 
@@ -59,20 +68,24 @@
         {
             Initialize();
 
-            if (DiscordInstance != null)
+            if (s_discordInstance != null)
             {
-                activity.Assets = new Discord.ActivityAssets
+                try
                 {
-                    LargeImage = "main_icon",
-                    LargeText = "G-Shield by Red"
-                };
+                    activity.Assets = new Discord.ActivityAssets
+                    {
+                        LargeImage = "main_icon",
+                        LargeText = "G-Shield by Red"
+                    };
 
-                activity.Timestamps = new Discord.ActivityTimestamps
-                {
-                    Start = StartTime
-                };
+                    activity.Timestamps = new Discord.ActivityTimestamps
+                    {
+                        Start = StartTime
+                    };
 
-                DiscordInstance.GetActivityManager().UpdateActivity(activity, result => { });
+                    s_discordInstance.GetActivityManager().UpdateActivity(activity, result => { });
+                }
+                finally { }
             }
         }
     }

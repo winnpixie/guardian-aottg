@@ -6,7 +6,7 @@ namespace Guardian.UI
 {
     class WindowManager
     {
-        private static bool IsFullscreen;
+        private static bool s_isFullscreen;
 
         [DllImport("user32.dll")]
         public static extern int GetActiveWindow();
@@ -21,9 +21,9 @@ namespace Guardian.UI
         {
             if (hasFocus)
             {
-                if (IsFullscreen)
+                if (s_isFullscreen)
                 {
-                    IsFullscreen = false;
+                    s_isFullscreen = false;
 
                     ShowWindow(GetActiveWindow(), 1); // SW_SHOWNORMAL
 
@@ -38,11 +38,11 @@ namespace Guardian.UI
                     }
                 }
             }
-            else if (!IsFullscreen)
+            else if (!s_isFullscreen)
             {
                 if (Screen.fullScreen)
                 {
-                    IsFullscreen = true;
+                    s_isFullscreen = true;
                     Screen.SetResolution(960, 600, false);
 
                     ShowWindow(GetActiveWindow(), 2); // SW_SHOWMINIMIZED

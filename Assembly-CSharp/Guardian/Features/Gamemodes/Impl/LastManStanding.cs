@@ -6,33 +6,33 @@ namespace Guardian.Features.Gamemodes.Impl
 {
     class LastManStanding : Gamemode
     {
-        private Property<int> KillInterval = new Property<int>("Gamemodes_LastManStanding:KillInterval", new string[0], 30);
-        private long LastKill;
-        private Comparison<PhotonPlayer> Comparator = new Comparison<PhotonPlayer>((p1, p2) =>
+        private Property<int> _killInterval = new Property<int>("Gamemodes_LastManStanding:KillInterval", new string[0], 30);
+        private long _lastKill;
+        private Comparison<PhotonPlayer> _playerSorter = new Comparison<PhotonPlayer>((p1, p2) =>
         {
             return GExtensions.AsInt(p1.customProperties[PhotonPlayerProperty.Kills]) - GExtensions.AsInt(p2.customProperties[PhotonPlayerProperty.Kills]);
         });
 
         public LastManStanding() : base("LastManStanding", new string[] { "lms" })
         {
-            Mod.Properties.Add(KillInterval);
+            Mod.Properties.Add(_killInterval);
         }
 
         public override void OnReset()
         {
-            LastKill = GameHelper.CurrentTimeMillis() + KillInterval.Value;
-            GameHelper.Broadcast($"Last Man Standing! Whoever has the least number of kills after every {KillInterval.Value} second period will DIE!");
+            _lastKill = GameHelper.CurrentTimeMillis() + _killInterval.Value;
+            GameHelper.Broadcast($"Last Man Standing! Whoever has the least number of kills after every {_killInterval.Value} second period will DIE!");
         }
 
         public override void OnUpdate()
         {
-            if (GameHelper.CurrentTimeMillis() - LastKill >= (KillInterval.Value * 1000))
+            if (GameHelper.CurrentTimeMillis() - _lastKill >= (_killInterval.Value * 1000))
             {
-                LastKill = GameHelper.CurrentTimeMillis();
+                _lastKill = GameHelper.CurrentTimeMillis();
 
                 if (FengGameManagerMKII.Instance.heroes.Count > 1)
                 {
-                    foreach (PhotonPlayer player in PhotonNetwork.playerList.Sorted(Comparator))
+                    foreach (PhotonPlayer player in PhotonNetwork.playerList.Sorted(_playerSorter))
                     {
                         HERO hero = GameHelper.GetHero(player);
                         if (hero != null)

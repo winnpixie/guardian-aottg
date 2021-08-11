@@ -6,7 +6,7 @@ namespace Guardian.Features.Properties
 {
     class PropertyManager : FeatureManager<Property>
     {
-        private string DataPath = Mod.RootDir + "\\GameSettings.txt";
+        private string _dataPath = Mod.RootDir + "\\GameSettings.txt";
 
         // Master Client
         public Property<bool> EndlessTitans = new Property<bool>("MC_EndlessTitans", new string[0], false);
@@ -20,6 +20,7 @@ namespace Guardian.Features.Properties
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
         public Property<bool> HideHookArrows = new Property<bool>("Player_HideHookArrows", new string[0], false);
         public Property<bool> HoldForBladeTrails = new Property<bool>("Player_HoldForBladeTrails", new string[0], true);
+        public Property<bool> Interpolation = new Property<bool>("Player_HoldForBladeTrails", new string[0], true);
         public Property<float> ReelOutScrollSmoothing = new Property<float>("Player_ReelOutScrollSmoothing", new string[0], 0.2f);
         public Property<float> OpacityOfOwnName = new Property<float>("Player_OpacityOfOwnName", new string[0], 1.0f);
         public Property<float> OpacityOfOtherNames = new Property<float>("Player_OpacityOfOtherNames", new string[0], 1.0f);
@@ -146,9 +147,9 @@ namespace Guardian.Features.Properties
 
         public void LoadFromFile()
         {
-            GameHelper.TryCreateFile(DataPath, false);
+            GameHelper.TryCreateFile(_dataPath, false);
 
-            foreach (string line in File.ReadAllLines(DataPath))
+            foreach (string line in File.ReadAllLines(_dataPath))
             {
                 string[] data = line.Split(new char[] { '=' }, 2);
                 Property property = Find(data[0]);
@@ -186,12 +187,12 @@ namespace Guardian.Features.Properties
 
         public override void Save()
         {
-            GameHelper.TryCreateFile(DataPath, false);
+            GameHelper.TryCreateFile(_dataPath, false);
 
             StringBuilder builder = new StringBuilder();
             base.Elements.ForEach(property => builder.AppendLine($"{property.Name}={property.Value}"));
 
-            File.WriteAllText(DataPath, builder.ToString());
+            File.WriteAllText(_dataPath, builder.ToString());
         }
     }
 }
