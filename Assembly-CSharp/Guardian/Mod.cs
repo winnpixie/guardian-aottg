@@ -118,13 +118,13 @@ namespace Guardian
 
                 if (!latestVersion.Equals(Build))
                 {
-                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().WithColor("FF0000")}, please update!");
-                    Logger.Info("Download:");
+                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().WithColor("FF0000")}, please update using the launcher!");
+                    Logger.Info("Download (if you don't have it already):");
                     Logger.Info($"\t- {"https://cb.run/GuardianAoT".WithColor("0099FF")}");
 
                     try
                     {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Download the latest build @ [0099FF]https://cb.run/GuardianAoT[-]!";
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Please update using the launcher @ [0099FF]https://cb.run/GuardianAoT[-]!";
                     }
                     catch { }
                 }

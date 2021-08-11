@@ -7802,11 +7802,17 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     return;
                 }
-                // TODO: Mod
-                if (GUI.Button(new Rect(10, 190, 220, 150), Guardian.Utilities.ResourceHelper.Find<Texture2D>("Textures/patreon.png")))
+                // TODO: Mod, Ko-fi link
+                if (GUI.Button(new Rect(10, 185, 220, 75), Guardian.Utilities.ResourceHelper.Find<Texture2D>("Textures/kofi.png")))
+                {
+                    Application.OpenURL("https://www.ko-fi.com/alerithe");
+                }
+                // TODO: Mod, AoTTG-2 patreon link
+                if (GUI.Button(new Rect(10, 265, 220, 150), Guardian.Utilities.ResourceHelper.Find<Texture2D>("Textures/patreon.png")))
                 {
                     Application.OpenURL("https://www.patreon.com/aottg2");
                 }
+
 
                 float num7 = (float)Screen.width / 2f - 85f;
                 float num8 = (float)Screen.height / 2f;
