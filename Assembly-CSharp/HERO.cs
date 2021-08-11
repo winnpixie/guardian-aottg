@@ -5516,6 +5516,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             foreach (Renderer renderer4 in GetComponentsInChildren<Renderer>())
             {
                 renderer4.enabled = true;
+
+                if (renderer.name.Contains("speed") && (int)FengGameManagerMKII.Settings[93] == 1)
+                {
+                    renderer.enabled = false;
+                }
+
                 if (renderer4.name.Contains(FengGameManagerMKII.S[1])) // Hair
                 {
                     if (strArray[1].EndsWith(".jpg") || strArray[1].EndsWith(".png") || strArray[1].EndsWith(".jpeg"))
@@ -5562,7 +5568,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     if (oldEyeMaterial != null)
                     {
                         renderer4.material = oldEyeMaterial;
-                    } else
+                    }
+                    else
                     {
                         oldEyeMaterial = renderer4.material;
                     }
