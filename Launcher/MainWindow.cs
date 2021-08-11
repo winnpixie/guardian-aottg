@@ -69,6 +69,8 @@ namespace Launcher
                     outputLog.Text += "\nExtraction completed";
                 }
 
+                File.Delete(Environment.CurrentDirectory + "\\Guardian.zip");
+
                 startNoUpdate.PerformClick();
             }
             catch (Exception ex)
