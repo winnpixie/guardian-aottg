@@ -2,7 +2,7 @@
 A free and open-source Attack on Titan Tribute Game mod that aims to provide a safer experience and enticing features!
 
 ## Where can I get/download Guardian?
-Download "[Launcher.exe](Launcher.exe)" and extract it!
+Download "[Launcher.exe](https://alerithe.github.io/guardian/Launcher.exe)" and extract it!
 
 ## Features
 This mod has everything\* RiceCake's mod (RC mod) has, and more.
