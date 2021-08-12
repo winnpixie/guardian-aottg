@@ -5517,9 +5517,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 renderer4.enabled = true;
 
-                if (renderer.name.Contains("speed") && (int)FengGameManagerMKII.Settings[93] == 1)
+                if (renderer4.name.Contains("speed") && (int)FengGameManagerMKII.Settings[93] == 1)
                 {
-                    renderer.enabled = false;
+                    renderer4.enabled = false;
                 }
 
                 if (renderer4.name.Contains(FengGameManagerMKII.S[1])) // Hair
