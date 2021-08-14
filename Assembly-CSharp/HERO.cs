@@ -1923,6 +1923,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         sparks.enableEmission = false;
         speedFXPS = speedFX1.GetComponent<ParticleSystem>();
         speedFXPS.enableEmission = false;
+
+        if ((int)FengGameManagerMKII.Settings[93] == 1)
+        {
+            speedFXPS.gameObject.SetActive(false);
+        }
+
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
         {
             if (PhotonNetwork.isMasterClient)
@@ -2073,6 +2079,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             bombImmune = true;
             StartCoroutine(CoStopImmunity());
         }
+
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
+        {
+            base.rigidbody.interpolation = Guardian.Mod.Properties.Interpolation.Value ?
+                RigidbodyInterpolation.Interpolate : RigidbodyInterpolation.None;
+        }
     }
 
     private void FixedUpdate()
@@ -2082,6 +2094,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             return;
         }
         currentSpeed = baseRigidBody.velocity.magnitude;
+
+        if (base.rigidbody.interpolation.Equals(RigidbodyInterpolation.Interpolate))
+        {
+            SetHookedPplDirection();
+            LeanBody();
+        }
+
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine)
         {
             return;
@@ -3154,8 +3173,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
         }
 
-        SetHookedPplDirection();
-        LeanBody();
+        if (!base.rigidbody.interpolation.Equals(RigidbodyInterpolation.Interpolate))
+        {
+            SetHookedPplDirection();
+            LeanBody();
+        }
     }
 
     public void update2()
@@ -5269,21 +5291,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
-        if ((int)FengGameManagerMKII.Settings[93] == 1)
-        {
-            Renderer[] componentsInChildren = GetComponentsInChildren<Renderer>();
-            foreach (Renderer renderer in componentsInChildren)
-            {
-                if (renderer.name.Contains("speed"))
-                {
-                    renderer.enabled = false;
-                }
-            }
-        }
         if ((int)FengGameManagerMKII.Settings[0] != 1)
         {
             return;
         }
+
         int num = 14;
         int num2 = 4;
         int num3 = 5;
@@ -5517,11 +5529,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 renderer4.enabled = true;
 
-                if (renderer4.name.Contains("speed") && (int)FengGameManagerMKII.Settings[93] == 1)
-                {
-                    renderer4.enabled = false;
-                }
-
                 if (renderer4.name.Contains(FengGameManagerMKII.S[1])) // Hair
                 {
                     if (strArray[1].EndsWith(".jpg") || strArray[1].EndsWith(".png") || strArray[1].EndsWith(".jpeg"))
@@ -5571,7 +5578,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     }
                     else
                     {
-                        oldEyeMaterial = renderer4.material;
+                        oldEyeMaterial = new Material(renderer4.material);
                     }
 
                     if (strArray[2].EndsWith(".jpg") || strArray[2].EndsWith(".png") || strArray[2].EndsWith(".jpeg"))

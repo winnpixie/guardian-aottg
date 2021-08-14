@@ -2363,7 +2363,17 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     AddTextTopCenter("\n\nPRESS 1 TO ENTER GAME");
                 }
             }
+
+            // TODO: Mod
+            if (Guardian.Mod.Properties.Interpolation.Value)
+            {
+                AddTextTopCenter("\nInterpolation is [00FF00]ON[-]");
+            } else
+            {
+                AddTextTopCenter("\nInterpolation is [FF0000]OFF[-]");
+            }
         }
+
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && killInfoGO.Count > 0 && killInfoGO[0] == null)
         {
             killInfoGO.RemoveAt(0);
@@ -5695,7 +5705,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [RPC]
     private void ChatPM(string sender, string content, PhotonMessageInfo info)
     {
-        Chat(content, $"FROM [{info.sender.Id}]".WithColor("FFCC00"), info);
+        Chat(content, $"=> You".WithColor("FFCC00"), info);
     }
 
     [RPC]

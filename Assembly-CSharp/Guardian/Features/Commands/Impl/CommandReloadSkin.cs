@@ -10,6 +10,15 @@ namespace Guardian.Features.Commands.Impl
         {
             irc.AddLine("Reloading skins...");
 
+            FengGameManagerMKII.LinkHash = new ExitGames.Client.Photon.Hashtable[5]
+            {
+                new ExitGames.Client.Photon.Hashtable(),
+                new ExitGames.Client.Photon.Hashtable(),
+                new ExitGames.Client.Photon.Hashtable(),
+                new ExitGames.Client.Photon.Hashtable(),
+                new ExitGames.Client.Photon.Hashtable()
+            };
+
             if (PhotonNetwork.isMasterClient)
             {
                 foreach (TITAN titan in FengGameManagerMKII.Instance.titans)
@@ -17,7 +26,8 @@ namespace Guardian.Features.Commands.Impl
                     if (titan.abnormalType == TitanClass.Punk)
                     {
                         titan.GetComponent<TITAN_SETUP>().SetPunkHair2();
-                    } else
+                    }
+                    else
                     {
                         titan.GetComponent<TITAN_SETUP>().SetHair2();
                     }

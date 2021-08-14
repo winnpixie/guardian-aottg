@@ -15,7 +15,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "08122021";
+        public static string Build = "08142021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -202,7 +202,7 @@ namespace Guardian
                 Gamemodes.Current.OnPlayerJoin(player);
             }
 
-            Logger.Info($"[{player.Id}] " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00FF00"));
+            Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00FF00"));
         }
 
         void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -212,7 +212,7 @@ namespace Guardian
                 Gamemodes.Current.OnPlayerLeave(player);
             }
 
-            Logger.Info($"[{player.Id}] " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("FF0000"));
+            Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("FF0000"));
         }
 
         void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)

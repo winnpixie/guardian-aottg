@@ -20,7 +20,7 @@ namespace Guardian.Features.Properties
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
         public Property<bool> HideHookArrows = new Property<bool>("Player_HideHookArrows", new string[0], false);
         public Property<bool> HoldForBladeTrails = new Property<bool>("Player_HoldForBladeTrails", new string[0], true);
-        public Property<bool> Interpolation = new Property<bool>("Player_HoldForBladeTrails", new string[0], true);
+        public Property<bool> Interpolation = new Property<bool>("Player_Interpolation", new string[0], true);
         public Property<float> ReelOutScrollSmoothing = new Property<float>("Player_ReelOutScrollSmoothing", new string[0], 0.2f);
         public Property<float> OpacityOfOwnName = new Property<float>("Player_OpacityOfOwnName", new string[0], 1.0f);
         public Property<float> OpacityOfOtherNames = new Property<float>("Player_OpacityOfOtherNames", new string[0], 1.0f);
@@ -69,6 +69,20 @@ namespace Guardian.Features.Properties
             base.Add(AlternateBurst);
             base.Add(HideHookArrows);
             base.Add(HoldForBladeTrails);
+
+            Interpolation.OnValueChanged = () =>
+            {
+                HERO myHero = IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer ?
+                    (HERO)FengGameManagerMKII.Instance.heroes[0] : GameHelper.GetHero(PhotonNetwork.player);
+
+                if (myHero != null)
+                {
+                    myHero.rigidbody.interpolation = Interpolation.Value ? UnityEngine.RigidbodyInterpolation.Interpolate
+                        : UnityEngine.RigidbodyInterpolation.None;
+                }
+            };
+            base.Add(Interpolation);
+
             base.Add(ReelOutScrollSmoothing);
 
             OpacityOfOwnName.OnValueChanged = () =>
@@ -77,12 +91,9 @@ namespace Guardian.Features.Properties
                 {
                     foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
                     {
-                        if (hero.myNetWorkName != null)
+                        if (hero.photonView.isMine && hero.myNetWorkName != null)
                         {
-                            if (hero.photonView.isMine)
-                            {
-                                hero.myNetWorkName.GetComponent<UILabel>().alpha = Mod.Properties.OpacityOfOwnName.Value;
-                            }
+                            hero.myNetWorkName.GetComponent<UILabel>().alpha = Mod.Properties.OpacityOfOwnName.Value;
                         }
                     }
                 }
@@ -95,12 +106,9 @@ namespace Guardian.Features.Properties
                 {
                     foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
                     {
-                        if (hero.myNetWorkName != null)
+                        if (!hero.photonView.isMine && hero.myNetWorkName != null)
                         {
-                            if (!hero.photonView.isMine)
-                            {
-                                hero.myNetWorkName.GetComponent<UILabel>().alpha = Mod.Properties.OpacityOfOtherNames.Value;
-                            }
+                            hero.myNetWorkName.GetComponent<UILabel>().alpha = Mod.Properties.OpacityOfOtherNames.Value;
                         }
                     }
                 }

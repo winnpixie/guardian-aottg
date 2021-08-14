@@ -2829,7 +2829,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             case PunEvent.CloseConnection:
                 if (sender != null && sender.isMasterClient && !sender.isLocal)
                 {
-                    // PhotonNetwork.LeaveRoom();
+                    PhotonNetwork.LeaveRoom();
                 }
                 break;
             case PunEvent.Destroy:
