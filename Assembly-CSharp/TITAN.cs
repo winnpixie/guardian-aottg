@@ -88,7 +88,7 @@ public class TITAN : Photon.MonoBehaviour
     public int maxHealth;
     public bool rockthrow;
     public int skin;
-    public bool eye;
+    public bool hasEyes;
     public bool hasload;
     public GameObject healthLabel;
     public bool healthLabelEnabled;
@@ -3690,7 +3690,7 @@ public class TITAN : Photon.MonoBehaviour
     public void LoadSkin()
     {
         skin = 86;
-        eye = false;
+        hasEyes = false;
         if ((IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine) && (int)FengGameManagerMKII.Settings[1] == 1)
         {
             int num = (int)UnityEngine.Random.Range(86f, 90f);
@@ -3704,9 +3704,9 @@ public class TITAN : Photon.MonoBehaviour
             skin = num;
             if (text2.EndsWith(".jpg") || text2.EndsWith(".png") || text2.EndsWith(".jpeg"))
             {
-                eye = true;
+                hasEyes = true;
             }
-            GetComponent<TITAN_SETUP>().SetVar(skin, eye);
+            GetComponent<TITAN_SETUP>().SetVar(skin, hasEyes);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 StartCoroutine(CoLoadSkin(text, text2));

@@ -15,7 +15,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "08142021";
+        public static string Build = "08182021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 

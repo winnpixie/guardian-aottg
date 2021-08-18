@@ -2942,7 +2942,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         string content = string.Empty;
         if (IgnoreList.Contains(player.Id))
         {
-            content += "[990000][X][-] ";
+            content += "[990000]X[-] ";
         }
         if (player.isMasterClient)
         {
@@ -2960,7 +2960,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         if (player.customProperties[PhotonPlayerProperty.Dead] == null)
         {
-            content += $"[FF0000]({(player.Id < 0 ? "Connecting" : "Invisible")})[-] ";
+            content += $"[FF0000]({(player.Id < 0 ? "Joining" : "Invisible")})[-] ";
         }
         else if (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]))
         {

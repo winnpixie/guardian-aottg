@@ -19,6 +19,8 @@ namespace Guardian.UI
 
         public static void HandleWindowFocusEvent(bool hasFocus)
         {
+            // Exclusive Fullscreen requires more testing before being properly implemented again.
+            /*
             if (hasFocus)
             {
                 if (s_isFullscreen)
@@ -27,7 +29,6 @@ namespace Guardian.UI
 
                     ShowWindow(GetActiveWindow(), 1); // SW_SHOWNORMAL
 
-                    Screen.fullScreen = false;
                     Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
 
                     GameObject mainCam = GameObject.Find("MainCamera");
@@ -47,7 +48,7 @@ namespace Guardian.UI
 
                     ShowWindow(GetActiveWindow(), 2); // SW_SHOWMINIMIZED
                 }
-            }
+            }*/
         }
 
         private static IEnumerator CoMarkHudDirty(IN_GAME_MAIN_CAMERA mainCamera)

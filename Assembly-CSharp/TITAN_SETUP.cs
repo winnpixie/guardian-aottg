@@ -25,15 +25,15 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         hair_go_ref.transform.parent = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck/head").transform;
     }
 
-    public void SetFacialTexture(GameObject go, int id)
+    public void SetEyeTexture(GameObject eyeGo, int eyeIndex)
     {
-        if (id >= 0)
+        if (eyeIndex >= 0)
         {
             float num = 0.25f;
             float num2 = 0.125f;
-            float x = num2 * (float)(int)((float)id / 8f);
-            float y = (0f - num) * (float)(id % 4);
-            go.renderer.material.mainTextureOffset = new Vector2(x, y);
+            float x = num2 * (float)(int)((float)eyeIndex / 8f);
+            float y = (0f - num) * (float)(eyeIndex % 4);
+            eyeGo.renderer.material.mainTextureOffset = new Vector2(x, y);
         }
     }
 
@@ -41,10 +41,10 @@ public class TITAN_SETUP : Photon.MonoBehaviour
     {
         if ((int)FengGameManagerMKII.Settings[1] == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine))
         {
-            int num = Random.Range(0, 9);
-            if (num == 3)
+            int hairIndex = Random.Range(0, 9);
+            if (hairIndex == 3)
             {
-                num = 9;
+                hairIndex = 9;
             }
             int num2 = skin - 70;
             if ((int)FengGameManagerMKII.Settings[32] == 1)
@@ -53,54 +53,40 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             }
             if ((int)FengGameManagerMKII.Settings[num2] >= 0)
             {
-                num = (int)FengGameManagerMKII.Settings[num2];
+                hairIndex = (int)FengGameManagerMKII.Settings[num2];
             }
             string text = (string)FengGameManagerMKII.Settings[num2 + 5];
-            int num3 = Random.Range(1, 8);
+            int eyeIndex = Random.Range(1, 8);
             if (haseye)
             {
-                num3 = 0;
+                eyeIndex = 0;
             }
-            bool flag = false;
+            bool isSkinned = false;
             if (text.EndsWith(".jpg") || text.EndsWith(".png") || text.EndsWith(".jpeg"))
             {
-                flag = true;
+                isSkinned = true;
             }
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
             {
-                if (flag)
+                if (isSkinned)
                 {
-                    object[] parameters = new object[3]
-                    {
-                        num,
-                        num3,
-                        text
-                    };
-                    base.photonView.RPC("setHairRPC2", PhotonTargets.AllBuffered, parameters);
+                    base.photonView.RPC("setHairRPC2", PhotonTargets.AllBuffered, hairIndex, eyeIndex, text);
                 }
                 else
                 {
                     Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
-                    object[] parameters = new object[5]
-                    {
-                        num,
-                        num3,
-                        hair_color.r,
-                        hair_color.g,
-                        hair_color.b
-                    };
-                    base.photonView.RPC("setHairPRC", PhotonTargets.AllBuffered, parameters);
+                    base.photonView.RPC("setHairPRC", PhotonTargets.AllBuffered, hairIndex, eyeIndex, hair_color.r, hair_color.g, hair_color.b);
                 }
             }
             else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
-                if (flag)
+                if (isSkinned)
                 {
-                    StartCoroutine(loadskinE(num, num3, text));
+                    StartCoroutine(loadskinE(hairIndex, eyeIndex, text));
                     return;
                 }
                 Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
-                setHairPRC(num, num3, hair_color.r, hair_color.g, hair_color.b);
+                setHairPRC(hairIndex, eyeIndex, hair_color.r, hair_color.g, hair_color.b);
             }
         }
         else
@@ -114,47 +100,35 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             gameObject.transform.rotation = hair_go_ref.transform.rotation;
             gameObject.transform.localScale = hair_go_ref.transform.localScale;
             gameObject.renderer.material = CharacterMaterials.materials[hair.texture];
-            int num = Random.Range(1, 4);
-            if (num == 1)
+            int hairColorIndex = Random.Range(1, 4);
+            switch(hairColorIndex)
             {
-                gameObject.renderer.material.color = FengColor.PunkHair1;
-            }
-            if (num == 2)
-            {
-                gameObject.renderer.material.color = FengColor.PunkHair2;
-            }
-            if (num == 3)
-            {
-                gameObject.renderer.material.color = FengColor.PunkHair3;
+                case 1:
+                    gameObject.renderer.material.color = FengColor.PunkHair1;
+                    break;
+                case 2:
+                    gameObject.renderer.material.color = FengColor.PunkHair2;
+                    break;
+                case 3:
+                    gameObject.renderer.material.color = FengColor.PunkHair3;
+                    break;
             }
             part_hair = gameObject;
-            SetFacialTexture(eye, 0);
+            SetEyeTexture(eye, 0);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
             {
-                PhotonView photonView = base.photonView;
-                object[] obj = new object[5]
-                {
-                hairType,
-                0,
-                null,
-                null,
-                null
-                };
                 Color color = part_hair.renderer.material.color;
-                obj[2] = color.r;
-                obj[3] = color.g;
-                obj[4] = color.b;
-                photonView.RPC("setHairPRC", PhotonTargets.OthersBuffered, obj);
+                base.photonView.RPC("setHairPRC", PhotonTargets.OthersBuffered, hairType, 0, color.r, color.g, color.b);
             }
         }
     }
 
     [RPC]
-    private void setHairPRC(int type, int eye_type, float c1, float c2, float c3)
+    private void setHairPRC(int hairIndex, int eyeIndex, float hairR, float hairG, float hairB)
     {
         Object.Destroy(part_hair);
-        hair = CostumeHair.MaleHairs[type];
-        hairType = type;
+        hair = CostumeHair.MaleHairs[hairIndex];
+        this.hairType = hairIndex;
         if (hair.hair.Length > 0)
         {
             GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.hair));
@@ -163,20 +137,20 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             gameObject.transform.rotation = hair_go_ref.transform.rotation;
             gameObject.transform.localScale = hair_go_ref.transform.localScale;
             gameObject.renderer.material = CharacterMaterials.materials[hair.texture];
-            gameObject.renderer.material.color = new Color(c1, c2, c3);
+            gameObject.renderer.material.color = new Color(hairR, hairG, hairB);
             part_hair = gameObject;
         }
-        SetFacialTexture(eye, eye_type);
+        SetEyeTexture(eye, eyeIndex);
     }
 
     public void SetHair2()
     {
         if ((int)FengGameManagerMKII.Settings[1] == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine))
         {
-            int num = Random.Range(0, 9);
-            if (num == 3)
+            int hairIndex = Random.Range(0, 9);
+            if (hairIndex == 3)
             {
-                num = 9;
+                hairIndex = 9;
             }
             int num2 = skin - 70;
             if ((int)FengGameManagerMKII.Settings[32] == 1)
@@ -185,70 +159,56 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             }
             if ((int)FengGameManagerMKII.Settings[num2] >= 0)
             {
-                num = (int)FengGameManagerMKII.Settings[num2];
+                hairIndex = (int)FengGameManagerMKII.Settings[num2];
             }
             string text = (string)FengGameManagerMKII.Settings[num2 + 5];
-            int num3 = Random.Range(1, 8);
+            int eyeIndex = Random.Range(1, 8);
             if (haseye)
             {
-                num3 = 0;
+                eyeIndex = 0;
             }
-            bool flag = false;
+            bool isSkinned = false;
             if (text.EndsWith(".jpg") || text.EndsWith(".png") || text.EndsWith(".jpeg"))
             {
-                flag = true;
+                isSkinned = true;
             }
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
             {
-                if (flag)
+                if (isSkinned)
                 {
-                    object[] parameters = new object[3]
-                    {
-                        num,
-                        num3,
-                        text
-                    };
-                    base.photonView.RPC("setHairRPC2", PhotonTargets.AllBuffered, parameters);
+                    base.photonView.RPC("setHairRPC2", PhotonTargets.AllBuffered, hairIndex, eyeIndex, text);
                 }
                 else
                 {
                     Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
-                    object[] parameters = new object[5]
-                    {
-                        num,
-                        num3,
-                        hair_color.r,
-                        hair_color.g,
-                        hair_color.b
-                    };
-                    base.photonView.RPC("setHairPRC", PhotonTargets.AllBuffered, parameters);
+                    base.photonView.RPC("setHairPRC", PhotonTargets.AllBuffered, hairIndex, eyeIndex, hair_color.r, hair_color.g, hair_color.b);
                 }
             }
             else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
-                if (flag)
+                if (isSkinned)
                 {
-                    StartCoroutine(loadskinE(num, num3, text));
+                    StartCoroutine(loadskinE(hairIndex, eyeIndex, text));
                     return;
                 }
                 Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
-                setHairPRC(num, num3, hair_color.r, hair_color.g, hair_color.b);
+                setHairPRC(hairIndex, eyeIndex, hair_color.r, hair_color.g, hair_color.b);
             }
         }
         else
         {
-            int num = Random.Range(0, CostumeHair.MaleHairs.Length);
-            if (num == 3)
+            int hairIndex = Random.Range(0, CostumeHair.MaleHairs.Length);
+            if (hairIndex == 3)
             {
-                num = 9;
+                hairIndex = 9;
             }
             Object.Destroy(part_hair);
-            hairType = num;
-            hair = CostumeHair.MaleHairs[num];
+            this.hairType = hairIndex;
+            hair = CostumeHair.MaleHairs[hairIndex];
             if (hair.hair == string.Empty)
             {
                 hair = CostumeHair.MaleHairs[9];
-                hairType = 9;
+                this.hairType = 9;
             }
             part_hair = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.hair));
             part_hair.transform.parent = hair_go_ref.transform.parent;
@@ -257,14 +217,14 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             part_hair.transform.localScale = hair_go_ref.transform.localScale;
             part_hair.renderer.material = CharacterMaterials.materials[hair.texture];
             part_hair.renderer.material.color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
-            int num4 = Random.Range(1, 8);
-            SetFacialTexture(eye, num4);
+            int eyeIndex = Random.Range(1, 8);
+            SetEyeTexture(eye, eyeIndex);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
             {
                 object[] parameters = new object[5]
                 {
-                    hairType,
-                    num4,
+                    this.hairType,
+                    eyeIndex,
                     part_hair.renderer.material.color.r,
                     part_hair.renderer.material.color.g,
                     part_hair.renderer.material.color.b
@@ -283,12 +243,12 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         }
     }
 
-    public IEnumerator loadskinE(int hair, int eye, string hairlink)
+    public IEnumerator loadskinE(int hairIndex, int eyeIndex, string hairLink)
     {
         bool unload = false;
         Object.Destroy(part_hair);
-        this.hair = CostumeHair.MaleHairs[hair];
-        hairType = hair;
+        this.hair = CostumeHair.MaleHairs[hairIndex];
+        hairType = hairIndex;
         if (this.hair.hair.Length > 0)
         {
             GameObject obj2 = (GameObject)Object.Instantiate(Resources.Load("Character/" + this.hair.hair));
@@ -302,11 +262,11 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             {
                 flag = false;
             }
-            if (hairlink.EndsWith(".jpg") || hairlink.EndsWith(".png") || hairlink.EndsWith(".jpeg"))
+            if (hairLink.EndsWith(".jpg") || hairLink.EndsWith(".png") || hairLink.EndsWith(".jpeg"))
             {
-                if (!FengGameManagerMKII.LinkHash[0].ContainsKey(hairlink))
+                if (!FengGameManagerMKII.LinkHash[0].ContainsKey(hairLink))
                 {
-                    WWW link = Guardian.Utilities.GameHelper.CreateWWW(hairlink);
+                    WWW link = Guardian.Utilities.GameHelper.CreateWWW(hairLink);
                     if (link != null)
                     {
                         yield return link;
@@ -314,29 +274,29 @@ public class TITAN_SETUP : Photon.MonoBehaviour
                         // TODO: Old limit: 200KB
                         Texture2D tex = RCextensions.LoadImage(link, flag, 300000);
                         link.Dispose();
-                        if (!FengGameManagerMKII.LinkHash[0].ContainsKey(hairlink))
+                        if (!FengGameManagerMKII.LinkHash[0].ContainsKey(hairLink))
                         {
                             unload = true;
                             obj2.renderer.material.mainTexture = tex;
-                            FengGameManagerMKII.LinkHash[0].Add(hairlink, obj2.renderer.material);
+                            FengGameManagerMKII.LinkHash[0].Add(hairLink, obj2.renderer.material);
                         }
-                        obj2.renderer.material = (Material)FengGameManagerMKII.LinkHash[0][hairlink];
+                        obj2.renderer.material = (Material)FengGameManagerMKII.LinkHash[0][hairLink];
                     }
                 }
                 else
                 {
-                    obj2.renderer.material = (Material)FengGameManagerMKII.LinkHash[0][hairlink];
+                    obj2.renderer.material = (Material)FengGameManagerMKII.LinkHash[0][hairLink];
                 }
             }
-            else if (hairlink.ToLower() == "transparent")
+            else if (hairLink.ToLower() == "transparent")
             {
                 obj2.renderer.enabled = false;
             }
             part_hair = obj2;
         }
-        if (eye >= 0)
+        if (eyeIndex >= 0)
         {
-            SetFacialTexture(this.eye, eye);
+            SetEyeTexture(this.eye, eyeIndex);
         }
         if (unload)
         {
@@ -344,9 +304,9 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         }
     }
 
-    public void SetVar(int skin, bool haseye)
+    public void SetVar(int skin, bool hasEyes)
     {
         this.skin = skin;
-        this.haseye = haseye;
+        this.haseye = hasEyes;
     }
 }
