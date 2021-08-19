@@ -21,7 +21,7 @@ namespace Launcher
             _currentDirectory = Environment.CurrentDirectory;
         }
 
-        private void updateAndStart_Click(object sender, EventArgs e)
+        private async void updateAndStart_Click(object sender, EventArgs e)
         {
             outputLog.Text = "Beginning download of Guardian.zip";
 
@@ -35,17 +35,17 @@ namespace Launcher
 
                 using (HttpClient client = new HttpClient())
                 {
-                    outputLog.Text += $"\nLatest Version : {client.GetStringAsync("https://summie.tk/GUARDIAN_BUILD.TXT").Result}";
+                    string latestVersion = await client.GetStringAsync("https://summie.tk/GUARDIAN_BUILD.TXT");
+                    outputLog.Text += $"\nLatest Version : {latestVersion}";
 
                     outputLog.Text += "\nDownloading Guardian.zip from https://alerithe.github.io/guardian/Guardian.zip";
                     using (FileStream fs = updateFileRef.OpenWrite())
                     {
-                        byte[] data = client.GetByteArrayAsync("https://alerithe.github.io/guardian/Guardian.zip").Result;
+                        byte[] data = await client.GetByteArrayAsync("https://alerithe.github.io/guardian/Guardian.zip");
                         fs.Write(data, 0, data.Length);
                     }
 
                     outputLog.Text += "\nDownload successful";
-
                 }
 
                 using (ZipArchive archive = ZipFile.OpenRead(_currentDirectory + "\\Guardian.zip"))
@@ -88,7 +88,7 @@ namespace Launcher
 
         private void startNoUpdate_Click(object sender, EventArgs e)
         {
-            outputLog.Text = "\nLaunching Guardian.exe";
+            outputLog.Text += "\nLaunching Guardian.exe";
 
             try
             {
