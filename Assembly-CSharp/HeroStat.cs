@@ -106,7 +106,7 @@ public class HeroStat
 
             // AHSS default
             HeroStat ahssDefault = new HeroStat();
-            sasha.Name = "AHSS";
+            ahssDefault.Name = "AHSS";
             ahssDefault.SkillId = "sasha";
             ahssDefault.Speed = 100;
             ahssDefault.Gas = 100;

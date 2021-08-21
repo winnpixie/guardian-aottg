@@ -7,11 +7,11 @@ public class CharacterStatComponent : MonoBehaviour
 
     public void nextOption()
     {
-        manager.GetComponent<CustomCharacterManager>().nextStatOption(type);
+        manager.GetComponent<CustomCharacterManager>().NextStatOption(type);
     }
 
     public void prevOption()
     {
-        manager.GetComponent<CustomCharacterManager>().prevStatOption(type);
+        manager.GetComponent<CustomCharacterManager>().PreviousStatOption(type);
     }
 }

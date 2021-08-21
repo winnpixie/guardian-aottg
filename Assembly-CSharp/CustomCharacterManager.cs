@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CustomCharacterManager : MonoBehaviour
 {
-    private HERO_SETUP setup;
+    public HERO_SETUP setup;
     public GameObject character;
     public GameObject labelSex;
     public GameObject labelEye;
@@ -53,7 +53,7 @@ public class CustomCharacterManager : MonoBehaviour
         setup = character.GetComponent<HERO_SETUP>();
         setup.Init();
         setup.myCostume = new HeroCostume();
-        copyCostume(HeroCostume.Costumes[2], setup.myCostume);
+        CopyCostume(HeroCostume.Costumes[2], setup.myCostume);
         setup.myCostume.SetMesh();
         setup.CreateCharacterComponent();
         sexOption = new Sex[2]
@@ -109,10 +109,10 @@ public class CustomCharacterManager : MonoBehaviour
             "petra"
         };
         CostumeDataToMyID();
-        freshLabel();
+        RefreshLabel();
     }
 
-    private int toNext(int id, int Count, int start = 0)
+    private int ToNext(int id, int Count, int start = 0)
     {
         id++;
         if (id >= Count)
@@ -123,7 +123,7 @@ public class CustomCharacterManager : MonoBehaviour
         return id;
     }
 
-    private int toPrev(int id, int Count, int start = 0)
+    private int ToPrevious(int id, int Count, int start = 0)
     {
         id--;
         if (id < start)
@@ -134,45 +134,45 @@ public class CustomCharacterManager : MonoBehaviour
         return id;
     }
 
-    public void nextOption(CreatePart part)
+    public void NextOption(CreatePart part)
     {
         if (part == CreatePart.Preset)
         {
-            presetId = toNext(presetId, HeroCostume.Costumes.Length);
-            copyCostume(HeroCostume.Costumes[presetId], setup.myCostume, init: true);
+            presetId = ToNext(presetId, HeroCostume.Costumes.Length);
+            CopyCostume(HeroCostume.Costumes[presetId], setup.myCostume, init: true);
             CostumeDataToMyID();
             setup.DeleteCharacterComponent();
             setup.CreateCharacterComponent();
             labelPreset.GetComponent<UILabel>().text = HeroCostume.Costumes[presetId].name;
-            freshLabel();
+            RefreshLabel();
         }
         else
         {
-            toOption2(part, next: true);
+            ToOption2(part, next: true);
         }
     }
 
-    public void prevOption(CreatePart part)
+    public void PreviousOption(CreatePart part)
     {
         if (part == CreatePart.Preset)
         {
-            presetId = toPrev(presetId, HeroCostume.Costumes.Length);
-            copyCostume(HeroCostume.Costumes[presetId], setup.myCostume, init: true);
+            presetId = ToPrevious(presetId, HeroCostume.Costumes.Length);
+            CopyCostume(HeroCostume.Costumes[presetId], setup.myCostume, init: true);
             CostumeDataToMyID();
             setup.DeleteCharacterComponent();
             setup.CreateCharacterComponent();
             labelPreset.GetComponent<UILabel>().text = HeroCostume.Costumes[presetId].name;
-            freshLabel();
+            RefreshLabel();
         }
         else
         {
-            toOption2(part, next: false);
+            ToOption2(part, next: false);
         }
     }
 
-    private void copyCostume(HeroCostume from, HeroCostume to, bool init = false)
+    private void CopyCostume(HeroCostume from, HeroCostume to, bool init = false)
     {
-        copyBodyCostume(from, to);
+        CopyBodyCostume(from, to);
         to.sex = from.sex;
         to.hair_mesh = from.hair_mesh;
         to.hair_1_mesh = from.hair_1_mesh;
@@ -205,6 +205,7 @@ public class CustomCharacterManager : MonoBehaviour
         to.mesh_3dmg_belt = from.mesh_3dmg_belt;
         to.weapon_l_mesh = from.weapon_l_mesh;
         to.weapon_r_mesh = from.weapon_r_mesh;
+
         if (init)
         {
             to.stat = new HeroStat();
@@ -225,7 +226,7 @@ public class CustomCharacterManager : MonoBehaviour
         }
     }
 
-    private void copyBodyCostume(HeroCostume from, HeroCostume to)
+    private void CopyBodyCostume(HeroCostume from, HeroCostume to)
     {
         to.arm_l_mesh = from.arm_l_mesh;
         to.arm_r_mesh = from.arm_r_mesh;
@@ -252,7 +253,7 @@ public class CustomCharacterManager : MonoBehaviour
             float g = color.g;
             Color color2 = setup.part_hair.renderer.material.color;
             myCostume.hair_color = new Color(value, g, color2.b);
-            setHairColor();
+            SetHairColor();
         }
     }
 
@@ -265,7 +266,7 @@ public class CustomCharacterManager : MonoBehaviour
             float r = color.r;
             Color color2 = setup.part_hair.renderer.material.color;
             myCostume.hair_color = new Color(r, value, color2.b);
-            setHairColor();
+            SetHairColor();
         }
     }
 
@@ -278,11 +279,11 @@ public class CustomCharacterManager : MonoBehaviour
             float r = color.r;
             Color color2 = setup.part_hair.renderer.material.color;
             myCostume.hair_color = new Color(r, color2.g, value);
-            setHairColor();
+            SetHairColor();
         }
     }
 
-    private void setHairColor()
+    private void SetHairColor()
     {
         if (setup.part_hair != null)
         {
@@ -294,7 +295,7 @@ public class CustomCharacterManager : MonoBehaviour
         }
     }
 
-    private void freshLabel()
+    private void RefreshLabel()
     {
         labelSex.GetComponent<UILabel>().text = sexOption[sexId].ToString();
         labelEye.GetComponent<UILabel>().text = "eye_" + eyeId.ToString();
@@ -305,7 +306,7 @@ public class CustomCharacterManager : MonoBehaviour
         labelCostume.GetComponent<UILabel>().text = "costume_" + costumeId.ToString();
         labelCape.GetComponent<UILabel>().text = "cape_" + capeId.ToString();
         labelDivision.GetComponent<UILabel>().text = divisionOption[divisionId].ToString();
-        labelPOINT.GetComponent<UILabel>().text = "Points: " + (400 - calTotalPoints()).ToString();
+        labelPOINT.GetComponent<UILabel>().text = "Points: " + (400 - CalculateStatPoints()).ToString();
         labelSPD.GetComponent<UILabel>().text = "SPD " + setup.myCostume.stat.Speed.ToString();
         labelGAS.GetComponent<UILabel>().text = "GAS " + setup.myCostume.stat.Gas.ToString();
         labelBLA.GetComponent<UILabel>().text = "BLA " + setup.myCostume.stat.Blade.ToString();
@@ -406,50 +407,50 @@ public class CustomCharacterManager : MonoBehaviour
         skillId = num;
     }
 
-    public void nextStatOption(CreateStat type)
+    public void NextStatOption(CreateStat type)
     {
         if (type == CreateStat.Skill)
         {
-            skillId = toNext(skillId, skillOption.Length);
+            skillId = ToNext(skillId, skillOption.Length);
             setup.myCostume.stat.SkillId = skillOption[skillId];
             character.GetComponent<CharacterCreateAnimationControl>().playAttack(setup.myCostume.stat.SkillId);
-            freshLabel();
+            RefreshLabel();
         }
-        else if (calTotalPoints() < 400)
+        else if (CalculateStatPoints() < 400)
         {
-            setStatPoint(type, 1);
+            AddStatPoint(type, 1);
         }
     }
 
-    public void prevStatOption(CreateStat type)
+    public void PreviousStatOption(CreateStat type)
     {
         if (type == CreateStat.Skill)
         {
-            skillId = toPrev(skillId, skillOption.Length);
+            skillId = ToPrevious(skillId, skillOption.Length);
             setup.myCostume.stat.SkillId = skillOption[skillId];
             character.GetComponent<CharacterCreateAnimationControl>().playAttack(setup.myCostume.stat.SkillId);
-            freshLabel();
+            RefreshLabel();
         }
         else
         {
-            setStatPoint(type, -1);
+            AddStatPoint(type, -1);
         }
     }
 
-    private void setStatPoint(CreateStat type, int pt)
+    public void AddStatPoint(CreateStat type, int pt)
     {
         switch (type)
         {
-            case CreateStat.SPD:
+            case CreateStat.Speed:
                 setup.myCostume.stat.Speed += pt;
                 break;
-            case CreateStat.GAS:
+            case CreateStat.Gas:
                 setup.myCostume.stat.Gas += pt;
                 break;
-            case CreateStat.BLA:
+            case CreateStat.Blades:
                 setup.myCostume.stat.Blade += pt;
                 break;
-            case CreateStat.ACL:
+            case CreateStat.Acceleration:
                 setup.myCostume.stat.Accel += pt;
                 break;
         }
@@ -459,10 +460,32 @@ public class CustomCharacterManager : MonoBehaviour
         setup.myCostume.stat.Blade = Mathf.Clamp(setup.myCostume.stat.Blade, 75, 125);
         setup.myCostume.stat.Accel = Mathf.Clamp(setup.myCostume.stat.Accel, 75, 125);
 
-        freshLabel();
+        RefreshLabel();
     }
 
-    private int calTotalPoints()
+    // TODO: Mod
+    public void SetStatPoint(CreateStat type, int pt)
+    {
+        switch (type)
+        {
+            case CreateStat.Speed:
+                setup.myCostume.stat.Speed = pt;
+                break;
+            case CreateStat.Gas:
+                setup.myCostume.stat.Gas = pt;
+                break;
+            case CreateStat.Blades:
+                setup.myCostume.stat.Blade = pt;
+                break;
+            case CreateStat.Acceleration:
+                setup.myCostume.stat.Accel = pt;
+                break;
+        }
+
+        RefreshLabel();
+    }
+
+    private int CalculateStatPoints()
     {
         if (setup.myCostume != null)
         {
@@ -485,12 +508,12 @@ public class CustomCharacterManager : MonoBehaviour
         HeroCostume heroCostume = CostumeConverter.FromLocalData(currentSlot);
         if (heroCostume != null)
         {
-            copyCostume(heroCostume, setup.myCostume);
+            CopyCostume(heroCostume, setup.myCostume);
             setup.DeleteCharacterComponent();
             setup.CreateCharacterComponent();
         }
         CostumeDataToMyID();
-        freshLabel();
+        RefreshLabel();
     }
 
     public void OnSoltChange(string id)
@@ -498,12 +521,12 @@ public class CustomCharacterManager : MonoBehaviour
         currentSlot = id;
     }
 
-    public void toOption2(CreatePart part, bool next)
+    public void ToOption2(CreatePart part, bool next)
     {
         switch (part)
         {
             case CreatePart.Sex:
-                sexId = ((!next) ? toPrev(sexId, sexOption.Length) : toNext(sexId, sexOption.Length));
+                sexId = ((!next) ? ToPrevious(sexId, sexOption.Length) : ToNext(sexId, sexOption.Length));
                 if (sexId != 0)
                 {
                     costumeId = 0;
@@ -512,7 +535,7 @@ public class CustomCharacterManager : MonoBehaviour
                 {
                     costumeId = 11;
                 }
-                copyCostume(costumeOption[costumeId], setup.myCostume, init: true);
+                CopyCostume(costumeOption[costumeId], setup.myCostume, init: true);
                 setup.myCostume.sex = sexOption[sexId];
                 character.GetComponent<CharacterCreateAnimationControl>().toStand();
                 CostumeDataToMyID();
@@ -520,12 +543,12 @@ public class CustomCharacterManager : MonoBehaviour
                 setup.CreateCharacterComponent();
                 break;
             case CreatePart.Eye:
-                eyeId = ((!next) ? toPrev(eyeId, eyeOption.Length) : toNext(eyeId, eyeOption.Length));
+                eyeId = ((!next) ? ToPrevious(eyeId, eyeOption.Length) : ToNext(eyeId, eyeOption.Length));
                 setup.myCostume.eye_texture_id = eyeId;
                 setup.SetFaceTexture(setup.part_eye, eyeOption[eyeId]);
                 break;
             case CreatePart.Face:
-                faceId = ((!next) ? toPrev(faceId, faceOption.Length) : toNext(faceId, faceOption.Length));
+                faceId = ((!next) ? ToPrevious(faceId, faceOption.Length) : ToNext(faceId, faceOption.Length));
                 setup.myCostume.beard_texture_id = faceOption[faceId];
                 if (setup.part_face == null)
                 {
@@ -534,7 +557,7 @@ public class CustomCharacterManager : MonoBehaviour
                 setup.SetFaceTexture(setup.part_face, faceOption[faceId]);
                 break;
             case CreatePart.Glass:
-                glassId = ((!next) ? toPrev(glassId, glassOption.Length) : toNext(glassId, glassOption.Length));
+                glassId = ((!next) ? ToPrevious(glassId, glassOption.Length) : ToNext(glassId, glassOption.Length));
                 setup.myCostume.glass_texture_id = glassOption[glassId];
                 if (setup.part_glass == null)
                 {
@@ -543,7 +566,7 @@ public class CustomCharacterManager : MonoBehaviour
                 setup.SetFaceTexture(setup.part_glass, glassOption[glassId]);
                 break;
             case CreatePart.Hair:
-                hairId = ((!next) ? toPrev(hairId, hairOption.Length) : toNext(hairId, hairOption.Length));
+                hairId = ((!next) ? ToPrevious(hairId, hairOption.Length) : ToNext(hairId, hairOption.Length));
                 if (sexId != 0)
                 {
                     setup.myCostume.hair_mesh = CostumeHair.FemaleHairs[hairOption[hairId]].hair;
@@ -557,10 +580,10 @@ public class CustomCharacterManager : MonoBehaviour
                     setup.myCostume.hairInfo = CostumeHair.MaleHairs[hairOption[hairId]];
                 }
                 setup.CreateHair();
-                setHairColor();
+                SetHairColor();
                 break;
             case CreatePart.Skin:
-                skinId = ((!next) ? toPrev(skinId, 2) : toNext(skinId, 2));
+                skinId = ((!next) ? ToPrevious(skinId, 2) : ToNext(skinId, 2));
                 if (setup.myCostume.uniform_type == UNIFORM_TYPE.CasualAHSS && skinId == 0)
                 {
                     skinId = 2;
@@ -573,12 +596,13 @@ public class CustomCharacterManager : MonoBehaviour
             case CreatePart.Costume:
                 if (setup.myCostume.uniform_type != UNIFORM_TYPE.CasualAHSS)
                 {
-                    costumeId = !next ? toPrev(costumeId, 24) : toNext(costumeId, 24);
-                } else
+                    costumeId = !next ? ToPrevious(costumeId, 24) : ToNext(costumeId, 24);
+                }
+                else
                 {
                     costumeId = 25;
                 }
-                copyBodyCostume(costumeOption[costumeId], setup.myCostume);
+                CopyBodyCostume(costumeOption[costumeId], setup.myCostume);
                 setup.myCostume.SetMesh();
                 setup.myCostume.setTexture();
                 setup.CreateUpperBody();
@@ -587,19 +611,19 @@ public class CustomCharacterManager : MonoBehaviour
                 setup.CreateLowerBody();
                 break;
             case CreatePart.Cape:
-                capeId = ((!next) ? toPrev(capeId, capeOption.Length) : toNext(capeId, capeOption.Length));
+                capeId = ((!next) ? ToPrevious(capeId, capeOption.Length) : ToNext(capeId, capeOption.Length));
                 setup.myCostume.cape = (capeId == 1);
                 setup.myCostume.setCape();
                 setup.myCostume.setTexture();
                 setup.CreateCape();
                 break;
             case CreatePart.Division:
-                divisionId = ((!next) ? toPrev(divisionId, divisionOption.Length) : toNext(divisionId, divisionOption.Length));
+                divisionId = ((!next) ? ToPrevious(divisionId, divisionOption.Length) : ToNext(divisionId, divisionOption.Length));
                 setup.myCostume.division = divisionOption[divisionId];
                 setup.myCostume.setTexture();
                 setup.CreateUpperBody();
                 break;
         }
-        freshLabel();
+        RefreshLabel();
     }
 }

@@ -2485,7 +2485,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     if (IN_GAME_MAIN_CAMERA.SingleCharacter == "SET 1" || IN_GAME_MAIN_CAMERA.SingleCharacter == "SET 2" || IN_GAME_MAIN_CAMERA.SingleCharacter == "SET 3")
                     {
                         HeroCostume heroCostume = CostumeConverter.FromLocalData(IN_GAME_MAIN_CAMERA.SingleCharacter);
-                        heroCostume.CheckStats();
                         CostumeConverter.ToLocalData(heroCostume, IN_GAME_MAIN_CAMERA.SingleCharacter);
                         setup.Init();
                         if (heroCostume != null)
@@ -2535,7 +2534,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 if (id == "SET 1" || id == "SET 2" || id == "SET 3")
                 {
                     HeroCostume heroCostume2 = CostumeConverter.FromLocalData(id);
-                    heroCostume2.CheckStats();
                     CostumeConverter.ToLocalData(heroCostume2, id);
                     setup.Init();
                     if (heroCostume2 != null)
@@ -2745,7 +2743,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         int num = Mathf.Min(racingResult.Count, 10);
         for (int i = 0; i < num; i++)
         {
-            localRacingResult += "Rank " + (i + 1) + ": ";
+            localRacingResult += "[FFFFFF]Rank " + (i + 1) + ": ";
             localRacingResult += (racingResult[i] as RacingResult).name;
             localRacingResult += " - " + ((racingResult[i] as RacingResult).time * 100f * 0.01f) + '\n';
         }
@@ -5351,7 +5349,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         if (text == "SET 1" || text == "SET 2" || text == "SET 3")
         {
             HeroCostume heroCostume = CostumeConverter.FromLocalData(text);
-            heroCostume.CheckStats();
             CostumeConverter.ToLocalData(heroCostume, text);
             setup.Init();
             if (heroCostume != null)

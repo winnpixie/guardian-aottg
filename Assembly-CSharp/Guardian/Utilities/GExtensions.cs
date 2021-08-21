@@ -225,4 +225,14 @@ public static class GExtensions
 
         return str.Substring(startIndex, len);
     }
+
+    public static bool WasPressedInGUI(this KeyCode keyCode)
+    {
+        if (Event.current != null && Event.current.type == EventType.KeyUp)
+        {
+            return Event.current.keyCode == keyCode;
+        }
+
+        return false;
+    }
 }

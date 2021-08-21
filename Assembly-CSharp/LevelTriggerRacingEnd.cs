@@ -15,15 +15,14 @@ public class LevelTriggerRacingEnd : MonoBehaviour
     {
         if (!disable && other.gameObject.tag == "Player")
         {
+            disable = true;
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
                 fengGame.WinGame();
-                disable = true;
             }
             else if (other.gameObject.GetComponent<HERO>().photonView.isMine)
             {
                 fengGame.FinishRaceMulti();
-                disable = true;
             }
         }
     }

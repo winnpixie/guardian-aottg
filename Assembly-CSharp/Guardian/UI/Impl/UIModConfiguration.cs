@@ -105,7 +105,8 @@ namespace Guardian.UI.Impl
             }
             GUILayout.EndVertical();
             GUILayout.EndScrollView();
-            if (GUILayout.Button("Save & Close", GUILayout.Height(25)))
+
+            if (GUILayout.Button("Save & Close", GUILayout.Height(25)) || (KeyCode.Escape.WasPressedInGUI() && GUI.GetNameOfFocusedControl().Length == 0))
             {
                 _save = true;
                 Mod.Menus.OpenScreen(null);

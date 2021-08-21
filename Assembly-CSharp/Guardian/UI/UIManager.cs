@@ -27,7 +27,7 @@ namespace Guardian.UI
         {
             GSkins.InitSkins();
 
-            if (Input.GetKeyDown(KeyCode.Escape) && GUI.GetNameOfFocusedControl().Length == 0 && Mod.Menus.CurrentScreen == null)
+            if (KeyCode.Escape.WasPressedInGUI() && GUI.GetNameOfFocusedControl().Length == 0 && Mod.Menus.CurrentScreen == null)
             {
                 Mod.Menus.OpenScreen(new UIModConfiguration());
             }
@@ -37,7 +37,7 @@ namespace Guardian.UI
                 Mod.Menus.CurrentScreen.Draw();
             }
 
-            if (Mod.Properties.ShowLog.Value && !Application.loadedLevelName.Equals("SnapShot"))
+            if (Mod.Properties.ShowLog.Value && !Application.loadedLevelName.Equals("SnapShot") && !Application.loadedLevelName.Equals("characterCreation"))
             {
                 if (Mod.Properties.LogBackground.Value)
                 {

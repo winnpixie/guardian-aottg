@@ -1,8 +1,8 @@
 public enum CreateStat
 {
-    SPD,
-    GAS,
-    BLA,
-    ACL,
+    Speed,
+    Gas,
+    Blades,
+    Acceleration,
     Skill
 }

@@ -10,7 +10,7 @@ namespace Guardian.Features.Gamemodes.Impl
         private Property<int> _startTime = new Property<int>("Gamemodes_TimeBomb:StartTime", new string[0], 90);
         private long _lastUpdate;
 
-        public TimeBomb() : base("TimeBomb", new string[0])
+        public TimeBomb() : base("TimeBomb", new string[] { "tb" })
         {
             Mod.Properties.Add(_startTime);
         }
@@ -77,25 +77,24 @@ namespace Guardian.Features.Gamemodes.Impl
                                 });
                             }
 
-                            if (timeLeft == 0)
+                            if (timeLeft <= 0)
                             {
                                 PhotonNetwork.Instantiate("FX/Thunder", hero.transform.position, hero.transform.rotation, 0);
                                 hero.MarkDead();
-                                hero.photonView.RPC("netDie2", player, -1, "Ran out of time");
+                                hero.photonView.RPC("netDie2", player, -1, "[FF0000]Time's Up!");
 
                                 GameHelper.Broadcast($"{GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored().WithColor("FFFFFF")} ran out of time!"
                                     .WithColor("FF0000"));
+
+                                _lifeTimes[hero.photonView.owner.Id] = _startTime.Value;
                             }
-                            else if (timeLeft > 0)
+                            else if (timeLeft == 15)
                             {
-                                if (timeLeft == 15)
-                                {
-                                    FengGameManagerMKII.Instance.photonView.RPC("Chat", player, $"15 seconds left...".WithColor("FF0000"), string.Empty);
-                                }
-                                else if (timeLeft < 6)
-                                {
-                                    FengGameManagerMKII.Instance.photonView.RPC("Chat", player, $"{timeLeft}...".WithColor("FF0000"), string.Empty);
-                                }
+                                FengGameManagerMKII.Instance.photonView.RPC("Chat", player, $"15 seconds left...".WithColor("FF0000"), string.Empty);
+                            }
+                            else if (timeLeft < 6)
+                            {
+                                FengGameManagerMKII.Instance.photonView.RPC("Chat", player, $"{timeLeft}...".WithColor("FF0000"), string.Empty);
                             }
 
                             newTimes[entry.Key] = timeLeft;
@@ -128,7 +127,7 @@ namespace Guardian.Features.Gamemodes.Impl
             int timeBonus = damage / 100;
             _lifeTimes[killer.Id] += timeBonus;
 
-            FengGameManagerMKII.Instance.photonView.RPC("Chat", killer, $"+{timeBonus}s Time Bonus!".WithColor("00FF00"), string.Empty);
+            FengGameManagerMKII.Instance.photonView.RPC("Chat", killer, ("+" + timeBonus + (timeBonus == 1 ? " second" : " seconds") + "!").WithColor("00FF00"), string.Empty);
         }
     }
 }

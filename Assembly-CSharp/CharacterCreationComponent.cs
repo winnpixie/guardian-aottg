@@ -7,11 +7,11 @@ public class CharacterCreationComponent : MonoBehaviour
 
     public void nextOption()
     {
-        manager.GetComponent<CustomCharacterManager>().nextOption(part);
+        manager.GetComponent<CustomCharacterManager>().NextOption(part);
     }
 
     public void prevOption()
     {
-        manager.GetComponent<CustomCharacterManager>().prevOption(part);
+        manager.GetComponent<CustomCharacterManager>().PreviousOption(part);
     }
 }

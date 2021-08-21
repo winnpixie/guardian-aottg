@@ -1,17 +1,13 @@
 ﻿using Guardian.Utilities;
 using Guardian.Features.Properties;
-using System;
 
 namespace Guardian.Features.Gamemodes.Impl
 {
     class LastManStanding : Gamemode
     {
         private Property<int> _killInterval = new Property<int>("Gamemodes_LastManStanding:KillInterval", new string[0], 30);
-        private long _lastKill;
-        private Comparison<PhotonPlayer> _playerSorter = new Comparison<PhotonPlayer>((p1, p2) =>
-        {
-            return GExtensions.AsInt(p1.customProperties[PhotonPlayerProperty.Kills]) - GExtensions.AsInt(p2.customProperties[PhotonPlayerProperty.Kills]);
-        });
+        private long _nextKill;
+        private long _lastUpdate;
 
         public LastManStanding() : base("LastManStanding", new string[] { "lms" })
         {
@@ -20,42 +16,116 @@ namespace Guardian.Features.Gamemodes.Impl
 
         public override void OnReset()
         {
-            _lastKill = GameHelper.CurrentTimeMillis() + _killInterval.Value;
+            _nextKill = GameHelper.CurrentTimeMillis() + (_killInterval.Value * 1000);
             GameHelper.Broadcast($"Last Man Standing! Whoever has the least number of kills after every {_killInterval.Value} second period will DIE!");
+
+            ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+            {
+                { PhotonPlayerProperty.Kills, 0 },
+                { PhotonPlayerProperty.Deaths, 0 },
+                { PhotonPlayerProperty.MaxDamage, 0 },
+                { PhotonPlayerProperty.TotalDamage, 0 },
+            };
+
+            foreach (PhotonPlayer player in PhotonNetwork.playerList)
+            {
+                player.SetCustomProperties(props);
+            }
         }
 
         public override void OnUpdate()
         {
-            if (GameHelper.CurrentTimeMillis() - _lastKill >= (_killInterval.Value * 1000))
+            if (GameHelper.CurrentTimeMillis() - _lastUpdate >= 1000)
             {
-                _lastKill = GameHelper.CurrentTimeMillis();
+                _lastUpdate = GameHelper.CurrentTimeMillis();
 
-                if (FengGameManagerMKII.Instance.heroes.Count > 1)
+                if (GameHelper.CurrentTimeMillis() >= _nextKill)
                 {
-                    foreach (PhotonPlayer player in PhotonNetwork.playerList.Sorted(_playerSorter))
-                    {
-                        HERO hero = GameHelper.GetHero(player);
-                        if (hero != null)
-                        {
-                            PhotonNetwork.Instantiate("FX/Thunder", hero.transform.position, hero.transform.rotation, 0);
-                            hero.MarkDead();
-                            hero.photonView.RPC("netDie2", player, -1, "Lowest Kill Count");
+                    _nextKill = GameHelper.CurrentTimeMillis() + (_killInterval.Value * 1000);
 
-                            GameHelper.Broadcast($"{GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored().WithColor("FFFFFF")} didn't make it!"
+                    if (FengGameManagerMKII.Instance.heroes.Count > 1)
+                    {
+                        int playersAlive = 0;
+
+                        int highestKills = int.MinValue;
+                        HERO bestPlayer = null;
+
+                        int lowestKills = int.MaxValue;
+                        HERO worstPlayer = null;
+
+                        foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                        {
+                            HERO hero = GameHelper.GetHero(player);
+                            if (hero != null)
+                            {
+                                playersAlive++;
+
+                                int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
+
+                                if (kills < lowestKills)
+                                {
+                                    lowestKills = kills;
+                                    worstPlayer = hero;
+                                }
+
+                                if (kills > highestKills)
+                                {
+                                    highestKills = kills;
+                                    bestPlayer = hero;
+                                }
+                            }
+                        }
+
+                        if (worstPlayer != null && playersAlive > 1)
+                        {
+                            PhotonNetwork.Instantiate("FX/Thunder", worstPlayer.transform.position, worstPlayer.transform.rotation, 0);
+                            worstPlayer.MarkDead();
+                            worstPlayer.photonView.RPC("netDie2", worstPlayer.photonView.owner, -1, "Lowest Kill Count");
+
+                            GameHelper.Broadcast($"{GExtensions.AsString(worstPlayer.photonView.owner.customProperties[PhotonPlayerProperty.Name]).Colored().WithColor("FFFFFF")} didn't make it!"
                                         .WithColor("FF0000"));
-                            break;
+                        }
+
+                        if (playersAlive < 3 && bestPlayer != null)
+                        {
+                            GameHelper.Broadcast($"{GExtensions.AsString(bestPlayer.photonView.owner.customProperties[PhotonPlayerProperty.Name]).Colored().WithColor("FFFFFF")} wins!"
+                                                .WithColor("AAFF00"));
+                            FengGameManagerMKII.Instance.WinGame();
+
+                            return;
+                        }
+                        else
+                        {
+                            ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+                            {
+                                { PhotonPlayerProperty.Kills, 0 },
+                                { PhotonPlayerProperty.Deaths, 0 },
+                                { PhotonPlayerProperty.MaxDamage, 0 },
+                                { PhotonPlayerProperty.TotalDamage, 0 },
+                            };
+
+                            foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                            {
+                                player.SetCustomProperties(props);
+                            }
                         }
                     }
-                }
 
-                if (FengGameManagerMKII.Instance.heroes.Count == 1)
+                    GameHelper.Broadcast($"A new {_killInterval.Value} second period has begun!");
+                }
+                else if (_nextKill - GameHelper.CurrentTimeMillis() <= 5000)
                 {
-                    HERO winner = FengGameManagerMKII.Instance.heroes[0] as HERO;
-                    GameHelper.Broadcast($"{GExtensions.AsString(winner.photonView.owner.customProperties[PhotonPlayerProperty.Name]).Colored().WithColor("FFFFFF")} wins!"
-                                        .WithColor("AAFF00"));
-                    FengGameManagerMKII.Instance.WinGame();
+                    int timeLeft = MathHelper.Floor((_nextKill - GameHelper.CurrentTimeMillis()) / 1000f) + 1;
+
+                    GameHelper.Broadcast($"{timeLeft}...".WithColor("FF0000"));
                 }
             }
+        }
+
+        public override void OnPlayerJoin(PhotonPlayer player)
+        {
+            FengGameManagerMKII.Instance.photonView.RPC("Chat", player,
+                $"Last Man Standing! Whoever has the least number of kills after every {_killInterval.Value} second period will DIE!", string.Empty);
         }
     }
 }

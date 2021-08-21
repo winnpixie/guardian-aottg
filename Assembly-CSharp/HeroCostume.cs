@@ -135,19 +135,6 @@ public class HeroCostume
         }
     }
 
-    public void CheckStats()
-    {
-        int num = 0;
-        num += stat.Speed;
-        num += stat.Gas;
-        num += stat.Blade;
-        num += stat.Accel;
-        if (num > 400)
-        {
-            stat.Speed = (stat.Gas = (stat.Blade = (stat.Accel = 100)));
-        }
-    }
-
     public static void Init()
     {
         if (!Initialized)
