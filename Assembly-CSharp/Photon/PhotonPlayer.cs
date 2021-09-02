@@ -56,10 +56,11 @@ public class PhotonPlayer
     public bool IsUniverse;
     public bool IsKNK;
     public bool IsNRC;
-    public bool IsEXP;
+    public bool IsExp;
     public bool IsTRAP;
     public bool IsRRC;
     public bool IsAnarchy;
+    public bool IsAnarchyExp;
     public bool IsCyrus;
     public bool IsFoxMod;
     public bool IsRC83;

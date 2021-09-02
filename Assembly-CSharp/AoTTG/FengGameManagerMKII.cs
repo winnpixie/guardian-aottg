@@ -1529,6 +1529,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             UnityEngine.Object.Destroy(GameObject.Find("aot_supply"));
         }
+
         if (Level.Lava)
         {
             UnityEngine.Object.Instantiate(Resources.Load("levelBottom"), new Vector3(0f, -29.5f, 0f), Quaternion.Euler(0f, 0f, 0f));
@@ -1537,6 +1538,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             supplyObject.transform.position = lavaSupplyObject.transform.position;
             supplyObject.transform.rotation = lavaSupplyObject.transform.rotation;
         }
+
         if ((int)Settings[245] == 1)
         {
             EnterSpecMode(enter: true);
@@ -2368,7 +2370,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             if (Guardian.Mod.Properties.Interpolation.Value)
             {
                 AddTextTopCenter("\nInterpolation is [00FF00]ON[-]");
-            } else
+            }
+            else
             {
                 AddTextTopCenter("\nInterpolation is [FF0000]OFF[-]");
             }
@@ -2954,7 +2957,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             content += "[FFCC00]";
         }
-        content += "[" + player.Id + "][-] ";
+        content += "<" + player.Id + ">[-] ";
 
         if (player.customProperties[PhotonPlayerProperty.Dead] == null)
         {

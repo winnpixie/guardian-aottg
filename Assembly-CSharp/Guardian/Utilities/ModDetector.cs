@@ -119,7 +119,7 @@ namespace Guardian.Utilities
                     }
                 }
 
-                mods.Add($"[0099FF][Guardian[FFFFFF]({string.Join(",", tags.ToArray())})[-]]");
+                mods.Add($"[FFBB00][Guardian[FFFFFF]({string.Join(",", tags.ToArray())})[-]]");
             }
 
             // Alice-RC
@@ -255,7 +255,7 @@ namespace Guardian.Utilities
             }
 
             // Expedition
-            if (player.IsEXP
+            if (player.IsExp
                 || properties.ContainsKey("ExpMod")
                 || properties.ContainsKey("EMID")
                 || properties.ContainsKey("Version")

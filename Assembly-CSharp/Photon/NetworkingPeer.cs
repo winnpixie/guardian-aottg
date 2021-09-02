@@ -1497,6 +1497,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             {
                 switch (rpcName)
                 {
+                    case "FlareColour":
+                        sender.IsAnarchyExp = true;
+                        break;
                     case "SetupThunderSpearsRPC": // Updated RC
                     case "SetThunderSpearsRPC":
                     case "IsUpdatedRPC":
@@ -1551,8 +1554,14 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     case "pairRPC": // ExpMod?
                     case "flareColorRPC":
                     case "EMCustomMapRPC":
+                    case "viceRequest":
+                    case "setSup":
+                    case "setSup2":
+                    case "setGun":
+                    case "setBuilder":
+                    case "SelfRevivePermissionRPC":
                     case "AniSpeed":
-                        sender.IsEXP = true;
+                        sender.IsExp = true;
                         break;
                     case "TrapJoin": // TRAP
                         sender.IsTRAP = true;

@@ -108,8 +108,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private GameObject eren_titan;
     private float buffTime;
     private BUFF currentBuff;
-    private bool rightArmAim;
-    private bool leftArmAim;
+    public bool rightArmAim;
+    public bool leftArmAim;
     private GameObject gunDummy;
     private GameObject titanWhoGrabMe;
     private int titanWhoGrabMeID;
@@ -180,6 +180,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public bool isGrabbed => state == HeroState.Grabbed;
 
     private Material oldEyeMaterial;
+    private Material oldGlassesMaterial;
 
     // Anarchy
     private float gasMultiplier = 1f;
@@ -1225,7 +1226,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d = single ? 0f : !(hit.distance > 50f) ? (hit.distance * 0.05f) : (hit.distance * 0.3f);
             Vector3 a = hit.point + base.transform.right * d - bulletRight.transform.position;
             a.Normalize();
-            component.Launch(a * 5f, base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: mode == 1);
+            component.Launch(a * (mode == 1 ? 5f : 3f), base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: mode == 1);
             launchPointRight = Vector3.zero;
         }
     }
@@ -1666,15 +1667,17 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
         if (canShoot)
         {
+            Quaternion rot = Camera.main.transform.rotation;
+            Quaternion angle = Quaternion.Euler(rot.eulerAngles.x + 60f, rot.eulerAngles.y, rot.eulerAngles.z);
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
-                GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/flareBullet" + type), base.transform.position, base.transform.rotation);
+                GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/flareBullet" + type), base.transform.position, angle);
                 gameObject.GetComponent<FlareMovement>().DontShowHint();
                 UnityEngine.Object.Destroy(gameObject, 25f);
             }
             else
             {
-                GameObject gameObject2 = PhotonNetwork.Instantiate("FX/flareBullet" + type, base.transform.position, base.transform.rotation, 0);
+                GameObject gameObject2 = PhotonNetwork.Instantiate("FX/flareBullet" + type, base.transform.position, angle, 0);
                 gameObject2.GetComponent<FlareMovement>().DontShowHint();
             }
         }
@@ -4288,6 +4291,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         skillCDLast = 1.5f;
         skillId = setup.myCostume.stat.SkillId;
         CustomAnimationSpeed();
+
         switch (skillId)
         {
             case "levi":
@@ -4304,9 +4308,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 break;
             case "eren":
                 skillCDLast = 120f;
+
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
-                    if (FengGameManagerMKII.Level.PlayerTitans || FengGameManagerMKII.Level.Mode == GameMode.Racing || FengGameManagerMKII.Level.Mode == GameMode.PvPCapture || FengGameManagerMKII.Level.Mode == GameMode.Trost)
+                    if (FengGameManagerMKII.Level.PlayerTitans || FengGameManagerMKII.Level.Mode == GameMode.Racing
+                        || FengGameManagerMKII.Level.Mode == GameMode.PvPCapture || FengGameManagerMKII.Level.Mode == GameMode.Trost
+                        || RCSettings.BanEren > 0)
                     {
                         skillId = "petra";
                         skillCDLast = 1f;
@@ -5597,7 +5604,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 {
                                     unload = true;
                                     Material eyeMat = new Material(renderer4.material);
-                                    eyeMat.mainTextureScale = renderer4.material.mainTextureScale * 8f;
+                                    eyeMat.mainTextureScale = eyeMat.mainTextureScale * 8f;
                                     eyeMat.mainTextureOffset = new Vector2(0f, 0f);
                                     eyeMat.mainTexture = tex7;
                                     FengGameManagerMKII.LinkHash[0].Add(strArray[2], eyeMat);
@@ -5621,6 +5628,15 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
                 else if (renderer4.name.Contains(FengGameManagerMKII.S[3])) // Glasses
                 {
+                    if (oldGlassesMaterial != null)
+                    {
+                        renderer4.material = oldGlassesMaterial;
+                    }
+                    else
+                    {
+                        oldGlassesMaterial = new Material(renderer4.material);
+                    }
+
                     if (strArray[3].EndsWith(".jpg") || strArray[3].EndsWith(".png") || strArray[3].EndsWith(".jpeg"))
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[3]))
@@ -5636,16 +5652,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[3]))
                                 {
                                     unload = true;
-                                    renderer4.material.mainTextureScale = renderer4.material.mainTextureScale * 8f;
-                                    renderer4.material.mainTextureOffset = new Vector2(0f, 0f);
-                                    renderer4.material.mainTexture = tex8;
-                                    FengGameManagerMKII.LinkHash[0].Add(strArray[3], renderer4.material);
-                                    renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[3]];
+                                    Material glassesMat = new Material(renderer4.material);
+                                    glassesMat.mainTextureScale = glassesMat.mainTextureScale * 8f;
+                                    glassesMat.mainTextureOffset = new Vector2(0f, 0f);
+                                    glassesMat.mainTexture = tex8;
+                                    FengGameManagerMKII.LinkHash[0].Add(strArray[3], glassesMat);
                                 }
-                                else
-                                {
-                                    renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[3]];
-                                }
+                                renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[3]];
                             }
                         }
                         else
@@ -5971,21 +5984,19 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         Texture2D tex = RCextensions.LoadImage(www, mipmapping, 500000);
                         www.Dispose();
                         unload = true;
-                        leftbladetrail.MyMaterial.mainTexture = tex;
-                        rightbladetrail.MyMaterial.mainTexture = tex;
-                        FengGameManagerMKII.LinkHash[0].Add(strArray[12], leftbladetrail.MyMaterial);
-                        leftbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                        rightbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                        leftbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                        rightbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                        FengGameManagerMKII.LinkHash[0].Add(strArray[12], tex);
+                        leftbladetrail.MyMaterial.mainTexture = (Texture)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                        rightbladetrail.MyMaterial.mainTexture = (Texture)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                        leftbladetrail2.MyMaterial.mainTexture = (Texture)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                        rightbladetrail2.MyMaterial.mainTexture = (Texture)FengGameManagerMKII.LinkHash[0][strArray[12]];
                     }
                 }
                 else
                 {
-                    leftbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                    rightbladetrail2.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                    leftbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
-                    rightbladetrail.MyMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                    leftbladetrail.MyMaterial.mainTexture = (Texture)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                    rightbladetrail.MyMaterial.mainTexture = (Texture)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                    leftbladetrail2.MyMaterial.mainTexture = (Texture)FengGameManagerMKII.LinkHash[0][strArray[12]];
+                    rightbladetrail2.MyMaterial.mainTexture = (Texture)FengGameManagerMKII.LinkHash[0][strArray[12]];
                 }
             }
         }

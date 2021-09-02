@@ -109,6 +109,8 @@ public class TITAN : Photon.MonoBehaviour
     public int skinColor;
     private FengGameManagerMKII fengGame;
 
+    private Material oldEyeMaterial;
+
     private bool shouldLookAtTarget;
     private bool shouldRotateFast;
 
@@ -3793,6 +3795,15 @@ public class TITAN : Photon.MonoBehaviour
                 renderer.enabled = true;
                 if (renderer.name.Contains("eye")) // Eyes
                 {
+                    if (oldEyeMaterial != null)
+                    {
+                        renderer.material = oldEyeMaterial;
+                    }
+                    else
+                    {
+                        oldEyeMaterial = new Material(renderer.material);
+                    }
+
                     if (eye.ToLower() == "transparent")
                     {
                         renderer.enabled = false;
@@ -3812,10 +3823,11 @@ public class TITAN : Photon.MonoBehaviour
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(eye))
                                 {
                                     unload = true;
-                                    renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * 4f, renderer.material.mainTextureScale.y * 8f);
-                                    renderer.material.mainTextureOffset = new Vector2(0f, 0f);
-                                    renderer.material.mainTexture = tex2;
-                                    FengGameManagerMKII.LinkHash[0].Add(eye, renderer.material);
+                                    Material eyeMat = new Material(renderer.material);
+                                    eyeMat.mainTextureScale = new Vector2(eyeMat.mainTextureScale.x * 4f, eyeMat.mainTextureScale.y * 8f);
+                                    eyeMat.mainTextureOffset = new Vector2(0f, 0f);
+                                    eyeMat.mainTexture = tex2;
+                                    FengGameManagerMKII.LinkHash[0].Add(eye, eyeMat);
                                 }
                                 renderer.material = (Material)FengGameManagerMKII.LinkHash[0][eye];
                             }
