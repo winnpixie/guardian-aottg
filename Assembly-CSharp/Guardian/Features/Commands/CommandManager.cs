@@ -44,7 +44,6 @@ namespace Guardian.Features.Commands
             base.Add(new CommandUnpause());
 
             // Debug
-            base.Add(new CommandDrawDistance());
             base.Add(new CommandLogProperties());
 
             // RC

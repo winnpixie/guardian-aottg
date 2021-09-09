@@ -136,6 +136,31 @@ public static class GExtensions
         return new Color(r, g, b, a);
     }
 
+    public static Color ToColor(this int color)
+    {
+        int r = color >> 24 & 0xFF;
+        int g = color >> 16 & 0xFF;
+        int b = color >> 8 & 0xFF;
+        int a = color & 0xFF;
+
+        return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+    }
+
+    public static Color ToColor(this uint color)
+    {
+        int r = unchecked((int)color) >> 24 & 0xFF;
+        int g = unchecked((int)color) >> 16 & 0xFF;
+        int b = unchecked((int)color) >> 8 & 0xFF;
+        int a = unchecked((int)color) & 0xFF;
+
+        return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+    }
+
+    public static Color WithAlpha(this Color color, float alpha)
+    {
+        return new Color(color.r, color.g, color.b, alpha);
+    }
+
     public static string AsBold(this string str)
     {
         return $"<b>{str}</b>";

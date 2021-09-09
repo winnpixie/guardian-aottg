@@ -1,6 +1,7 @@
 ﻿using Guardian.Utilities;
 using System.IO;
 using System.Text;
+using UnityEngine;
 
 namespace Guardian.Features.Properties
 {
@@ -15,6 +16,7 @@ namespace Guardian.Features.Properties
         public Property<bool> DeadlyHooks = new Property<bool>("MC_DeadlyHooks", new string[0], false);
 
         // Player
+        public Property<bool> UseRawInput = new Property<bool>("Player_RawTPS-WOWInput", new string[0], true);
         public Property<bool> DoubleTapBurst = new Property<bool>("Player_DoubleTapBurst", new string[0], true);
         public Property<bool> AlternateIdle = new Property<bool>("Player_AHSSIdle", new string[0], false);
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
@@ -39,9 +41,13 @@ namespace Guardian.Features.Properties
         public Property<bool> BoldText = new Property<bool>("Chat_BoldText", new string[0], false);
         public Property<bool> ItalicText = new Property<bool>("Chat_ItalicText", new string[0], false);
 
-        // Visual
+        // Visual [Render]
+        public Property<int> DrawDistance = new Property<int>("Visual_DrawDistance", new string[0], 1500);
+        public Property<bool> Fog = new Property<bool>("Visual_Fog", new string[0], true);
+        public Property<bool> SoftShadows = new Property<bool>("Visual_SoftShadows", new string[0], true);
+        // Visual [Misc]
         public Property<bool> FPSCamera = new Property<bool>("Visual_FPSCamera", new string[0], false);
-        public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], true);
+        public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], false);
         public Property<bool> ChatBackground = new Property<bool>("Visual_ShowChatBackground", new string[0], true);
         public Property<bool> LogBackground = new Property<bool>("Visual_ShowLogBackground", new string[0], true);
 
@@ -64,6 +70,7 @@ namespace Guardian.Features.Properties
             base.Add(DeadlyHooks);
 
             // Player
+            base.Add(UseRawInput);
             base.Add(DoubleTapBurst);
             base.Add(AlternateIdle);
             base.Add(AlternateBurst);
@@ -77,8 +84,8 @@ namespace Guardian.Features.Properties
 
                 if (myHero != null)
                 {
-                    myHero.rigidbody.interpolation = Interpolation.Value ? UnityEngine.RigidbodyInterpolation.Interpolate
-                        : UnityEngine.RigidbodyInterpolation.None;
+                    myHero.rigidbody.interpolation = Interpolation.Value ? RigidbodyInterpolation.Interpolate
+                        : RigidbodyInterpolation.None;
                 }
             };
             base.Add(Interpolation);
@@ -129,6 +136,25 @@ namespace Guardian.Features.Properties
             base.Add(BoldText);
             base.Add(ItalicText);
 
+            // Visual [Render]
+            DrawDistance.OnValueChanged = () =>
+            {
+                Camera.main.farClipPlane = DrawDistance.Value;
+            };
+            base.Add(DrawDistance);
+
+            Fog.OnValueChanged = () =>
+            {
+                RenderSettings.fog = Fog.Value;
+            };
+            base.Add(Fog);
+
+            // Visual [Misc]
+            base.Add(FPSCamera);
+            base.Add(MultiplayerNapeMeat);
+            base.Add(ChatBackground);
+            base.Add(LogBackground);
+
             // Misc
             CustomAppId.OnValueChanged = () =>
             {
@@ -136,12 +162,6 @@ namespace Guardian.Features.Properties
             };
             base.Add(CustomAppId);
             base.Add(UseRichPresence);
-
-            // Visual
-            base.Add(FPSCamera);
-            base.Add(MultiplayerNapeMeat);
-            base.Add(ChatBackground);
-            base.Add(LogBackground);
 
             // Logging
             base.Add(ShowLog);

@@ -8,11 +8,13 @@ namespace Guardian.Features.Gamemodes.Impl
     {
         private Dictionary<int, int> _lifeTimes;
         private Property<int> _startTime = new Property<int>("Gamemodes_TimeBomb:StartTime", new string[0], 90);
+        private Property<float> _scoreMultiplier = new Property<float>("Gamemodes_TimeBomb:ScoreMultiplier", new string[0], 1f);
         private long _lastUpdate;
 
         public TimeBomb() : base("TimeBomb", new string[] { "tb" })
         {
             Mod.Properties.Add(_startTime);
+            Mod.Properties.Add(_scoreMultiplier);
         }
 
         public override void CleanUp()
@@ -124,7 +126,7 @@ namespace Guardian.Features.Gamemodes.Impl
 
         public override void OnTitanKilled(TITAN titan, PhotonPlayer killer, int damage)
         {
-            int timeBonus = damage / 100;
+            int timeBonus = MathHelper.Floor((damage / 100f) * _scoreMultiplier.Value);
             _lifeTimes[killer.Id] += timeBonus;
 
             FengGameManagerMKII.Instance.photonView.RPC("Chat", killer, ("+" + timeBonus + (timeBonus == 1 ? " second" : " seconds") + "!").WithColor("00FF00"), string.Empty);

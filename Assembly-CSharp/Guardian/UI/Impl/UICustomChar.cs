@@ -23,7 +23,7 @@ namespace Guardian.UI.Impl
             {
                 if (_characterManager.setup != null)
                 {
-                    GUILayout.BeginArea(new Rect(Screen.width - 401, Screen.height / 2, 350, 250), GSkins.Box);
+                    GUILayout.BeginArea(new Rect(Screen.width - 301, Screen.height / 2, 150, 250), GSkins.Box);
 
                     GUILayout.Label("Select Stat Preset");
 

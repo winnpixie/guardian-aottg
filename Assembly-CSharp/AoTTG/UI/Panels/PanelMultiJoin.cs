@@ -68,8 +68,6 @@ public class PanelMultiJoin : MonoBehaviour
             return "[FF0000]Invalid room.";
         }
 
-        string pwd = info[5].Length == 0 ? string.Empty : "[FF0000](Pwd)[-] ";
-
         string difficulty = info[2];
         switch (difficulty.ToLower())
         {
@@ -103,9 +101,10 @@ public class PanelMultiJoin : MonoBehaviour
         {
             roomMeta = "[FF0000]";
         }
-        roomMeta += $"{room.playerCount}/{room.maxPlayers}";
+        roomMeta += $"({room.playerCount}/{room.maxPlayers})";
 
-        return $"{pwd}{info[0]}[-] [AAAAAA]([FFFFFF]{info[1]}[AAAAAA] / {difficulty} / {daylight})[-] {roomMeta}";
+        string pwd = info[5].Length == 0 ? string.Empty : "[FF0000](Pwd)[-] ";
+        return $"{pwd}{info[0]}[-] [AAAAAA]:: [FFFFFF]{info[1]}[AAAAAA] / {difficulty} / {daylight}[-] {roomMeta}";
     }
 
     private void ShowServerList()

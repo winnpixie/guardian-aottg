@@ -243,8 +243,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         base.transform.position += Vector3.up * heightMulti;
         base.transform.position -= Vector3.up * (0.6f - CameraDistance) * 2f;
 
-        float dYaw = Input.GetAxis("Mouse X") * 10f * GetSensitivityMulti();
-        float dPitch = (0f - Input.GetAxis("Mouse Y")) * 10f * GetSensitivityMulti() * (float)GetReverse();
+        float mouseYaw = Guardian.Mod.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse X") : Input.GetAxis("Mouse X");
+        float mousePitch = Guardian.Mod.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse Y") : Input.GetAxis("Mouse Y");
+
+        float dYaw = mouseYaw * 10f * GetSensitivityMulti();
+        float dPitch = (0f - mousePitch) * 10f * GetSensitivityMulti() * (float)GetReverse();
 
         switch (CameraMode)
         {
@@ -279,23 +282,20 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 }
             case CameraType.Original:
                 {
-                    float num = 0f;
                     Vector3 mousePosition = Input.mousePosition;
                     if (mousePosition.x < (float)Screen.width * 0.4f)
                     {
-                        num = (0f - ((Screen.width * 0.4f) - mousePosition.x) / (float)Screen.width * 0.4f) * GetSensitivityMultiWithTimeDelta() * 150f;
-                        base.transform.RotateAround(base.transform.position, Vector3.up, num);
+                        dYaw = (0f - ((Screen.width * 0.4f) - mousePosition.x) / (float)Screen.width * 0.4f) * GetSensitivityMultiWithTimeDelta() * 150f;
+                        base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
                     }
-                    else
+                    else if (mousePosition.x > (float)Screen.width * 0.6f)
                     {
-                        if (mousePosition.x > (float)Screen.width * 0.6f)
-                        {
-                            num = (mousePosition.x - (float)Screen.width * 0.6f) / (float)Screen.width * 0.4f * GetSensitivityMultiWithTimeDelta() * 150f;
-                            base.transform.RotateAround(base.transform.position, Vector3.up, num);
-                        }
+                        dYaw = (mousePosition.x - (float)Screen.width * 0.6f) / (float)Screen.width * 0.4f * GetSensitivityMultiWithTimeDelta() * 150f;
+                        base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
                     }
-                    float x = 140f * ((Screen.height * 0.6f) - mousePosition.y) / (float)Screen.height * 0.5f;
-                    base.transform.rotation = Quaternion.Euler(x, base.transform.rotation.eulerAngles.y, base.transform.rotation.eulerAngles.z);
+
+                    dPitch = 140f * ((Screen.height * 0.6f) - mousePosition.y) / (float)Screen.height * 0.5f;
+                    base.transform.rotation = Quaternion.Euler(dPitch, base.transform.rotation.eulerAngles.y, base.transform.rotation.eulerAngles.z);
                     break;
                 }
         }

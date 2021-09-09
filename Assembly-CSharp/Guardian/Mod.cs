@@ -15,7 +15,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "09022021";
+        public static string Build = "09092021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -31,7 +31,6 @@ namespace Guardian
 
         private static bool s_initialized = false;
         private static bool s_firstJoin = true;
-
 
         void Start()
         {
@@ -74,8 +73,6 @@ namespace Guardian
                 }
 
                 s_initialized = true;
-
-                UI.WindowManager.SetWindowTextA(UI.WindowManager.GetActiveWindow(), "Guardian Mod [AoTTG]");
 
                 DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
             }
@@ -140,6 +137,12 @@ namespace Guardian
             HostWhitelist = new List<string>(File.ReadAllLines(HostWhitelistPath));
         }
 
+        public void ApplyCustomRenderSettings()
+        {
+            Camera.main.farClipPlane = Properties.DrawDistance.Value;
+            RenderSettings.fog = Properties.Fog.Value;
+        }
+
         void Update()
         {
             if (PhotonNetwork.isMasterClient)
@@ -152,6 +155,8 @@ namespace Guardian
 
         void OnLevelWasLoaded(int level)
         {
+            ApplyCustomRenderSettings();
+
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || PhotonNetwork.offlineMode)
             {
                 string difficulty = "Training";

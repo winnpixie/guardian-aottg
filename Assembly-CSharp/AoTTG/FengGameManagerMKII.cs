@@ -2345,20 +2345,31 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             };
 
             AddTextTopRight("\n" + Level.Name + ": " + difficultyTxt);
-            AddTextTopRight("[-]\nCamera: [FFCC00]" + IN_GAME_MAIN_CAMERA.CameraMode + "[-]");
+            AddTextTopRight("[-]\nCamera: [AAFF00]" + IN_GAME_MAIN_CAMERA.CameraMode + "[-]");
 
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
             {
                 string[] array = PhotonNetwork.room.name.Split('`');
-                string roomName = array[0];
-                if (roomName.Length > 20)
-                {
-                    roomName = roomName.Remove(19) + "...";
-                }
-                AddTextTopRight("\n" + roomName + " [FFCC00](" + PhotonNetwork.room.playerCount + "/" + PhotonNetwork.room.maxPlayers + ")");
+                string topRightText = "\n\n" + array[0] + "\n";
 
-                // TODO: Mod
-                AddTextTopRight($"\n\n[ {(PhotonNetwork.room.visible ? "[00FF00]Visible" : "[FF0000]Hidden")}[-] | {(PhotonNetwork.room.open ? "[00FF00]Open" : "[FF0000]Closed")}[-] ]");
+                int playerCount = PhotonNetwork.room.playerCount;
+                int maxPlayers = PhotonNetwork.room.maxPlayers;
+
+                if (!PhotonNetwork.room.open || (maxPlayers != 0 && playerCount >= maxPlayers) || !PhotonNetwork.room.open)
+                {
+                    topRightText += "[FF0000]";
+                }
+                else
+                {
+                    topRightText += "[AAFF00]";
+                }
+                topRightText += $"({playerCount}/{maxPlayers})";
+
+                if (!PhotonNetwork.room.visible)
+                {
+                    topRightText += " [ff6600](hidden)[-]";
+                }
+                AddTextTopRight(topRightText);
 
                 if (needChooseSide)
                 {
@@ -2957,7 +2968,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             content += "[FFCC00]";
         }
-        content += "<" + player.Id + ">[-] ";
+        content += "(" + player.Id + ")[-] ";
 
         if (player.customProperties[PhotonPlayerProperty.Dead] == null)
         {
@@ -12047,6 +12058,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         // Custom Titan Sizes
         if (settings.ContainsKey("sizeMode") && settings.ContainsKey("sizeLower") && settings.ContainsKey("sizeUpper"))
         {
+            // Temporary? fix for RiceCake not properly re-implementing all legacy settings
+            if (settings["sizeMode"] is bool)
+            {
+                settings["sizeMode"] = (bool)settings["sizeMode"] ? 1 : 0;
+            }
+
             if (RCSettings.SizeMode != (int)settings["sizeMode"] || RCSettings.SizeLower != (float)settings["sizeLower"] || RCSettings.SizeUpper != (float)settings["sizeUpper"])
             {
                 RCSettings.SizeMode = (int)settings["sizeMode"];

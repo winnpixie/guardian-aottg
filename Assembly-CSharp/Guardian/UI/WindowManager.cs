@@ -14,9 +14,6 @@ namespace Guardian.UI
         [DllImport("user32.dll")]
         public static extern void ShowWindow(int hWnd, int nCmdShow);
 
-        [DllImport("user32.dll")]
-        public static extern bool SetWindowTextA(int hWind, string lpString);
-
         public static void HandleWindowFocusEvent(bool hasFocus)
         {
             // Exclusive Fullscreen requires more testing before being properly implemented again.
