@@ -270,7 +270,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                 if (fengGame.checkpoint != base.gameObject)
                 {
                     fengGame.checkpoint = base.gameObject;
-                    InRoomChat.Instance.AddLine(("Respawn point changed to Point #" + id).WithColor("AAFF00"));
+                    InRoomChat.Instance.AddLine(("Respawn point changed to Point #" + id).AsColor("AAFF00"));
                 }
                 break;
             }
@@ -288,7 +288,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                     if (fengGame.checkpoint != base.gameObject)
                     {
                         fengGame.checkpoint = base.gameObject;
-                        InRoomChat.Instance.AddLine(("Respawn point changed to Point #" + id).WithColor("AAFF00"));
+                        InRoomChat.Instance.AddLine(("Respawn point changed to Point #" + id).AsColor("AAFF00"));
                     }
                     break;
                 }

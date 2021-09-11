@@ -151,7 +151,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.ColossalPatches.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Colossal.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -160,7 +160,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.ColossalPatches.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Colossal.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -169,7 +169,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.ColossalPatches.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Colossal.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -463,7 +463,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [RPC]
     private void removeMe(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.ColossalPatches.IsRemovalValid(info))
+        if (Guardian.AntiAbuse.Validators.Colossal.IsRemovalValid(info))
         {
             UnityEngine.Object.Destroy(base.gameObject);
         }

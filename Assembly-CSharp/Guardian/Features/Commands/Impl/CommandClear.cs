@@ -11,7 +11,7 @@ namespace Guardian.Features.Commands.Impl
         {
             if (args.Length > 0 && args[0].Equals("log", System.StringComparison.OrdinalIgnoreCase))
             {
-                Mod.Logger.Messages = new List<string>();
+                Mod.Logger.EntryDict = new Dictionary<Logger.LogType, List<string>>();
                 Mod.Logger.Info("Cleared event log!");
                 return;
             }
@@ -19,7 +19,7 @@ namespace Guardian.Features.Commands.Impl
             InRoomChat.Messages = new List<InRoomChat.Message>();
             if (!PhotonNetwork.isMasterClient)
             {
-                irc.AddLine("Chat has been cleared.".WithColor("AAFF00"));
+                irc.AddLine("Chat has been cleared.".AsColor("AAFF00"));
             }
             else
             {
@@ -27,7 +27,7 @@ namespace Guardian.Features.Commands.Impl
                 {
                     GameHelper.Broadcast(" ");
                 }
-                GameHelper.Broadcast("Chat has been cleared!".WithColor("AAFF00"));
+                GameHelper.Broadcast("Chat has been cleared!".AsColor("AAFF00"));
             }
         }
     }

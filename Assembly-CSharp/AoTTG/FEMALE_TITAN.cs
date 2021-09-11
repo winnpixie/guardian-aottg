@@ -121,7 +121,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.AnniePatches.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Annie.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -130,7 +130,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.AnniePatches.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Annie.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -139,7 +139,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.AnniePatches.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Annie.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }

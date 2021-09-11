@@ -72,7 +72,7 @@ namespace Guardian.Features.Commands
                 }
                 else
                 {
-                    irc.AddLine("Command requires MasterClient!".WithColor("FF0000"));
+                    irc.AddLine("Command requires MasterClient!".AsColor("FF0000"));
                 }
             }
         }

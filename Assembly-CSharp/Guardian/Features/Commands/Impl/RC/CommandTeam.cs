@@ -16,7 +16,7 @@ namespace Guardian.Features.Commands.Impl.RC
                     if (args[0].Equals("1") || args[0].Equals("cyan", StringComparison.OrdinalIgnoreCase))
                     {
                         FengGameManagerMKII.Instance.photonView.RPC("setTeamRPC", PhotonNetwork.player, 1);
-                        irc.AddLine("You have joined team Cyan.".WithColor("00FFFF"));
+                        irc.AddLine("You have joined team Cyan.".AsColor("00FFFF"));
 
                         HERO hero = GameHelper.GetHero(PhotonNetwork.player);
                         if (hero != null)
@@ -28,7 +28,7 @@ namespace Guardian.Features.Commands.Impl.RC
                     else if (args[0].Equals("2") || args[0].Equals("magenta", StringComparison.OrdinalIgnoreCase))
                     {
                         FengGameManagerMKII.Instance.photonView.RPC("setTeamRPC", PhotonNetwork.player, 2);
-                        irc.AddLine("You have joined team Magenta.".WithColor("FF00FF"));
+                        irc.AddLine("You have joined team Magenta.".AsColor("FF00FF"));
 
                         HERO hero = GameHelper.GetHero(PhotonNetwork.player);
                         if (hero != null)
@@ -40,7 +40,7 @@ namespace Guardian.Features.Commands.Impl.RC
                     else if (args[0].Equals("0") || args[0].Equals("individual", StringComparison.OrdinalIgnoreCase))
                     {
                         FengGameManagerMKII.Instance.photonView.RPC("setTeamRPC", PhotonNetwork.player, 0);
-                        irc.AddLine("You have joined team Individual.".WithColor("FFFFFF"));
+                        irc.AddLine("You have joined team Individual.".AsColor("FFFFFF"));
 
                         HERO hero = GameHelper.GetHero(PhotonNetwork.player);
                         if (hero != null)
@@ -51,13 +51,13 @@ namespace Guardian.Features.Commands.Impl.RC
                     }
                     else
                     {
-                        irc.AddLine("Invalid team. Accepted values are 0, 1, and 2.".WithColor("FFCC00"));
+                        irc.AddLine("Invalid team. Accepted values are 0, 1, and 2.".AsColor("FFCC00"));
                     }
                 }
             }
             else
             {
-                irc.AddLine("Teams are either locked or disabled.".WithColor("FFCC00"));
+                irc.AddLine("Teams are either locked or disabled.".AsColor("FFCC00"));
             }
         }
     }

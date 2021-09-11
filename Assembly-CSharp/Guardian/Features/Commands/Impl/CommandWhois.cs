@@ -14,28 +14,28 @@ namespace Guardian.Features.Commands.Impl
 
                 if (player != null)
                 {
-                    irc.AddLine($"Whois Report (#{player.Id})".WithColor("AAFF00").AsBold());
+                    irc.AddLine($"Whois Report (#{player.Id})".AsColor("AAFF00").AsBold());
 
-                    irc.AddLine("Name: ".WithColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored());
-                    irc.AddLine("Guild: ".WithColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Guild]).Colored());
-                    irc.AddLine("Status: ".WithColor("FFCC00") + (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]) ? "Dead" : "Alive"));
+                    irc.AddLine("Name: ".AsColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed());
+                    irc.AddLine("Guild: ".AsColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Guild]).ColorParsed());
+                    irc.AddLine("Status: ".AsColor("FFCC00") + (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]) ? "Dead" : "Alive"));
 
                     int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
                     int deaths = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Deaths]);
                     int totalDamage = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.TotalDamage]);
-                    irc.AddLine("Kills: ".WithColor("FFCC00") + kills);
-                    irc.AddLine("Deaths: ".WithColor("FFCC00") + deaths);
-                    irc.AddLine("K/D Ratio: ".WithColor("FFCC00") + (deaths < 2 ? kills : (kills / (double)deaths)).ToString("F2") + $" ({kills}:{deaths})");
+                    irc.AddLine("Kills: ".AsColor("FFCC00") + kills);
+                    irc.AddLine("Deaths: ".AsColor("FFCC00") + deaths);
+                    irc.AddLine("K/D Ratio: ".AsColor("FFCC00") + (deaths < 2 ? kills : (kills / (double)deaths)).ToString("F2") + $" ({kills}:{deaths})");
 
-                    irc.AddLine("Max Damage: ".WithColor("FFCC00") + GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.MaxDamage]));
-                    irc.AddLine("Total Damage: ".WithColor("FFCC00") + totalDamage);
+                    irc.AddLine("Max Damage: ".AsColor("FFCC00") + GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.MaxDamage]));
+                    irc.AddLine("Total Damage: ".AsColor("FFCC00") + totalDamage);
 
-                    irc.AddLine("Average Damage: ".WithColor("FFCC00") + (kills == 0 ? "n/a" : (totalDamage / kills).ToString()));
+                    irc.AddLine("Average Damage: ".AsColor("FFCC00") + (kills == 0 ? "n/a" : (totalDamage / kills).ToString()));
 
                     float bombRadius = GExtensions.AsFloat(player.customProperties[PhotonPlayerProperty.RCBombRadius]);
                     if (player.customProperties.ContainsKey(PhotonPlayerProperty.RCBombRadius))
                     {
-                        irc.AddLine("Bomb Radius: ".WithColor("FFCC00") + ((bombRadius - 20f) / 4f));
+                        irc.AddLine("Bomb Radius: ".AsColor("FFCC00") + ((bombRadius - 20f) / 4f));
                     }
 
                     string team = "Human (Blade)";
@@ -47,7 +47,7 @@ namespace Guardian.Features.Commands.Impl
                     {
                         team = "Player Titan";
                     }
-                    irc.AddLine("Team: ".WithColor("FFCC00") + team);
+                    irc.AddLine("Team: ".AsColor("FFCC00") + team);
                 }
             }
         }

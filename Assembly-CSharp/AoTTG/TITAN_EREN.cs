@@ -128,7 +128,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
     [RPC]
     private void removeMe(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.ErenPatches.IsRemovalValid(info))
+        if (Guardian.AntiAbuse.Validators.TitanEren.IsRemovalValid(info))
         {
             PhotonNetwork.RemoveRPCs(base.photonView);
             UnityEngine.Object.Destroy(base.gameObject);

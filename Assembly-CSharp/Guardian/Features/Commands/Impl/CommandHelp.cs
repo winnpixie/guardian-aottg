@@ -17,7 +17,7 @@
 
                 if (command != null)
                 {
-                    irc.AddLine($"Help for command '{command.Name}':".WithColor("AAFF00").AsBold());
+                    irc.AddLine($"Help for command '{command.Name}':".AsColor("AAFF00").AsBold());
                     irc.AddLine($"Usage: /{command.Name} {command.Usage}");
                     irc.AddLine($"Aliases: [{string.Join(", ", command.Aliases)}]");
                     return;
@@ -28,8 +28,8 @@
                 }
             }
 
-            irc.AddLine($"Commands (Page {page + 1}/{pages})".WithColor("AAFF00").AsBold());
-            irc.AddLine("<arg> = Required, [arg] = Optional".WithColor("AAAAAA").AsBold());
+            irc.AddLine($"Commands (Page {page + 1}/{pages})".AsColor("AAFF00").AsBold());
+            irc.AddLine("<arg> = Required, [arg] = Optional".AsColor("AAAAAA").AsBold());
 
             for (int i = 0; i < CommandsPerPage; i++)
             {
@@ -41,15 +41,15 @@
                 }
 
                 Command command = Mod.Commands.Elements[index];
-                string msg = "> ".WithColor("00FF00").AsBold() + $"/{command.Name} {command.Usage}";
+                string msg = "> ".AsColor("00FF00").AsBold() + $"/{command.Name} {command.Usage}";
 
                 if (command.MasterClient)
                 {
-                    msg += " [MC]".WithColor("FF0000").AsBold();
+                    msg += " [MC]".AsColor("FF0000").AsBold();
                 }
                 if (command.GetType().Namespace.EndsWith("Debug"))
                 {
-                    msg += " [DBG]".WithColor("AAAAAA").AsBold();
+                    msg += " [DBG]".AsColor("AAAAAA").AsBold();
                 }
 
                 irc.AddLine(msg);

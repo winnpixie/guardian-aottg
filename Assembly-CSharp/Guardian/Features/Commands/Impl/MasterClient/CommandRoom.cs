@@ -52,7 +52,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     }
                     else
                     {
-                        irc.AddLine("You must be the room creator to execute this!".WithColor("FF0000"));
+                        irc.AddLine("You must be the room creator to execute this!".AsColor("FF0000"));
                     }
                 }
 
@@ -66,7 +66,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                     }
                     else
                     {
-                        irc.AddLine("You must be the room creator to execute this!".WithColor("FF0000"));
+                        irc.AddLine("You must be the room creator to execute this!".AsColor("FF0000"));
                     }
                 }
             }

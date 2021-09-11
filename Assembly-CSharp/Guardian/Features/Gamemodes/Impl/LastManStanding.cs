@@ -82,14 +82,14 @@ namespace Guardian.Features.Gamemodes.Impl
                             worstPlayer.MarkDead();
                             worstPlayer.photonView.RPC("netDie2", worstPlayer.photonView.owner, -1, "Lowest Kill Count");
 
-                            GameHelper.Broadcast($"{GExtensions.AsString(worstPlayer.photonView.owner.customProperties[PhotonPlayerProperty.Name]).Colored().WithColor("FFFFFF")} didn't make it!"
-                                        .WithColor("FF0000"));
+                            GameHelper.Broadcast($"{GExtensions.AsString(worstPlayer.photonView.owner.customProperties[PhotonPlayerProperty.Name]).ColorParsed().AsColor("FFFFFF")} didn't make it!"
+                                        .AsColor("FF0000"));
                         }
 
                         if (playersAlive < 3 && bestPlayer != null)
                         {
-                            GameHelper.Broadcast($"{GExtensions.AsString(bestPlayer.photonView.owner.customProperties[PhotonPlayerProperty.Name]).Colored().WithColor("FFFFFF")} wins!"
-                                                .WithColor("AAFF00"));
+                            GameHelper.Broadcast($"{GExtensions.AsString(bestPlayer.photonView.owner.customProperties[PhotonPlayerProperty.Name]).ColorParsed().AsColor("FFFFFF")} wins!"
+                                                .AsColor("AAFF00"));
                             FengGameManagerMKII.Instance.WinGame();
 
                             return;
@@ -117,7 +117,7 @@ namespace Guardian.Features.Gamemodes.Impl
                 {
                     int timeLeft = MathHelper.Floor((_nextKill - GameHelper.CurrentTimeMillis()) / 1000f) + 1;
 
-                    GameHelper.Broadcast($"{timeLeft}...".WithColor("FF0000"));
+                    GameHelper.Broadcast($"{timeLeft}...".AsColor("FF0000"));
                 }
             }
         }

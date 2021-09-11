@@ -46,11 +46,13 @@ public class InRoomChat : Photon.MonoBehaviour
 
         if (sender.Length != 0 || text.Length != 0)
         {
-            if (Messages.Count > 49)
+            Messages.Add(new Message(sender, text));
+
+            if (Messages.Count > Guardian.Mod.Properties.MaxChatLines.Value)
             {
                 Messages.RemoveAt(0);
             }
-            Messages.Add(new Message(sender, text));
+
             ScrollPosition = Guardian.Utilities.GameHelper.ScrollBottom;
         }
     }
@@ -152,7 +154,7 @@ public class InRoomChat : Photon.MonoBehaviour
 
                         if (!inputLine.StartsWith("/"))
                         {
-                            string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored();
+                            string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).ColorParsed();
                             if (name.Uncolored().Length <= 0)
                             {
                                 name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
@@ -212,7 +214,7 @@ public class InRoomChat : Photon.MonoBehaviour
         string chatColor = Guardian.Mod.Properties.TextColor.Value;
         if (chatColor.Length > 0)
         {
-            input = input.WithColor(chatColor);
+            input = input.AsColor(chatColor);
         }
 
         // Bold chat
@@ -230,7 +232,7 @@ public class InRoomChat : Photon.MonoBehaviour
         string customName = Guardian.Mod.Properties.ChatName.Value;
         if (customName.Length != 0)
         {
-            name = customName.Colored();
+            name = customName.ColorParsed();
         }
         // Bold name
         if (Guardian.Mod.Properties.BoldName.Value)

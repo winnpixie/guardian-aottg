@@ -66,7 +66,7 @@ namespace Guardian.UI.Impl
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Label(_currentSection);
+            GUILayout.Label(_currentSection.AsBold());
 
             foreach (Property property in Mod.Properties.Elements)
             {

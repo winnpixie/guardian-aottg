@@ -11,7 +11,7 @@ namespace Guardian.Utilities
 
         public static void Broadcast(string message)
         {
-            FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, message, "[MC]".WithColor("AAFF00").AsBold());
+            FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, message, "[MC]".AsColor("AAFF00").AsBold());
         }
 
         public static WWW CreateWWW(string url)

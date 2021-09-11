@@ -29,7 +29,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             GameHelper.Broadcast($"Guest-Be-Gone kicked {guestsEliminated.Count} guest(s)!");
             if (guestsEliminated.Count > 0)
             {
-                GameHelper.Broadcast($"Guests kicked: " + string.Join(", ", guestsEliminated.Select(name => name.Colored()).ToArray()));
+                GameHelper.Broadcast($"Guests kicked: " + string.Join(", ", guestsEliminated.Select(name => name.ColorParsed()).ToArray()));
             }
         }
     }

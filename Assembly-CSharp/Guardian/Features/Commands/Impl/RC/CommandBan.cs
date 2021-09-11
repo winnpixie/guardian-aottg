@@ -14,7 +14,7 @@ namespace Guardian.Features.Commands.Impl.RC
                 {
                     if (!(FengGameManagerMKII.OnPrivateServer || PhotonNetwork.isMasterClient))
                     {
-                        string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).Colored();
+                        string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).ColorParsed();
                         if (name == string.Empty)
                         {
                             name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
@@ -31,7 +31,7 @@ namespace Guardian.Features.Commands.Impl.RC
 
                             if (!FengGameManagerMKII.OnPrivateServer)
                             {
-                                GameHelper.Broadcast(GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " has been banned!");
+                                GameHelper.Broadcast(GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed() + " has been banned!");
                                 GameHelper.Broadcast($"Reason: \"{reason}\"");
                             }
                         }

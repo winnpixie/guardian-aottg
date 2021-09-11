@@ -26,11 +26,11 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             }
             else
             {
-                irc.AddLine("Available Gamemodes:".WithColor("AAFF00"));
+                irc.AddLine("Available Gamemodes:".AsColor("AAFF00"));
 
                 foreach (Gamemode mode in Mod.Gamemodes.Elements)
                 {
-                    irc.AddLine("> ".WithColor("00FF00").AsBold() + mode.Name);
+                    irc.AddLine("> ".AsColor("00FF00").AsBold() + mode.Name);
                 }
             }
         }

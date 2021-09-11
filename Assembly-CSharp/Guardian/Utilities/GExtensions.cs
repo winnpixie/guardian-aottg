@@ -33,7 +33,7 @@ public static class GExtensions
     }
 
     // My implementation of NGUI color parsing
-    public static string Colored(this string str)
+    public static string ColorParsed(this string str)
     {
         string output = string.Empty;
         Stack<string> colors = new Stack<string>(); // Thank you to Kevin for telling me to use a Stack
@@ -89,7 +89,7 @@ public static class GExtensions
 
     public static bool IsHex(this string str)
     {
-        return (str.Length == 6 || str.Length == 8) && int.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out int result);
+        return (str.Length == 6 || str.Length == 8) && int.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out int v);
     }
 
     public static string ToHex(this Color color)
@@ -148,12 +148,7 @@ public static class GExtensions
 
     public static Color ToColor(this uint color)
     {
-        int r = unchecked((int)color) >> 24 & 0xFF;
-        int g = unchecked((int)color) >> 16 & 0xFF;
-        int b = unchecked((int)color) >> 8 & 0xFF;
-        int a = unchecked((int)color) & 0xFF;
-
-        return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+        return ToColor(unchecked((int)color));
     }
 
     public static Color WithAlpha(this Color color, float alpha)
@@ -171,7 +166,7 @@ public static class GExtensions
         return $"<i>{str}</i>";
     }
 
-    public static string WithColor(this string str, string hex)
+    public static string AsColor(this string str, string hex)
     {
         if (hex.IsHex())
         {

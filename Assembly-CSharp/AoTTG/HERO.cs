@@ -385,7 +385,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netGrabbed(int id, bool leftHand, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HeroPatches.IsGrabValid(id, info))
+        if (Guardian.AntiAbuse.Validators.Hero.IsGrabValid(id, info))
         {
             titanWhoGrabMeID = id;
             GetGrabbed(PhotonView.Find(id).gameObject, leftHand);
@@ -515,7 +515,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info = null)
     {
-        if (Guardian.AntiAbuse.HeroPatches.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Hero.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -524,7 +524,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HeroPatches.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Hero.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -533,7 +533,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HeroPatches.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Hero.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -620,7 +620,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void whoIsMyErenTitan(int id, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HeroPatches.IsErenTitanDeclarationValid(id, info))
+        if (Guardian.AntiAbuse.Validators.Hero.IsErenTitanDeclarationValid(id, info))
         {
             eren_titan = PhotonView.Find(id).gameObject;
             titanForm = true;
@@ -1338,7 +1338,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netPauseAnimation(PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.HeroPatches.IsAnimationPauseValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.Hero.IsAnimationPauseValid(this, info))
         {
             return;
         }
@@ -1351,7 +1351,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netContinueAnimation(PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.HeroPatches.IsAnimationResumeValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.Hero.IsAnimationResumeValid(this, info))
         {
             return;
         }
@@ -1667,17 +1667,24 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
         if (canShoot)
         {
-            Quaternion rot = Camera.main.transform.rotation;
-            Quaternion angle = Quaternion.Euler(rot.eulerAngles.x + 60f, rot.eulerAngles.y, rot.eulerAngles.z);
+            Quaternion firingDirection = base.transform.rotation;
+
+            if (Guardian.Mod.Properties.DirectionalFlares.Value)
+            {
+                // Yes I took this from Anarchy-Expedition, hush.
+                Quaternion cameraRot = Camera.main.transform.rotation;
+                firingDirection = Quaternion.Euler(cameraRot.eulerAngles.x + 60f, cameraRot.eulerAngles.y, cameraRot.eulerAngles.z);
+            }
+
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
-                GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/flareBullet" + type), base.transform.position, angle);
+                GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/flareBullet" + type), base.transform.position, firingDirection);
                 gameObject.GetComponent<FlareMovement>().DontShowHint();
                 UnityEngine.Object.Destroy(gameObject, 25f);
             }
             else
             {
-                GameObject gameObject2 = PhotonNetwork.Instantiate("FX/flareBullet" + type, base.transform.position, angle, 0);
+                GameObject gameObject2 = PhotonNetwork.Instantiate("FX/flareBullet" + type, base.transform.position, firingDirection, 0);
                 gameObject2.GetComponent<FlareMovement>().DontShowHint();
             }
         }
@@ -1807,7 +1814,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void showHitDamage(PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.HeroPatches.IsHitDamageShowValid(info))
+        if (!Guardian.AntiAbuse.Validators.Hero.IsHitDamageShowValid(info))
         {
             return;
         }
@@ -1830,7 +1837,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
-            if (Guardian.AntiAbuse.HeroPatches.IsBlowAwayValid(info))
+            if (Guardian.AntiAbuse.Validators.Hero.IsBlowAwayValid(info))
             {
                 base.rigidbody.AddForce(force, ForceMode.Impulse);
                 base.transform.LookAt(base.transform.position);
@@ -1841,7 +1848,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void killObject(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HeroPatches.IsKillObjectValid(info))
+        if (Guardian.AntiAbuse.Validators.Hero.IsKillObjectValid(info))
         {
             UnityEngine.Object.Destroy(base.gameObject);
         }
@@ -4624,25 +4631,25 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (info.sender.customProperties[PhotonPlayerProperty.Name] == null || info.sender.customProperties[PhotonPlayerProperty.IsTitan] == null)
                 {
-                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
+                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
                     return;
                 }
                 else if (viewId < 0)
                 {
                     if (titanName == string.Empty)
                     {
-                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString() + " (possibly valid).");
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString() + " (possibly valid).");
                         return;
                     }
                     else
                     {
-                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
                         return;
                     }
                 }
                 else if (PhotonView.Find(viewId) == null)
                 {
-                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
+                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
                     return;
                 }
                 else
@@ -4650,7 +4657,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     PhotonView photonView = PhotonView.Find(viewId);
                     if (photonView.owner.Id != info.sender.Id)
                     {
-                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
                         return;
                     }
                 }
@@ -4765,29 +4772,29 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (info.sender.customProperties[PhotonPlayerProperty.Name] == null || info.sender.customProperties[PhotonPlayerProperty.IsTitan] == null)
                 {
-                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
+                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
                 }
                 else if (viewId < 0)
                 {
                     if (titanName == string.Empty)
                     {
-                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString() + " (possibly valid).");
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString() + " (possibly valid).");
                     }
                     else if (RCSettings.BombMode == 0 && RCSettings.DeadlyCannons == 0)
                     {
-                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
                     }
                 }
                 else if (PhotonView.Find(viewId) == null)
                 {
-                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
+                    InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
                 }
                 else
                 {
                     PhotonView photonView = PhotonView.Find(viewId);
                     if (photonView.owner.Id != info.sender.Id)
                     {
-                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".WithColor("FFCC00") + info.sender.Id.ToString());
+                        InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
                     }
                 }
             }
@@ -4898,7 +4905,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
-        if (!Guardian.AntiAbuse.HeroPatches.IsCannonSetValid(viewID, info))
+        if (!Guardian.AntiAbuse.Validators.Hero.IsCannonSetValid(viewID, info))
         {
             return;
         }
@@ -5380,7 +5387,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if ((int)FengGameManagerMKII.Settings[0] == 1)
         {
-            if (Guardian.AntiAbuse.HeroPatches.IsSkinLoadValid(this, info))
+            if (Guardian.AntiAbuse.Validators.Hero.IsSkinLoadValid(this, info))
             {
                 StartCoroutine(CoLoadSkin(horse, url));
             }

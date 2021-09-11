@@ -90,7 +90,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void myMasterIs(int viewId, string launcherRef, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HookPatches.IsHookMasterSetValid(this, viewId, info))
+        if (Guardian.AntiAbuse.Validators.Hooks.IsHookMasterSetValid(this, viewId, info))
         {
             master = PhotonView.Find(viewId).gameObject;
 
@@ -108,7 +108,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void netLaunch(Vector3 newPosition, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HookPatches.IsLaunchValid(info))
+        if (Guardian.AntiAbuse.Validators.Hooks.IsLaunchValid(info))
         {
             nodes = new ArrayList();
             nodes.Add(newPosition);
@@ -118,7 +118,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void netUpdatePhase1(Vector3 newPosition, Vector3 masterPosition, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HookPatches.IsPhaseUpdateValid(info))
+        if (Guardian.AntiAbuse.Validators.Hooks.IsPhaseUpdateValid(info))
         {
             lineRenderer.SetVertexCount(2);
             lineRenderer.SetPosition(0, newPosition);
@@ -130,7 +130,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void netUpdateLeviSpiral(Vector3 newPosition, Vector3 masterPosition, Vector3 masterrotation, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HookPatches.IsLeviSpiralValid(info))
+        if (Guardian.AntiAbuse.Validators.Hooks.IsLeviSpiralValid(info))
         {
             phase = 2;
             leviMode = true;
@@ -262,7 +262,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void tieMeToOBJ(int id, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HookPatches.IsHookTieValid(this, id, info))
+        if (Guardian.AntiAbuse.Validators.Hooks.IsHookTieValid(this, id, info))
         {
             base.transform.parent = PhotonView.Find(id).gameObject.transform;
 
@@ -417,7 +417,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void killObject(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.HookPatches.IsKillObjectValid(info))
+        if (Guardian.AntiAbuse.Validators.Hooks.IsKillObjectValid(info))
         {
             UnityEngine.Object.Destroy(rope);
             UnityEngine.Object.Destroy(base.gameObject);

@@ -2770,7 +2770,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         return;
                     }
                     ExitGames.Client.Photon.Hashtable rpcData = payload as ExitGames.Client.Photon.Hashtable;
-                    if (!Guardian.AntiAbuse.NetworkPatches.IsRPCValid(rpcData, sender))
+                    if (!Guardian.AntiAbuse.Validators.Network.IsRPCValid(rpcData, sender))
                     {
                         return;
                     }
@@ -2805,7 +2805,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     for (short num5 = num4; num5 < hashtable2.Count; num5 = (short)(num5 + 1))
                     {
                         ExitGames.Client.Photon.Hashtable hashtable = hashtable2[num5] as ExitGames.Client.Photon.Hashtable;
-                        if (!Guardian.AntiAbuse.NetworkPatches.IsSerializeReadValid(hashtable, sender))
+                        if (!Guardian.AntiAbuse.Validators.Network.IsSerializeReadValid(hashtable, sender))
                         {
                             return;
                         }
@@ -2826,7 +2826,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         string resourceName = (string)instantiationData[(byte)0];
                         if (resourceName != null)
                         {
-                            if (!Guardian.AntiAbuse.NetworkPatches.IsInstantiatePacketValid(instantiationData, sender))
+                            if (!Guardian.AntiAbuse.Validators.Network.IsInstantiatePacketValid(instantiationData, sender))
                             {
                                 return;
                             }
@@ -2944,7 +2944,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     break;
                 }
             case EventCode.QueueState:
-                if (!Guardian.AntiAbuse.NetworkPatches.IsStateChangeValid(sender))
+                if (!Guardian.AntiAbuse.Validators.Network.IsStateChangeValid(sender))
                 {
                     return;
                 }

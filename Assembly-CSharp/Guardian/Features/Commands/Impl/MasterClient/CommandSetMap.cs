@@ -10,7 +10,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
         {
             if (!Mod.IsMultiMap)
             {
-                irc.AddLine("This is not a Multi-Map room!".WithColor("FF0000"));
+                irc.AddLine("This is not a Multi-Map room!".AsColor("FF0000"));
                 return;
             }
             if (args.Length > 0)
@@ -30,11 +30,11 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             }
             else
             {
-                irc.AddLine("Available Maps:".WithColor("AAFF00"));
+                irc.AddLine("Available Maps:".AsColor("AAFF00"));
 
                 foreach (LevelInfo level in LevelInfo.Levels)
                 {
-                    irc.AddLine("> ".WithColor("00FF00").AsBold() + level.Name);
+                    irc.AddLine("> ".AsColor("00FF00").AsBold() + level.Name);
                 }
             }
         }

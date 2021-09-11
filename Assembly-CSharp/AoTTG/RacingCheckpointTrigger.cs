@@ -16,7 +16,7 @@ public class RacingCheckpointTrigger : MonoBehaviour
             HERO component = gameObject.GetComponent<HERO>();
             if (component != null)
             {
-                InRoomChat.Instance.AddLine("Checkpoint set.".WithColor("00FF00"));
+                InRoomChat.Instance.AddLine("Checkpoint set.".AsColor("00FF00"));
                 component.FillGas();
                 FengGameManagerMKII.Instance.racingSpawnPoint = base.gameObject.transform.position;
                 FengGameManagerMKII.Instance.racingSpawnPointSet = true;

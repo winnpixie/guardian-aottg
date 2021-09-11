@@ -181,7 +181,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.TitanPatches.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Titans.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -190,7 +190,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.TitanPatches.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Titans.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -200,7 +200,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.TitanPatches.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Titans.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -222,7 +222,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netSetAbnormalType(int type, PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.TitanPatches.IsTitanTypeSetValid(this, info) && PhotonNetwork.isMasterClient)
+        if (!Guardian.AntiAbuse.Validators.Titans.IsTitanTypeSetValid(this, info) && PhotonNetwork.isMasterClient)
         {
             this.photonView.RPC("netSetAbnormalType", PhotonTargets.OthersBuffered, (int)abnormalType);
             return;
@@ -364,7 +364,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void setMyTarget(int viewId, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.TitanPatches.IsTargetSetValid(this, info) && PhotonNetwork.isMasterClient)
+        if (!Guardian.AntiAbuse.Validators.Titans.IsTargetSetValid(this, info) && PhotonNetwork.isMasterClient)
         {
             return;
         }
@@ -947,7 +947,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void playsoundRPC(string sndname, PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.TitanPatches.IsSoundPlayValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.Titans.IsSoundPlayValid(this, info))
         {
             return;
         }
@@ -1247,7 +1247,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     public void grabToRight(PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.TitanPatches.IsRightGrabValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.Titans.IsRightGrabValid(this, info))
         {
             return;
         }
@@ -1271,7 +1271,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     public void grabToLeft(PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.TitanPatches.IsRightGrabValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.Titans.IsRightGrabValid(this, info))
         {
             return;
         }
@@ -2211,7 +2211,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netSetLevel(float level, int AI, int skinColor, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.TitanPatches.IsLevelSetValid(this, info) && base.photonView.isMine)
+        if (!Guardian.AntiAbuse.Validators.Titans.IsLevelSetValid(this, info) && base.photonView.isMine)
         {
             base.photonView.RPC("netSetLevel", PhotonTargets.OthersBuffered, this.myLevel, this.myDifficulty, this.skinColor);
             return;
@@ -3167,7 +3167,7 @@ public class TITAN : Photon.MonoBehaviour
                         {
                             if (checkPoints.Count == 4)
                             {
-                                Guardian.Utilities.GameHelper.Broadcast("An abnormal titan is approaching the North gate!".WithColor("CC0000").AsBold().AsItalic());
+                                Guardian.Utilities.GameHelper.Broadcast("An abnormal titan is approaching the North gate!".AsColor("CC0000").AsBold().AsItalic());
                             }
                             Vector3 newCheckPt = (Vector3)this.checkPoints[0];
                             targetCheckPt = newCheckPt;

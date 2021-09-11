@@ -18,12 +18,12 @@ namespace Guardian.Features.Commands.Impl
                 {
                     if (result.Length > 1)
                     {
-                        irc.AddMessage("Translation ".WithColor("FFCC00") + $"({result[0].ToUpper()} -> {args[1].ToUpper()})", result[1]);
+                        irc.AddMessage("Translation ".AsColor("FFCC00") + $"({result[0].ToUpper()} -> {args[1].ToUpper()})", result[1]);
                     }
                     else
                     {
-                        irc.AddLine("An error occured while trying to retrieve the translation!".WithColor("FF0000"));
-                        irc.AddLine(result[0].WithColor("FF0000"));
+                        irc.AddLine("An error occured while trying to retrieve the translation!".AsColor("FF0000"));
+                        irc.AddLine(result[0].AsColor("FF0000"));
                     }
                 }));
             }

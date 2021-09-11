@@ -85,18 +85,18 @@ namespace Guardian.Features.Gamemodes.Impl
                                 hero.MarkDead();
                                 hero.photonView.RPC("netDie2", player, -1, "[FF0000]Time's Up!");
 
-                                GameHelper.Broadcast($"{GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored().WithColor("FFFFFF")} ran out of time!"
-                                    .WithColor("FF0000"));
+                                GameHelper.Broadcast($"{GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed().AsColor("FFFFFF")} ran out of time!"
+                                    .AsColor("FF0000"));
 
                                 _lifeTimes[hero.photonView.owner.Id] = _startTime.Value;
                             }
                             else if (timeLeft == 15)
                             {
-                                FengGameManagerMKII.Instance.photonView.RPC("Chat", player, $"15 seconds left...".WithColor("FF0000"), string.Empty);
+                                FengGameManagerMKII.Instance.photonView.RPC("Chat", player, $"15 seconds left...".AsColor("FF0000"), string.Empty);
                             }
                             else if (timeLeft < 6)
                             {
-                                FengGameManagerMKII.Instance.photonView.RPC("Chat", player, $"{timeLeft}...".WithColor("FF0000"), string.Empty);
+                                FengGameManagerMKII.Instance.photonView.RPC("Chat", player, $"{timeLeft}...".AsColor("FF0000"), string.Empty);
                             }
 
                             newTimes[entry.Key] = timeLeft;
@@ -129,7 +129,7 @@ namespace Guardian.Features.Gamemodes.Impl
             int timeBonus = MathHelper.Floor((damage / 100f) * _scoreMultiplier.Value);
             _lifeTimes[killer.Id] += timeBonus;
 
-            FengGameManagerMKII.Instance.photonView.RPC("Chat", killer, ("+" + timeBonus + (timeBonus == 1 ? " second" : " seconds") + "!").WithColor("00FF00"), string.Empty);
+            FengGameManagerMKII.Instance.photonView.RPC("Chat", killer, ("+" + timeBonus + (timeBonus == 1 ? " second" : " seconds") + "!").AsColor("00FF00"), string.Empty);
         }
     }
 }

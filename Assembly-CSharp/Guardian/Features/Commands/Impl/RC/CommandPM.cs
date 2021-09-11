@@ -12,8 +12,8 @@
                 if (player != null)
                 {
                     string message = string.Join(" ", args.CopyOfRange(1, args.Length));
-                    FengGameManagerMKII.Instance.photonView.RPC("Chat", player, message, $"PM => You".WithColor("FFCC00"));
-                    irc.AddLine($"You => #{player.Id}".WithColor("FFCC00") + $": {message}");
+                    FengGameManagerMKII.Instance.photonView.RPC("Chat", player, message, $"PM => You".AsColor("FFCC00"));
+                    irc.AddLine($"You => #{player.Id}".AsColor("FFCC00") + $": {message}");
                 }
             }
         }

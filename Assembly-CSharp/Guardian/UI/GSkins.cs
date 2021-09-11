@@ -24,19 +24,19 @@ namespace Guardian.UI
                 s_initialized = true;
 
                 Texture2D flatDark = new Texture2D(1, 1);
-                flatDark.SetPixel(0, 0, 0x010101AA.ToColor());
+                flatDark.SetPixel(0, 0, 0x010101CD.ToColor());
                 flatDark.Apply();
 
                 Texture2D flatNormal = new Texture2D(1, 1);
-                flatNormal.SetPixel(0, 0, 0x121212AA.ToColor());
+                flatNormal.SetPixel(0, 0, 0x121212CD.ToColor());
                 flatNormal.Apply();
 
                 Texture2D flatLight = new Texture2D(1, 1);
-                flatLight.SetPixel(0, 0, 0x232323AA.ToColor());
+                flatLight.SetPixel(0, 0, 0x232323CD.ToColor());
                 flatLight.Apply();
 
                 Texture2D flatLighter = new Texture2D(1, 1);
-                flatLighter.SetPixel(0, 0, 0x343434AA.ToColor());
+                flatLighter.SetPixel(0, 0, 0x343434CD.ToColor());
                 flatLighter.Apply();
 
                 // Rectangles

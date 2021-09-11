@@ -1,5 +1,4 @@
-﻿using Guardian.AntiAbuse;
-using Guardian.Features.Commands;
+﻿using Guardian.Features.Commands;
 using Guardian.Features.Properties;
 using Guardian.Features.Gamemodes;
 using Guardian.Networking;
@@ -15,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "09092021";
+        public static string Build = "09112021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -69,7 +68,7 @@ namespace Guardian
                 // Property whitelist
                 foreach (FieldInfo field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
                 {
-                    NetworkPatches.PropertyWhitelist.Add((string)field.GetValue(null));
+                    AntiAbuse.Validators.Network.PropertyWhitelist.Add((string)field.GetValue(null));
                 }
 
                 s_initialized = true;
@@ -100,7 +99,7 @@ namespace Guardian
 
                 Logger.Error($"\nIf errors persist, contact me on Discord!");
                 Logger.Info("Discord:");
-                Logger.Info($"\t- {"https://cb.run/FFT".WithColor("0099FF")}");
+                Logger.Info($"\t- {"https://cb.run/FFT".AsColor("0099FF")}");
 
                 try
                 {
@@ -115,9 +114,9 @@ namespace Guardian
 
                 if (!latestVersion.Equals(Build))
                 {
-                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().WithColor("FF0000")}, please update using the launcher!");
+                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().AsColor("FF0000")}, please update using the launcher!");
                     Logger.Info("Download (if you don't have it already):");
-                    Logger.Info($"\t- {"https://cb.run/GuardianAoT".WithColor("0099FF")}");
+                    Logger.Info($"\t- {"https://cb.run/GuardianAoT".AsColor("0099FF")}");
 
                     try
                     {
@@ -127,7 +126,7 @@ namespace Guardian
                 }
                 else
                 {
-                    Logger.Info($"You are {"UP TO DATE".AsBold().AsItalic().WithColor("AAFF00")}, yay!");
+                    Logger.Info($"You are {"UP TO DATE".AsBold().AsItalic().AsColor("AAFF00")}, yay!");
                 }
             }
         }
@@ -188,7 +187,7 @@ namespace Guardian
             if (s_firstJoin)
             {
                 s_firstJoin = false;
-                string joinMessage = Properties.JoinMessage.Value.Colored();
+                string joinMessage = Properties.JoinMessage.Value.ColorParsed();
                 if (joinMessage.Uncolored().Length <= 0)
                 {
                     joinMessage = Properties.JoinMessage.Value;
@@ -207,7 +206,7 @@ namespace Guardian
                 Gamemodes.Current.OnPlayerJoin(player);
             }
 
-            Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " connected.".WithColor("00FF00"));
+            Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed() + " connected.".AsColor("00FF00"));
         }
 
         void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -217,19 +216,19 @@ namespace Guardian
                 Gamemodes.Current.OnPlayerLeave(player);
             }
 
-            Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).Colored() + " disconnected.".WithColor("FF0000"));
+            Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed() + " disconnected.".AsColor("FF0000"));
         }
 
         void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
         {
-            NetworkPatches.OnPlayerPropertyModification(playerAndUpdatedProps);
+            AntiAbuse.Validators.Network.OnPlayerPropertyModification(playerAndUpdatedProps);
 
-            ModDetector.OnPlayerPropertyModification(playerAndUpdatedProps);
+            AntiAbuse.ModDetector.OnPlayerPropertyModification(playerAndUpdatedProps);
         }
 
         void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
-            NetworkPatches.OnRoomPropertyModification(propertiesThatChanged);
+            AntiAbuse.Validators.Network.OnRoomPropertyModification(propertiesThatChanged);
 
             if (!s_firstJoin)
             {

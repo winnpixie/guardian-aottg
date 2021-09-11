@@ -26,11 +26,14 @@ namespace Guardian.Features.Properties
         public Property<float> ReelOutScrollSmoothing = new Property<float>("Player_ReelOutScrollSmoothing", new string[0], 0.2f);
         public Property<float> OpacityOfOwnName = new Property<float>("Player_OpacityOfOwnName", new string[0], 1.0f);
         public Property<float> OpacityOfOtherNames = new Property<float>("Player_OpacityOfOtherNames", new string[0], 1.0f);
+        public Property<bool> DirectionalFlares = new Property<bool>("Player_DirectionalFlares", new string[0], true);
         public Property<string> SuicideMessage = new Property<string>("Player_SuicideMessage", new string[0], "[FFFFFF]Suicide[-]");
         public Property<string> LavaDeathMessage = new Property<string>("Player_LavaDeathMessage", new string[0], "[FF0000]Lava[-]");
         public Property<int> LocalMinDamage = new Property<int>("Player_LocalMinDamage", new string[0], 10);
 
         // Chat
+        public Property<int> MaxChatLines = new Property<int>("Chat_MaxChatLines", new string[0], 50);
+        public Property<bool> ChatBackground = new Property<bool>("Chat_DrawBackground", new string[0], true);
         public Property<string> JoinMessage = new Property<string>("Chat_JoinMessage", new string[0], string.Empty);
         public Property<string> ChatName = new Property<string>("Chat_UserName", new string[0], string.Empty);
         public Property<bool> BoldName = new Property<bool>("Chat_BoldName", new string[0], false);
@@ -48,18 +51,15 @@ namespace Guardian.Features.Properties
         // Visual [Misc]
         public Property<bool> FPSCamera = new Property<bool>("Visual_FPSCamera", new string[0], false);
         public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], false);
-        public Property<bool> ChatBackground = new Property<bool>("Visual_ShowChatBackground", new string[0], true);
-        public Property<bool> LogBackground = new Property<bool>("Visual_ShowLogBackground", new string[0], true);
 
         // Misc
         public Property<string> CustomAppId = new Property<string>("Misc_AppId", new string[0], string.Empty);
         public Property<bool> UseRichPresence = new Property<bool>("Misc_DiscordPresence", new string[0], true);
 
         // Logging
+        public Property<int> MaxLogLines = new Property<int>("Log_MaxHistoryEntries", new string[0], 50);
         public Property<bool> ShowLog = new Property<bool>("Log_ShowLog", new string[0], true);
-        public Property<bool> LogInfo = new Property<bool>("Log_ShowGeneric", new string[0], true);
-        public Property<bool> LogWarnings = new Property<bool>("Log_ShowWarnings", new string[0], true);
-        public Property<bool> LogErrors = new Property<bool>("Log_ShowErrors", new string[0], true);
+        public Property<bool> LogBackground = new Property<bool>("Log_DrawBackground", new string[0], true);
 
         public override void Load()
         {
@@ -121,11 +121,14 @@ namespace Guardian.Features.Properties
                 }
             };
             base.Add(OpacityOfOtherNames);
+
+            base.Add(DirectionalFlares);
             base.Add(SuicideMessage);
             base.Add(LavaDeathMessage);
             base.Add(LocalMinDamage);
 
             // Chat
+            base.Add(ChatBackground);
             base.Add(JoinMessage);
             base.Add(ChatName);
             base.Add(TextColor);
@@ -135,6 +138,7 @@ namespace Guardian.Features.Properties
             base.Add(TextSuffix);
             base.Add(BoldText);
             base.Add(ItalicText);
+            base.Add(MaxChatLines);
 
             // Visual [Render]
             DrawDistance.OnValueChanged = () =>
@@ -152,8 +156,6 @@ namespace Guardian.Features.Properties
             // Visual [Misc]
             base.Add(FPSCamera);
             base.Add(MultiplayerNapeMeat);
-            base.Add(ChatBackground);
-            base.Add(LogBackground);
 
             // Misc
             CustomAppId.OnValueChanged = () =>
@@ -164,10 +166,9 @@ namespace Guardian.Features.Properties
             base.Add(UseRichPresence);
 
             // Logging
+            base.Add(MaxLogLines);
             base.Add(ShowLog);
-            base.Add(LogInfo);
-            base.Add(LogWarnings);
-            base.Add(LogErrors);
+            base.Add(LogBackground);
 
             LoadFromFile();
             Save();

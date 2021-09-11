@@ -18,17 +18,17 @@ namespace Guardian.Features.Commands.Impl.RC
                 {
                     if (FengGameManagerMKII.BanHash.ContainsKey(id))
                     {
-                        GameHelper.Broadcast($"{GExtensions.AsString(FengGameManagerMKII.BanHash[id])} has been unbanned.".WithColor("FFCC00"));
+                        GameHelper.Broadcast($"{GExtensions.AsString(FengGameManagerMKII.BanHash[id])} has been unbanned.".AsColor("FFCC00"));
                         FengGameManagerMKII.BanHash.Remove(id);
                     }
                     else
                     {
-                        irc.AddLine($"Player #{id} is not banned.".WithColor("FFCC00"));
+                        irc.AddLine($"Player #{id} is not banned.".AsColor("FFCC00"));
                     }
                 }
                 else
                 {
-                    irc.AddLine("Command requires master client.".WithColor("FF0000"));
+                    irc.AddLine("Command requires master client.".AsColor("FF0000"));
                 }
             }
         }

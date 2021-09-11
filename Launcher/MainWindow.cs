@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
-using System.Diagnostics;
+using System.Text;
+using System.Text.Json;
 using System.Windows.Forms;
 
 namespace Launcher
@@ -16,36 +18,44 @@ namespace Launcher
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs args)
+        private void MainWindow_Load(object sender, EventArgs args)
         {
             _currentDirectory = Environment.CurrentDirectory;
         }
 
         private async void updateAndStart_Click(object sender, EventArgs e)
         {
-            outputLog.Text = "Beginning download of Guardian.zip";
+            try
+            {
+                outputLog.Text = "Attempting to terminate active Guardian tasks...";
+
+                Process.Start(new ProcessStartInfo("taskkill.exe", "/F /IM Guardian.exe"));
+            }
+            catch { }
 
             try
             {
+                outputLog.Text += "\nBeginning download of Guardian.zip";
+
                 FileInfo updateFileRef = new FileInfo(_currentDirectory + "\\Guardian.zip");
                 if (updateFileRef.Exists)
                 {
                     updateFileRef.Delete();
                 }
 
-                using (HttpClient client = new HttpClient())
+                using (HttpClient hc = new HttpClient())
                 {
-                    string latestVersion = await client.GetStringAsync("https://summie.tk/GUARDIAN_BUILD.TXT");
+                    string latestVersion = await hc.GetStringAsync("https://summie.tk/GUARDIAN_BUILD.TXT");
                     outputLog.Text += $"\nLatest Version : {latestVersion}";
 
                     outputLog.Text += "\nDownloading Guardian.zip from https://alerithe.github.io/guardian/Guardian.zip";
                     using (FileStream fs = updateFileRef.OpenWrite())
                     {
-                        byte[] data = await client.GetByteArrayAsync("https://alerithe.github.io/guardian/Guardian.zip");
+                        byte[] data = await hc.GetByteArrayAsync("https://alerithe.github.io/guardian/Guardian.zip");
                         fs.Write(data, 0, data.Length);
                     }
 
-                    outputLog.Text += "\nDownload successful";
+                    outputLog.Text += "\nDownload successful!";
                 }
 
                 using (ZipArchive archive = ZipFile.OpenRead(_currentDirectory + "\\Guardian.zip"))
@@ -70,10 +80,10 @@ namespace Launcher
                             entry.ExtractToFile(realPath, true);
                         }
 
-                        outputLog.Text += $"OK";
+                        outputLog.Text += $"OK!";
                     }
 
-                    outputLog.Text += "\nExtraction completed";
+                    outputLog.Text += "\nExtraction completed!";
                 }
 
                 updateFileRef.Delete();
@@ -82,22 +92,72 @@ namespace Launcher
             }
             catch (Exception ex)
             {
-                outputLog.Text += $"\n{ex}";
+                outputLog.Text += $"\n\n{ex}";
             }
         }
 
         private void startNoUpdate_Click(object sender, EventArgs e)
         {
-            outputLog.Text += "\nLaunching Guardian.exe";
+            outputLog.Text += "\nLaunching Guardian.exe...";
 
             try
             {
                 Process.Start(new ProcessStartInfo("Guardian.exe"));
                 this.Close();
             }
-            catch
+            catch (Exception ex)
             {
-                outputLog.Text += "\nCould not launch application 'Guardian.exe'";
+                outputLog.Text += "\nCould not launch application 'Guardian.exe'!";
+                outputLog.Text += $"\n\n{ex}";
+            }
+        }
+
+        private async void uploadLog_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                FileInfo outputLogFileRef = new FileInfo(_currentDirectory + "\\Guardian_Data\\output_log.txt");
+                if (outputLogFileRef.Exists)
+                {
+                    using (FileStream fs = outputLogFileRef.OpenRead())
+                    {
+                        using (StreamReader sr = new StreamReader(fs))
+                        {
+                            string content = await sr.ReadToEndAsync();
+
+                            using (StringContent sc = new StringContent(content, Encoding.UTF8, "application/json"))
+                            {
+                                using (HttpClient hc = new HttpClient())
+                                {
+                                    HttpResponseMessage response = await hc.PostAsync("https://hastebin.com/documents", sc);
+
+                                    if (response.IsSuccessStatusCode)
+                                    {
+                                        string resData = await response.Content.ReadAsStringAsync();
+
+                                        using (JsonDocument jd = JsonDocument.Parse(resData))
+                                        {
+                                            outputLog.Text += "Log contents uploaded!\n\n";
+                                            outputLog.Text += "https://hastebin.com/" + jd.RootElement.GetProperty("key").GetString() + ".txt";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Bad response from https://hastebin.com/");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("No 'output_log.txt' found in 'Guardian_Data'!");
+                }
+            }
+            catch (Exception ex)
+            {
+                outputLog.Text += $"\n\n{ex}";
             }
         }
     }

@@ -33,6 +33,7 @@ namespace Guardian.Utilities
                 }
                 else
                 {
+                    // When in doubt, return raw bytes
                     res = www.bytes;
                 }
 
