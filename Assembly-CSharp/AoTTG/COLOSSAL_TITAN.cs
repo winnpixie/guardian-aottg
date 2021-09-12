@@ -592,7 +592,6 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                         GameObject gameObject = raycastHit.collider.gameObject;
                         if (gameObject.tag == "Player")
                         {
-                            Guardian.Mod.Logger.Info("kill1");
                             Kill(gameObject);
                         }
                         if (gameObject.tag == "erenHitbox" && attackAnimation == "combo_3" && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
@@ -606,7 +605,6 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                         GameObject gameObject2 = raycastHit2.collider.gameObject;
                         if (gameObject2.tag == "Player")
                         {
-                            Guardian.Mod.Logger.Info("kill2");
                             Kill(gameObject2);
                         }
                     }

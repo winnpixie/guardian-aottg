@@ -10,7 +10,8 @@ namespace Guardian.Features.Commands.Impl.RC
         {
             if (args.Length > 0 && int.TryParse(args[0], out int id))
             {
-                if (id != PhotonNetwork.player.Id)
+                PhotonPlayer player = PhotonPlayer.Find(id);
+                if (player != null && !player.isLocal && !player.isMasterClient)
                 {
                     if (!(FengGameManagerMKII.OnPrivateServer || PhotonNetwork.isMasterClient))
                     {
@@ -23,7 +24,6 @@ namespace Guardian.Features.Commands.Impl.RC
                     }
                     else
                     {
-                        PhotonPlayer player = PhotonPlayer.Find(id);
                         if (player != null)
                         {
                             string reason = args.Length > 1 ? string.Join(" ", args.CopyOfRange(1, args.Length)) : "Banned.";

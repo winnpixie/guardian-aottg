@@ -175,6 +175,20 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public bool isFirstLoad = true;
     public float pauseWaitTime;
 
+    // BEGIN: MOD
+    [RPC]
+    public void Ping(PhotonMessageInfo info)
+    {
+        base.photonView.RPC(nameof(Pong), info.sender, PhotonNetwork.GetPing());
+    }
+
+    [RPC]
+    public void Pong(int ping, PhotonMessageInfo info)
+    {
+        info.sender.Ping = ping;
+    }
+    // END: MOD
+
     public void AddHero(HERO hero)
     {
         heroes.Add(hero);
@@ -12062,6 +12076,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             if (settings["sizeMode"] is bool)
             {
                 settings["sizeMode"] = (bool)settings["sizeMode"] ? 1 : 0;
+
+                // Logging it for funsies, lol
+                Guardian.Mod.Logger.Debug("RC2020 'sizeMode' as <b>bool</b> detected, replacing with <b>int</b> equivalent.");
             }
 
             if (RCSettings.SizeMode != (int)settings["sizeMode"] || RCSettings.SizeLower != (float)settings["sizeLower"] || RCSettings.SizeUpper != (float)settings["sizeUpper"])

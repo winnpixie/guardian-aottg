@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "09112021";
+        public static string Build = "09122021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -83,6 +83,19 @@ namespace Guardian
             {
                 Details = $"Staring at the main menu...",
             });
+
+            // Load custom textures and audio clips
+            {
+                Texture2D customInterfaceTextures = ResourceHelper.Find<Texture2D>("Custom/Textures/hud.png");
+                if (customInterfaceTextures != null)
+                {
+                    GameObject backgroundGo = GameObject.Find("Background");
+                    if (backgroundGo != null)
+                    {
+                        backgroundGo.GetComponent<UISprite>().material.mainTexture = customInterfaceTextures;
+                    }
+                }
+            }
         }
 
         private IEnumerator CoCheckForUpdate()

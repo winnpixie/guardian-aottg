@@ -35,22 +35,27 @@ namespace Guardian
 
         public void Info(string message)
         {
-            Log(LogType.Info, "* ".AsColor("AAAAAA").AsBold() + message);
+            Log(LogType.Info, "* ".AsColor("AAAAAA") + message);
         }
 
         public void Warn(string message)
         {
-            Log(LogType.Warnings, "* ".AsColor("FFCC00").AsBold() + message);
+            Log(LogType.Warnings, "* ".AsColor("FFCC00") + message);
         }
 
         public void Error(string message)
         {
-            Log(LogType.Errors, "* ".AsColor("FF0000").AsBold() + message);
+            Log(LogType.Errors, "* ".AsColor("FF0000") + message);
+        }
+
+        public void Debug(string message)
+        {
+            Log(LogType.Debug, "* ".AsColor("00FFFF") + message);
         }
 
         public enum LogType
         {
-            Info, Warnings, Errors
+            Info, Warnings, Errors, Debug
         }
     }
 }

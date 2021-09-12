@@ -5073,6 +5073,33 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void Cache()
     {
+        // TODO: Mod, load custom textures and audio clips
+        {
+            AudioClip hookShotClip = Guardian.Utilities.ResourceHelper.Find<AudioClip>("Custom/Audio/hook_shot.wav");
+            if (hookShotClip != null)
+            {
+                rope.clip = hookShotClip;
+            }
+
+            AudioClip swordSwingClip = Guardian.Utilities.ResourceHelper.Find<AudioClip>("Custom/Audio/sword_swing.wav");
+            if (swordSwingClip != null)
+            {
+                slash.clip = swordSwingClip;
+            }
+
+            AudioClip swordHitClip = Guardian.Utilities.ResourceHelper.Find<AudioClip>("Custom/Audio/sword_hit.wav");
+            if (swordHitClip != null)
+            {
+                slashHit.clip = swordHitClip;
+            }
+
+            AudioClip deathClip = Guardian.Utilities.ResourceHelper.Find<AudioClip>("Custom/Audio/death.wav");
+            if (deathClip != null)
+            {
+                meatDie.clip = deathClip;
+            }
+        }
+
         baseTransform = base.transform;
         baseRigidBody = base.rigidbody;
         maincamera = GameObject.Find("MainCamera");
@@ -5081,8 +5108,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             return;
         }
         baseAnimation = base.animation;
+
         cross1 = GameObject.Find("cross1");
         cross2 = GameObject.Find("cross2");
+
         crossL1 = GameObject.Find("crossL1");
         crossL2 = GameObject.Find("crossL2");
         crossR1 = GameObject.Find("crossR1");

@@ -47,6 +47,8 @@ public class PhotonPlayer
         }
     }
 
+    public int Ping = -1;
+
     public bool IsNewRC;
     public bool IsNeko;
     public bool IsNekoUser;

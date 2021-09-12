@@ -13,23 +13,30 @@
                 try
                 {
                     s_discordInstance = new Discord.Discord(721934748825550931L, (ulong)Discord.CreateFlags.NoRequireDiscord);
+                    s_discordInstance.GetUserManager().OnCurrentUserUpdate += () =>
+                    {
+                        Discord.User currentUser = s_discordInstance.GetUserManager().GetCurrentUser();
+                        Mod.Logger.Debug($"Connected to Discord as {currentUser.Username}#{currentUser.Discriminator}");
+                    };
 
                     s_discordInstance.SetLogHook(Discord.LogLevel.Debug, (logLevel, message) =>
-                    {
-                        switch (logLevel)
                         {
-                            case Discord.LogLevel.Debug:
-                            case Discord.LogLevel.Info:
-                                Mod.Logger.Info(message);
-                                break;
-                            case Discord.LogLevel.Warn:
-                                Mod.Logger.Warn(message);
-                                break;
-                            case Discord.LogLevel.Error:
-                                Mod.Logger.Error(message);
-                                break;
-                        }
-                    });
+                            switch (logLevel)
+                            {
+                                case Discord.LogLevel.Debug:
+                                    Mod.Logger.Debug(message);
+                                    break;
+                                case Discord.LogLevel.Info:
+                                    Mod.Logger.Info(message);
+                                    break;
+                                case Discord.LogLevel.Warn:
+                                    Mod.Logger.Warn(message);
+                                    break;
+                                case Discord.LogLevel.Error:
+                                    Mod.Logger.Error(message);
+                                    break;
+                            }
+                        });
                 }
                 finally { }
             }
