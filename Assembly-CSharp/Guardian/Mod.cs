@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "09122021-1";
+        public static string Build = "9.13.21";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -86,13 +86,15 @@ namespace Guardian
 
             // Load custom textures and audio clips
             {
-                Texture2D customInterfaceTextures = ResourceHelper.Find<Texture2D>("Custom/Textures/hud.png");
+                Texture2D customInterfaceTextures = Gesources.Find<Texture2D>("Custom/Textures/hud.png");
                 if (customInterfaceTextures != null)
                 {
                     GameObject backgroundGo = GameObject.Find("Background");
                     if (backgroundGo != null)
                     {
-                        backgroundGo.GetComponent<UISprite>().material.mainTexture = customInterfaceTextures;
+                        Material uiMat = backgroundGo.GetComponent<UISprite>().material;
+                        uiMat.mainTextureScale = Gesources.Scale(customInterfaceTextures, 2048, 2048);
+                        uiMat.mainTexture = customInterfaceTextures;
                     }
                 }
             }
@@ -152,7 +154,11 @@ namespace Guardian
         public void ApplyCustomRenderSettings()
         {
             Camera.main.farClipPlane = Properties.DrawDistance.Value;
+
             RenderSettings.fog = Properties.Fog.Value;
+            RenderSettings.fogColor = 0x222222FF.ToColor();
+
+            RenderSettings.fogMode = FogMode.Linear;
         }
 
         void Update()
@@ -292,7 +298,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                 { "GuardianMod", Build }
+                { "GuardianMod", Build }
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');

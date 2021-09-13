@@ -13,6 +13,17 @@ public class TriggerColliderWeapon : MonoBehaviour
 
     private void Start()
     {
+        // TODO: Mod, load custom textures and sounds
+        {
+            AudioClip deathClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/titan_die.wav");
+            if (deathClip != null)
+            {
+                Object.Destroy(base.gameObject.GetComponent<AudioSource>());
+                meatDie = gameObject.AddComponent<AudioSource>();
+                meatDie.clip = deathClip;
+            }
+        }
+
         currentCamera = GameObject.Find("MainCamera");
     }
 

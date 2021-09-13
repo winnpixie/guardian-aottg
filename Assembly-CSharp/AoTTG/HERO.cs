@@ -84,7 +84,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private bool QHold;
     private bool EHold;
     public Transform lastHook;
-    private bool hasDied;
+    public bool hasDied;
     private Vector3 dashDirection;
     private int attackLoop;
     private bool attackMove;
@@ -1916,6 +1916,33 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void Start()
     {
+        // TODO: Mod, load custom textures and audio clips
+        {
+            AudioClip hookShotClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/hook_shot.wav");
+            if (hookShotClip != null)
+            {
+                rope.clip = hookShotClip;
+            }
+
+            AudioClip swordSwingClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/sword_swing.wav");
+            if (swordSwingClip != null)
+            {
+                slash.clip = swordSwingClip;
+            }
+
+            AudioClip swordHitClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/sword_hit.wav");
+            if (swordHitClip != null)
+            {
+                slashHit.clip = swordHitClip;
+            }
+
+            AudioClip deathClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/player_die.wav");
+            if (deathClip != null)
+            {
+                meatDie.clip = deathClip;
+            }
+        }
+
         FengGameManagerMKII.Instance.AddHero(this);
         if ((FengGameManagerMKII.Level.Horses || RCSettings.HorseMode == 1) && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
@@ -5073,33 +5100,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void Cache()
     {
-        // TODO: Mod, load custom textures and audio clips
-        {
-            AudioClip hookShotClip = Guardian.Utilities.ResourceHelper.Find<AudioClip>("Custom/Audio/hook_shot.wav");
-            if (hookShotClip != null)
-            {
-                rope.clip = hookShotClip;
-            }
-
-            AudioClip swordSwingClip = Guardian.Utilities.ResourceHelper.Find<AudioClip>("Custom/Audio/sword_swing.wav");
-            if (swordSwingClip != null)
-            {
-                slash.clip = swordSwingClip;
-            }
-
-            AudioClip swordHitClip = Guardian.Utilities.ResourceHelper.Find<AudioClip>("Custom/Audio/sword_hit.wav");
-            if (swordHitClip != null)
-            {
-                slashHit.clip = swordHitClip;
-            }
-
-            AudioClip deathClip = Guardian.Utilities.ResourceHelper.Find<AudioClip>("Custom/Audio/death.wav");
-            if (deathClip != null)
-            {
-                meatDie.clip = deathClip;
-            }
-        }
-
         baseTransform = base.transform;
         baseRigidBody = base.rigidbody;
         maincamera = GameObject.Find("MainCamera");

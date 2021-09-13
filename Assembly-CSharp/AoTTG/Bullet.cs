@@ -575,6 +575,17 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
 
     private void Start()
     {
+        // TODO: Mod, load custom textures and audio clips
+        {
+            Texture2D hookTexture = Guardian.Utilities.Gesources.Find<Texture2D>("Custom/Textures/hook.png");
+            if (hookTexture != null)
+            {
+                Material uiMat = base.gameObject.renderer.material;
+                uiMat.mainTextureScale = Guardian.Utilities.Gesources.Scale(hookTexture, 32, 32);
+                uiMat.mainTexture = hookTexture;
+            }
+        }
+
         rope = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("rope"));
         lineRenderer = rope.GetComponent<LineRenderer>();
         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().AddHook(this);

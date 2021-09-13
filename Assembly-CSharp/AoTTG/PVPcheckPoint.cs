@@ -257,22 +257,24 @@ public class PVPcheckPoint : Photon.MonoBehaviour
     {
         playerOn = false;
         titanOn = false;
+
         GameObject[] heroes = GameObject.FindGameObjectsWithTag("Player");
         for (int i = 0; i < heroes.Length; i++)
         {
-            if (!(Vector3.Distance(heroes[i].transform.position, base.transform.position) < hitTestR))
+            HERO hero = heroes[i].GetComponent<HERO>();
+            if (Vector3.Distance(heroes[i].transform.position, base.transform.position) < hitTestR && (!hero || !hero.hasDied))
             {
-                continue;
-            }
-            playerOn = true;
-            if (state == CheckPointState.Human && heroes[i].GetPhotonView().isMine)
-            {
-                if (fengGame.checkpoint != base.gameObject)
+                playerOn = true;
+
+                if (state == CheckPointState.Human && heroes[i].GetPhotonView().isMine)
                 {
-                    fengGame.checkpoint = base.gameObject;
-                    InRoomChat.Instance.AddLine(("Respawn point changed to Point #" + id).AsColor("AAFF00"));
+                    if (fengGame.checkpoint != base.gameObject)
+                    {
+                        fengGame.checkpoint = base.gameObject;
+                        InRoomChat.Instance.AddLine(("Respawn point changed to Point #" + id).AsColor("AAFF00"));
+                    }
+                    break;
                 }
-                break;
             }
         }
 
@@ -283,7 +285,8 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             if (Vector3.Distance(titans[i].transform.position, base.transform.position) < hitTestR + 5f && (!titan || !titan.hasDie))
             {
                 titanOn = true;
-                if (state == CheckPointState.Titan && titan.photonView.isMine && (bool)titan && titan.nonAI)
+
+                if (state == CheckPointState.Titan && titans[i].GetPhotonView().isMine && titan && titan.nonAI)
                 {
                     if (fengGame.checkpoint != base.gameObject)
                     {

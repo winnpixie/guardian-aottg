@@ -13,8 +13,20 @@ public class AHSSShotGunCollider : MonoBehaviour
     private int viewID = -1;
     private string ownerName = string.Empty;
 
+    private AudioSource hitSound;
+
     private void Start()
     {
+        // TODO: Mod, load custom textures and audio clips
+        {
+            AudioClip deathClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/titan_die.wav");
+            if (deathClip != null)
+            {
+                hitSound = gameObject.AddComponent<AudioSource>();
+                hitSound.clip = deathClip;
+            }
+        }
+
         currentCamera = GameObject.Find("MainCamera");
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
         {
@@ -124,6 +136,9 @@ public class AHSSShotGunCollider : MonoBehaviour
                     }
                     hitbox.hitPosition = (base.transform.position + hitbox.transform.position) * 0.5f;
                     currentHits.Add(hitbox);
+
+                    // TODO: Mod
+                    hitSound.Play();
 
                     int damage = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - hitbox.transform.root.rigidbody.velocity).magnitude * 10f * scoreMulti);
                     damage = Mathf.Max(10, damage);
