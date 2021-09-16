@@ -577,12 +577,9 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     {
         // TODO: Mod, load custom textures and audio clips
         {
-            Texture2D hookTexture = Guardian.Utilities.Gesources.Find<Texture2D>("Custom/Textures/hook.png");
-            if (hookTexture != null)
+            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Textures/hook.png", out Texture2D hookTexture))
             {
-                Material uiMat = base.gameObject.renderer.material;
-                uiMat.mainTextureScale = Guardian.Utilities.Gesources.Scale(hookTexture, 32, 32);
-                uiMat.mainTexture = hookTexture;
+                base.gameObject.renderer.material.mainTexture = hookTexture;
             }
         }
 

@@ -83,7 +83,6 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         NapeArmorTotal = NapeArmor;
         state = "wait";
         base.transform.position += -Vector3.up * 10000f;
-        GetComponent<NetworkView>().enabled = false;
         door_broken = GameObject.Find("door_broke");
         door_closed = GameObject.Find("door_fine");
         door_broken.SetActive(false);

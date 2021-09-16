@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "9.13.21";
+        public static string Build = "150921";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -86,17 +86,18 @@ namespace Guardian
 
             // Load custom textures and audio clips
             {
-                Texture2D customInterfaceTextures = Gesources.Find<Texture2D>("Custom/Textures/hud.png");
-                if (customInterfaceTextures != null)
+                if (Gesources.TryGetAsset("Custom/Textures/hud.png", out Texture2D hudTextures))
                 {
                     GameObject backgroundGo = GameObject.Find("Background");
                     if (backgroundGo != null)
                     {
                         Material uiMat = backgroundGo.GetComponent<UISprite>().material;
-                        uiMat.mainTextureScale = Gesources.Scale(customInterfaceTextures, 2048, 2048);
-                        uiMat.mainTexture = customInterfaceTextures;
+                        uiMat.mainTextureScale = Gesources.Scale(hudTextures, 2048, 2048);
+                        uiMat.mainTexture = hudTextures;
                     }
                 }
+
+                StartCoroutine(CoWaitAndSetParticleTexture());
             }
         }
 
@@ -144,6 +145,41 @@ namespace Guardian
                     Logger.Info($"You are {"UP TO DATE".AsBold().AsItalic().AsColor("AAFF00")}, yay!");
                 }
             }
+        }
+
+        private IEnumerator CoWaitAndSetParticleTexture()
+        {
+            yield return new WaitForSeconds(0.2f);
+
+            // TODO: Load custom textures and audio clips
+            {
+                Gesources.TryGetAsset("Custom/Textures/dust.png", out Texture2D dustTexture);
+                Gesources.TryGetAsset("Custom/Textures/blood.png", out Texture2D bloodTexture);
+
+                foreach (ParticleSystem ps in Object.FindObjectsOfType<ParticleSystem>())
+                {
+                    if (dustTexture != null)
+                    {
+                        if ((ps.name.Contains("smoke") || ps.name.StartsWith("boom") || ps.name.StartsWith("bite")
+                            || ps.name.StartsWith("Particle System 2") || ps.name.StartsWith("Particle System 3")
+                            || ps.name.StartsWith("Particle System 4") || ps.name.Contains("colossal_steam")
+                            || ps.name.Contains("FXtitan") || ps.name.StartsWith("dust")) && !ps.name.StartsWith("3dmg"))
+                        {
+                            ps.renderer.material.mainTexture = dustTexture;
+                        }
+                    }
+
+                    if (bloodTexture != null)
+                    {
+                        if (ps.name.Contains("blood"))
+                        {
+                            ps.renderer.material.mainTexture = bloodTexture;
+                        }
+                    }
+                }
+            }
+
+            StartCoroutine(CoWaitAndSetParticleTexture());
         }
 
         public static void LoadSkinHostWhitelist()

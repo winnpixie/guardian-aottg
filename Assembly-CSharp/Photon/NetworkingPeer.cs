@@ -820,7 +820,8 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         }
         else if (operationResponse.ReturnCode == 32752)
         {
-            Guardian.Mod.Logger.Error("Operation " + operationResponse.OperationCode + " failed in a server-side plugin. Check the configuration in the Dashboard. Message from server-plugin: " + operationResponse.DebugMessage);
+            Guardian.Mod.Logger.Error("Opcode " + operationResponse.OperationCode + " failed in a server plugin. Message from plugin: " + operationResponse.DebugMessage);
+
             Debug.LogError("Operation " + operationResponse.OperationCode + " failed in a server-side plugin. Check the configuration in the Dashboard. Message from server-plugin: " + operationResponse.DebugMessage);
         }
         else if (PhotonNetwork.logLevel >= PhotonLogLevel.Informational)

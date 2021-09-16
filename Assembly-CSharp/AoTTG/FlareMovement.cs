@@ -12,6 +12,15 @@ public class FlareMovement : MonoBehaviour
     private void Start()
     {
         hero = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
+        Color customColor = color switch
+        {
+            "Green" => Guardian.Mod.Properties.Flare1Color.Value.ToColor(),
+            "Red" => Guardian.Mod.Properties.Flare2Color.Value.ToColor(),
+            "Black" => Guardian.Mod.Properties.Flare3Color.Value.ToColor(),
+            _ => Color.white
+        };
+
+        base.GetComponent<ParticleSystem>().startColor = customColor;
 
         Light light = base.gameObject.AddComponent<Light>();
         light.type = LightType.Point;
@@ -23,6 +32,8 @@ public class FlareMovement : MonoBehaviour
         if (!nohint && hero != null)
         {
             hint = (GameObject)Object.Instantiate(Resources.Load("UI/" + color + "FlareHint"));
+
+            hint.GetComponent<MeshRenderer>().material.color = customColor;
 
             if (color == "Black")
             {
@@ -40,6 +51,14 @@ public class FlareMovement : MonoBehaviour
             hint.transform.localScale = Vector3.zero;
             iTween.ScaleTo(hint, iTween.Hash("x", 1f, "y", 1f, "z", 1f, "easetype", iTween.EaseType.easeOutElastic, "time", 1f));
             iTween.ScaleTo(hint, iTween.Hash("x", 0, "y", 0, "z", 0, "easetype", iTween.EaseType.easeInBounce, "time", 0.5f, "delay", 2.5f));
+        }
+
+        // TODO: Mod, load custom textures and audio clips
+        {
+            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Textures/flare.png", out Texture2D flareTexture))
+            {
+                base.GetComponent<ParticleSystem>().renderer.material.mainTexture = flareTexture;
+            }
         }
     }
 

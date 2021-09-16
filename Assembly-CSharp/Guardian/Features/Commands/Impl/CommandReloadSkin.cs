@@ -4,17 +4,10 @@ namespace Guardian.Features.Commands.Impl
 {
     class CommandReloadSkin : Command
     {
-        public CommandReloadSkin() : base("reloadskins", new string[] { "rlskins", "rlskin" }, "[assets]", false) { }
+        public CommandReloadSkin() : base("reloadskins", new string[] { "rlskins", "rlskin" }, string.Empty, false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            if (args.Length > 0 && args[0].Equals("assets", System.StringComparison.OrdinalIgnoreCase))
-            {
-                Gesources.Cache = new System.Collections.Generic.Dictionary<string, object>();
-                irc.AddLine("Reloaded custom assets!");
-                return;
-            }
-
             irc.AddLine("Reloading skins...");
 
             FengGameManagerMKII.LinkHash = new ExitGames.Client.Photon.Hashtable[5]

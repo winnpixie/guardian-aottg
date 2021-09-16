@@ -179,8 +179,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public GameObject myFlashlight;
     public bool isGrabbed => state == HeroState.Grabbed;
 
+    private AudioSource burstSound;
+    private AudioSource flareFireSound;
+
     private Material oldEyeMaterial;
     private Material oldGlassesMaterial;
+    private Texture customGasTexture;
 
     // Anarchy
     private float gasMultiplier = 1f;
@@ -227,7 +231,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void UpdateReelInput()
     {
-        float scrollDir = Input.GetAxis("Mouse ScrollWheel") * 5555f;
+        float scrollDir = Input.GetAxisRaw("Mouse ScrollWheel") * 5555f;
 
         reelOutScrollTimeLeft -= Time.deltaTime;
         if (reelOutScrollTimeLeft <= 0f)
@@ -1021,13 +1025,19 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             else
             {
+                GameObject theGas;
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
-                    UnityEngine.Object.Instantiate(Resources.Load("FX/boost_smoke"), base.transform.position, base.transform.rotation);
+                    theGas = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/boost_smoke"), base.transform.position, base.transform.rotation);
                 }
                 else
                 {
-                    PhotonNetwork.Instantiate("FX/boost_smoke", base.transform.position, base.transform.rotation, 0);
+                    theGas = PhotonNetwork.Instantiate("FX/boost_smoke", base.transform.position, base.transform.rotation, 0);
+                }
+
+                if (customGasTexture != null)
+                {
+                    theGas.GetComponentInChildren<ParticleSystem>().renderer.material.mainTexture = customGasTexture;
                 }
             }
             dashTime = 0.5f;
@@ -1036,6 +1046,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             state = HeroState.Dashing;
             falseAttack();
             base.rigidbody.AddForce(dashV * 40f, ForceMode.VelocityChange);
+
+            if (burstSound != null)
+            {
+                burstSound.Play();
+            }
         }
     }
 
@@ -1687,6 +1702,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 GameObject gameObject2 = PhotonNetwork.Instantiate("FX/flareBullet" + type, base.transform.position, firingDirection, 0);
                 gameObject2.GetComponent<FlareMovement>().DontShowHint();
             }
+
+            flareFireSound.Play();
         }
     }
 
@@ -1803,11 +1820,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     }
 
     [RPC]
-    private void net3DMGSMOKE(bool ifON)
+    private void net3DMGSMOKE(bool state)
     {
         if (smoke_3dmg != null)
         {
-            smoke_3dmg.enableEmission = ifON;
+            smoke_3dmg.enableEmission = state;
         }
     }
 
@@ -1918,28 +1935,36 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         // TODO: Mod, load custom textures and audio clips
         {
-            AudioClip hookShotClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/hook_shot.wav");
-            if (hookShotClip != null)
+            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/hook_shot.wav", out AudioClip hookShotClip))
             {
                 rope.clip = hookShotClip;
             }
 
-            AudioClip swordSwingClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/sword_swing.wav");
-            if (swordSwingClip != null)
+            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/sword_swing.wav", out AudioClip swordSwingClip))
             {
                 slash.clip = swordSwingClip;
             }
 
-            AudioClip swordHitClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/sword_hit.wav");
-            if (swordHitClip != null)
+            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/sword_hit.wav", out AudioClip swordHitClip))
             {
                 slashHit.clip = swordHitClip;
             }
 
-            AudioClip deathClip = Guardian.Utilities.Gesources.Find<AudioClip>("Custom/Audio/player_die.wav");
-            if (deathClip != null)
+            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/player_die.wav", out AudioClip deathClip))
             {
                 meatDie.clip = deathClip;
+            }
+
+            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/burst.wav", out AudioClip burstClip))
+            {
+                burstSound = base.gameObject.AddComponent<AudioSource>();
+                burstSound.clip = burstClip;
+            }
+
+            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/flare_shot.wav", out AudioClip flareClip))
+            {
+                flareFireSound = base.gameObject.AddComponent<AudioSource>();
+                flareFireSound.clip = flareClip;
             }
         }
 
@@ -5949,18 +5974,19 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 {
                                     unload = true;
                                     renderer4.material.mainTexture = tex10;
+
+                                    // TODO: Mod
+                                    customGasTexture = tex10;
+
                                     FengGameManagerMKII.LinkHash[0].Add(strArray[10], renderer4.material);
-                                    renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[10]];
                                 }
-                                else
-                                {
-                                    renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[10]];
-                                }
+                                renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[10]];
                             }
                         }
                         else
                         {
                             renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[10]];
+                            customGasTexture = renderer4.material.mainTexture;
                         }
                     }
                     else if (strArray[10].ToLower() == "transparent")
