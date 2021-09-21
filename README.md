@@ -93,8 +93,3 @@ To view the list of available commands and how to use them, type `/help` in game
 - [Sadico](https://github.com/Mi-Sad/), I've probably asked you for something at some point.
 - [Mr. Lurkin](https://github.com/MrLurkin/), [Zippy](https://github.com/ZippyStew45), [Alice](https://github.com/ExiMichi/), and many more for ideas of what to add.
 - Akiroshy, Milk, Lilim, and a multitude of users for giving me motivation to keep the project going.
-
-## License
-![Creative Commons License](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
-
-This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
