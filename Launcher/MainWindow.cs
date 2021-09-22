@@ -51,7 +51,7 @@ namespace Launcher
                     outputLog.Text += "\nDownloading Guardian.zip from https://alerithe.github.io/guardian/Guardian.zip";
                     using (FileStream fs = updateFileRef.OpenWrite())
                     {
-                        byte[] data = await hc.GetByteArrayAsync("https://alerithe.github.io/guardian/Guardian.zip");
+                        byte[] data = await hc.GetByteArrayAsync("https://alerithe.github.io/guardian/Guardian.zip?t=" + Environment.TickCount);
                         fs.Write(data, 0, data.Length);
                     }
 
@@ -93,6 +93,9 @@ namespace Launcher
             catch (Exception ex)
             {
                 outputLog.Text += $"\n\n{ex}";
+
+                outputLog.Text += "\n\nIf errors persist, please contact me on Discord!";
+                outputLog.Text += "\n\nhttps://cb.run/FFT";
             }
         }
 
