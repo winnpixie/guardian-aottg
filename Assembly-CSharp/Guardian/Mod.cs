@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "150921";
+        public static string Build = "09212021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -33,6 +33,22 @@ namespace Guardian
 
         void Start()
         {
+            // Load custom textures and audio clips
+            {
+                if (Gesources.TryGetAsset("Custom/Textures/hud.png", out Texture2D hudTextures))
+                {
+                    GameObject backgroundGo = GameObject.Find("Background");
+                    if (backgroundGo != null)
+                    {
+                        Material uiMat = backgroundGo.GetComponent<UISprite>().material;
+                        uiMat.mainTextureScale = Gesources.Scale(hudTextures, 2048, 2048);
+                        uiMat.mainTexture = hudTextures;
+                    }
+                }
+
+                StartCoroutine(CoWaitAndSetParticleTexture());
+            }
+
             if (!s_initialized)
             {
                 // Check for an update before doing anything
@@ -83,22 +99,6 @@ namespace Guardian
             {
                 Details = $"Staring at the main menu...",
             });
-
-            // Load custom textures and audio clips
-            {
-                if (Gesources.TryGetAsset("Custom/Textures/hud.png", out Texture2D hudTextures))
-                {
-                    GameObject backgroundGo = GameObject.Find("Background");
-                    if (backgroundGo != null)
-                    {
-                        Material uiMat = backgroundGo.GetComponent<UISprite>().material;
-                        uiMat.mainTextureScale = Gesources.Scale(hudTextures, 2048, 2048);
-                        uiMat.mainTexture = hudTextures;
-                    }
-                }
-
-                StartCoroutine(CoWaitAndSetParticleTexture());
-            }
         }
 
         private IEnumerator CoCheckForUpdate()
@@ -106,7 +106,7 @@ namespace Guardian
             Logger.Info("Checking for update...");
             Logger.Info($"Installed: {Build}");
 
-            using WWW www = new WWW("https://summie.tk/GUARDIAN_BUILD.TXT?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
+            using WWW www = new WWW("https://aottg.tk/mods/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
             yield return www;
 
             if (www.error != null)
@@ -156,7 +156,7 @@ namespace Guardian
                 Gesources.TryGetAsset("Custom/Textures/dust.png", out Texture2D dustTexture);
                 Gesources.TryGetAsset("Custom/Textures/blood.png", out Texture2D bloodTexture);
 
-                foreach (ParticleSystem ps in Object.FindObjectsOfType<ParticleSystem>())
+                foreach (ParticleSystem ps in UnityEngine.Object.FindObjectsOfType<ParticleSystem>())
                 {
                     if (dustTexture != null)
                     {
@@ -193,8 +193,6 @@ namespace Guardian
 
             RenderSettings.fog = Properties.Fog.Value;
             RenderSettings.fogColor = 0x222222FF.ToColor();
-
-            RenderSettings.fogMode = FogMode.Linear;
         }
 
         void Update()

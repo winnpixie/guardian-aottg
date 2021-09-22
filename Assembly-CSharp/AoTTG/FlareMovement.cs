@@ -11,6 +11,14 @@ public class FlareMovement : MonoBehaviour
 
     private void Start()
     {
+        // TODO: Mod, load custom textures and audio clips
+        {
+            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Textures/flare.png", out Texture2D flareTexture))
+            {
+                base.GetComponent<ParticleSystem>().renderer.material.mainTexture = flareTexture;
+            }
+        }
+
         hero = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
         Color customColor = color switch
         {
@@ -51,14 +59,6 @@ public class FlareMovement : MonoBehaviour
             hint.transform.localScale = Vector3.zero;
             iTween.ScaleTo(hint, iTween.Hash("x", 1f, "y", 1f, "z", 1f, "easetype", iTween.EaseType.easeOutElastic, "time", 1f));
             iTween.ScaleTo(hint, iTween.Hash("x", 0, "y", 0, "z", 0, "easetype", iTween.EaseType.easeInBounce, "time", 0.5f, "delay", 2.5f));
-        }
-
-        // TODO: Mod, load custom textures and audio clips
-        {
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Textures/flare.png", out Texture2D flareTexture))
-            {
-                base.GetComponent<ParticleSystem>().renderer.material.mainTexture = flareTexture;
-            }
         }
     }
 

@@ -45,7 +45,7 @@ namespace Launcher
 
                 using (HttpClient hc = new HttpClient())
                 {
-                    string latestVersion = await hc.GetStringAsync("https://summie.tk/GUARDIAN_BUILD.TXT");
+                    string latestVersion = await hc.GetStringAsync("https://aottg.tk/mods/guardian/version.txt?t=" + Environment.TickCount);
                     outputLog.Text += $"\nLatest Version : {latestVersion}";
 
                     outputLog.Text += "\nDownloading Guardian.zip from https://alerithe.github.io/guardian/Guardian.zip";

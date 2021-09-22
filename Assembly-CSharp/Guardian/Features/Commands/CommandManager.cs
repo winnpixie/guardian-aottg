@@ -38,7 +38,6 @@ namespace Guardian.Features.Commands
             base.Add(new CommandRoom());
             base.Add(new CommandScatterTitans());
             base.Add(new CommandSetMap());
-            base.Add(new CommandSetMaster());
             base.Add(new CommandSetTitans());
             base.Add(new CommandTeleport());
             base.Add(new CommandUnpause());

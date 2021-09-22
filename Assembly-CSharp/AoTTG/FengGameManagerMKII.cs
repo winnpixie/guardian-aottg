@@ -7856,8 +7856,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                 }
 
-
-
                 float num7 = (float)Screen.width / 2f - 85f;
                 float num8 = (float)Screen.height / 2f;
                 GUI.Box(new Rect(num7, 5f, 150f, 105f), string.Empty);
