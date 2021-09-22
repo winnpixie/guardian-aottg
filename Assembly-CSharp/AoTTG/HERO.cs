@@ -1955,15 +1955,15 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 meatDie.clip = deathClip;
             }
 
+            burstSound = base.gameObject.AddComponent<AudioSource>();
             if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/burst.wav", out AudioClip burstClip))
             {
-                burstSound = base.gameObject.AddComponent<AudioSource>();
                 burstSound.clip = burstClip;
             }
 
+            flareFireSound = base.gameObject.AddComponent<AudioSource>();
             if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/flare_shot.wav", out AudioClip flareClip))
             {
-                flareFireSound = base.gameObject.AddComponent<AudioSource>();
                 flareFireSound.clip = flareClip;
             }
         }

@@ -19,9 +19,10 @@ public class AHSSShotGunCollider : MonoBehaviour
     {
         // TODO: Mod, load custom textures and audio clips
         {
+            hitSound = gameObject.AddComponent<AudioSource>();
+
             if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
             {
-                hitSound = gameObject.AddComponent<AudioSource>();
                 hitSound.clip = deathClip;
             }
         }

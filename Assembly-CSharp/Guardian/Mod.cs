@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "09212021";
+        public static string Build = "09222021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -155,6 +155,7 @@ namespace Guardian
             {
                 Gesources.TryGetAsset("Custom/Textures/dust.png", out Texture2D dustTexture);
                 Gesources.TryGetAsset("Custom/Textures/blood.png", out Texture2D bloodTexture);
+                Gesources.TryGetAsset("Custom/Textures/gun_smoke.png", out Texture2D gunSmokeTexture);
 
                 foreach (ParticleSystem ps in UnityEngine.Object.FindObjectsOfType<ParticleSystem>())
                 {
@@ -174,6 +175,14 @@ namespace Guardian
                         if (ps.name.Contains("blood"))
                         {
                             ps.renderer.material.mainTexture = bloodTexture;
+                        }
+                    }
+
+                    if (gunSmokeTexture != null)
+                    {
+                        if (ps.name.Contains("shotGun"))
+                        {
+                            ps.renderer.material.mainTexture = gunSmokeTexture;
                         }
                     }
                 }
