@@ -151,29 +151,29 @@ public class CannonBall : Photon.MonoBehaviour
         {
             enemyCheckCollider.dmg = 0;
         }
+
         if (RCSettings.DeadlyCannons == 1)
         {
-            foreach (HERO player in FengGameManagerMKII.Instance.heroes)
+            foreach (HERO hero in FengGameManagerMKII.Instance.Heroes)
             {
-                if (player != null && Vector3.Distance(player.transform.position, base.transform.position) <= 20f && !player.photonView.isMine)
+                if (hero != null && Vector3.Distance(hero.transform.position, base.transform.position) <= 20f && !hero.photonView.isMine)
                 {
-                    GameObject gameObject2 = player.gameObject;
-                    PhotonPlayer owner = gameObject2.GetPhotonView().owner;
+                    PhotonPlayer owner = hero.photonView.owner;
                     if (RCSettings.TeamMode > 0 && PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam] != null && owner.customProperties[PhotonPlayerProperty.RCTeam] != null)
                     {
                         int num = GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam]);
                         int num2 = GExtensions.AsInt(owner.customProperties[PhotonPlayerProperty.RCTeam]);
                         if (num == 0 || num != num2)
                         {
-                            gameObject2.GetComponent<HERO>().MarkDead();
-                            gameObject2.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
+                            hero.MarkDead();
+                            hero.photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
                             FengGameManagerMKII.Instance.UpdatePlayerKillInfo(0, PhotonNetwork.player);
                         }
                     }
                     else
                     {
-                        gameObject2.GetComponent<HERO>().MarkDead();
-                        gameObject2.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
+                        hero.MarkDead();
+                        hero.photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
                         FengGameManagerMKII.Instance.UpdatePlayerKillInfo(0, PhotonNetwork.player);
                     }
                 }

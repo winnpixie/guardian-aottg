@@ -224,12 +224,12 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                     spawnTitanTimer = 0f;
                     if (FengGameManagerMKII.Level.Map == "The City I")
                     {
-                        if (GameObject.FindGameObjectsWithTag("titan").Length < 12)
+                        if (FengGameManagerMKII.Instance.AllTitans.Count < 12)
                         {
                             NewTitan();
                         }
                     }
-                    else if (GameObject.FindGameObjectsWithTag("titan").Length < 20)
+                    else if (FengGameManagerMKII.Instance.AllTitans.Count < 20)
                     {
                         NewTitan();
                     }
@@ -258,15 +258,13 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         playerOn = false;
         titanOn = false;
 
-        GameObject[] heroes = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < heroes.Length; i++)
+        foreach (HERO hero in FengGameManagerMKII.Instance.Heroes)
         {
-            HERO hero = heroes[i].GetComponent<HERO>();
-            if (Vector3.Distance(heroes[i].transform.position, base.transform.position) < hitTestR && (!hero || !hero.hasDied))
+            if (Vector3.Distance(hero.transform.position, base.transform.position) < hitTestR && !hero.hasDied)
             {
                 playerOn = true;
 
-                if (state == CheckPointState.Human && heroes[i].GetPhotonView().isMine)
+                if (state == CheckPointState.Human && hero.photonView.isMine)
                 {
                     if (fengGame.checkpoint != base.gameObject)
                     {
@@ -278,15 +276,13 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             }
         }
 
-        GameObject[] titans = GameObject.FindGameObjectsWithTag("titan");
-        for (int i = 0; i < titans.Length; i++)
+        foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
         {
-            TITAN titan = titans[i].GetComponent<TITAN>();
-            if (Vector3.Distance(titans[i].transform.position, base.transform.position) < hitTestR + 5f && (!titan || !titan.hasDie))
+            if (Vector3.Distance(titan.transform.position, base.transform.position) < hitTestR + 5f && !titan.hasDie)
             {
                 titanOn = true;
 
-                if (state == CheckPointState.Titan && titans[i].GetPhotonView().isMine && titan && titan.nonAI)
+                if (state == CheckPointState.Titan && titan.photonView.isMine && titan.nonAI)
                 {
                     if (fengGame.checkpoint != base.gameObject)
                     {

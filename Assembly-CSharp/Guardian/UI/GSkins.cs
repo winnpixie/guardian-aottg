@@ -26,18 +26,34 @@ namespace Guardian.UI
                 Texture2D flatDark = new Texture2D(1, 1);
                 flatDark.SetPixel(0, 0, 0x010101CD.ToColor());
                 flatDark.Apply();
+                if (Utilities.Gesources.TryGetAsset("Textures/UI/background_dark.png", out Texture2D darkBg))
+                {
+                    flatDark = darkBg;
+                }
 
                 Texture2D flatNormal = new Texture2D(1, 1);
                 flatNormal.SetPixel(0, 0, 0x121212CD.ToColor());
                 flatNormal.Apply();
+                if (Utilities.Gesources.TryGetAsset("Textures/UI/background_normal.png", out Texture2D normalBg))
+                {
+                    flatNormal = normalBg;
+                }
 
                 Texture2D flatLight = new Texture2D(1, 1);
                 flatLight.SetPixel(0, 0, 0x232323CD.ToColor());
                 flatLight.Apply();
+                if (Utilities.Gesources.TryGetAsset("Textures/UI/background_light.png", out Texture2D lightBg))
+                {
+                    flatLight = lightBg;
+                }
 
                 Texture2D flatLighter = new Texture2D(1, 1);
                 flatLighter.SetPixel(0, 0, 0x343434CD.ToColor());
                 flatLighter.Apply();
+                if (Utilities.Gesources.TryGetAsset("Textures/UI/background_lighter.png", out Texture2D lighterBg))
+                {
+                    flatLighter = lighterBg;
+                }
 
                 // Rectangles
                 Box = new GUIStyle(GUI.skin.box);

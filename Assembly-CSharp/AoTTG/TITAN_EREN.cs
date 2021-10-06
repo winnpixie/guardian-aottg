@@ -561,8 +561,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
     [RPC]
     private void netTauntAttack(float tauntTime, float distance = 100f)
     {
-        GameObject[] array = GameObject.FindGameObjectsWithTag("titan");
-        foreach (GameObject gameObject in array)
+        foreach (GameObject gameObject in FengGameManagerMKII.Instance.AllTitans)
         {
             if (Vector3.Distance(gameObject.transform.position, base.transform.position) < distance && (bool)gameObject.GetComponent<TITAN>())
             {
@@ -789,14 +788,11 @@ public class TITAN_EREN : Photon.MonoBehaviour
 
     public void born()
     {
-        GameObject[] array = GameObject.FindGameObjectsWithTag("titan");
-        foreach (GameObject gameObject in array)
+        foreach (FEMALE_TITAN annie in FengGameManagerMKII.Instance.Annies)
         {
-            if ((bool)gameObject.GetComponent<FEMALE_TITAN>())
-            {
-                gameObject.GetComponent<FEMALE_TITAN>().erenIsHere(base.gameObject);
-            }
+            annie.erenIsHere(base.gameObject);
         }
+
         if (!bottomObject.GetComponent<CheckHitGround>().isGrounded)
         {
             PlayAnimation("jump_air");

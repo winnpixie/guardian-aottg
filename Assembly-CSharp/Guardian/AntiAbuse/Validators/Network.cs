@@ -24,36 +24,43 @@ namespace Guardian.AntiAbuse.Validators
                 {
                     malformed = true;
                 }
+
                 if (evData.ContainsKey((byte)1) && !(evData[(byte)1] is Vector3))
                 {
                     malformed = true;
                 }
+
                 if (evData.ContainsKey((byte)2) && !(evData[(byte)2] is Quaternion))
                 {
                     malformed = true;
                 }
+
                 if (evData.ContainsKey((byte)3) && !(evData[(byte)3] is int))
                 {
                     malformed = true;
                 }
+
                 if (evData.ContainsKey((byte)4) && !(evData[(byte)4] is int[]))
                 {
                     malformed = true;
                 }
+
                 if (evData.ContainsKey((byte)5) && !(evData[(byte)5] is object[]))
                 {
                     malformed = true;
                 }
+
                 if (evData.ContainsKey((byte)8) && !(evData[(byte)8] is short))
                 {
                     malformed = true;
                 }
+
                 malformed = malformed || !evData.ContainsKey((byte)0) || !evData.ContainsKey((byte)6) || !evData.ContainsKey((byte)7);
             }
 
             if (malformed)
             {
-                Mod.Logger.Error($"Malformed instantiate from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                Mod.Logger.Error($"E(202) Malformed instantiate from #{(sender == null ? "?" : sender.Id.ToString())}.");
                 if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -76,16 +83,18 @@ namespace Guardian.AntiAbuse.Validators
                 {
                     malformed = true;
                 }
+
                 if (data.ContainsKey((byte)1) && !(data[(byte)1] is object[]))
                 {
                     malformed = true;
                 }
+
                 malformed = malformed || !data.ContainsKey((byte)0) || !data.ContainsKey((byte)1);
             }
 
             if (malformed)
             {
-                Mod.Logger.Error($"Malformed serialization from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                Mod.Logger.Error($"E(201/206) Malformed serialization from #{(sender == null ? "?" : sender.Id.ToString())}.");
                 if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -108,33 +117,57 @@ namespace Guardian.AntiAbuse.Validators
                 {
                     malformed = true;
                 }
+
                 if (rpcData.ContainsKey((byte)1) && !(rpcData[(byte)1] is short))
                 {
                     malformed = true;
                 }
+
                 if (rpcData.ContainsKey((byte)2) && !(rpcData[(byte)2] is int))
                 {
                     malformed = true;
                 }
+
                 if (rpcData.ContainsKey((byte)3) && !(rpcData[(byte)3] is string))
                 {
                     malformed = true;
                 }
+
                 if (rpcData.ContainsKey((byte)4) && !(rpcData[(byte)4] is object[]))
                 {
                     malformed = true;
                 }
+
                 if (rpcData.ContainsKey((byte)5) && !(rpcData[(byte)5] is byte))
                 {
                     malformed = true;
                 }
-                malformed = malformed || !(rpcData.ContainsKey((byte)0) && (rpcData.ContainsKey((byte)5) || rpcData.ContainsKey((byte)3)));
+
+                malformed = malformed
+                    || !(rpcData.ContainsKey((byte)0) && (rpcData.ContainsKey((byte)5) || rpcData.ContainsKey((byte)3)))
+                    || (rpcData.ContainsKey((byte)3) && rpcData.ContainsKey((byte)5));
             }
 
             if (malformed)
             {
-                Mod.Logger.Error($"Malformed RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                Mod.Logger.Error($"E(200) Malformed RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
                 if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
+                {
+                    FengGameManagerMKII.IgnoreList.Add(sender.Id);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsPVDestroyValid(PhotonView[] views, PhotonPlayer sender)
+        {
+            if (views != null && views.Length > 0 && views[0].ownerId != sender.Id && !sender.isMasterClient)
+            {
+                Mod.Logger.Error($"E(204) Object.Destroy from #{sender.Id}.");
+                if (!FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
                 }
@@ -149,7 +182,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (sender != null)
             {
-                Mod.Logger.Error($"State Change from #{sender.Id}.");
+                Mod.Logger.Error($"E(228) State Change from #{sender.Id}.");
                 if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);

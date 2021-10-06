@@ -518,7 +518,7 @@ public class InstantiateTracker
                         if (FengGameManagerMKII.Level.Mode != GameMode.Colossal)
                         {
                             int num4 = 0;
-                            foreach (TITAN titan in FengGameManagerMKII.Instance.titans)
+                            foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
                             {
                                 if (titan.photonView.owner == photonPlayer)
                                 {
@@ -535,7 +535,7 @@ public class InstantiateTracker
                     else if (FengGameManagerMKII.MasterRC && FengGameManagerMKII.Level.Mode != GameMode.Colossal)
                     {
                         int num4 = 0;
-                        foreach (TITAN titan2 in FengGameManagerMKII.Instance.titans)
+                        foreach (TITAN titan2 in FengGameManagerMKII.Instance.Titans)
                         {
                             if (titan2.photonView.owner == photonPlayer)
                             {

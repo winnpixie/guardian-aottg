@@ -125,12 +125,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     private bool gameTimesUp;
     public IN_GAME_MAIN_CAMERA mainCamera;
     public bool gameStart;
-    public ArrayList heroes;
-    public ArrayList erenTitans;
-    public ArrayList titans;
-    public ArrayList femaleTitans;
-    public ArrayList colossalTitans;
-    public ArrayList hooks;
+    private ArrayList heroes;
+    private ArrayList eT;
+    private ArrayList hooks;
+    private ArrayList titans;
+    private ArrayList fT;
+    private ArrayList cT;
     private string localRacingResult;
     private int single_kills;
     private int single_maxDamage;
@@ -176,6 +176,15 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public float pauseWaitTime;
 
     // BEGIN: MOD
+    public List<HERO> Heroes = new List<HERO>();
+    public List<TITAN_EREN> Erens = new List<TITAN_EREN>();
+    public List<GameObject> Players = new List<GameObject>();
+    public List<Bullet> Hooks = new List<Bullet>();
+    public List<TITAN> Titans = new List<TITAN>();
+    public List<FEMALE_TITAN> Annies = new List<FEMALE_TITAN>();
+    public List<GameObject> AllTitans = new List<GameObject>();
+    public List<COLOSSAL_TITAN> Colossals = new List<COLOSSAL_TITAN>();
+
     [RPC]
     public void Ping(PhotonMessageInfo info)
     {
@@ -192,66 +201,98 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public void AddHero(HERO hero)
     {
         heroes.Add(hero);
+
+        Heroes.Add(hero);
+        Players.Add(hero.gameObject);
     }
 
     public void RemoveHero(HERO hero)
     {
         heroes.Remove(hero);
+
+        Heroes.Remove(hero);
+        Players.Remove(hero.gameObject);
     }
 
-    public void AddHook(Bullet h)
+    public void AddHook(Bullet hook)
     {
-        hooks.Add(h);
+        hooks.Add(hook);
+
+        Hooks.Add(hook);
     }
 
-    public void RemoveHook(Bullet h)
+    public void RemoveHook(Bullet hook)
     {
-        hooks.Remove(h);
+        hooks.Remove(hook);
+
+        Hooks.Remove(hook);
     }
 
-    public void AddEren(TITAN_EREN hero)
+    public void AddEren(TITAN_EREN eren)
     {
-        erenTitans.Add(hero);
+        eT.Add(eren);
+
+        Erens.Add(eren);
+        Players.Add(eren.gameObject);
     }
 
-    public void RemoveEren(TITAN_EREN hero)
+    public void RemoveEren(TITAN_EREN eren)
     {
-        erenTitans.Remove(hero);
+        eT.Remove(eren);
+
+        Erens.Remove(eren);
+        Players.Remove(eren.gameObject);
     }
 
     public void AddTitan(TITAN titan)
     {
         titans.Add(titan);
+
+        Titans.Add(titan);
+        AllTitans.Add(titan.gameObject);
     }
 
     public void RemoveTitan(TITAN titan)
     {
         titans.Remove(titan);
+
+        Titans.Remove(titan);
+        AllTitans.Remove(titan.gameObject);
     }
 
-    public void AddAnnie(FEMALE_TITAN titan)
+    public void AddAnnie(FEMALE_TITAN annie)
     {
-        femaleTitans.Add(titan);
+        fT.Add(annie);
+
+        Annies.Add(annie);
+        AllTitans.Add(annie.gameObject);
     }
 
-    public void RemoveAnnie(FEMALE_TITAN titan)
+    public void RemoveAnnie(FEMALE_TITAN annie)
     {
-        femaleTitans.Remove(titan);
+        fT.Remove(annie);
+
+        Annies.Remove(annie);
+        AllTitans.Remove(annie.gameObject);
     }
 
-    public void AddColossal(COLOSSAL_TITAN titan)
+    public void AddColossal(COLOSSAL_TITAN colossal)
     {
-        colossalTitans.Add(titan);
+        cT.Add(colossal);
+
+        Colossals.Add(colossal);
     }
 
-    public void RemoveColossal(COLOSSAL_TITAN titan)
+    public void RemoveColossal(COLOSSAL_TITAN colossal)
     {
-        colossalTitans.Remove(titan);
+        cT.Remove(colossal);
+
+        Colossals.Remove(colossal);
     }
 
-    public void SetCamera(IN_GAME_MAIN_CAMERA c)
+    public void SetCamera(IN_GAME_MAIN_CAMERA cam)
     {
-        mainCamera = c;
+        mainCamera = cam;
     }
 
     private void LateUpdate()
@@ -262,7 +303,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 hero.lateUpdate2();
             }
-            foreach (TITAN_EREN eren in erenTitans)
+            foreach (TITAN_EREN eren in eT)
             {
                 eren.lateUpdate();
             }
@@ -270,7 +311,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 titan.lateUpdate2();
             }
-            foreach (FEMALE_TITAN annie in femaleTitans)
+            foreach (FEMALE_TITAN annie in fT)
             {
                 annie.lateUpdate2();
             }
@@ -312,7 +353,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 mainCamera.SnapShotUpdate();
             }
-            foreach (TITAN_EREN eren in erenTitans)
+            foreach (TITAN_EREN eren in eT)
             {
                 eren.update();
             }
@@ -320,11 +361,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 titan.update();
             }
-            foreach (FEMALE_TITAN annie in femaleTitans)
+            foreach (FEMALE_TITAN annie in fT)
             {
                 annie.update();
             }
-            foreach (COLOSSAL_TITAN colossal in colossalTitans)
+            foreach (COLOSSAL_TITAN colossal in cT)
             {
                 colossal.update();
             }
@@ -416,20 +457,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         SetTextCenter(string.Empty);
     }
 
-    public void OnConnectedToPhoton()
-    {
-        UnityEngine.MonoBehaviour.print("OnConnectedToPhoton");
-    }
-
-    public void OnPhotonCreateRoomFailed()
-    {
-        UnityEngine.MonoBehaviour.print("OnPhotonCreateRoomFailed");
-    }
-
-    public void OnPhotonJoinRoomFailed()
-    {
-        UnityEngine.MonoBehaviour.print("OnPhotonJoinRoomFailed");
-    }
 
     public void OnCreatedRoom()
     {
@@ -438,10 +465,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         UnityEngine.MonoBehaviour.print("OnCreatedRoom");
     }
 
-    public void OnLeftLobby()
-    {
-        UnityEngine.MonoBehaviour.print("OnLeftLobby");
-    }
 
     public void OnDisconnectedFromPhoton()
     {
@@ -463,11 +486,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[3], state: false);
         NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[4], state: true);
         GameObject.Find("LabelDisconnectInfo").GetComponent<UILabel>().text = "OnConnectionFail: " + cause.ToString();
-    }
-
-    public void OnFailedToConnectToPhoton()
-    {
-        UnityEngine.MonoBehaviour.print("OnFailedToConnectToPhoton");
     }
 
     [RPC]
@@ -519,41 +537,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             teamScores = score1;
         }
-    }
-
-    public void OnPhotonRandomJoinFailed()
-    {
-        UnityEngine.MonoBehaviour.print("OnPhotonRandomJoinFailed");
-    }
-
-    public void OnConnectedToMaster()
-    {
-        UnityEngine.MonoBehaviour.print("OnConnectedToMaster");
-    }
-
-    public void OnPhotonSerializeView()
-    {
-        UnityEngine.MonoBehaviour.print("OnPhotonSerializeView");
-    }
-
-    public void OnPhotonInstantiate()
-    {
-        UnityEngine.MonoBehaviour.print("OnPhotonInstantiate");
-    }
-
-    public void OnPhotonMaxCccuReached()
-    {
-        UnityEngine.MonoBehaviour.print("OnPhotonMaxCccuReached");
-    }
-
-    public void OnUpdatedFriendList()
-    {
-        UnityEngine.MonoBehaviour.print("OnUpdatedFriendList");
-    }
-
-    public void OnCustomAuthenticationFailed()
-    {
-        UnityEngine.MonoBehaviour.print("OnCustomAuthenticationFailed");
     }
 
     [RPC]
@@ -904,12 +887,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
 
-        if (femaleTitans.Count > 0)
-        {
-            return false;
-        }
-
-        return true;
+        return fT.Count == 0;
     }
 
     [RPC]
@@ -1053,10 +1031,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         CharacterMaterials.InitData();
         UnityEngine.Object.DontDestroyOnLoad(base.gameObject);
         heroes = new ArrayList();
-        erenTitans = new ArrayList();
+        eT = new ArrayList();
         titans = new ArrayList();
-        femaleTitans = new ArrayList();
-        colossalTitans = new ArrayList();
+        fT = new ArrayList();
+        cT = new ArrayList();
         hooks = new ArrayList();
         if (NameField == null)
         {
@@ -1149,21 +1127,42 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     // END Anarchy
 
     [RPC]
-    private void Chat(string content, string sender, PhotonMessageInfo info)
+    private void Chat(string message, string sender, PhotonMessageInfo info)
     {
-        // TODO: Mod
         if (InRoomChat.Ignored.Contains(info.sender))
         {
             return;
         }
 
+        if (Guardian.Mod.Properties.TranslateIncoming.Value && !info.sender.isLocal)
+        {
+            StartCoroutine(Guardian.Utilities.Translator.Translate(message, Guardian.Mod.Properties.IncomingLanguage.Value, Guardian.Mod.SystemLanguage, result =>
+            {
+                if (result.Length > 1 && !result[0].Equals(Guardian.Mod.SystemLanguage, StringComparison.OrdinalIgnoreCase))
+                {
+                    message = $"[gt] ".AsColor("0099ff") + result[1];
+                }
+
+                if (sender.Length == 0)
+                {
+                    InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "]").AsColor("FFCC00"), message);
+                }
+                else
+                {
+                    InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "] ").AsColor("FFCC00") + sender, message);
+                }
+            }));
+
+            return;
+        }
+
         if (sender.Length == 0)
         {
-            InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "]").AsColor("FFCC00"), content);
+            InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "]").AsColor("FFCC00"), message);
         }
         else
         {
-            InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "] ").AsColor("FFCC00") + sender, content);
+            InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "] ").AsColor("FFCC00") + sender, message);
         }
     }
 
@@ -1179,18 +1178,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         UnityEngine.MonoBehaviour.print("OnJoinedRoom " + PhotonNetwork.room.name + " >>>> " + levelInfo.Map);
         gameTimesUp = false;
 
-        switch (roomInfo[2])
+        difficulty = roomInfo[2] switch
         {
-            case "normal":
-                difficulty = 0;
-                break;
-            case "hard":
-                difficulty = 1;
-                break;
-            case "abnormal":
-                difficulty = 2;
-                break;
-        }
+            "normal" => 0,
+            "hard" => 1,
+            "abnormal" => 2,
+            _ => -1
+        };
 
         IN_GAME_MAIN_CAMERA.Difficulty = difficulty;
         time = int.Parse(roomInfo[3]) * 60;
@@ -2286,11 +2280,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     break;
                 case GameMode.KillTitans:
                 case GameMode.None:
-                    text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length
+                    text = "Titan Left: " + AllTitans.Count
                         + " Time: " + (int)(IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer);
                     break;
                 case GameMode.Survival:
-                    text = "Titan Left: " + GameObject.FindGameObjectsWithTag("titan").Length + " Wave: " + wave;
+                    text = "Titan Left: " + AllTitans.Count + " Wave: " + wave;
                     break;
                 case GameMode.Colossal:
                     text = "Time: " + (int)(time - timeTotalServer) + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the north gate!";
@@ -2965,7 +2959,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     private string GetPlayerTextForList(PhotonPlayer player)
     {
-        string content = string.Empty;
+        string content = "[FFFFFF]";
+
         if (IgnoreList.Contains(player.Id))
         {
             content += "[990000]X[-] ";
@@ -2982,28 +2977,29 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             content += "[FFCC00]";
         }
-        content += "(" + player.Id + ")[-] ";
+        content += player.Id + " ";
 
+        bool dead = false;
         if (player.customProperties[PhotonPlayerProperty.Dead] == null)
         {
-            content += $"[FF0000]({(player.Id < 0 ? "Joining" : "Invisible")})[-] ";
+            content += player.Id < 0 ? "[FFCC00](Joining) " : "[FF0000](Invis) ";
         }
-        else if (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]))
+        else
         {
-            content += "[" + ColorSet.Red + "]*dead*[-] ";
+            dead = GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.Dead]);
         }
 
         if (GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.IsTitan]) == 2)
         {
-            content += "[" + ColorSet.TitanPlayer + "]<T>[-] ";
+            content += "[" + (dead ? ColorSet.Red : ColorSet.TitanPlayer) + "][T] ";
         }
         else if (GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Team]) == 2)
         {
-            content += "[" + ColorSet.AHSS + "]<A>[-] ";
+            content += "[" + (dead ? ColorSet.Red : ColorSet.AHSS) + "][A] ";
         }
         else
         {
-            content += "[" + ColorSet.Human + "]<H>[-] ";
+            content += "[" + (dead ? ColorSet.Red : ColorSet.Human) + "][H] ";
         }
 
         content += "[FFFFFF]" + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);
@@ -3013,7 +3009,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         int maxDmg = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.MaxDamage]);
         int totalDmg = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.TotalDamage]);
         content += string.Concat(
-            " [AAAAAA]::[FFFFFF] ",
+            " [AAAAAA]:[FFFFFF] ",
             kills,
             " / ",
             deaths,
@@ -3023,9 +3019,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             totalDmg
         );
 
-        content += $" ({(deaths < 2 ? kills : (kills / (double)deaths)):F2} KD)";
-
-        return content + $" {Guardian.AntiAbuse.ModDetector.GetMods(player)[0]}[-]\n";
+        return content + $" {Guardian.AntiAbuse.ModDetector.GetMods(player)[0]}\n";
     }
 
     public IEnumerator CoWaitAndRecompilePlayerList(float time)
@@ -5761,7 +5755,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     TitanSpawner titanSpawner = titanSpawners[i];
                     titanSpawner.time -= Time.deltaTime;
-                    if (!(titanSpawner.time <= 0f) || titans.Count + femaleTitans.Count >= Math.Min(RCSettings.TitanCap, 80))
+                    if (!(titanSpawner.time <= 0f) || titans.Count + fT.Count >= Math.Min(RCSettings.TitanCap, 80))
                     {
                         continue;
                     }

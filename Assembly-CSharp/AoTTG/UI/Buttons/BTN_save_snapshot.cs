@@ -10,11 +10,19 @@ public class BTN_save_snapshot : MonoBehaviour
     public GameObject[] thingsNeedToHide;
     private string SaveDir = Guardian.Mod.RootDir + "\\Screenshots";
 
-    private void OnClick()
+    private void OnPress()
     {
-        foreach (GameObject gameObject in thingsNeedToHide)
+        try
         {
-            gameObject.transform.position += Vector3.up * 10000f;
+            foreach (GameObject go in thingsNeedToHide)
+            {
+                go.transform.position -= Vector3.up * 10000f;
+            }
+
+            base.transform.position -= Vector3.up * 10000f;
+        } catch
+        {
+            info.GetComponent<UILabel>().text = "Error preparing Snapshot.";
         }
 
         info.GetComponent<UILabel>().text = "Attempting to save snapshot..";
@@ -34,13 +42,14 @@ public class BTN_save_snapshot : MonoBehaviour
             texture.Apply();
 
             DateTime now = DateTime.Now;
-            string img_name = "SnapShot-" + now.Day + "_" + now.Month + "_" + now.Year + "-" + now.Hour + "_" + now.Minute + "_" + now.Second + ".png";
-            byte[] imgData = texture.EncodeToPNG();
-            Guardian.Utilities.GameHelper.TryCreateFile(SaveDir, true);
-            File.WriteAllBytes($"{SaveDir}\\{img_name}", imgData);
+            string imageName = "SnapShot-" + now.Day + "_" + now.Month + "_" + now.Year + "-" + now.Hour + "_" + now.Minute + "_" + now.Second + ".jpg";
+            byte[] imageData = texture.EncodeToJPG(100);
 
-            // ExternalCall is legacy code, it used to execute JavaScript on http://fenglee.com/game/aog/
-            // Application.ExternalCall("SaveImg", img_name, texture.width, texture.height, Convert.ToBase64String(imgData));
+            Guardian.Utilities.GameHelper.TryCreateFile(SaveDir, true);
+            File.WriteAllBytes($"{SaveDir}\\{imageName}", imageData);
+
+            // ExternalCall is legacy code, used to execute JavaScript on http://fenglee.com/game/aog/
+            // Application.ExternalCall("SaveImg", imageName, texture.width, texture.height, Convert.ToBase64String(imageData));
             UnityEngine.Object.DestroyObject(texture);
 
             info.GetComponent<UILabel>().text = "Snapshot saved.";
@@ -52,7 +61,9 @@ public class BTN_save_snapshot : MonoBehaviour
 
         foreach (GameObject go in thingsNeedToHide)
         {
-            go.transform.position -= Vector3.up * 10000f;
+            go.transform.position += Vector3.up * 10000f;
         }
+
+        base.transform.position += Vector3.up * 10000f;
     }
 }

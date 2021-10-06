@@ -11,7 +11,7 @@ namespace Guardian.Features.Properties
 
         // Master Client
         public Property<bool> EndlessTitans = new Property<bool>("MC_EndlessTitans", new string[0], false);
-        public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], false);
+        public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], true);
         public Property<bool> OGPunkHair = new Property<bool>("MC_OGPunkHair", new string[0], true);
         public Property<bool> DeadlyHooks = new Property<bool>("MC_DeadlyHooks", new string[0], false);
 
@@ -32,8 +32,14 @@ namespace Guardian.Features.Properties
         public Property<int> LocalMinDamage = new Property<int>("Player_LocalMinDamage", new string[0], 10);
 
         // Chat
-        public Property<int> MaxChatLines = new Property<int>("Chat_MaxChatLines", new string[0], 50);
+        public Property<int> MaxChatLines = new Property<int>("Chat_MaxMessages", new string[0], 100);
         public Property<bool> ChatBackground = new Property<bool>("Chat_DrawBackground", new string[0], true);
+
+        public Property<bool> TranslateIncoming = new Property<bool>("Chat_TranslateIncoming", new string[0], false);
+        public Property<string> IncomingLanguage = new Property<string>("Chat_IncomingLanguage", new string[0], "auto");
+        public Property<bool> TranslateOutgoing = new Property<bool>("Chat_TranslateOutgoing", new string[0], false);
+        public Property<string> OutgoingLanguage = new Property<string>("Chat_OutgoingLanguage", new string[0], Mod.SystemLanguage);
+
         public Property<string> JoinMessage = new Property<string>("Chat_JoinMessage", new string[0], string.Empty);
         public Property<string> ChatName = new Property<string>("Chat_UserName", new string[0], string.Empty);
         public Property<bool> BoldName = new Property<bool>("Chat_BoldName", new string[0], false);
@@ -46,8 +52,8 @@ namespace Guardian.Features.Properties
 
         // Visual [Render]
         public Property<int> DrawDistance = new Property<int>("Visual_DrawDistance", new string[0], 1500);
-        public Property<bool> Fog = new Property<bool>("Visual_Fog", new string[0], true);
-        public Property<bool> SoftShadows = new Property<bool>("Visual_SoftShadows", new string[0], true);
+        public Property<bool> Fog = new Property<bool>("Visual_Fog", new string[0], false);
+        public Property<bool> SoftShadows = new Property<bool>("Visual_SoftShadows", new string[0], false);
         // Visual [Misc]
         public Property<string> Flare1Color = new Property<string>("Visual_Flare1Color", new string[0], "00FF007B");
         public Property<string> Flare2Color = new Property<string>("Visual_Flare2Color", new string[0], "FF00007B");
@@ -60,7 +66,7 @@ namespace Guardian.Features.Properties
         public Property<bool> UseRichPresence = new Property<bool>("Misc_DiscordPresence", new string[0], true);
 
         // Logging
-        public Property<int> MaxLogLines = new Property<int>("Log_MaxHistoryEntries", new string[0], 50);
+        public Property<int> MaxLogLines = new Property<int>("Log_MaxEntries", new string[0], 100);
         public Property<bool> ShowLog = new Property<bool>("Log_ShowLog", new string[0], true);
         public Property<bool> LogBackground = new Property<bool>("Log_DrawBackground", new string[0], true);
 
@@ -83,7 +89,7 @@ namespace Guardian.Features.Properties
             Interpolation.OnValueChanged = () =>
             {
                 HERO myHero = IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer ?
-                    (HERO)FengGameManagerMKII.Instance.heroes[0] : GameHelper.GetHero(PhotonNetwork.player);
+                    FengGameManagerMKII.Instance.Heroes[0] : GameHelper.GetHero(PhotonNetwork.player);
 
                 if (myHero != null)
                 {
@@ -99,7 +105,7 @@ namespace Guardian.Features.Properties
             {
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
-                    foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
+                    foreach (HERO hero in FengGameManagerMKII.Instance.Heroes)
                     {
                         if (hero.photonView.isMine && hero.myNetWorkName != null)
                         {
@@ -114,7 +120,7 @@ namespace Guardian.Features.Properties
             {
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
-                    foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
+                    foreach (HERO hero in FengGameManagerMKII.Instance.Heroes)
                     {
                         if (!hero.photonView.isMine && hero.myNetWorkName != null)
                         {
@@ -131,7 +137,14 @@ namespace Guardian.Features.Properties
             base.Add(LocalMinDamage);
 
             // Chat
+            base.Add(MaxChatLines);
             base.Add(ChatBackground);
+
+            base.Add(TranslateIncoming);
+            base.Add(IncomingLanguage);
+            base.Add(TranslateOutgoing);
+            base.Add(OutgoingLanguage);
+
             base.Add(JoinMessage);
             base.Add(ChatName);
             base.Add(TextColor);
@@ -141,20 +154,45 @@ namespace Guardian.Features.Properties
             base.Add(TextSuffix);
             base.Add(BoldText);
             base.Add(ItalicText);
-            base.Add(MaxChatLines);
 
             // Visual [Render]
             DrawDistance.OnValueChanged = () =>
             {
-                Camera.main.farClipPlane = DrawDistance.Value;
+                if (Camera.main != null)
+                {
+                    Camera.main.farClipPlane = DrawDistance.Value;
+                }
             };
             base.Add(DrawDistance);
 
             Fog.OnValueChanged = () =>
             {
+                RenderSettings.fogColor = 0x222222FF.ToColor();
                 RenderSettings.fog = Fog.Value;
             };
             base.Add(Fog);
+
+            SoftShadows.OnValueChanged = () =>
+            {
+                GameObject mainLightSource = GameObject.Find("mainLight");
+                if (mainLightSource != null)
+                {
+                    Light mainLight = mainLightSource.GetComponent<Light>();
+
+                    if (SoftShadows.Value)
+                    {
+                        QualitySettings.shadowCascades = 5;
+                        mainLight.shadowBias = 0.04f;
+                        mainLight.shadowSoftness = 32f;
+                    } else
+                    {
+                        QualitySettings.shadowCascades = 4;
+                        mainLight.shadowBias = 0.15f;
+                        mainLight.shadowSoftness = 4f;
+                    }
+                }
+            };
+            base.Add(SoftShadows);
 
             // Visual [Misc]
             base.Add(Flare1Color);

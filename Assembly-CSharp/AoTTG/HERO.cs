@@ -548,7 +548,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         GameObject result = null;
         float num = float.PositiveInfinity;
         Vector3 position = base.transform.position;
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("titan"))
+        foreach (GameObject gameObject in FengGameManagerMKII.Instance.AllTitans)
         {
             float sqrMagnitude = (gameObject.transform.position - position).sqrMagnitude;
             if (sqrMagnitude < num)
@@ -1196,7 +1196,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    private void LaunchLeftHook(RaycastHit hit, bool single, int mode = 0)
+    private void LaunchLeftHook(RaycastHit hit, bool single, bool isLevi = false)
     {
         if (currentGas != 0f)
         {
@@ -1216,12 +1216,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d = single ? 0f : ((!(hit.distance > 50f)) ? (hit.distance * 0.05f) : (hit.distance * 0.3f));
             Vector3 a = hit.point - base.transform.right * d - bulletLeft.transform.position;
             a.Normalize();
-            component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject, leviMode: mode == 1);
+            component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject, leviMode: isLevi);
             launchPointLeft = Vector3.zero;
         }
     }
 
-    private void LaunchRightHook(RaycastHit hit, bool single, int mode = 0)
+    private void LaunchRightHook(RaycastHit hit, bool single, bool isLevi = false)
     {
         if (currentGas != 0f)
         {
@@ -1241,7 +1241,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float d = single ? 0f : !(hit.distance > 50f) ? (hit.distance * 0.05f) : (hit.distance * 0.3f);
             Vector3 a = hit.point + base.transform.right * d - bulletRight.transform.position;
             a.Normalize();
-            component.Launch(a * (mode == 1 ? 5f : 3f), base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: mode == 1);
+            component.Launch(a * (isLevi ? 5f : 3f), base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: isLevi);
             launchPointRight = Vector3.zero;
         }
     }
@@ -1752,7 +1752,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             transform.GetComponent<AudioSource>().Play();
             if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)
             {
-                maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().startSnapShot2(base.transform.position, 0, null, 0.02f);
+                maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartSnapshot2(base.transform.position, 0, null, 0.02f);
             }
             UnityEngine.Object.Destroy(base.gameObject);
         }
@@ -1798,11 +1798,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netTauntAttack(float tauntTime, float distance = 100f)
     {
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("titan"))
+        foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
         {
-            if (Vector3.Distance(gameObject.transform.position, base.transform.position) < distance && (bool)gameObject.GetComponent<TITAN>())
+            if (Vector3.Distance(titan.transform.position, base.transform.position) < distance)
             {
-                gameObject.GetComponent<TITAN>().beTauntedBy(base.gameObject, tauntTime);
+                titan.beTauntedBy(base.gameObject, tauntTime);
             }
         }
     }
@@ -1810,11 +1810,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netlaughAttack()
     {
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("titan"))
+        foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
         {
-            if (Vector3.Distance(gameObject.transform.position, base.transform.position) < 50f && Vector3.Angle(gameObject.transform.forward, base.transform.position - gameObject.transform.position) < 90f && (bool)gameObject.GetComponent<TITAN>())
+            if (Vector3.Distance(titan.transform.position, base.transform.position) < 50f && Vector3.Angle(titan.transform.forward, base.transform.position - titan.transform.position) < 90f)
             {
-                gameObject.GetComponent<TITAN>().beLaughAttacked();
+                titan.beLaughAttacked();
             }
         }
     }
@@ -2172,6 +2172,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             baseRigidBody.rotation = Quaternion.Lerp(base.gameObject.transform.rotation, targetRotation, Time.deltaTime * 6f);
         }
+
         if (state == HeroState.Grabbed)
         {
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
@@ -3518,7 +3519,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                                         LayerMask mask = 1 << LayerMask.NameToLayer("Ground");
                                         LayerMask mask2 = 1 << LayerMask.NameToLayer("EnemyBox");
-                                        if (Physics.Raycast(ray, out RaycastHit hitInfo, 1E+07f, ((LayerMask)((int)mask2 | (int)mask)).value))
+                                        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, ((LayerMask)((int)mask2 | (int)mask)).value))
                                         {
                                             if (bulletRight != null)
                                             {
@@ -3526,7 +3527,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                                 ReleaseHookedTarget();
                                             }
                                             dashDirection = hitInfo.point - baseTransform.position;
-                                            LaunchRightHook(hitInfo, single: true, 1);
+                                            LaunchRightHook(hitInfo, single: true, true);
                                             rope.Play();
                                         }
                                         facingDirection = Mathf.Atan2(dashDirection.x, dashDirection.z) * 57.29578f;
@@ -3540,7 +3541,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                         Ray ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
                                         LayerMask mask3 = 1 << LayerMask.NameToLayer("Ground");
                                         LayerMask mask4 = 1 << LayerMask.NameToLayer("EnemyBox");
-                                        if (Physics.Raycast(ray2, out RaycastHit hitInfo2, 1E+07f, ((LayerMask)((int)mask4 | (int)mask3)).value))
+                                        if (Physics.Raycast(ray2, out RaycastHit hitInfo2, Mathf.Infinity, ((LayerMask)((int)mask4 | (int)mask3)).value))
                                         {
                                             if (bulletRight != null)
                                             {
@@ -4006,11 +4007,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                     }
                                     else
                                     {
-                                        foreach (GameObject gameObject2 in GameObject.FindGameObjectsWithTag("titan"))
+                                        foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
                                         {
-                                            if (Vector3.Distance(gameObject2.transform.position, baseTransform.position) < 50f && Vector3.Angle(gameObject2.transform.forward, baseTransform.position - gameObject2.transform.position) < 90f && gameObject2.GetComponent<TITAN>() != null)
+                                            if (Vector3.Distance(titan.transform.position, baseTransform.position) < 50f && Vector3.Angle(titan.transform.forward, baseTransform.position - titan.transform.position) < 90f)
                                             {
-                                                gameObject2.GetComponent<TITAN>().beLaughAttacked();
+                                                titan.beLaughAttacked();
                                             }
                                         }
                                     }
@@ -4273,7 +4274,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     Ray ray5 = Camera.main.ScreenPointToRay(Input.mousePosition);
                     LayerMask mask9 = 1 << LayerMask.NameToLayer("Ground");
                     LayerMask mask10 = 1 << LayerMask.NameToLayer("EnemyBox");
-                    if (Physics.Raycast(ray5, out RaycastHit hitInfo5, 10000f, ((LayerMask)((int)mask10 | (int)mask9)).value))
+                    if (Physics.Raycast(ray5, out RaycastHit hitInfo5, Mathf.Infinity, ((LayerMask)((int)mask10 | (int)mask9)).value))
                     {
                         LaunchRightHook(hitInfo5, single: true);
                         rope.Play();
@@ -4293,7 +4294,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     Ray ray6 = Camera.main.ScreenPointToRay(Input.mousePosition);
                     LayerMask mask11 = 1 << LayerMask.NameToLayer("Ground");
                     LayerMask mask12 = 1 << LayerMask.NameToLayer("EnemyBox");
-                    if (Physics.Raycast(ray6, out RaycastHit hitInfo6, 1000000f, ((LayerMask)((int)mask12 | (int)mask11)).value))
+                    if (Physics.Raycast(ray6, out RaycastHit hitInfo6, Mathf.Infinity, ((LayerMask)((int)mask12 | (int)mask11)).value))
                     {
                         LaunchLeftHook(hitInfo6, single: false);
                         LaunchRightHook(hitInfo6, single: false);
@@ -5198,16 +5199,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         for (int i = 0; i < myTitans.Count; i++)
         {
-            TITAN tITAN = myTitans[i];
-            if (!titans.Contains(tITAN))
+            TITAN titan = myTitans[i];
+            if (!titans.Contains(titan))
             {
-                tITAN.isLook = false;
+                titan.isLook = false;
             }
         }
         for (int i = 0; i < titans.Count; i++)
         {
-            TITAN tITAN2 = titans[i];
-            tITAN2.isLook = true;
+            TITAN titan = titans[i];
+            titan.isLook = true;
         }
         myTitans = titans;
     }

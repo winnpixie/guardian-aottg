@@ -9,7 +9,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            foreach (TITAN titan in FengGameManagerMKII.Instance.titans)
+            foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
             {
                 if (titan.photonView.isMine)
                 {

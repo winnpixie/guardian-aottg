@@ -7,41 +7,47 @@ public class BTN_ToJoin : MonoBehaviour
         NGUITools.SetActive(base.transform.parent.gameObject, state: false);
         NGUITools.SetActive(GameObject.Find("UIRefer").GetComponent<UIMainReferences>().PanelMultiJoinPrivate, state: true);
         Transform transform = GameObject.Find("UIRefer").GetComponent<UIMainReferences>().PanelMultiJoinPrivate.transform;
-        Transform transform2 = transform.Find("ButtonJOIN");
-        if (transform2.GetComponent<BTN_Join_LAN>() == null)
+
+        Transform joinBtn = transform.Find("ButtonJOIN");
+        if (joinBtn.GetComponent<BTN_Join_LAN>() == null)
         {
-            transform2.gameObject.AddComponent<BTN_Join_LAN>();
+            joinBtn.gameObject.AddComponent<BTN_Join_LAN>();
         }
-        Transform transform3 = transform.Find("InputIP");
-        Transform transform4 = transform.Find("InputPort");
-        string @string = PlayerPrefs.GetString("lastIP", "127.0.0.1");
-        string string2 = PlayerPrefs.GetString("lastPort", "5055");
-        transform3.GetComponent<UIInput>().text = @string;
-        transform3.GetComponent<UIInput>().label.text = @string;
-        transform4.GetComponent<UIInput>().text = string2;
-        transform4.GetComponent<UIInput>().label.text = string2;
-        transform3.GetComponent<UIInput>().label.shrinkToFit = true;
-        transform4.GetComponent<UIInput>().label.shrinkToFit = true;
-        Transform x = transform.Find("LabelAuthPass");
-        Transform transform5 = transform.Find("InputAuthPass");
-        if (transform5 == null)
+
+        Transform ipTxt = transform.Find("InputIP");
+        string lastIp = PlayerPrefs.GetString("lastIP", "127.0.0.1");
+        ipTxt.GetComponent<UIInput>().text = lastIp;
+        ipTxt.GetComponent<UIInput>().label.text = lastIp;
+
+        Transform portTxt = transform.Find("InputPort");
+        string lastPort = PlayerPrefs.GetString("lastPort", "5055");
+        portTxt.GetComponent<UIInput>().text = lastPort;
+        portTxt.GetComponent<UIInput>().label.text = lastPort;
+
+        ipTxt.GetComponent<UIInput>().label.shrinkToFit = true;
+        portTxt.GetComponent<UIInput>().label.shrinkToFit = true;
+
+        Transform passwdLbl = transform.Find("LabelAuthPass");
+        Transform passwdTxt = transform.Find("InputAuthPass");
+        if (passwdTxt == null)
         {
-            uint width = (uint)transform3.transform.Find("Background").localScale.x;
-            Vector3 position = transform2.localPosition + new Vector3(0f, 61f, 0f);
-            transform5 = CreateInput(transform.gameObject, transform3.gameObject, position, transform2.rotation, "InputAuthPass", string.Empty, width).transform;
-            transform5.GetComponent<UIInput>().label.shrinkToFit = true;
+            uint width = (uint)ipTxt.transform.Find("Background").localScale.x;
+            Vector3 position = joinBtn.localPosition + new Vector3(0f, 61f, 0f);
+            passwdTxt = CreateInput(transform.gameObject, ipTxt.gameObject, position, joinBtn.rotation, "InputAuthPass", string.Empty, width).transform;
+            passwdTxt.GetComponent<UIInput>().label.shrinkToFit = true;
         }
-        if (x == null)
+        if (passwdLbl == null)
         {
-            Vector3 position = transform5.localPosition + new Vector3(0f, 35f, 0f);
+            Vector3 position = passwdTxt.localPosition + new Vector3(0f, 35f, 0f);
             GameObject gameObject = transform.Find("LabelIP").gameObject;
-            x = CreateLabel(transform.gameObject, gameObject, position, transform5.rotation, "LabelAuthPass", "Admin Password (Optional)", gameObject.GetComponent<UILabel>().font.dynamicFontSize, gameObject.GetComponent<UILabel>().lineWidth).transform;
-            x.localScale = gameObject.transform.localScale;
-            x.GetComponent<UILabel>().color = gameObject.GetComponent<UILabel>().color;
+            passwdLbl = CreateLabel(transform.gameObject, gameObject, position, passwdTxt.rotation, "LabelAuthPass", "Admin Password (Optional)", gameObject.GetComponent<UILabel>().font.dynamicFontSize, gameObject.GetComponent<UILabel>().lineWidth).transform;
+            passwdLbl.localScale = gameObject.transform.localScale;
+            passwdLbl.GetComponent<UILabel>().color = gameObject.GetComponent<UILabel>().color;
         }
-        string string3 = PlayerPrefs.GetString("lastAuthPass", string.Empty);
-        transform5.GetComponent<UIInput>().text = string3;
-        transform5.GetComponent<UIInput>().label.text = string3;
+
+        string lastPasswd = PlayerPrefs.GetString("lastAuthPass", string.Empty);
+        passwdTxt.GetComponent<UIInput>().text = lastPasswd;
+        passwdTxt.GetComponent<UIInput>().label.text = lastPasswd;
     }
 
     public static GameObject CreateInput(GameObject parent, GameObject toClone, Vector3 position, Quaternion rotation, string name, string hint, uint width = 100u, int maxChars = 100, bool isPassword = false)

@@ -21,7 +21,7 @@ namespace Guardian.Features.Commands.Impl
 
             if (PhotonNetwork.isMasterClient)
             {
-                foreach (TITAN titan in FengGameManagerMKII.Instance.titans)
+                foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
                 {
                     if (titan.abnormalType == TitanClass.Punk)
                     {

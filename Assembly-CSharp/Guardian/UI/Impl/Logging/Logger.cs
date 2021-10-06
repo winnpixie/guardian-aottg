@@ -6,27 +6,20 @@ namespace Guardian
 {
     class Logger
     {
-        public Dictionary<LogType, List<string>> EntryDict = new Dictionary<LogType, List<string>>();
+        public List<string> Entries = new List<string>();
         public Vector2 ScrollPosition = GameHelper.ScrollBottom;
 
-        private void Log(LogType type, string message)
+        private void Log(string message)
         {
             message = Mod.BlacklistedTags.Replace(message, string.Empty);
 
             if (message.Length > 0)
             {
-                List<string> entries;
+                Entries.Add(message);
 
-                if (!EntryDict.TryGetValue(type, out entries))
+                if (Entries.Count > Mod.Properties.MaxLogLines.Value)
                 {
-                    EntryDict.Add(type, entries = new List<string>());
-                }
-
-                entries.Add(message);
-
-                if (entries.Count > Mod.Properties.MaxLogLines.Value)
-                {
-                    entries.RemoveAt(0);
+                    Entries.RemoveAt(0);
                 }
 
                 ScrollPosition = GameHelper.ScrollBottom;
@@ -35,27 +28,22 @@ namespace Guardian
 
         public void Info(string message)
         {
-            Log(LogType.Info, "* ".AsColor("AAAAAA") + message);
+            Log("* ".AsColor("AAAAAA") + message);
         }
 
         public void Warn(string message)
         {
-            Log(LogType.Warnings, "* ".AsColor("FFCC00") + message);
+            Log("* ".AsColor("FFCC00") + message);
         }
 
         public void Error(string message)
         {
-            Log(LogType.Errors, "* ".AsColor("FF0000") + message);
+            Log("* ".AsColor("FF0000") + message);
         }
 
         public void Debug(string message)
         {
-            Log(LogType.Debug, "* ".AsColor("00FFFF") + message);
-        }
-
-        public enum LogType
-        {
-            Info, Warnings, Errors, Debug
+            Log("* ".AsColor("00FFFF") + message);
         }
     }
 }

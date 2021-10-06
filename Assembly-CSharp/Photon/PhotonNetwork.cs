@@ -859,6 +859,11 @@ public static class PhotonNetwork
         return JoinRandomRoom(null, 0, MatchmakingMode.FillRoom, null, null);
     }
 
+    public static bool JoinRandomRoom(MatchmakingMode matchmakingMode)
+    {
+        return JoinRandomRoom(null, 0, matchmakingMode, null, null);
+    }
+
     public static bool JoinRandomRoom(Hashtable expectedCustomRoomProperties, byte expectedMaxPlayers)
     {
         return JoinRandomRoom(expectedCustomRoomProperties, expectedMaxPlayers, MatchmakingMode.FillRoom, null, null);

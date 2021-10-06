@@ -184,7 +184,8 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         GameObject result = null;
         float num = float.PositiveInfinity;
         Vector3 position2 = base.transform.position;
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
+
+        foreach (GameObject gameObject in FengGameManagerMKII.Instance.Players)
         {
             if ((!gameObject.GetComponent<HERO>() || !gameObject.GetComponent<HERO>().HasDied()) && (!gameObject.GetComponent<TITAN_EREN>() || !gameObject.GetComponent<TITAN_EREN>().hasDied))
             {
@@ -479,7 +480,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
 
     private void CallTitan(bool special = false)
     {
-        if (!special && GameObject.FindGameObjectsWithTag("titan").Length > 6)
+        if (!special && FengGameManagerMKII.Instance.AllTitans.Count > 6)
         {
             return;
         }
@@ -527,7 +528,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                     num2 = 0.7f;
                 }
             }
-            if (GameObject.FindGameObjectsWithTag("titan").Length == 5)
+            if (FengGameManagerMKII.Instance.AllTitans.Count == 5)
             {
                 gameObject3.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
             }

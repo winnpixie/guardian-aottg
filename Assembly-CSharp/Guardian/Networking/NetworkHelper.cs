@@ -49,7 +49,7 @@ namespace Guardian.Networking
                 if (ping != -1 && ping < lowestPing)
                 {
                     lowestPing = ping;
-                    bestRegion = address;
+                    bestRegion = code;
                 }
             }
 
@@ -63,9 +63,12 @@ namespace Guardian.Networking
             if (masterAddress.StartsWith("app-"))
             {
                 return masterAddress.Substr(masterAddress.IndexOf('-') + 1, masterAddress.IndexOf('.') - 1);
+            } else if (masterAddress.Contains("aottg.tk"))
+            {
+                return masterAddress.Substr(0, masterAddress.IndexOf('.') - 1);
             }
 
-            return "unknown";
+            return "??";
         }
     }
 }

@@ -232,7 +232,7 @@ public class MicEF : MonoBehaviour
 
         if (properties.ContainsKey("name") && properties["name"] is string && Users.ContainsKey(player.Id))
         {
-            Users[player.Id].name = ((string)properties["name"]).ColorParsed();
+            Users[player.Id].Name = ((string)properties["name"]).ColorParsed();
         }
     }
 

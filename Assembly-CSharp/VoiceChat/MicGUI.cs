@@ -97,9 +97,9 @@ public class MicGUI : MonoBehaviour
             foreach (KeyValuePair<int, MicPlayer> entry in MicEF.Users)
             {
                 MicPlayer player = entry.Value;
-                if (player.clipProcess)
+                if (player.Processing)
                 {
-                    GUILayout.Label("<b>(" + entry.Key + ") </b>" + entry.Value.name);
+                    GUILayout.Label("<b>(" + entry.Key + ") </b>" + entry.Value.Name);
                 }
             }
             GUILayout.EndVertical();
@@ -150,10 +150,10 @@ public class MicGUI : MonoBehaviour
 
                         GUILayout.BeginHorizontal();
 
-                        GUILayout.Label(player.name, GUILayout.Width(labelLength));
+                        GUILayout.Label(player.Name, GUILayout.Width(labelLength));
                         Color oldCol = buttonStyle.normal.textColor;
 
-                        if (player.mutedYou)
+                        if (player.MutedYou)
                         {
                             buttonStyle.normal.textColor = Color.yellow;
                         }

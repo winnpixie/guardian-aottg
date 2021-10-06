@@ -7,7 +7,14 @@ public class BTN_QUICKMATCH : MonoBehaviour
     public void OnClick()
     {
         PhotonNetwork.Disconnect();
-        PhotonNetwork.ConnectToMaster(NetworkHelper.GetBestRegion(), NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
+
+        string bestRegion = NetworkHelper.GetBestRegion();
+        if (bestRegion.Equals("asia") || bestRegion.Equals("jp"))
+        {
+            bestRegion = "sg";
+        }
+
+        PhotonNetwork.ConnectToMaster(bestRegion + ".aottg.tk", NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
         FengGameManagerMKII.OnPrivateServer = false;
         NetworkHelper.IsCloud = FengGameManagerMKII.ApplicationId.Length > 0;
 
@@ -16,7 +23,8 @@ public class BTN_QUICKMATCH : MonoBehaviour
             while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby
                 && IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop
                 && !Guardian.Mod.IsProgramQuitting) { }
-            PhotonNetwork.JoinRandomRoom();
+            PhotonNetwork.JoinRandomRoom(MatchmakingMode.RandomMatching);
         }).Start();
     }
 }
+ 

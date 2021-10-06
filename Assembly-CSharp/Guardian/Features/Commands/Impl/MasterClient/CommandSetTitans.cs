@@ -24,7 +24,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 {
                     GameHelper.Broadcast($"All non-player titans are now of type {type.Value}!");
 
-                    foreach (TITAN titan in FengGameManagerMKII.Instance.titans)
+                    foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
                     {
                         if (titan.photonView.isMine && type != titan.abnormalType)
                         {

@@ -6,8 +6,6 @@ namespace Guardian.UI.Impl.Logging
     // Unconventional UI that won't actually be invoked by .OpenScreen, but rather as an always-on UI
     class UILogger : UIBase
     {
-        private Logger.LogType _currentType = Logger.LogType.Info;
-
         public override void Draw()
         {
             if (Mod.Properties.ShowLog.Value && !Application.loadedLevelName.Equals("SnapShot") && !Application.loadedLevelName.Equals("characterCreation"))
@@ -21,18 +19,6 @@ namespace Guardian.UI.Impl.Logging
                     GUILayout.BeginArea(new Rect(Screen.width - 331f, Screen.height - 255f, 330f, 225f));
                 }
 
-                GUILayout.BeginHorizontal();
-                foreach (Logger.LogType type in System.Enum.GetValues(typeof(Logger.LogType)))
-                {
-                    if (GUILayout.Button(type.ToString()))
-                    {
-                        _currentType = type;
-                    }
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.Label(_currentType.ToString().AsBold());
-
                 GUILayout.FlexibleSpace();
                 Mod.Logger.ScrollPosition = GUILayout.BeginScrollView(Mod.Logger.ScrollPosition);
 
@@ -43,22 +29,18 @@ namespace Guardian.UI.Impl.Logging
                     border = new RectOffset(0, 0, 0, 0)
                 };
 
-                if (Mod.Logger.EntryDict.TryGetValue(_currentType, out System.Collections.Generic.List<string> entries))
+                foreach (string message in Mod.Logger.Entries)
                 {
-                    foreach (string message in entries)
+                    try
                     {
-                        try
-                        {
-                            GUILayout.Label(message, labelStyle);
-                        }
-                        catch { }
+                        GUILayout.Label(message, labelStyle);
                     }
+                    catch { }
                 }
                 GUILayout.EndScrollView();
 
-
                 GUILayout.BeginHorizontal();
-                GUILayout.Label($"{MathHelper.Floor(1f / Time.smoothDeltaTime)} FPS");
+                GUILayout.Label($"{Mod.FpsCounter.Frames} FPS");
 
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
                 {
@@ -67,9 +49,9 @@ namespace Guardian.UI.Impl.Logging
 
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
-                        if (FengGameManagerMKII.Instance.heroes.Count > 0)
+                        if (FengGameManagerMKII.Instance.Heroes.Count > 0)
                         {
-                            myObj = FengGameManagerMKII.Instance.heroes[0] as HERO;
+                            myObj = FengGameManagerMKII.Instance.Heroes[0];
                         }
                     }
                     else

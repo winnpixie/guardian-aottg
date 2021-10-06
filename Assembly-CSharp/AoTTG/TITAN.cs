@@ -209,9 +209,9 @@ public class TITAN : Photon.MonoBehaviour
     private int GetPunkNumber()
     {
         int num = 0;
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("titan"))
+        foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
         {
-            if ((bool)gameObject.GetComponent<TITAN>() && gameObject.GetComponent<TITAN>().name == "Punk")
+            if (titan.name == "Punk")
             {
                 num++;
             }
@@ -416,14 +416,14 @@ public class TITAN : Photon.MonoBehaviour
     private GameObject checkIfHitHead(Transform head, float rad)
     {
         float num = rad * myLevel;
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
+        foreach (GameObject hero in FengGameManagerMKII.Instance.Players)
         {
-            if (!gameObject.GetComponent<TITAN_EREN>() && (!gameObject.GetComponent<HERO>() || !gameObject.GetComponent<HERO>().IsInvincible()))
+            if (!hero.GetComponent<TITAN_EREN>() && (!hero.GetComponent<HERO>() || !hero.GetComponent<HERO>().IsInvincible()))
             {
-                float num2 = gameObject.GetComponent<CapsuleCollider>().height * 0.5f;
-                if (Vector3.Distance(gameObject.transform.position + Vector3.up * num2, head.position + Vector3.up * 1.5f * myLevel) < num + num2)
+                float num2 = hero.GetComponent<CapsuleCollider>().height * 0.5f;
+                if (Vector3.Distance(hero.transform.position + Vector3.up * num2, head.position + Vector3.up * 1.5f * myLevel) < num + num2)
                 {
-                    return gameObject;
+                    return hero;
                 }
             }
         }
@@ -433,14 +433,14 @@ public class TITAN : Photon.MonoBehaviour
     private GameObject checkIfHitCrawlerMouth(Transform head, float rad)
     {
         float num = rad * myLevel;
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
+        foreach (GameObject hero in FengGameManagerMKII.Instance.Players)
         {
-            if (!gameObject.GetComponent<TITAN_EREN>() && (!gameObject.GetComponent<HERO>() || !gameObject.GetComponent<HERO>().IsInvincible()))
+            if (!hero.GetComponent<TITAN_EREN>() && (!hero.GetComponent<HERO>() || !hero.GetComponent<HERO>().IsInvincible()))
             {
-                float num2 = gameObject.GetComponent<CapsuleCollider>().height * 0.5f;
-                if (Vector3.Distance(gameObject.transform.position + Vector3.up * num2, head.position - Vector3.up * 1.5f * myLevel) < num + num2)
+                float num2 = hero.GetComponent<CapsuleCollider>().height * 0.5f;
+                if (Vector3.Distance(hero.transform.position + Vector3.up * num2, head.position - Vector3.up * 1.5f * myLevel) < num + num2)
                 {
-                    return gameObject;
+                    return hero;
                 }
             }
         }
@@ -845,7 +845,7 @@ public class TITAN : Photon.MonoBehaviour
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             DieBlowFunc(attacker, hitPauseTime);
-            if (GameObject.FindGameObjectsWithTag("titan").Length <= 1)
+            if (FengGameManagerMKII.Instance.AllTitans.Count <= 1)
             {
                 GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             }
@@ -915,7 +915,7 @@ public class TITAN : Photon.MonoBehaviour
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             DieHeadBlowFunc(attacker, hitPauseTime);
-            if (GameObject.FindGameObjectsWithTag("titan").Length <= 1)
+            if (FengGameManagerMKII.Instance.AllTitans.Count <= 1)
             {
                 GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             }
@@ -1614,22 +1614,12 @@ public class TITAN : Photon.MonoBehaviour
         float distance = float.PositiveInfinity;
         Vector3 position = baseTransform.position;
 
-        foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
+        foreach(GameObject player in FengGameManagerMKII.Instance.Players)
         {
-            float sqrDist = (hero.transform.position - position).sqrMagnitude;
+            float sqrDist = (player.transform.position - position).sqrMagnitude;
             if (sqrDist < distance)
             {
-                target = hero.gameObject;
-                distance = sqrDist;
-            }
-        }
-
-        foreach (TITAN_EREN eren in FengGameManagerMKII.Instance.erenTitans)
-        {
-            float sqrDist = (eren.transform.position - position).sqrMagnitude;
-            if (sqrDist < distance)
-            {
-                target = eren.gameObject;
+                target = player;
                 distance = sqrDist;
             }
         }
@@ -1644,33 +1634,17 @@ public class TITAN : Photon.MonoBehaviour
         Vector3 position = baseTransform.position;
         float num3 = (abnormalType != 0) ? 180f : 100f;
 
-        foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
+        foreach (GameObject player in FengGameManagerMKII.Instance.Players)
         {
-            float sqrDist = (hero.transform.position - position).sqrMagnitude;
+            float sqrDist = (player.transform.position - position).sqrMagnitude;
             if (sqrDist < distance)
             {
-                Vector3 vector = hero.transform.position - baseTransform.position;
+                Vector3 vector = player.transform.position - baseTransform.position;
                 float num2 = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
                 float num4 = 0f - Mathf.DeltaAngle(num2, baseGameObjectTransform.rotation.eulerAngles.y - 90f);
                 if (Mathf.Abs(num4) < num3)
                 {
-                    target = hero.gameObject;
-                    distance = sqrDist;
-                }
-            }
-        }
-
-        foreach (TITAN_EREN eren in FengGameManagerMKII.Instance.erenTitans)
-        {
-            float sqrDist = (eren.transform.position - position).sqrMagnitude;
-            if (sqrDist < distance)
-            {
-                Vector3 vector = eren.transform.position - baseTransform.position;
-                float num2 = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
-                float num4 = 0f - Mathf.DeltaAngle(num2, baseGameObjectTransform.rotation.eulerAngles.y - 90f);
-                if (Mathf.Abs(num4) < num3)
-                {
-                    target = eren.gameObject;
+                    target = player;
                     distance = sqrDist;
                 }
             }
@@ -3670,11 +3644,10 @@ public class TITAN : Photon.MonoBehaviour
             PhotonNetwork.Instantiate("FX/boom1", vector, Quaternion.Euler(270f, 0f, 0f), 0);
         }
 
-        foreach (GameObject gameObject in FengGameManagerMKII.Instance.heroes)
+        foreach (HERO hero in FengGameManagerMKII.Instance.Heroes)
         {
-            if ((gameObject.transform.position - vector).magnitude < (float)RCSettings.ExplodeMode)
+            if ((hero.transform.position - vector).magnitude < (float)RCSettings.ExplodeMode)
             {
-                HERO hero = gameObject.GetComponent<HERO>();
                 hero.MarkDead();
 
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)

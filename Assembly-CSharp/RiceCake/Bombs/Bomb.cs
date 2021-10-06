@@ -52,7 +52,7 @@ public class Bomb : Photon.MonoBehaviour
         Vector3 position = base.transform.position;
         myExplosion = PhotonNetwork.Instantiate("RCAsset/BombExplodeMain", position, Quaternion.Euler(0f, 0f, 0f), 0);
 
-        foreach (HERO player in FengGameManagerMKII.Instance.heroes)
+        foreach (HERO player in FengGameManagerMKII.Instance.Heroes)
         {
             GameObject gameObject = player.gameObject;
             if (Vector3.Distance(gameObject.transform.position, position) < radius && !gameObject.GetPhotonView().isMine && !player.bombImmune)

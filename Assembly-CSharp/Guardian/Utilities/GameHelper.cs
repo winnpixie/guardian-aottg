@@ -16,7 +16,7 @@ namespace Guardian.Utilities
 
         public static WWW CreateWWW(string url)
         {
-            if (Mod.HostWhitelist.Count < 1)
+            if (url.ToLower().StartsWith("file://") || Mod.HostWhitelist.Count < 1)
             {
                 return new WWW(url);
             }
@@ -46,7 +46,7 @@ namespace Guardian.Utilities
 
         public static HERO GetHero(PhotonPlayer player)
         {
-            foreach (HERO hero in FengGameManagerMKII.Instance.heroes)
+            foreach (HERO hero in FengGameManagerMKII.Instance.Heroes)
             {
                 if (hero.photonView.ownerId == player.Id)
                 {
@@ -59,7 +59,7 @@ namespace Guardian.Utilities
 
         public static TITAN GetPT(PhotonPlayer player)
         {
-            foreach (TITAN titan in FengGameManagerMKII.Instance.titans)
+            foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
             {
                 if (titan.photonView.ownerId == player.Id)
                 {

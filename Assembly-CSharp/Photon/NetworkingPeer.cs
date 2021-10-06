@@ -2753,7 +2753,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         // Byte arrays never get sent, except by Elite Future/kevin's voice chat mod
         if (eventData[245] is byte[] && eventData.Code != 173)
         {
-            Guardian.Mod.Logger.Error($"Event {eventData.Code} ({((byte[])eventData[245]).Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+            Guardian.Mod.Logger.Error($"E({eventData.Code}) byte[] ({((byte[])eventData[245]).Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
             if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -2765,73 +2765,64 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         {
             case PunEvent.RPC:
                 {
-                    object payload = eventData[245];
-                    if (!(payload is ExitGames.Client.Photon.Hashtable))
+                    if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        return;
+                        if (!Guardian.AntiAbuse.Validators.Network.IsRPCValid(payload, sender))
+                        {
+                            return;
+                        }
+                        ExecuteRPC(payload, sender);
                     }
-                    ExitGames.Client.Photon.Hashtable rpcData = payload as ExitGames.Client.Photon.Hashtable;
-                    if (!Guardian.AntiAbuse.Validators.Network.IsRPCValid(rpcData, sender))
-                    {
-                        return;
-                    }
-                    ExecuteRPC(rpcData, sender);
                     break;
                 }
             case PunEvent.SendSerialize:
             case PunEvent.SendSerializeReliable:
                 {
-                    object payload = eventData[245];
-                    if (!(payload is ExitGames.Client.Photon.Hashtable))
+                    if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        return;
-                    }
-                    ExitGames.Client.Photon.Hashtable hashtable2 = payload as ExitGames.Client.Photon.Hashtable;
-                    if (!(hashtable2[(byte)0] is int))
-                    {
-                        return;
-                    }
-                    int networkTime = (int)hashtable2[(byte)0];
-                    short correctPrefix = -1;
-                    short num4 = 1;
-                    if (hashtable2.ContainsKey((byte)1))
-                    {
-                        if (!(hashtable2[(byte)1] is short))
+                        if (!(payload[(byte)0] is int))
                         {
                             return;
                         }
-                        correctPrefix = (short)hashtable2[(byte)1];
-                        num4 = 2;
-                    }
-                    for (short num5 = num4; num5 < hashtable2.Count; num5 = (short)(num5 + 1))
-                    {
-                        ExitGames.Client.Photon.Hashtable hashtable = hashtable2[num5] as ExitGames.Client.Photon.Hashtable;
-                        if (!Guardian.AntiAbuse.Validators.Network.IsSerializeReadValid(hashtable, sender))
+                        int networkTime = (int)payload[(byte)0];
+                        short correctPrefix = -1;
+                        short num4 = 1;
+                        if (payload.ContainsKey((byte)1))
                         {
-                            return;
+                            if (!(payload[(byte)1] is short))
+                            {
+                                return;
+                            }
+                            correctPrefix = (short)payload[(byte)1];
+                            num4 = 2;
                         }
-                        OnSerializeRead(hashtable, sender, networkTime, correctPrefix);
+                        for (short num5 = num4; num5 < payload.Count; num5 = (short)(num5 + 1))
+                        {
+                            ExitGames.Client.Photon.Hashtable hashtable = payload[num5] as ExitGames.Client.Photon.Hashtable;
+                            if (!Guardian.AntiAbuse.Validators.Network.IsSerializeReadValid(hashtable, sender))
+                            {
+                                return;
+                            }
+                            OnSerializeRead(hashtable, sender, networkTime, correctPrefix);
+                        }
                     }
                     break;
                 }
             case PunEvent.Instantiation:
                 {
-                    object payload = eventData[245];
-                    if (!(payload is ExitGames.Client.Photon.Hashtable))
+                    if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        return;
-                    }
-                    ExitGames.Client.Photon.Hashtable instantiationData = payload as ExitGames.Client.Photon.Hashtable;
-                    if (instantiationData[(byte)0] is string)
-                    {
-                        string resourceName = (string)instantiationData[(byte)0];
-                        if (resourceName != null)
+                        if (payload[(byte)0] is string)
                         {
-                            if (!Guardian.AntiAbuse.Validators.Network.IsInstantiatePacketValid(instantiationData, sender))
+                            string resourceName = (string)payload[(byte)0];
+                            if (resourceName != null)
                             {
-                                return;
+                                if (!Guardian.AntiAbuse.Validators.Network.IsInstantiatePacketValid(payload, sender))
+                                {
+                                    return;
+                                }
+                                DoInstantiate2(payload, sender, null);
                             }
-                            DoInstantiate2(instantiationData, sender, null);
                         }
                     }
                     break;
@@ -2844,29 +2835,21 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 break;
             case PunEvent.Destroy:
                 {
-                    if (!(eventData[245] is ExitGames.Client.Photon.Hashtable))
+                    if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        return;
-                    }
-                    ExitGames.Client.Photon.Hashtable hashtable = (ExitGames.Client.Photon.Hashtable)eventData[245];
-                    if (hashtable[(byte)0] is int)
-                    {
-                        int key = (int)hashtable[(byte)0];
-                        if (instantiatedObjects.TryGetValue(key, out GameObject value))
+                        if (payload[(byte)0] is int)
                         {
-                            if (value != null && sender != null)
+                            int key = (int)payload[(byte)0];
+                            if (instantiatedObjects.TryGetValue(key, out GameObject value))
                             {
-                                PhotonView[] photonViews = value.GetPhotonViewsInChildren();
-                                if (photonViews != null && photonViews.Length > 0 && photonViews[0].ownerId != sender.Id && !sender.isMasterClient)
+                                if (value != null && sender != null)
                                 {
-                                    Guardian.Mod.Logger.Error($"Object.Destroy from #{sender.Id}.");
-                                    if (!FengGameManagerMKII.IgnoreList.Contains(sender.Id))
+                                    if (!Guardian.AntiAbuse.Validators.Network.IsPVDestroyValid(value.GetPhotonViewsInChildren(), sender))
                                     {
-                                        FengGameManagerMKII.IgnoreList.Add(sender.Id);
+                                        return;
                                     }
-                                    return;
+                                    RemoveInstantiatedGO(value, localOnly: true);
                                 }
-                                RemoveInstantiatedGO(value, localOnly: true);
                             }
                         }
                     }
@@ -2874,60 +2857,54 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             case PunEvent.DestroyPlayer:
                 {
-                    object payload = eventData[245];
-                    if (!(payload is ExitGames.Client.Photon.Hashtable))
+                    if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        return;
-                    }
-                    ExitGames.Client.Photon.Hashtable hashtable = payload as ExitGames.Client.Photon.Hashtable;
-                    if (hashtable[(byte)0] is int)
-                    {
-                        int num2 = (int)hashtable[(byte)0];
-                        if (num2 < 0 && sender != null && (sender.isMasterClient || sender.isLocal))
+                        if (payload[(byte)0] is int)
                         {
-                            DestroyAll(localOnly: true);
-                        }
-                        else if (sender != null && (sender.isMasterClient || sender.isLocal || num2 != PhotonNetwork.player.Id))
-                        {
-                            DestroyPlayerObjects(num2, localOnly: true);
+                            int playerId = (int)payload[(byte)0];
+                            if (playerId < 0 && sender != null && (sender.isMasterClient || sender.isLocal))
+                            {
+                                DestroyAll(localOnly: true);
+                            }
+                            else if (sender != null && (sender.isMasterClient || sender.isLocal || playerId != PhotonNetwork.player.Id))
+                            {
+                                DestroyPlayerObjects(playerId, localOnly: true);
+                            }
                         }
                     }
                     break;
                 }
             case PunEvent.AssignMaster:
                 {
-                    object payload = eventData[245];
-                    if (!(payload is ExitGames.Client.Photon.Hashtable))
+                    if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        return;
-                    }
-                    ExitGames.Client.Photon.Hashtable newMaster = (ExitGames.Client.Photon.Hashtable)eventData[245];
-                    if (!(newMaster[(byte)1] is int))
-                    {
-                        return;
-                    }
-                    int masterId = (int)newMaster[(byte)1];
-                    if (sender != null && sender.isMasterClient && masterId == sender.Id)
-                    {
-                        return;
-                    }
-                    if (sender != null && !sender.isMasterClient && !sender.isLocal)
-                    {
-                        if (PhotonNetwork.isMasterClient)
+                        if (!(payload[(byte)1] is int))
                         {
-                            FengGameManagerMKII.NoRestart = true;
-                            PhotonNetwork.SetMasterClient(PhotonNetwork.player);
-                            FengGameManagerMKII.Instance.KickPlayer(sender, ban: true, "Stealing MC.");
+                            return;
                         }
-                        return;
-                    }
-                    if (masterId == mLocalActor.Id)
-                    {
-                        SetMasterClient(masterId, sync: false);
-                    }
-                    else if (sender == null || sender.isMasterClient || sender.isLocal)
-                    {
-                        SetMasterClient(masterId, sync: false);
+                        int masterId = (int)payload[(byte)1];
+                        if (sender != null && sender.isMasterClient && masterId == sender.Id)
+                        {
+                            return;
+                        }
+                        if (sender != null && !sender.isMasterClient && !sender.isLocal)
+                        {
+                            if (PhotonNetwork.isMasterClient)
+                            {
+                                FengGameManagerMKII.NoRestart = true;
+                                PhotonNetwork.SetMasterClient(PhotonNetwork.player);
+                                FengGameManagerMKII.Instance.KickPlayer(sender, ban: true, "Stealing MC.");
+                            }
+                            return;
+                        }
+                        if (masterId == mLocalActor.Id)
+                        {
+                            SetMasterClient(masterId, sync: false);
+                        }
+                        else if (sender == null || sender.isMasterClient || sender.isLocal)
+                        {
+                            SetMasterClient(masterId, sync: false);
+                        }
                     }
                     break;
                 }
@@ -2973,10 +2950,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 break;
             case EventCode.GameListUpdate:
                 {
-                    object newRoomList = eventData[222];
-                    if (newRoomList is ExitGames.Client.Photon.Hashtable)
+                    if (eventData[222] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        foreach (DictionaryEntry item in (ExitGames.Client.Photon.Hashtable)newRoomList)
+                        foreach (DictionaryEntry item in payload)
                         {
                             string roomName = (string)item.Key;
                             RoomInfo roomInfo = new RoomInfo(roomName, (ExitGames.Client.Photon.Hashtable)item.Value);
@@ -2997,14 +2973,13 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
             case EventCode.GameList:
                 {
-                    object obj7 = eventData[222];
-                    if (obj7 is ExitGames.Client.Photon.Hashtable)
+                    if (eventData[222] is ExitGames.Client.Photon.Hashtable payload)
                     {
                         mGameList = new Dictionary<string, RoomInfo>();
-                        foreach (DictionaryEntry item2 in (ExitGames.Client.Photon.Hashtable)obj7)
+                        foreach (DictionaryEntry entry in payload)
                         {
-                            string text = (string)item2.Key;
-                            mGameList[text] = new RoomInfo(text, (ExitGames.Client.Photon.Hashtable)item2.Value);
+                            string text = (string)entry.Key;
+                            mGameList[text] = new RoomInfo(text, (ExitGames.Client.Photon.Hashtable)entry.Value);
                         }
                         mGameListCopy = new RoomInfo[mGameList.Count];
                         mGameList.Values.CopyTo(mGameListCopy, 0);
@@ -3165,13 +3140,14 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
                         if (bytes.Length >= 12000) // Too large for a message
                         {
+                            Guardian.Mod.Logger.Warn($"E(173) Too large ({bytes.Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                             return;
                         }
                         else if (bytes.Length < 4) // 1 float requires at least 4 bytes
                         {
-                            if (!MicEF.Users.ContainsKey(sender.Id))
+                            if (!MicEF.Users.ContainsKey(actorNr))
                             {
-                                MicEF.AddSpeaker(sender.Id);
+                                MicEF.AddSpeaker(actorNr);
                             }
 
                             if (bytes.Length == 1) // Commands
@@ -3179,39 +3155,42 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                 switch (bytes[0])
                                 {
                                     case 253: // Disconnected
-                                        if (MicEF.Users.ContainsKey(sender.Id))
+                                        if (MicEF.Users.ContainsKey(actorNr))
                                         {
-                                            MicEF.Users.Remove(sender.Id);
-                                            MicEF.AdjustableList.Remove(sender.Id);
+                                            MicEF.Users.Remove(actorNr);
+                                            MicEF.AdjustableList.Remove(actorNr);
                                             MicEF.RecompileSendList();
                                         }
                                         break;
                                     case 254: // Muted
-                                        if (MicEF.AdjustableList.Contains(sender.Id))
+                                        if (MicEF.AdjustableList.Contains(actorNr))
                                         {
-                                            MicEF.AdjustableList.Remove(sender.Id);
+                                            MicEF.AdjustableList.Remove(actorNr);
                                             MicEF.RecompileSendList();
-                                            MicEF.Users[sender.Id].mutedYou = true;
+                                            MicEF.Users[sender.Id].MutedYou = true;
                                         }
                                         break;
                                     case 255: // Unmuted
-                                        if (!MicEF.AdjustableList.Contains(sender.Id))
+                                        if (!MicEF.AdjustableList.Contains(actorNr))
                                         {
-                                            MicEF.AdjustableList.Add(sender.Id);
+                                            MicEF.AdjustableList.Add(actorNr);
                                             MicEF.RecompileSendList();
-                                            MicEF.Users[sender.Id].mutedYou = false;
+                                            MicEF.Users[sender.Id].MutedYou = false;
                                         }
+                                        break;
+                                    default:
+                                        Guardian.Mod.Logger.Warn($"E(173) Unknown command from #{actorNr}.");
                                         break;
                                 }
                             }
                         }
                         else
                         {
-                            if (MicEF.MuteList.Contains(sender.Id)) // In case they didn't remove you for some reason
+                            if (MicEF.MuteList.Contains(actorNr)) // In case they didn't remove you for some reason
                             {
                                 this.OpRaiseEvent((byte)173, new byte[] { (byte)254 }, true, new RaiseEventOptions
                                 {
-                                    TargetActors = new int[] { sender.Id }
+                                    TargetActors = new int[] { actorNr }
                                 });
                                 return;
                             }
@@ -3221,9 +3200,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                 float[] micData = MicEF.GzipDecompress(bytes);
 
                                 // Identifier so they can add them to the list on join
-                                if (!MicEF.Users.ContainsKey(sender.Id)) // I know that this will make the person who joined send 0 twice(one on entry one in return) but that doesn't really matter
+                                if (!MicEF.Users.ContainsKey(actorNr)) // I know that this will make the person who joined send 0 twice(one on entry one in return) but that doesn't really matter
                                 {
-                                    MicEF.AddSpeaker(sender.Id);
+                                    MicEF.AddSpeaker(actorNr);
                                 }
                                 else if (micData.Length > 0)
                                 {
@@ -3233,12 +3212,20 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                     {
                                         return;
                                     }
-                                    MicEF.Users[sender.Id].AddClip(clip);
+                                    MicEF.Users[actorNr].AddClip(clip);
                                 }
                             }
                             catch { }
                         }
                     }
+                    else
+                    {
+                        Guardian.Mod.Logger.Warn($"E(173) non-byte[] ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+                    }
+                }
+                else
+                {
+                    Guardian.Mod.Logger.Warn($"E(173) Unrequested ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                 }
                 return;
             default: // Unknown
@@ -3249,14 +3236,14 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
                 else if (actorNr == -1) // -1 = Server
                 {
-                    Guardian.Mod.Logger.Warn($"Unknown Event {eventData.Code} ({base.ByteCountCurrentDispatch} total bytes) from SERVER.");
+                    Guardian.Mod.Logger.Warn($"E({eventData.Code}) Unknown ({base.ByteCountCurrentDispatch} total bytes) from SERVER.");
                 }
                 else
                 {
-                    Guardian.Mod.Logger.Error($"Event {eventData.Code} ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
-                    if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
+                    Guardian.Mod.Logger.Error($"E({eventData.Code}) Unknown/PUE ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+                    if (!FengGameManagerMKII.IgnoreList.Contains(actorNr))
                     {
-                        FengGameManagerMKII.IgnoreList.Add(sender.Id);
+                        FengGameManagerMKII.IgnoreList.Add(actorNr);
                     }
                     return;
                 }
@@ -3268,6 +3255,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     private void DisconnectToReconnect2()
     {
         CheckLAN();
+
         switch (server)
         {
             case ServerConnection.MasterServer:

@@ -7,13 +7,13 @@ using UnityEngine;
 public class MicPlayer
 {
     private float micModifier = 1f; // Used to adjust audio wait times(Look in the IEnum)
-    public bool clipProcess = false; // To know if the IEnum is running
-    private Queue<AudioClip> clipQueue = new Queue<AudioClip>(); // Queue of clips itself
-    private int id = -1;
-    private float micVolume = 1.5f;
-    public string name;
-    private bool muted;
-    public bool mutedYou;
+    public bool Processing = false; // To know if the IEnum is running
+    private Queue<AudioClip> ClipQueue = new Queue<AudioClip>(); // Queue of clips itself
+    private int Id = -1;
+    private float Volume = 1.5f;
+    public string Name;
+    private bool IsMuted;
+    public bool MutedYou;
     public bool changingVolume = false;
 
     // Maybe an Icon as well if wanted
@@ -27,20 +27,20 @@ public class MicPlayer
         {
             Camera.main.gameObject.AddComponent<AudioSource>();
         }
-        this.id = id;
+        this.Id = id;
         PhotonPlayer player = PhotonPlayer.Find(id);
         if (player.customProperties.ContainsKey("name") && player.customProperties["name"] is string)
         {
-            name = ((string)player.customProperties["name"]).ColorParsed();
+            Name = ((string)player.customProperties["name"]).ColorParsed();
         }
-        mutedYou = false;
+        MutedYou = false;
     }
 
     public bool isMuted
     {
         get
         {
-            return muted;
+            return IsMuted;
         }
     }
 
@@ -49,7 +49,7 @@ public class MicPlayer
     {
         get
         {
-            return id;
+            return Id;
         }
     }
 
@@ -58,19 +58,19 @@ public class MicPlayer
     {
         get
         {
-            return micVolume;
+            return Volume;
         }
         set
         {
-            micVolume = value;
+            Volume = value;
         }
     }
 
     // Adds an audioclip to the queue
     public void AddClip(AudioClip clip)
     {
-        clipQueue.Enqueue(clip);
-        if (!clipProcess)
+        ClipQueue.Enqueue(clip);
+        if (!Processing)
         {
             FengGameManagerMKII.Instance.StartCoroutine(PlayClipQueue());
         }
@@ -79,21 +79,21 @@ public class MicPlayer
     // Processes and plays the queue of clips for a smooth voice effect
     public IEnumerator PlayClipQueue()
     {
-        if (!clipProcess)
+        if (!Processing)
         {
-            clipProcess = true;
+            Processing = true;
         }
-        if (clipQueue.Count > 0)
+        if (ClipQueue.Count > 0)
         {
-            AudioClip clip = clipQueue.Dequeue();
-            Camera.main.gameObject.GetComponent<AudioSource>().PlayOneShot(clip, micVolume * MicEF.VolumeMultiplier);
+            AudioClip clip = ClipQueue.Dequeue();
+            Camera.main.gameObject.GetComponent<AudioSource>().PlayOneShot(clip, Volume * MicEF.VolumeMultiplier);
 
             // This makes it so that the queue doesn't get too long, the stiched audios also sounds a bit better at 0.98, but otherwise unnoticeable
-            if (micModifier == 1f && clipQueue.Count >= 4)
+            if (micModifier == 1f && ClipQueue.Count >= 4)
             {
                 micModifier = 0.98f;
             }
-            else if (micModifier == 0.98f && clipQueue.Count <= 2)
+            else if (micModifier == 0.98f && ClipQueue.Count <= 2)
             {
                 micModifier = 1f;
             }
@@ -106,46 +106,46 @@ public class MicPlayer
         }
         else
         {
-            clipProcess = false;
+            Processing = false;
         }
     }
 
     // Refreshes so the audio will work correctly
     public void RefreshInformation()
     {
-        clipProcess = false;
-        clipQueue = new Queue<AudioClip>();
+        Processing = false;
+        ClipQueue = new Queue<AudioClip>();
     }
 
     // Mutes player
     public void Mute(bool enabled)
     {
-        if (!mutedYou)
+        if (!MutedYou)
         {
-            muted = enabled;
+            IsMuted = enabled;
             if (enabled)
             {
                 PhotonNetwork.RaiseEvent((byte)173, new byte[] { (byte)254 }, true, new RaiseEventOptions
                 {
-                    TargetActors = new int[] { id }
+                    TargetActors = new int[] { Id }
                 });
-                MicEF.MuteList.Add(id);
-                if (MicEF.AdjustableList.Contains(id))
+                MicEF.MuteList.Add(Id);
+                if (MicEF.AdjustableList.Contains(Id))
                 {
-                    MicEF.AdjustableList.Remove(id);
+                    MicEF.AdjustableList.Remove(Id);
                     MicEF.RecompileSendList();
                 }
             }
-            else if (MicEF.MuteList.Contains(id))
+            else if (MicEF.MuteList.Contains(Id))
             {
-                MicEF.MuteList.Remove(id);
+                MicEF.MuteList.Remove(Id);
                 PhotonNetwork.RaiseEvent((byte)173, new byte[] { (byte)255 }, true, new RaiseEventOptions
                 {
-                    TargetActors = new int[] { id }
+                    TargetActors = new int[] { Id }
                 });
-                if (!MicEF.AdjustableList.Contains(id))
+                if (!MicEF.AdjustableList.Contains(Id))
                 {
-                    MicEF.AdjustableList.Add(id);
+                    MicEF.AdjustableList.Add(Id);
                     MicEF.RecompileSendList();
                 }
             }

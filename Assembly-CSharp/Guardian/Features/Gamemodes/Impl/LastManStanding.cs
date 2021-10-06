@@ -43,7 +43,7 @@ namespace Guardian.Features.Gamemodes.Impl
                 {
                     _nextKill = GameHelper.CurrentTimeMillis() + (_killInterval.Value * 1000);
 
-                    if (FengGameManagerMKII.Instance.heroes.Count > 1)
+                    if (FengGameManagerMKII.Instance.Heroes.Count > 1)
                     {
                         int playersAlive = 0;
 

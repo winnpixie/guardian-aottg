@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "09222021";
+        public static string Build = "10062021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
@@ -27,6 +27,9 @@ namespace Guardian
         public static Logger Logger = new Logger();
         public static bool IsMultiMap = false;
         public static bool IsProgramQuitting = false;
+        public static FrameCounter FpsCounter = new FrameCounter();
+
+        public static string SystemLanguage => System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
         private static bool s_initialized = false;
         private static bool s_firstJoin = true;
@@ -97,7 +100,7 @@ namespace Guardian
 
             DiscordHelper.SetPresence(new Discord.Activity
             {
-                Details = $"Staring at the main menu...",
+                Details = $"At the main menu...",
             });
         }
 
@@ -198,10 +201,9 @@ namespace Guardian
 
         public void ApplyCustomRenderSettings()
         {
-            Camera.main.farClipPlane = Properties.DrawDistance.Value;
-
-            RenderSettings.fog = Properties.Fog.Value;
-            RenderSettings.fogColor = 0x222222FF.ToColor();
+            Properties.DrawDistance.OnValueChanged();
+            Properties.Fog.OnValueChanged();
+            Properties.SoftShadows.OnValueChanged();
         }
 
         void Update()
@@ -212,6 +214,8 @@ namespace Guardian
             }
 
             DiscordHelper.RunCallbacks();
+
+            FpsCounter.UpdateCounter();
         }
 
         void OnLevelWasLoaded(int level)
@@ -330,7 +334,7 @@ namespace Guardian
             DiscordHelper.SetPresence(new Discord.Activity
             {
                 Details = "Searching for a room...",
-                State = $"Region: {NetworkHelper.GetRegionCode()}"
+                State = $"Region: {NetworkHelper.GetRegionCode().ToUpper()}"
             });
         }
 
@@ -350,7 +354,7 @@ namespace Guardian
                 DiscordHelper.SetPresence(new Discord.Activity
                 {
                     Details = $"Playing in {(roomInfo[5].Length == 0 ? string.Empty : "[PWD]")} {roomInfo[0].Uncolored()}",
-                    State = $"({NetworkHelper.GetRegionCode()}) {roomInfo[1]} / {roomInfo[2].ToUpper()}"
+                    State = $"({NetworkHelper.GetRegionCode().ToUpper()}) {roomInfo[1]} / {roomInfo[2].ToUpper()}"
                 });
             }
         }

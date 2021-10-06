@@ -225,10 +225,9 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
 
     private float getNearestHeroDistance()
     {
-        GameObject[] array = GameObject.FindGameObjectsWithTag("Player");
         float num = float.PositiveInfinity;
         Vector3 position = base.transform.position;
-        foreach (GameObject gameObject in array)
+        foreach (GameObject gameObject in FengGameManagerMKII.Instance.Players)
         {
             float magnitude = (gameObject.transform.position - position).magnitude;
             if (magnitude < num)
@@ -244,7 +243,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         GameObject result = null;
         float num = float.PositiveInfinity;
         Vector3 position = base.transform.position;
-        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Player"))
+        foreach (GameObject gameObject in FengGameManagerMKII.Instance.Players)
         {
             if ((!gameObject.GetComponent<HERO>() || !gameObject.GetComponent<HERO>().HasDied()) && (!gameObject.GetComponent<TITAN_EREN>() || !gameObject.GetComponent<TITAN_EREN>().hasDied))
             {
@@ -466,8 +465,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         }
         else if (UnityEngine.Random.Range(0, 100) < 10)
         {
-            GameObject[] array = GameObject.FindGameObjectsWithTag("Player");
-            myHero = array[UnityEngine.Random.Range(0, array.Length)];
+            myHero = FengGameManagerMKII.Instance.Players[UnityEngine.Random.Range(0, FengGameManagerMKII.Instance.Players.Count)];
             attention = UnityEngine.Random.Range(5f, 10f);
             return true;
         }
@@ -592,8 +590,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             if (attention < 0f)
             {
                 attention = 0f;
-                GameObject[] array = GameObject.FindGameObjectsWithTag("Player");
-                myHero = array[UnityEngine.Random.Range(0, array.Length)];
+                myHero = FengGameManagerMKII.Instance.Players[UnityEngine.Random.Range(0, FengGameManagerMKII.Instance.Players.Count)];
                 attention = UnityEngine.Random.Range(5f, 10f);
             }
         }

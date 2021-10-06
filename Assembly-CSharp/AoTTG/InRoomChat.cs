@@ -96,7 +96,7 @@ public class InRoomChat : Photon.MonoBehaviour
 
                         Guardian.Mod.Commands.Find("translate").Execute(this, new string[] {
                             "auto",
-                            System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName,
+                            Guardian.Mod.SystemLanguage,
                             text
                         });
                     }
@@ -206,6 +206,17 @@ public class InRoomChat : Photon.MonoBehaviour
 
     public static object[] FormatMessage(string input, string name)
     {
+        // Auto-translate
+        if (Guardian.Mod.Properties.TranslateOutgoing.Value)
+        {
+            string[] result = Guardian.Utilities.Translator.Translate(input, Guardian.Mod.Properties.IncomingLanguage.Value, Guardian.Mod.Properties.OutgoingLanguage.Value);
+
+            if (result.Length > 1 && !result[0].Equals(Guardian.Mod.Properties.OutgoingLanguage.Value))
+            {
+                input = result[1];
+            }
+        }
+
         // Emotes
         input = input.Replace("<3", "\u2665");
         input = input.Replace(":lenny:", "( ͡° ͜ʖ ͡°)");

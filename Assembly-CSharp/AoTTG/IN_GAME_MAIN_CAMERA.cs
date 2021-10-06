@@ -347,16 +347,15 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     private GameObject FindNearestTitan()
     {
-        GameObject[] array = GameObject.FindGameObjectsWithTag("titan");
         GameObject result = null;
         float num = closestDistance = float.PositiveInfinity;
         Vector3 position = main_object.transform.position;
-        foreach (GameObject gameObject in array)
+        foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
         {
-            float magnitude = (gameObject.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck").position - position).magnitude;
-            if (magnitude < num && (!gameObject.GetComponent<TITAN>() || !gameObject.GetComponent<TITAN>().hasDie))
+            float magnitude = (titan.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck").position - position).magnitude;
+            if (magnitude < num && !titan.hasDie)
             {
-                result = gameObject;
+                result = titan.gameObject;
                 num = (closestDistance = magnitude);
             }
         }
@@ -425,7 +424,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             snapShotStartCountDownTime -= UnityEngine.Time.deltaTime;
             if (snapShotStartCountDownTime <= 0f)
             {
-                snapShot2(1);
+                Snapshot2(1);
                 startSnapShotFrameCount = false;
             }
         }
@@ -455,12 +454,12 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             {
                 snapShotInterval = 0.05f;
                 snapShotCount++;
-                snapShot2(snapShotCount);
+                Snapshot2(snapShotCount);
             }
         }
     }
 
-    public void snapShot2(int index)
+    public void Snapshot2(int index)
     {
         snapShotCamera.transform.position = head == null ? main_object.transform.position : head.transform.position;
         snapShotCamera.transform.position += Vector3.up * heightMulti;
@@ -578,29 +577,27 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         RenderTexture oldActiveRT = RenderTexture.active;
         RenderTexture.active = cam.targetTexture;
         cam.Render();
-        Texture2D texture2D = new Texture2D(cam.targetTexture.width, cam.targetTexture.height);
-        int num = (int)((float)cam.targetTexture.width * 0.04f);
-        int num2 = (int)((float)cam.targetTexture.width * 0.02f);
+        Texture2D ssTex = new Texture2D(cam.targetTexture.width, cam.targetTexture.height);
         try
         {
-            texture2D.SetPixel(0, 0, Color.white);
-            texture2D.ReadPixels(new Rect(num, num, cam.targetTexture.width - num, cam.targetTexture.height - num), num2, num2);
-            texture2D.Apply();
+            ssTex.SetPixel(0, 0, Color.white);
+            ssTex.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
+            ssTex.Apply();
         }
         catch
         {
-            texture2D = new Texture2D(1, 1);
-            texture2D.SetPixel(0, 0, Color.white);
+            ssTex = new Texture2D(1, 1);
+            ssTex.SetPixel(0, 0, Color.white);
         }
         finally
         {
             RenderTexture.active = oldActiveRT;
         }
 
-        return texture2D;
+        return ssTex;
     }
 
-    public void startSnapShot2(Vector3 p, int damage, GameObject target, float startTime)
+    public void StartSnapshot2(Vector3 p, int damage, GameObject target, float startTime)
     {
         if (!int.TryParse((string)FengGameManagerMKII.Settings[95], out int result) || damage >= result)
         {
@@ -611,7 +608,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             snapShotStartCountDownTime = startTime;
             snapShotInterval = 0.05f + Random.Range(0f, 0.03f);
             snapShotDmg = damage;
-
         }
     }
 
@@ -652,12 +648,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             // Spectate next player
             if (inputManager.isInputDown[InputCode.Flare1])
             {
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-                if (players.Length > 0)
+                if (FengGameManagerMKII.Instance.Players.Count > 0)
                 {
-                    currentPeekPlayerIndex = (currentPeekPlayerIndex + 1) % players.Length;
+                    currentPeekPlayerIndex = (currentPeekPlayerIndex + 1) % FengGameManagerMKII.Instance.Players.Count;
 
-                    SetMainObject(players[currentPeekPlayerIndex]);
+                    SetMainObject(FengGameManagerMKII.Instance.Players[currentPeekPlayerIndex]);
                     SetSpectorMode(val: false);
                     lockAngle = false;
                 }
@@ -670,12 +665,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             // Spectate previous player
             if (inputManager.isInputDown[InputCode.Flare2])
             {
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-                if (players.Length > 0)
+                if (FengGameManagerMKII.Instance.Players.Count > 0)
                 {
-                    currentPeekPlayerIndex = ((currentPeekPlayerIndex - 1) + players.Length) % players.Length;
+                    currentPeekPlayerIndex = ((currentPeekPlayerIndex - 1) + FengGameManagerMKII.Instance.Players.Count) % FengGameManagerMKII.Instance.Players.Count;
 
-                    SetMainObject(players[currentPeekPlayerIndex]);
+                    SetMainObject(FengGameManagerMKII.Instance.Players[currentPeekPlayerIndex]);
                     SetSpectorMode(val: false);
                     lockAngle = false;
                 }
@@ -917,12 +911,12 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
         if (QualitySettings.GetQualityLevel() > 3)
         {
-            snapshotRT = new RenderTexture((int)((float)Screen.width * 0.8f), (int)((float)Screen.height * 0.8f), 24);
+            snapshotRT = new RenderTexture(Screen.width, Screen.height, 24);
             snapShotCamera.GetComponent<Camera>().targetTexture = snapshotRT;
         }
         else
         {
-            snapshotRT = new RenderTexture((int)((float)Screen.width * 0.4f), (int)((float)Screen.height * 0.4f), 24);
+            snapshotRT = new RenderTexture(Screen.width, Screen.height, 24);
             snapShotCamera.GetComponent<Camera>().targetTexture = snapshotRT;
         }
     }
