@@ -5521,7 +5521,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         string text11 = (string)FengGameManagerMKII.Settings[num11];
         string horseSkin = (string)FengGameManagerMKII.Settings[num12];
         string trailSkin = (string)FengGameManagerMKII.Settings[num13];
-        string text14 = horseSkin + "," + text2 + "," + text3 + "," + text4 + "," + text5 + "," + text6 + "," + text7 + "," + text8 + "," + text9 + "," + text10 + "," + text11 + "," + text + "," + trailSkin + ",,https://i.imgur.com/aNDH66i.png";
+        string text14 = horseSkin + "," + text2 + "," + text3 + "," + text4 + "," + text5 + "," + text6 + "," + text7 + "," + text8 + "," + text9 + "," + text10 + "," + text11 + "," + text + "," + trailSkin + $",{Guardian.Mod.Properties.ThunderSpearSkin},{Guardian.Mod.Properties.ThunderSpearSkin}";
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             StartCoroutine(CoLoadSkin(-1, text14));

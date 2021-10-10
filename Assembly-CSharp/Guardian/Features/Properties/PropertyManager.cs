@@ -16,6 +16,9 @@ namespace Guardian.Features.Properties
         public Property<bool> DeadlyHooks = new Property<bool>("MC_DeadlyHooks", new string[0], false);
         public Property<bool> BombsKillTitans = new Property<bool>("MC_BombsKillTitans", new string[0], true);
 
+        // Assets
+        public Property<string> ThunderSpearSkin = new Property<string>("Skins_ThunderSpear", new string[0], string.Empty);
+
         // Player
         public Property<bool> UseRawInput = new Property<bool>("Player_RawTPS-WOWInput", new string[0], true);
         public Property<bool> DoubleTapBurst = new Property<bool>("Player_DoubleTapBurst", new string[0], true);
@@ -78,6 +81,9 @@ namespace Guardian.Features.Properties
             base.Add(InfiniteRoom);
             base.Add(OGPunkHair);
             base.Add(DeadlyHooks);
+
+            // Assets
+            base.Add(ThunderSpearSkin);
 
             // Player
             base.Add(UseRawInput);
