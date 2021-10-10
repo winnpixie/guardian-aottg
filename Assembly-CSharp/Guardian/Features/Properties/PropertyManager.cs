@@ -14,6 +14,7 @@ namespace Guardian.Features.Properties
         public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], true);
         public Property<bool> OGPunkHair = new Property<bool>("MC_OGPunkHair", new string[0], true);
         public Property<bool> DeadlyHooks = new Property<bool>("MC_DeadlyHooks", new string[0], false);
+        public Property<bool> BombsKillTitans = new Property<bool>("MC_BombsKillTitans", new string[0], true);
 
         // Player
         public Property<bool> UseRawInput = new Property<bool>("Player_RawTPS-WOWInput", new string[0], true);

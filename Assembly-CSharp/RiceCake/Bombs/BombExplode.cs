@@ -16,10 +16,10 @@ public class BombExplode : Photon.MonoBehaviour
             switch (GExtensions.AsInt(owner.customProperties[PhotonPlayerProperty.RCTeam]))
             {
                 case 1:
-                    GetComponent<ParticleSystem>().startColor = Color.cyan;
+                    GetComponentInChildren<ParticleSystem>().startColor = Color.cyan;
                     break;
                 case 2:
-                    GetComponent<ParticleSystem>().startColor = Color.magenta;
+                    GetComponentInChildren<ParticleSystem>().startColor = Color.magenta;
                     break;
                 default:
                     {
@@ -28,7 +28,7 @@ public class BombExplode : Photon.MonoBehaviour
                         float b = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombB]);
                         float a = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombA]);
                         a = Mathf.Max(0.5f, a);
-                        GetComponent<ParticleSystem>().startColor = new Color(r, g, b, a);
+                        GetComponentInChildren<ParticleSystem>().startColor = new Color(r, g, b, a);
                         break;
                     }
             }
@@ -40,9 +40,37 @@ public class BombExplode : Photon.MonoBehaviour
             float b = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombB]);
             float a = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombA]);
             a = Mathf.Max(0.5f, a);
-            GetComponent<ParticleSystem>().startColor = new Color(r, g, b, a);
+            GetComponentInChildren<ParticleSystem>().startColor = new Color(r, g, b, a);
         }
         float value = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombRadius]) * 2f;
-        GetComponent<ParticleSystem>().startSize = Mathf.Clamp(value, 40f, 120f);
+        GetComponentInChildren<ParticleSystem>().startSize = Mathf.Clamp(value, 40f, 120f);
+
+        if (PhotonNetwork.isMasterClient && Guardian.Mod.Properties.BombsKillTitans.Value)
+        {
+            foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
+            {
+                if ((titan.neck.position - base.transform.position).sqrMagnitude <= 400) // 20 units
+                {
+                    if (titan.abnormalType == TitanClass.Crawler)
+                    {
+                        titan.DieBlow(base.transform.position, 0.2f);
+                    }
+                    else
+                    {
+                        titan.DieHeadBlow(base.transform.position, 0.2f);
+                    }
+
+                    string titanName = titan.name;
+                    if (titan.nonAI)
+                    {
+                        titanName = GExtensions.AsString(titan.photonView.owner.customProperties[PhotonPlayerProperty.Name]);
+                    }
+
+                    FengGameManagerMKII.Instance.SendKillInfo(false, GExtensions.AsString(base.photonView.owner.customProperties[PhotonPlayerProperty.Name]), true, titanName);
+                    FengGameManagerMKII.Instance.UpdatePlayerKillInfo(0, base.photonView.owner);
+                    break;
+                }
+            }
+        }
     }
 }

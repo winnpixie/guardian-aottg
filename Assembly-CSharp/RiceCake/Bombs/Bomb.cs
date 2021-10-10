@@ -25,23 +25,23 @@ public class Bomb : Photon.MonoBehaviour
             switch (GExtensions.AsInt(owner.customProperties[PhotonPlayerProperty.RCTeam]))
             {
                 case 1:
-                    GetComponent<ParticleSystem>().startColor = Color.cyan;
+                    GetComponentInChildren<ParticleSystem>().startColor = Color.cyan;
                     return;
                 case 2:
-                    GetComponent<ParticleSystem>().startColor = Color.magenta;
+                    GetComponentInChildren<ParticleSystem>().startColor = Color.magenta;
                     return;
             }
             float r = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombR]);
             float g = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombG]);
             float b = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombB]);
-            GetComponent<ParticleSystem>().startColor = new Color(r, g, b, 1f);
+            GetComponentInChildren<ParticleSystem>().startColor = new Color(r, g, b, 1f);
         }
         else
         {
             float r = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombR]);
             float g = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombG]);
             float b = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombB]);
-            GetComponent<ParticleSystem>().startColor = new Color(r, g, b, 1f);
+            GetComponentInChildren<ParticleSystem>().startColor = new Color(r, g, b, 1f);
         }
     }
 
@@ -77,12 +77,14 @@ public class Bomb : Photon.MonoBehaviour
                 }
             }
         }
+
         StartCoroutine(CoWaitAndFade(1.5f));
     }
 
     private IEnumerator CoWaitAndFade(float time)
     {
         yield return new WaitForSeconds(time);
+
         PhotonNetwork.Destroy(myExplosion);
         PhotonNetwork.Destroy(base.gameObject);
     }
@@ -105,6 +107,7 @@ public class Bomb : Photon.MonoBehaviour
             {
                 PhotonNetwork.Destroy(myExplosion);
             }
+
             PhotonNetwork.Destroy(base.gameObject);
         }
     }

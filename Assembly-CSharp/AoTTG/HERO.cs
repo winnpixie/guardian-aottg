@@ -179,13 +179,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public GameObject myFlashlight;
     public bool isGrabbed => state == HeroState.Grabbed;
 
-    private AudioSource burstSound;
-    private AudioSource flareFireSound;
-
-    private Material oldEyeMaterial;
-    private Material oldGlassesMaterial;
-    private Texture customGasTexture;
-
     // Anarchy
     private float gasMultiplier = 1f;
     public float GasUsageModifier
@@ -228,6 +221,58 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private float reelInAxis;
     private float reelOutAxis;
     private float reelOutScrollTimeLeft;
+
+    // TODO: Mod
+    private AudioSource _burstSound;
+    private AudioSource _flareSound;
+
+    private Material _oldEyeMat;
+    private Material _oldGlassesMat;
+    private Texture _gasTexture;
+
+    public GameObject _thunderSpearLeft;
+    public GameObject _thunderSpearRight;
+
+    private System.Diagnostics.Stopwatch _lastGasBurst = new System.Diagnostics.Stopwatch();
+
+    [RPC]
+    private void SetupThunderSpearsRPC(PhotonMessageInfo info)
+    {
+        if (info.sender == base.photonView.owner)
+        {
+            _thunderSpearLeft = (GameObject)GameObject.Instantiate(FengGameManagerMKII.RCAssets.Load("ThunderSpearProp"));
+            _thunderSpearLeft.transform.parent = handL.transform.parent;
+            _thunderSpearLeft.transform.localPosition = new Vector3(-0.001649f, 0.000775f, -0.000227f);
+            _thunderSpearLeft.transform.localRotation = Quaternion.Euler(5f, -85f, 10f);
+
+            _thunderSpearRight = (GameObject)GameObject.Instantiate(FengGameManagerMKII.RCAssets.Load("ThunderSpearProp"));
+            _thunderSpearRight.transform.parent = handR.transform.parent;
+            _thunderSpearRight.transform.localPosition = new Vector3(-0.001649f, -0.000775f, -0.000227f);
+            _thunderSpearRight.transform.localRotation = Quaternion.Euler(-5f, -85f, -10f);
+
+            currentBladeNum = totalBladeNum = 0;
+            currentBladeSta = totalBladeSta = 0;
+
+            rightBulletLeft = 0;
+            rightGunHasBullet = false;
+
+            leftBulletLeft = 0;
+            leftGunHasBullet = false;
+
+            StartCoroutine(CoWaitAndDisableWeapons());
+        }
+    }
+
+    private IEnumerator CoWaitAndDisableWeapons()
+    {
+        if (setup.part_blade_l == null || setup.part_blade_r == null)
+        {
+            yield return CoWaitAndDisableWeapons();
+        }
+
+        setup.part_blade_l.SetActive(false);
+        setup.part_blade_r.SetActive(false);
+    }
 
     private void UpdateReelInput()
     {
@@ -310,9 +355,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             GameObject.Find("bulletL" + i).GetComponent<UISprite>().enabled = false;
         }
 
-        for (int j = 1; j <= leftBulletLeft; j++)
+        for (int i = 1; i <= leftBulletLeft; i++)
         {
-            GameObject.Find("bulletL" + j).GetComponent<UISprite>().enabled = true;
+            GameObject.Find("bulletL" + i).GetComponent<UISprite>().enabled = true;
         }
     }
 
@@ -323,31 +368,31 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             GameObject.Find("bulletR" + i).GetComponent<UISprite>().enabled = false;
         }
 
-        for (int j = 1; j <= rightBulletLeft; j++)
+        for (int i = 1; i <= rightBulletLeft; i++)
         {
-            GameObject.Find("bulletR" + j).GetComponent<UISprite>().enabled = true;
+            GameObject.Find("bulletR" + i).GetComponent<UISprite>().enabled = true;
         }
     }
 
     public bool IsGrounded()
     {
-        LayerMask mask = 1 << LayerMask.NameToLayer("Ground");
-        LayerMask mask2 = 1 << LayerMask.NameToLayer("EnemyBox");
-        return Physics.Raycast(layerMask: ((LayerMask)((int)mask2 | (int)mask)).value, origin: base.gameObject.transform.position + Vector3.up * 0.1f, direction: -Vector3.up, distance: 0.3f);
+        LayerMask groundMask = 1 << LayerMask.NameToLayer("Ground");
+        LayerMask enemyMask = 1 << LayerMask.NameToLayer("EnemyBox");
+        return Physics.Raycast(layerMask: ((LayerMask)((int)enemyMask | (int)groundMask)).value, origin: base.gameObject.transform.position + Vector3.up * 0.1f, direction: -Vector3.up, distance: 0.3f);
     }
 
     private bool IsFrontGrounded()
     {
-        LayerMask mask = 1 << LayerMask.NameToLayer("Ground");
-        LayerMask mask2 = 1 << LayerMask.NameToLayer("EnemyBox");
-        return Physics.Raycast(layerMask: ((LayerMask)((int)mask2 | (int)mask)).value, origin: base.gameObject.transform.position + base.gameObject.transform.up * 1f, direction: base.gameObject.transform.forward, distance: 1f);
+        LayerMask groundMask = 1 << LayerMask.NameToLayer("Ground");
+        LayerMask enemyMask = 1 << LayerMask.NameToLayer("EnemyBox");
+        return Physics.Raycast(layerMask: ((LayerMask)((int)enemyMask | (int)groundMask)).value, origin: base.gameObject.transform.position + base.gameObject.transform.up * 1f, direction: base.gameObject.transform.forward, distance: 1f);
     }
 
     private bool IsUpFrontGrounded()
     {
-        LayerMask mask = 1 << LayerMask.NameToLayer("Ground");
-        LayerMask mask2 = 1 << LayerMask.NameToLayer("EnemyBox");
-        return Physics.Raycast(layerMask: ((LayerMask)((int)mask2 | (int)mask)).value, origin: base.gameObject.transform.position + base.gameObject.transform.up * 3f, direction: base.gameObject.transform.forward, distance: 1.2f);
+        LayerMask groundMask = 1 << LayerMask.NameToLayer("Ground");
+        LayerMask enemyMask = 1 << LayerMask.NameToLayer("EnemyBox");
+        return Physics.Raycast(layerMask: ((LayerMask)((int)enemyMask | (int)groundMask)).value, origin: base.gameObject.transform.position + base.gameObject.transform.up * 3f, direction: base.gameObject.transform.forward, distance: 1.2f);
     }
 
     public void GetGrabbed(GameObject titan, bool leftHand)
@@ -419,7 +464,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         falseAttack();
     }
 
-    public void attackAccordingToMouse()
+    public void AttackAccordingToMouse()
     {
         if (Input.mousePosition.x < Screen.width * 0.5)
         {
@@ -431,7 +476,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public void attackAccordingToTarget(Transform a)
+    public void AttackAccordingToTarget(Transform a)
     {
         Vector3 vector = a.position - base.transform.position;
         float current = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
@@ -718,11 +763,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             return 0f;
         }
         float y = p.y;
-        Vector3 position = base.transform.position;
-        float num = y - position.y;
         float num2 = Vector3.Distance(p, base.transform.position);
-        float num3 = Mathf.Acos(num / num2) * 57.29578f;
-        num3 *= 0.1f;
+        float num3 = (Mathf.Acos((y - base.transform.position.y) / num2) * 57.29578f) * 0.1f;
         num3 *= 1f + Mathf.Pow(base.rigidbody.velocity.magnitude, 0.2f);
         Vector3 vector = p - base.transform.position;
         float current = Mathf.Atan2(vector.x, vector.z) * 57.29578f;
@@ -1003,6 +1045,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if (!(dashTime > 0f) && !(currentGas <= 0f) && !isMounted)
         {
+            if (_lastGasBurst.ElapsedMilliseconds > 0 && _lastGasBurst.ElapsedMilliseconds < 300)
+            {
+                return;
+            }
+            _lastGasBurst.Reset();
+            _lastGasBurst.Start();
+
             UseGas(totalGas * 0.04f);
             facingDirection = GetGlobalFacingDirection(horizontal, vertical);
             dashV = GetGlobalFacingVector(facingDirection);
@@ -1010,6 +1059,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             Quaternion rotation = Quaternion.Euler(0f, facingDirection, 0f);
             base.rigidbody.rotation = rotation;
             targetRotation = rotation;
+
             if (Guardian.Mod.Properties.AlternateBurst.Value)
             {
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
@@ -1035,11 +1085,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     theGas = PhotonNetwork.Instantiate("FX/boost_smoke", base.transform.position, base.transform.rotation, 0);
                 }
 
-                if (customGasTexture != null)
+                if (_gasTexture != null)
                 {
-                    theGas.GetComponentInChildren<ParticleSystem>().renderer.material.mainTexture = customGasTexture;
+                    theGas.GetComponentInChildren<ParticleSystem>().renderer.material.mainTexture = _gasTexture;
                 }
             }
+
             dashTime = 0.5f;
             CrossFade("dash", 0.1f);
             base.animation["dash"].time = 0.1f;
@@ -1047,9 +1098,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             falseAttack();
             base.rigidbody.AddForce(dashV * 40f, ForceMode.VelocityChange);
 
-            if (burstSound != null)
+            if (_burstSound != null)
             {
-                burstSound.Play();
+                _burstSound.Play();
             }
         }
     }
@@ -1703,7 +1754,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 gameObject2.GetComponent<FlareMovement>().DontShowHint();
             }
 
-            flareFireSound.Play();
+            _flareSound.Play();
         }
     }
 
@@ -1955,16 +2006,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 meatDie.clip = deathClip;
             }
 
-            burstSound = base.gameObject.AddComponent<AudioSource>();
+            _burstSound = base.gameObject.AddComponent<AudioSource>();
             if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/burst.wav", out AudioClip burstClip))
             {
-                burstSound.clip = burstClip;
+                _burstSound.clip = burstClip;
             }
 
-            flareFireSound = base.gameObject.AddComponent<AudioSource>();
+            _flareSound = base.gameObject.AddComponent<AudioSource>();
             if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/flare_shot.wav", out AudioClip flareClip))
             {
-                flareFireSound.clip = flareClip;
+                _flareSound.clip = flareClip;
             }
         }
 
@@ -2146,6 +2197,21 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             base.rigidbody.interpolation = Guardian.Mod.Properties.Interpolation.Value ?
                 RigidbodyInterpolation.Interpolate : RigidbodyInterpolation.None;
+        }
+
+        if (RCSettings.BombMode > 0 && base.photonView.isMine)
+        {
+            base.photonView.RPC("SetupThunderSpearsRPC", PhotonTargets.OthersBuffered);
+
+            _thunderSpearRight = (GameObject)GameObject.Instantiate(FengGameManagerMKII.RCAssets.Load("ThunderSpearProp"));
+            _thunderSpearRight.transform.parent = handR.transform.parent;
+            _thunderSpearRight.transform.localPosition = new Vector3(-0.001649f, -0.000775f, -0.000227f);
+            _thunderSpearRight.transform.localRotation = Quaternion.Euler(-5f, -85f, -10f);
+
+            rightBulletLeft = 0;
+            rightGunHasBullet = false;
+
+            setup.part_blade_r.SetActive(false);
         }
     }
 
@@ -3315,7 +3381,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             else
             {
-                if (!(skillId == "eren"))
+                if (skillId != "eren")
                 {
                     return;
                 }
@@ -3335,7 +3401,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
                 skillCDDuration = skillCDLast;
                 TITAN titanObj = titanWhoGrabMe.GetComponent<TITAN>();
-                if (!(skillId == "eren") || titanObj == null)
+                if (skillId != "eren" || titanObj == null)
                 {
                     return;
                 }
@@ -3626,7 +3692,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 Transform neckObj = lastHook.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck");
                                 if (neckObj != null)
                                 {
-                                    attackAccordingToTarget(neckObj);
+                                    AttackAccordingToTarget(neckObj);
                                 }
                                 else
                                 {
@@ -3638,11 +3704,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 Transform transform = bulletLeft.transform.parent.transform.root.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck");
                                 if (transform != null)
                                 {
-                                    attackAccordingToTarget(transform);
+                                    AttackAccordingToTarget(transform);
                                 }
                                 else
                                 {
-                                    attackAccordingToMouse();
+                                    AttackAccordingToMouse();
                                 }
                             }
                             else if (bulletRight != null && bulletRight.transform.parent != null)
@@ -3650,11 +3716,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 Transform transform2 = bulletRight.transform.parent.transform.root.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck");
                                 if (transform2 != null)
                                 {
-                                    attackAccordingToTarget(transform2);
+                                    AttackAccordingToTarget(transform2);
                                 }
                                 else
                                 {
-                                    attackAccordingToMouse();
+                                    AttackAccordingToMouse();
                                 }
                             }
                             else
@@ -3665,16 +3731,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                     Transform transform3 = gameObject.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck");
                                     if (transform3 != null)
                                     {
-                                        attackAccordingToTarget(transform3);
+                                        AttackAccordingToTarget(transform3);
                                     }
                                     else
                                     {
-                                        attackAccordingToMouse();
+                                        AttackAccordingToMouse();
                                     }
                                 }
                                 else
                                 {
-                                    attackAccordingToMouse();
+                                    AttackAccordingToMouse();
                                 }
                             }
                         }
@@ -4202,20 +4268,41 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         currentBladeSta = totalBladeSta;
                         currentBladeNum = totalBladeNum;
                         currentGas = totalGas;
-                        if (!useGun)
+
+                        if (skillId != "bomb")
                         {
-                            setup.part_blade_l.SetActive(value: true);
-                            setup.part_blade_r.SetActive(value: true);
+                            if (!useGun)
+                            {
+                                setup.part_blade_l.SetActive(true);
+                                setup.part_blade_r.SetActive(true);
+                            }
+                            else
+                            {
+                                leftBulletLeft = (rightBulletLeft = bulletMAX);
+                                leftGunHasBullet = (rightGunHasBullet = true);
+                                setup.part_blade_l.SetActive(true);
+                                setup.part_blade_r.SetActive(true);
+                                UpdateRightMagUI();
+                                UpdateLeftMagUI();
+                            }
                         }
                         else
                         {
-                            leftBulletLeft = (rightBulletLeft = bulletMAX);
-                            leftGunHasBullet = (rightGunHasBullet = true);
-                            setup.part_blade_l.SetActive(value: true);
-                            setup.part_blade_r.SetActive(value: true);
-                            UpdateRightMagUI();
-                            UpdateLeftMagUI();
+                            if (!useGun)
+                            {
+                                setup.part_blade_l.SetActive(true);
+                            }
+                            else
+                            {
+                                leftBulletLeft = bulletMAX;
+                                leftGunHasBullet = true;
+                                setup.part_blade_l.SetActive(value: true);
+
+                                UpdateRightMagUI();
+                                UpdateLeftMagUI();
+                            }
                         }
+
                         Idle();
                     }
                     break;
@@ -5238,7 +5325,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void ExtendedUpdate()
     {
-        if (!(skillId == "bomb"))
+        if (skillId != "bomb")
         {
             return;
         }
@@ -5261,15 +5348,23 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 targetV = hitInfo.point;
             }
             Vector3 a = Vector3.Normalize(targetV - currentV);
-            GameObject gameObject = PhotonNetwork.Instantiate("RCAsset/BombMain", currentV + a * 4f, new Quaternion(0f, 0f, 0f, 1f), 0);
-            gameObject.rigidbody.velocity = a * bombSpeed;
-            myBomb = gameObject.GetComponent<Bomb>();
+            GameObject bombObj = PhotonNetwork.Instantiate("RCAsset/BombMain", currentV + a * 4f, new Quaternion(0f, 0f, 0f, 1f), 0);
+            bombObj.rigidbody.velocity = a * bombSpeed;
+            myBomb = bombObj.GetComponent<Bomb>();
             bombTime = 0f;
+
+            PlayAnimationAt(attackAnimation = "AHSS_shoot_r", 0.1f);
+            if (state == HeroState.Attack)
+            {
+                buttonAttackRelease = true;
+            }
+            state = HeroState.Attack;
         }
         else if (myBomb != null && !myBomb.disabled)
         {
             bombTime += Time.deltaTime;
-            bool flag = false;
+
+            bool shouldExplode = false;
             if (inputManager.isInputUp[InputCode.Attack1])
             {
                 detonate = true;
@@ -5277,13 +5372,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             else if (inputManager.isInputDown[InputCode.Attack1] && detonate)
             {
                 detonate = false;
-                flag = true;
+                shouldExplode = true;
             }
             if (bombTime >= bombTimeMax)
             {
-                flag = true;
+                shouldExplode = true;
             }
-            if (flag)
+
+            if (shouldExplode)
             {
                 myBomb.Explode(bombRadius);
                 detonate = false;
@@ -5297,56 +5393,58 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         skillCDDuration = skillCDLast;
         if (RCSettings.BombMode == 1)
         {
-            int num = (int)FengGameManagerMKII.Settings[250];
-            int num2 = (int)FengGameManagerMKII.Settings[251];
-            int num3 = (int)FengGameManagerMKII.Settings[252];
-            int num4 = (int)FengGameManagerMKII.Settings[253];
-            if (num < 0 || num > 10)
+            int bombRadStat = (int)FengGameManagerMKII.Settings[250];
+            int bombTimeStat = (int)FengGameManagerMKII.Settings[251];
+            int bombSpeedStat = (int)FengGameManagerMKII.Settings[252];
+            int bombCdStat = (int)FengGameManagerMKII.Settings[253];
+            if (bombRadStat < 0 || bombRadStat > 10)
             {
-                num = 5;
+                bombRadStat = 5;
                 FengGameManagerMKII.Settings[250] = 5;
             }
-            if (num2 < 0 || num2 > 10)
+            if (bombTimeStat < 0 || bombTimeStat > 10)
             {
-                num2 = 5;
+                bombTimeStat = 5;
                 FengGameManagerMKII.Settings[251] = 5;
             }
-            if (num3 < 0 || num3 > 10)
+            if (bombSpeedStat < 0 || bombSpeedStat > 10)
             {
-                num3 = 5;
+                bombSpeedStat = 5;
                 FengGameManagerMKII.Settings[252] = 5;
             }
-            if (num4 < 0 || num4 > 10)
+            if (bombCdStat < 0 || bombCdStat > 10)
             {
-                num4 = 5;
+                bombCdStat = 5;
                 FengGameManagerMKII.Settings[253] = 5;
             }
-            if (num + num2 + num3 + num4 > 20)
+            if (bombRadStat + bombTimeStat + bombSpeedStat + bombCdStat > 20)
             {
-                num = 5;
-                num2 = 5;
-                num3 = 5;
-                num4 = 5;
+                bombRadStat = 5;
+                bombTimeStat = 5;
+                bombSpeedStat = 5;
+                bombCdStat = 5;
                 FengGameManagerMKII.Settings[250] = 5;
                 FengGameManagerMKII.Settings[251] = 5;
                 FengGameManagerMKII.Settings[252] = 5;
                 FengGameManagerMKII.Settings[253] = 5;
             }
-            bombTimeMax = ((float)num2 * 60f + 200f) / ((float)num3 * 60f + 200f);
-            bombRadius = (float)num * 4f + 20f;
-            bombCD = (float)num4 * -0.4f + 5f;
-            bombSpeed = (float)num3 * 60f + 200f;
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add(PhotonPlayerProperty.RCBombR, (float)FengGameManagerMKII.Settings[246]);
-            hashtable.Add(PhotonPlayerProperty.RCBombG, (float)FengGameManagerMKII.Settings[247]);
-            hashtable.Add(PhotonPlayerProperty.RCBombB, (float)FengGameManagerMKII.Settings[248]);
-            hashtable.Add(PhotonPlayerProperty.RCBombA, (float)FengGameManagerMKII.Settings[249]);
-            hashtable.Add(PhotonPlayerProperty.RCBombRadius, bombRadius);
-            PhotonNetwork.player.SetCustomProperties(hashtable);
+            bombTimeMax = (bombTimeStat * 60f + 200f) / (bombSpeedStat * 60f + 200f);
+            bombRadius = bombRadStat * 4f + 20f;
+            bombCD = bombCdStat * -0.4f + 5f;
+            bombSpeed = bombSpeedStat * 60f + 200f;
+            PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
+            {
+                { PhotonPlayerProperty.RCBombR, (float)FengGameManagerMKII.Settings[246] },
+                { PhotonPlayerProperty.RCBombG, (float)FengGameManagerMKII.Settings[247] },
+                { PhotonPlayerProperty.RCBombB, (float)FengGameManagerMKII.Settings[248] },
+                { PhotonPlayerProperty.RCBombA, (float)FengGameManagerMKII.Settings[249] },
+                { PhotonPlayerProperty.RCBombRadius, bombRadius },
+            });
             skillId = "bomb";
             skillIDHUD = "armin";
             skillCDLast = bombCD;
             skillCDDuration = 10f;
+
             if (FengGameManagerMKII.Instance.roundTime > 10f)
             {
                 skillCDDuration = 5f;
@@ -5421,9 +5519,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         string text9 = (string)FengGameManagerMKII.Settings[num9];
         string text10 = (string)FengGameManagerMKII.Settings[num10];
         string text11 = (string)FengGameManagerMKII.Settings[num11];
-        string text12 = (string)FengGameManagerMKII.Settings[num12];
-        string text13 = (string)FengGameManagerMKII.Settings[num13];
-        string text14 = text12 + "," + text2 + "," + text3 + "," + text4 + "," + text5 + "," + text6 + "," + text7 + "," + text8 + "," + text9 + "," + text10 + "," + text11 + "," + text + "," + text13;
+        string horseSkin = (string)FengGameManagerMKII.Settings[num12];
+        string trailSkin = (string)FengGameManagerMKII.Settings[num13];
+        string text14 = horseSkin + "," + text2 + "," + text3 + "," + text4 + "," + text5 + "," + text6 + "," + text7 + "," + text8 + "," + text9 + "," + text10 + "," + text11 + "," + text + "," + trailSkin + ",,https://i.imgur.com/aNDH66i.png";
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             StartCoroutine(CoLoadSkin(-1, text14));
@@ -5641,13 +5739,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
                 else if (renderer4.name.Contains(FengGameManagerMKII.S[2])) // Eyes
                 {
-                    if (oldEyeMaterial != null)
+                    if (_oldEyeMat != null)
                     {
-                        renderer4.material = oldEyeMaterial;
+                        renderer4.material = _oldEyeMat;
                     }
                     else
                     {
-                        oldEyeMaterial = new Material(renderer4.material);
+                        _oldEyeMat = new Material(renderer4.material);
                     }
 
                     if (strArray[2].EndsWith(".jpg") || strArray[2].EndsWith(".png") || strArray[2].EndsWith(".jpeg"))
@@ -5690,13 +5788,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
                 else if (renderer4.name.Contains(FengGameManagerMKII.S[3])) // Glasses
                 {
-                    if (oldGlassesMaterial != null)
+                    if (_oldGlassesMat != null)
                     {
-                        renderer4.material = oldGlassesMaterial;
+                        renderer4.material = _oldGlassesMat;
                     }
                     else
                     {
-                        oldGlassesMaterial = new Material(renderer4.material);
+                        _oldGlassesMat = new Material(renderer4.material);
                     }
 
                     if (strArray[3].EndsWith(".jpg") || strArray[3].EndsWith(".png") || strArray[3].EndsWith(".jpeg"))
@@ -5977,7 +6075,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                     renderer4.material.mainTexture = tex10;
 
                                     // TODO: Mod
-                                    customGasTexture = tex10;
+                                    _gasTexture = tex10;
 
                                     FengGameManagerMKII.LinkHash[0].Add(strArray[10], renderer4.material);
                                 }
@@ -5987,7 +6085,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         else
                         {
                             renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[10]];
-                            customGasTexture = renderer4.material.mainTexture;
+                            _gasTexture = renderer4.material.mainTexture;
                         }
                     }
                     else if (strArray[10].ToLower() == "transparent")
@@ -6117,6 +6215,92 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     }
                 }
                 finally { }
+            }
+        }
+
+        // ThunderSpears
+        if (strArray.Length > 14)
+        {
+            if (_thunderSpearLeft != null)
+            {
+                foreach (Renderer renderer in _thunderSpearLeft.GetComponentsInChildren<Renderer>())
+                {
+                    renderer.enabled = true;
+                    if (strArray[13].EndsWith(".png") || strArray[13].EndsWith(".jpg") || strArray[13].EndsWith(".jpeg"))
+                    {
+                        if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[13]))
+                        {
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[13]);
+                            if (www != null)
+                            {
+                                yield return www;
+
+                                Texture2D tsTex = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                www.Dispose();
+                                if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[13]))
+                                {
+                                    unload = true;
+                                    renderer.material.mainTexture = tsTex;
+                                    FengGameManagerMKII.LinkHash[0].Add(strArray[13], renderer.material);
+                                    renderer.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[13]];
+                                }
+                                else
+                                {
+                                    renderer.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[13]];
+                                }
+                            }
+                        }
+                        else
+                        {
+                            renderer.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[13]];
+                        }
+                    }
+                    else if (strArray[13].Equals("transparent"))
+                    {
+                        renderer.enabled = false;
+                    }
+                }
+            }
+
+            if (_thunderSpearRight != null)
+            {
+                foreach (Renderer renderer in _thunderSpearRight.GetComponentsInChildren<Renderer>())
+                {
+                    renderer.enabled = true;
+                    if (strArray[14].EndsWith(".png") || strArray[14].EndsWith(".jpg") || strArray[14].EndsWith(".jpeg"))
+                    {
+                        if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[14]))
+                        {
+                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(strArray[14]);
+                            if (www != null)
+                            {
+                                yield return www;
+
+                                Texture2D tsTex = RCextensions.LoadImage(www, mipmapping, 1000000);
+                                www.Dispose();
+                                if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[14]))
+                                {
+                                    unload = true;
+                                    renderer.material.mainTexture = tsTex;
+                                    FengGameManagerMKII.LinkHash[0].Add(strArray[14], renderer.material);
+                                    renderer.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[14]];
+                                }
+                                else
+                                {
+                                    renderer.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[14]];
+                                }
+                            }
+                        }
+                        else
+                        {
+                            renderer.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[14]];
+                        }
+                    }
+                    else if (strArray[14].Equals("transparent"))
+                    {
+                        renderer.enabled = false;
+                    }
+                }
             }
         }
 

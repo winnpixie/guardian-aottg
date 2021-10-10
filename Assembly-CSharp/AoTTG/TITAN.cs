@@ -50,7 +50,7 @@ public class TITAN : Photon.MonoBehaviour
     private float rockInterval;
     private float random_run_time;
     private Transform head;
-    private Transform neck;
+    public Transform neck;
     private float stuckTime;
     private bool stuck;
     private float stuckTurnAngle;
