@@ -40,7 +40,7 @@ if not defined ILMERGE_PLATFORM (
 
   echo Merging for platform %ILMERGE_PLATFORM%
 
-  "%ILMERGE_PATH%"\ILMerge.exe Bin\%ILMERGE_PLATFORM%\%ILMERGE_BUILD%\%APP_NAME%  ^
+  "%ILMERGE_PATH%"\ILMerge.exe bin\%ILMERGE_PLATFORM%\%ILMERGE_BUILD%\%APP_NAME%  ^
     /wildcards ^
     /lib:bin\%ILMERGE_PLATFORM%\%ILMERGE_BUILD%\ ^
     /out:%APP_NAME% ^
