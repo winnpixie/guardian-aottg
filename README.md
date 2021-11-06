@@ -1,5 +1,5 @@
 # Guardian [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T33LM92)
-A free, open-source, feature-rich modification for the Attack on Titan Tribute Game.
+A free, open-source, and feature-rich modification for the Attack on Titan Tribute Game.
 
 ## Where do I get/download Guardian Mod?
 Download "[Launcher.exe](https://alerithe.github.io/guardian/Launcher.exe)" and run it!
