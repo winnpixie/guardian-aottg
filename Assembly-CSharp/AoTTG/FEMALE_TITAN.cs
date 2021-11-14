@@ -1605,7 +1605,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             {
                 base.photonView.RPC("labelRPC", PhotonTargets.AllBuffered, NapeArmor, maxHealth);
             }
-            loadskin();
+            LoadSkin();
         }
         hasspawn = true;
     }
@@ -1621,7 +1621,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         }
     }
 
-    public void loadskin()
+    public void LoadSkin()
     {
         if ((int)FengGameManagerMKII.Settings[1] == 1)
         {
@@ -1656,7 +1656,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         {
             if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
             {
-                WWW link = Guardian.Utilities.GameHelper.CreateWWW(url);
+                WWW link = Guardian.AntiAbuse.Validators.Skins.CreateWWW(url);
                 if (link != null)
                 {
                     yield return link;

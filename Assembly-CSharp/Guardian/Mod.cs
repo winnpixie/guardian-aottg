@@ -4,9 +4,6 @@ using Guardian.Features.Gamemodes;
 using Guardian.Networking;
 using Guardian.Utilities;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -14,15 +11,13 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "10102021-1";
+        public static string Build = "11142021";
         public static string RootDir = Application.dataPath + "\\..";
-        public static string HostWhitelistPath = RootDir + "\\Hosts.txt";
 
-        public static GamemodeManager Gamemodes = new GamemodeManager();
         public static CommandManager Commands = new CommandManager();
+        public static GamemodeManager Gamemodes = new GamemodeManager();
         public static PropertyManager Properties = new PropertyManager();
         public static UI.UIManager Menus;
-        public static List<string> HostWhitelist = new List<string>();
         public static Regex BlacklistedTags = new Regex("<(\\/?)(size|material|quad)(.*)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
         public static bool IsMultiMap = false;
@@ -54,24 +49,10 @@ namespace Guardian
 
             if (!s_initialized)
             {
-                // Check for an update before doing anything
-                StartCoroutine(CoCheckForUpdate());
+                // Load skin validation service
+                AntiAbuse.Validators.Skins.Init();
 
-                // Host whitelist (for skins)
-                if (!File.Exists(HostWhitelistPath))
-                {
-                    HostWhitelist.Add("i.imgur.com");
-                    HostWhitelist.Add("imgur.com");
-                    HostWhitelist.Add("cdn.discordapp.com");
-                    HostWhitelist.Add("cdn.discord.com");
-                    HostWhitelist.Add("media.discordapp.net");
-                    HostWhitelist.Add("i.gyazo.com");
-
-                    File.WriteAllLines(HostWhitelistPath, HostWhitelist.ToArray());
-                }
-                LoadSkinHostWhitelist();
-
-                // Auto-load name and guild (if possible)
+                // Load name and guild (if possible)
                 FengGameManagerMKII.NameField = PlayerPrefs.GetString("name", string.Empty);
                 if (FengGameManagerMKII.NameField.Uncolored().Length == 0)
                 {
@@ -80,28 +61,24 @@ namespace Guardian
                 LoginFengKAI.Player.Guild = PlayerPrefs.GetString("guildname", string.Empty);
 
                 // Load various features
-                Gamemodes.Load();
                 Commands.Load();
+                Gamemodes.Load();
                 Properties.Load();
 
-                // Property whitelist
-                foreach (FieldInfo field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
-                {
-                    AntiAbuse.Validators.Network.PropertyWhitelist.Add((string)field.GetValue(null));
-                }
+                // Load network validation service
+                AntiAbuse.Validators.Network.Init();
 
                 s_initialized = true;
 
                 DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
+
+                // Check for an update
+                StartCoroutine(CoCheckForUpdate());
+
             }
 
             Menus = base.gameObject.AddComponent<UI.UIManager>();
             base.gameObject.AddComponent<MicEF>();
-
-            DiscordHelper.SetPresence(new Discord.Activity
-            {
-                Details = $"At the main menu...",
-            });
         }
 
         private IEnumerator CoCheckForUpdate()
@@ -122,7 +99,7 @@ namespace Guardian
 
                 try
                 {
-                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "Could not verify version. If errors persists, contact me @ [0099FF]https://cb.run/FFT[-]!";
+                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF4444]Could not verify version. If errors persists, contact me @ [0099FF]https://cb.run/FFT[-]!";
                 }
                 catch { }
             }
@@ -133,13 +110,13 @@ namespace Guardian
 
                 if (!latestVersion.Equals(Build))
                 {
-                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().AsColor("FF0000")}, please update using the launcher!");
-                    Logger.Info("Download (if you don't have it already):");
+                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().AsColor("FF4444")}, please update using the launcher!");
+                    Logger.Info("Launcher Download:");
                     Logger.Info($"\t- {"https://cb.run/GuardianAoT".AsColor("0099FF")}");
 
                     try
                     {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Please update using the launcher @ [0099FF]https://cb.run/GuardianAoT[-]!";
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF4444]Outdated![-] Please update using the launcher @ [0099FF]https://cb.run/GuardianAoT[-]!";
                     }
                     catch { }
                 }
@@ -152,7 +129,7 @@ namespace Guardian
 
         private IEnumerator CoWaitAndSetParticleTexture()
         {
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.1f);
 
             // TODO: Load custom textures and audio clips
             {
@@ -194,11 +171,6 @@ namespace Guardian
             StartCoroutine(CoWaitAndSetParticleTexture());
         }
 
-        public static void LoadSkinHostWhitelist()
-        {
-            HostWhitelist = new List<string>(File.ReadAllLines(HostWhitelistPath));
-        }
-
         public void ApplyCustomRenderSettings()
         {
             Properties.DrawDistance.OnValueChanged();
@@ -210,7 +182,7 @@ namespace Guardian
         {
             if (PhotonNetwork.isMasterClient)
             {
-                Gamemodes.Current.OnUpdate();
+                Gamemodes.CurrentMode.OnUpdate();
             }
 
             DiscordHelper.RunCallbacks();
@@ -247,7 +219,7 @@ namespace Guardian
 
             if (PhotonNetwork.isMasterClient)
             {
-                Gamemodes.Current.OnReset();
+                Gamemodes.CurrentMode.OnReset();
             }
 
             if (s_firstJoin)
@@ -269,7 +241,7 @@ namespace Guardian
         {
             if (PhotonNetwork.isMasterClient)
             {
-                Gamemodes.Current.OnPlayerJoin(player);
+                Gamemodes.CurrentMode.OnPlayerJoin(player);
             }
 
             Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed() + " connected.".AsColor("00FF00"));
@@ -279,7 +251,7 @@ namespace Guardian
         {
             if (PhotonNetwork.isMasterClient)
             {
-                Gamemodes.Current.OnPlayerLeave(player);
+                Gamemodes.CurrentMode.OnPlayerLeave(player);
             }
 
             Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed() + " disconnected.".AsColor("FF0000"));
@@ -331,11 +303,14 @@ namespace Guardian
             // TODO: Begin testing with Photon Friends API
             PhotonNetwork.playerName = SystemInfo.deviceUniqueIdentifier;
 
-            DiscordHelper.SetPresence(new Discord.Activity
+            // TODO: Potentially use custom event/group combo to sync game-settings whilst not triggering other mods
+            int[] groups = new int[byte.MaxValue];
+            for (int i = 0; i < byte.MaxValue; i++)
             {
-                Details = "Searching for a room...",
-                State = $"Region: {NetworkHelper.GetRegionCode().ToUpper()}"
-            });
+                groups[i] = i + 1;
+            }
+            PhotonNetwork.SetReceivingEnabled(groups, new int[0]);
+            PhotonNetwork.SetSendingEnabled(groups, new int[0]);
         }
 
         void OnJoinedRoom()
@@ -345,7 +320,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                { "GuardianMod", Build }
+                 { PhotonPlayerProperty.GuardianMod, Build }
             });
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');
@@ -361,7 +336,7 @@ namespace Guardian
 
         void OnLeftRoom()
         {
-            Gamemodes.Current.CleanUp();
+            Gamemodes.CurrentMode.CleanUp();
 
             PhotonNetwork.SetPlayerCustomProperties(null);
 

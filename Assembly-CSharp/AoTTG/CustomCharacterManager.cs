@@ -463,7 +463,7 @@ public class CustomCharacterManager : MonoBehaviour
         RefreshLabel();
     }
 
-    // TODO: Mod
+    // TODO: Mod, stat presets
     public void SetStatPoint(CreateStat type, int pt)
     {
         switch (type)
@@ -481,6 +481,11 @@ public class CustomCharacterManager : MonoBehaviour
                 setup.myCostume.stat.Accel = pt;
                 break;
         }
+
+        setup.myCostume.stat.Speed = Mathf.Clamp(setup.myCostume.stat.Speed, 75, 140);
+        setup.myCostume.stat.Gas = Mathf.Clamp(setup.myCostume.stat.Gas, 75, 150);
+        setup.myCostume.stat.Blade = Mathf.Clamp(setup.myCostume.stat.Blade, 75, 125);
+        setup.myCostume.stat.Accel = Mathf.Clamp(setup.myCostume.stat.Accel, 75, 150);
 
         RefreshLabel();
     }

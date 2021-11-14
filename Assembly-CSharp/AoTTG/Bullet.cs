@@ -239,23 +239,28 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         base.transform.position = p;
     }
 
-
+    // TODO: Mod, deadly hooks
     private void HandleHookToObj(int viewId)
     {
         PhotonView pv = PhotonView.Find(viewId);
 
         if (Guardian.Mod.Properties.DeadlyHooks.Value && PhotonNetwork.isMasterClient
-            && pv != null && pv.gameObject.GetComponent<HERO>() != null)
+            && pv != null)
         {
-            string killer = GExtensions.AsString(photonView.owner.customProperties[PhotonPlayerProperty.Name]);
-            if (killer.Uncolored().Length < 1)
-            {
-                killer = "Player";
-            }
-            killer += $" [FFCC00]({photonView.owner.Id})[FFFFFF]";
+            HERO hero = pv.gameObject.GetComponent<HERO>();
 
-            pv.gameObject.GetComponent<HERO>().MarkDead();
-            pv.gameObject.GetComponent<HERO>().photonView.RPC("netDie2", pv.owner, -1, $"{killer}'s hooks");
+            if (hero != null && !hero.HasDied())
+            {
+                string killer = GExtensions.AsString(photonView.owner.customProperties[PhotonPlayerProperty.Name]);
+                if (killer.Uncolored().Length < 1)
+                {
+                    killer = "Player";
+                }
+                killer += $" [FFCC00]({photonView.owner.Id})[FFFFFF]";
+
+                hero.MarkDead();
+                hero.photonView.RPC("netDie2", pv.owner, -1, $"{killer}'s hook");
+            }
         }
     }
 
@@ -266,7 +271,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         {
             base.transform.parent = PhotonView.Find(id).gameObject.transform;
 
-            // TODO: Mod
+            // TODO: Mod, deadly hooks
             HandleHookToObj(id);
         }
     }

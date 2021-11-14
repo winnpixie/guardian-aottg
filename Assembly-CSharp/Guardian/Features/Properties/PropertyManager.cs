@@ -9,12 +9,15 @@ namespace Guardian.Features.Properties
     {
         private string _dataPath = Mod.RootDir + "\\GameSettings.txt";
 
+        // Gamemodes
+        public Property<bool> BombsKillTitans = new Property<bool>("Gamemodes_Bomb:BombsKillTitans", new string[0], true);
+        public Property<bool> UseSkyBarrier = new Property<bool>("Gamemodes_Bomb:UseSkyBarrier", new string[0], true);
+
         // Master Client
         public Property<bool> EndlessTitans = new Property<bool>("MC_EndlessTitans", new string[0], false);
         public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], true);
         public Property<bool> OGPunkHair = new Property<bool>("MC_OGPunkHair", new string[0], true);
         public Property<bool> DeadlyHooks = new Property<bool>("MC_DeadlyHooks", new string[0], false);
-        public Property<bool> BombsKillTitans = new Property<bool>("MC_BombsKillTitans", new string[0], true);
 
         // Assets
         public Property<string> ThunderSpearSkin = new Property<string>("Skins_ThunderSpear", new string[0], string.Empty);
@@ -32,11 +35,12 @@ namespace Guardian.Features.Properties
         public Property<float> OpacityOfOtherNames = new Property<float>("Player_OpacityOfOtherNames", new string[0], 1.0f);
         public Property<bool> DirectionalFlares = new Property<bool>("Player_DirectionalFlares", new string[0], true);
         public Property<string> SuicideMessage = new Property<string>("Player_SuicideMessage", new string[0], "[FFFFFF]Suicide[-]");
-        public Property<string> LavaDeathMessage = new Property<string>("Player_LavaDeathMessage", new string[0], "[FF0000]Lava[-]");
+        public Property<string> LavaDeathMessage = new Property<string>("Player_LavaDeathMessage", new string[0], "[FF4444]Lava[-]");
         public Property<int> LocalMinDamage = new Property<int>("Player_LocalMinDamage", new string[0], 10);
 
         // Chat
         public Property<int> MaxChatLines = new Property<int>("Chat_MaxMessages", new string[0], 100);
+        public Property<bool> ChatTimestamps = new Property<bool>("Chat_Timestamps", new string[0], false);
         public Property<bool> ChatBackground = new Property<bool>("Chat_DrawBackground", new string[0], true);
 
         public Property<bool> TranslateIncoming = new Property<bool>("Chat_TranslateIncoming", new string[0], false);
@@ -76,7 +80,11 @@ namespace Guardian.Features.Properties
 
         public override void Load()
         {
-            // Gameplay
+            // Gamemodes
+            base.Add(BombsKillTitans);
+            base.Add(UseSkyBarrier);
+
+            // Master-Client
             base.Add(EndlessTitans);
             base.Add(InfiniteRoom);
             base.Add(OGPunkHair);
@@ -145,6 +153,7 @@ namespace Guardian.Features.Properties
 
             // Chat
             base.Add(MaxChatLines);
+            base.Add(ChatTimestamps);
             base.Add(ChatBackground);
 
             base.Add(TranslateIncoming);
@@ -191,7 +200,8 @@ namespace Guardian.Features.Properties
                         QualitySettings.shadowCascades = 5;
                         mainLight.shadowBias = 0.04f;
                         mainLight.shadowSoftness = 32f;
-                    } else
+                    }
+                    else
                     {
                         QualitySettings.shadowCascades = 4;
                         mainLight.shadowBias = 0.15f;

@@ -143,7 +143,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     int damage = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - hitbox.transform.root.rigidbody.velocity).magnitude * 10f * scoreMulti);
                     damage = Mathf.Max(10, damage);
 
-                    // TODO: Mod
+                    // TODO: Mod, local minimum damage
                     if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
                     {
                         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
@@ -161,7 +161,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                             if ((float)damage > titan.myLevel * 100f)
                             {
                                 titan.Die();
-                                if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)
+                                if (PlayerPrefs.GetInt("EnableSS", 0) == 1)
                                 {
                                     currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartSnapshot2(hitbox.transform.position, damage, hitbox.transform.root.gameObject, 0.02f);
                                 }
@@ -178,7 +178,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                         {
                             if ((float)damage > titan.myLevel * 100f)
                             {
-                                if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)
+                                if (PlayerPrefs.GetInt("EnableSS", 0) == 1)
                                 {
                                     currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartSnapshot2(hitbox.transform.position, damage, hitbox.transform.root.gameObject, 0.02f);
                                 }
@@ -279,7 +279,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                         int damage = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - gameObject2.rigidbody.velocity).magnitude * 10f * scoreMulti);
                         damage = Mathf.Max(10, damage);
 
-                        // TODO: Mod
+                        // TODO: Mod, local minimum damage
                         if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
                         {
                             GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);

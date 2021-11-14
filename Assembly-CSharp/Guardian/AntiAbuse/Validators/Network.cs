@@ -1,5 +1,6 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace Guardian.AntiAbuse.Validators
@@ -7,11 +8,21 @@ namespace Guardian.AntiAbuse.Validators
     class Network
     {
         public static List<string> PropertyWhitelist = new List<string>(new string[] {
-            "sender", "GuardianMod"
+            "sender"
         });
         private static List<object> RoomPropertyWhitelist = new List<object>(new object[] {
-            (byte)255, (byte)254, (byte)253, (byte)250, (byte)249, (byte)248, "sender", "Map", "Lighting"
+            (byte)255, (byte)254, (byte)253, (byte)250, (byte)249, (byte)248, "sender",
+            "Map", "Lighting"
         });
+
+        public static void Init()
+        {
+            // Property whitelist
+            foreach (FieldInfo field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
+            {
+                PropertyWhitelist.Add((string)field.GetValue(null));
+            }
+        }
 
         // NetworkingPeer.OnEvent (Code 202)
         public static bool IsInstantiatePacketValid(ExitGames.Client.Photon.Hashtable evData, PhotonPlayer sender)

@@ -29,7 +29,7 @@ namespace Guardian.UI
         {
             GSkins.InitSkins();
 
-            if (KeyCode.Escape.WasPressedInGUI() && GUI.GetNameOfFocusedControl().Length == 0 && Mod.Menus.CurrentScreen == null)
+            if (KeyCode.Escape.WasKeyDownInGUI() && GUI.GetNameOfFocusedControl().Length == 0 && Mod.Menus.CurrentScreen == null)
             {
                 Mod.Menus.OpenScreen(new UIModConfiguration());
             }

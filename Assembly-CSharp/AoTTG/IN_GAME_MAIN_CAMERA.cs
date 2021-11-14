@@ -909,16 +909,9 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             snapshotRT.Release();
         }
-        if (QualitySettings.GetQualityLevel() > 3)
-        {
-            snapshotRT = new RenderTexture(Screen.width, Screen.height, 24);
-            snapShotCamera.GetComponent<Camera>().targetTexture = snapshotRT;
-        }
-        else
-        {
-            snapshotRT = new RenderTexture(Screen.width, Screen.height, 24);
-            snapShotCamera.GetComponent<Camera>().targetTexture = snapshotRT;
-        }
+
+        snapshotRT = new RenderTexture(Screen.width, Screen.height, 24);
+        snapShotCamera.GetComponent<Camera>().targetTexture = snapshotRT;
     }
 
     public void CameraMovementLive(HERO hero)

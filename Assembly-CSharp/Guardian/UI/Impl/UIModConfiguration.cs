@@ -1,12 +1,14 @@
 ﻿using Guardian.Features.Properties;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Guardian.UI.Impl
 {
     class UIModConfiguration : UIBase
     {
-        private int _width = 420;
+        private Regex NumericPattern = new Regex("-?([0-9]*\\.?)?[0-9]+", RegexOptions.IgnoreCase);
+        private int _width = 440;
         private int _height = 320;
         private bool _save = false;
 
@@ -83,16 +85,38 @@ namespace Guardian.UI.Impl
                     }
                     else if (property.Value is int)
                     {
-                        if (int.TryParse(GUILayout.TextField(_intDict[property].ToString(), GUILayout.Width(_width / 2)), out int val))
+                        string input = GUILayout.TextField(_intDict[property].ToString(), GUILayout.Width(_width / 2));
+                        if (NumericPattern.IsMatch(input))
                         {
-                            _intDict[property] = val;
+                            if (input.Equals("-"))
+                            {
+                                input += "0";
+                            }
+
+                            if (int.TryParse(input, out int val))
+                            {
+                                _intDict[property] = val;
+                            }
                         }
                     }
                     else if (property.Value is float)
                     {
-                        if (float.TryParse(GUILayout.TextField(_floatDict[property].ToString(), GUILayout.Width(_width / 2)), out float val))
+                        string input = GUILayout.TextField(_floatDict[property].ToString(), GUILayout.Width(_width / 2));
+                        if (NumericPattern.IsMatch(input))
                         {
-                            _floatDict[property] = val;
+                            if (input.StartsWith("."))
+                            {
+                                input = "0" + input;
+                            }
+                            else if (input.StartsWith("-."))
+                            {
+                                input = "-0" + input.Substring(1);
+                            }
+
+                            if (float.TryParse(input, out float val))
+                            {
+                                _floatDict[property] = val;
+                            }
                         }
                     }
                     else if (property.Value is string)
@@ -106,7 +130,7 @@ namespace Guardian.UI.Impl
             GUILayout.EndVertical();
             GUILayout.EndScrollView();
 
-            if (GUILayout.Button("Save & Close", GUILayout.Height(25)) || (KeyCode.Escape.WasPressedInGUI() && GUI.GetNameOfFocusedControl().Length == 0))
+            if (GUILayout.Button("Save & Close", GUILayout.Height(25)) || (KeyCode.Escape.WasKeyDownInGUI() && GUI.GetNameOfFocusedControl().Length == 0))
             {
                 _save = true;
                 Mod.Menus.OpenScreen(null);

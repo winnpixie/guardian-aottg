@@ -3134,25 +3134,23 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 if (!MicEF.Disconnected)
                 {
                     object obj = eventData[245];
-                    if (obj != null && obj is byte[])
+                    if (obj != null && obj is byte[] payload)
                     {
-                        byte[] bytes = (byte[])obj;
-
-                        if (bytes.Length >= 12000) // Too large for a message
+                        if (payload.Length >= 12000) // Too large for a message
                         {
-                            Guardian.Mod.Logger.Warn($"E(173) Too large ({bytes.Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+                            Guardian.Mod.Logger.Warn($"E(173) Too large ({payload.Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                             return;
                         }
-                        else if (bytes.Length < 4) // 1 float requires at least 4 bytes
+                        else if (payload.Length < 4) // 1 float requires at least 4 bytes
                         {
                             if (!MicEF.Users.ContainsKey(actorNr))
                             {
                                 MicEF.AddSpeaker(actorNr);
                             }
 
-                            if (bytes.Length == 1) // Commands
+                            if (payload.Length == 1) // Commands
                             {
-                                switch (bytes[0])
+                                switch (payload[0])
                                 {
                                     case 253: // Disconnected
                                         if (MicEF.Users.ContainsKey(actorNr))
@@ -3197,7 +3195,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
                             try
                             {
-                                float[] micData = MicEF.GzipDecompress(bytes);
+                                float[] micData = MicEF.GzipDecompress(payload);
 
                                 // Identifier so they can add them to the list on join
                                 if (!MicEF.Users.ContainsKey(actorNr)) // I know that this will make the person who joined send 0 twice(one on entry one in return) but that doesn't really matter
@@ -3223,11 +3221,16 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         Guardian.Mod.Logger.Warn($"E(173) non-byte[] ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                     }
                 }
-                else
-                {
-                    Guardian.Mod.Logger.Warn($"E(173) Unrequested ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
-                }
                 return;
+            case 176:
+                {
+                    object obj = eventData[245];
+                    if (obj != null && obj is string payload)
+                    {
+                        sender.IsRRC = true;
+                    }
+                    break;
+                }
             default: // Unknown
                 object content = eventData[245];
                 if (eventData.Code < 200 && PhotonNetwork.OnEventCall != null)

@@ -1,4 +1,5 @@
 ﻿using Guardian.Utilities;
+using System;
 using UnityEngine;
 
 namespace Guardian.UI.Impl.Logging
@@ -29,11 +30,13 @@ namespace Guardian.UI.Impl.Logging
                     border = new RectOffset(0, 0, 0, 0)
                 };
 
-                foreach (string message in Mod.Logger.Entries)
+                foreach (Logger.Entry entry in Mod.Logger.Entries)
                 {
                     try
                     {
-                        GUILayout.Label(message, labelStyle);
+                        DateTime date = GameHelper.Epoch.AddMilliseconds(entry.Timestamp).ToLocalTime();
+                        string entryText = "[" + date.ToString("HH:mm:ss") + "] " + entry.ToString();
+                        GUILayout.Label(entryText, labelStyle);
                     }
                     catch { }
                 }

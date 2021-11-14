@@ -11,7 +11,7 @@
             irc.AddLine("Configuration reloaded.");
 
             irc.AddLine("Reloading skin host whitelist...");
-            Mod.LoadSkinHostWhitelist();
+            AntiAbuse.Validators.Skins.Init();
             irc.AddLine("Skin host whitelist reloaded.");
         }
     }

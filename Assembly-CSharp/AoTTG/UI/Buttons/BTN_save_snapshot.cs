@@ -43,10 +43,9 @@ public class BTN_save_snapshot : MonoBehaviour
 
             DateTime now = DateTime.Now;
             string imageName = "SnapShot-" + now.Day + "_" + now.Month + "_" + now.Year + "-" + now.Hour + "_" + now.Minute + "_" + now.Second + ".jpg";
-            byte[] imageData = texture.EncodeToJPG(100);
 
             Guardian.Utilities.GameHelper.TryCreateFile(SaveDir, true);
-            File.WriteAllBytes($"{SaveDir}\\{imageName}", imageData);
+            File.WriteAllBytes($"{SaveDir}\\{imageName}", texture.EncodeToJPG(100));
 
             // ExternalCall is legacy code, used to execute JavaScript on http://fenglee.com/game/aog/
             // Application.ExternalCall("SaveImg", imageName, texture.width, texture.height, Convert.ToBase64String(imageData));

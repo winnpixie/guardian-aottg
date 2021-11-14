@@ -9,6 +9,12 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 
         public override void Execute(InRoomChat irc, string[] args)
         {
+            if (FengGameManagerMKII.Level.Mode == GameMode.Racing)
+            {
+                irc.AddLine("Teleport can NOT be used while in Racing.".AsColor("FF0000"));
+                return;
+            }
+
             if (args.Length > 3) // Player(s) -> Coordinate
             {
                 if (float.TryParse(args[1], out float x) && float.TryParse(args[2], out float y) && float.TryParse(args[3], out float z))

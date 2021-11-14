@@ -15,8 +15,6 @@ public class PanelMultiStart : MonoBehaviour
 
     private void OnEnable()
     {
-        Guardian.Mod.Menus.OpenScreen(new Guardian.UI.Impl.UIMultiplayer());
-
         if (latinAmerBtn == null)
         {
             GameObject japanBtn = GameObject.Find("ButtonServer4");
@@ -27,14 +25,6 @@ public class PanelMultiStart : MonoBehaviour
 
             Object.Destroy(latinAmerBtn.GetComponent<BTN_Server_JPN>());
             latinAmerBtn.AddComponent<BTN_Server_SA>();
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (Guardian.Mod.Menus.CurrentScreen is Guardian.UI.Impl.UIMultiplayer)
-        {
-            Guardian.Mod.Menus.OpenScreen(null);
         }
     }
 
@@ -49,7 +39,7 @@ public class PanelMultiStart : MonoBehaviour
             label_server_EU.GetComponent<UILabel>().text = Language.btn_server_EU[Language.type];
             label_server_ASIA.GetComponent<UILabel>().text = Language.btn_server_ASIA[Language.type];
             label_server_JAPAN.GetComponent<UILabel>().text = Language.btn_server_JAPAN[Language.type];
-            label_QUICK_MATCH.GetComponent<UILabel>().text = Language.btn_QUICK_MATCH[Language.type];
+            label_QUICK_MATCH.GetComponent<UILabel>().text = "Offline Mode"; // Language.btn_QUICK_MATCH[Language.type];
             label_server.GetComponent<UILabel>().text = Language.choose_region_server[Language.type];
         }
     }

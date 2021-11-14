@@ -922,7 +922,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                 {
                     if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
                     {
-                        WWW link = Guardian.Utilities.GameHelper.CreateWWW(url);
+                        WWW link = Guardian.AntiAbuse.Validators.Skins.CreateWWW(url);
                         if (link != null)
                         {
                             yield return link;

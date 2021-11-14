@@ -4,16 +4,18 @@ namespace Guardian.Features.Gamemodes
 {
     class GamemodeManager : FeatureManager<Gamemode>
     {
-        public Gamemode Current;
+        public Gamemode DefaultMode;
+        public Gamemode CurrentMode;
 
         public override void Load()
         {
-            Gamemode normal = new Gamemode("Normal", new string[] { "none" });
-            Current = normal;
-            base.Add(normal);
+            base.Add(DefaultMode = new Gamemode("Normal", new string[] { "none" }));
 
-            base.Add(new TimeBomb());
+            base.Add(new CageFight());
             base.Add(new LastManStanding());
+            base.Add(new TimeBomb());
+
+            CurrentMode = DefaultMode;
         }
     }
 }

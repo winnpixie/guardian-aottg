@@ -246,7 +246,17 @@ public static class GExtensions
         return str.Substring(startIndex, len);
     }
 
-    public static bool WasPressedInGUI(this KeyCode keyCode)
+    public static bool IsKeyDownInGUI(this KeyCode keyCode)
+    {
+        if (Event.current != null && Event.current.type == EventType.KeyDown)
+        {
+            return Event.current.keyCode == keyCode;
+        }
+
+        return false;
+    }
+
+    public static bool WasKeyDownInGUI(this KeyCode keyCode)
     {
         if (Event.current != null && Event.current.type == EventType.KeyUp)
         {

@@ -6,7 +6,7 @@ namespace Guardian
 {
     class Logger
     {
-        public List<string> Entries = new List<string>();
+        public List<Entry> Entries = new List<Entry>();
         public Vector2 ScrollPosition = GameHelper.ScrollBottom;
 
         private void Log(string message)
@@ -15,7 +15,7 @@ namespace Guardian
 
             if (message.Length > 0)
             {
-                Entries.Add(message);
+                Entries.Add(new Entry(message));
 
                 if (Entries.Count > Mod.Properties.MaxLogLines.Value)
                 {
@@ -44,6 +44,23 @@ namespace Guardian
         public void Debug(string message)
         {
             Log("* ".AsColor("00FFFF") + message);
+        }
+
+        public class Entry
+        {
+            public string Text;
+            public long Timestamp;
+
+            public Entry(string text)
+            {
+                this.Text = text;
+                this.Timestamp = GameHelper.CurrentTimeMillis();
+            }
+
+            public override string ToString()
+            {
+                return Text;
+            }
         }
     }
 }

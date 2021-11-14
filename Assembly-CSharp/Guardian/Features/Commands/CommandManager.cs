@@ -2,6 +2,7 @@
 using Guardian.Features.Commands.Impl.MasterClient;
 using Guardian.Features.Commands.Impl.Debug;
 using Guardian.Features.Commands.Impl.RC;
+using Guardian.Features.Commands.Impl.RC.MasterClient;
 
 namespace Guardian.Features.Commands
 {
@@ -16,8 +17,8 @@ namespace Guardian.Features.Commands
             base.Add(new CommandMute());
             base.Add(new CommandRejoin());
             base.Add(new CommandReloadConfig());
-            base.Add(new CommandReloadSkin());
             base.Add(new CommandSay());
+            base.Add(new CommandScreenshot());
             base.Add(new CommandSetGuild());
             base.Add(new CommandSetLighting());
             base.Add(new CommandSetName());
@@ -27,27 +28,29 @@ namespace Guardian.Features.Commands
             base.Add(new CommandWhois());
 
             // MasterClient
-            base.Add(new CommandAso());
             base.Add(new CommandDifficulty());
             base.Add(new CommandGamemode());
             base.Add(new CommandGuestBeGone());
             base.Add(new CommandKill());
-            base.Add(new CommandPause());
-            base.Add(new CommandRestart());
-            base.Add(new CommandRevive());
-            base.Add(new CommandRoom());
             base.Add(new CommandScatterTitans());
             base.Add(new CommandSetMap());
             base.Add(new CommandSetTitans());
             base.Add(new CommandTeleport());
-            base.Add(new CommandUnpause());
 
             // Debug
             base.Add(new CommandLogProperties());
 
+            // RC MasterClient
+            base.Add(new CommandAso());
+            base.Add(new CommandBanlist());
+            base.Add(new CommandPause());
+            base.Add(new CommandRestart());
+            base.Add(new CommandRevive());
+            base.Add(new CommandRoom());
+            base.Add(new CommandUnpause());
+
             // RC
             base.Add(new CommandBan());
-            base.Add(new CommandBanlist());
             base.Add(new CommandIgnoreList());
             base.Add(new CommandKick());
             base.Add(new CommandPM());
@@ -73,6 +76,10 @@ namespace Guardian.Features.Commands
                 {
                     irc.AddLine("Command requires MasterClient!".AsColor("FF0000"));
                 }
+            }
+            else if (args[0].Length > 0)
+            {
+                irc.AddLine($"Command '{args[0]}' not found.".AsColor("FF4444"));
             }
         }
     }

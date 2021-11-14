@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 public class InRoomChat : Photon.MonoBehaviour
 {
@@ -69,7 +70,6 @@ public class InRoomChat : Photon.MonoBehaviour
             };
         }
 
-        // Chat messages
         if (Guardian.Mod.Properties.ChatBackground.Value)
         {
             GUILayout.BeginArea(MessagesRect, Guardian.UI.GSkins.Box);
@@ -85,12 +85,20 @@ public class InRoomChat : Photon.MonoBehaviour
         {
             try
             {
-                GUILayout.Label(message.ToString(), labelStyle);
+                string messageText = message.ToString();
+
+                if (Guardian.Mod.Properties.ChatTimestamps.Value)
+                {
+                    DateTime date = Guardian.Utilities.GameHelper.Epoch.AddMilliseconds(message.Timestamp).ToLocalTime();
+                    messageText = "[" + date.ToString("HH:mm:ss") + "] " + messageText;
+                }
+
+                GUILayout.Label(messageText, labelStyle);
                 if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)
                     && Event.current.type != EventType.Repaint
                     && GUI.GetNameOfFocusedControl().Equals(TextFieldName))
                 {
-                    if (Input.GetMouseButtonDown(0)) // Mouse1/Left Click
+                    if (Input.GetMouseButtonDown(0)) // Left-click
                     {
                         string text = Detagger.Replace(message.Content, string.Empty);
 
@@ -100,7 +108,7 @@ public class InRoomChat : Photon.MonoBehaviour
                             text
                         });
                     }
-                    else if (Input.GetMouseButtonDown(1)) // Mouse2/Right Click
+                    else if (Input.GetMouseButtonDown(1)) // Right-click
                     {
                         TextEditor te = new TextEditor();
                         te.content = new GUIContent(message.Content);
@@ -118,12 +126,16 @@ public class InRoomChat : Photon.MonoBehaviour
 
     private void HandleInput()
     {
-        // Sends chat messages
         KeyCode rcChatKey = FengGameManagerMKII.InputRC.humanKeys[InputCodeRC.Chat];
-        if (rcChatKey != KeyCode.None && rcChatKey.WasPressedInGUI() && !GUI.GetNameOfFocusedControl().Equals(TextFieldName))
+        if (rcChatKey != KeyCode.None && rcChatKey.WasKeyDownInGUI() && !GUI.GetNameOfFocusedControl().Equals(TextFieldName))
         {
             GUI.FocusControl(TextFieldName);
             inputLine = "\t";
+        }
+        else if (KeyCode.Slash.IsKeyDownInGUI() && !GUI.GetNameOfFocusedControl().Equals(TextFieldName))
+        {
+            GUI.FocusControl(TextFieldName);
+            inputLine = "/";
         }
         else if (Event.current.type == EventType.KeyDown)
         {
@@ -181,7 +193,6 @@ public class InRoomChat : Photon.MonoBehaviour
 
     private void DrawMessageTextField()
     {
-        // Chat text-field
         GUILayout.BeginArea(ChatBoxRect);
         GUILayout.BeginHorizontal();
         GUI.SetNextControlName(TextFieldName);
@@ -263,11 +274,14 @@ public class InRoomChat : Photon.MonoBehaviour
     {
         public string Sender;
         public string Content;
+        public long Timestamp;
 
         public Message(string sender, string content)
         {
             this.Sender = sender;
             this.Content = content;
+
+            this.Timestamp = Guardian.Utilities.GameHelper.CurrentTimeMillis();
         }
 
         public override string ToString()
@@ -276,6 +290,7 @@ public class InRoomChat : Photon.MonoBehaviour
             {
                 return Content;
             }
+
             return Sender + ": " + Content;
         }
     }

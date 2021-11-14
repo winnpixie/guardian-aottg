@@ -7,41 +7,11 @@ namespace Guardian.Utilities
     class GameHelper
     {
         public static readonly Vector2 ScrollBottom = new Vector2(0, float.MaxValue);
-        private static readonly DateTime s_epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public static void Broadcast(string message)
         {
             FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, message, "[MC]".AsColor("AAFF00").AsBold());
-        }
-
-        public static WWW CreateWWW(string url)
-        {
-            if (url.ToLower().StartsWith("file://") || Mod.HostWhitelist.Count < 1)
-            {
-                return new WWW(url);
-            }
-
-            if (Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
-            {
-                string textureHost = uri.Authority;
-                textureHost = textureHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? textureHost.Substring(4) : textureHost;
-
-                foreach (string whitelistHost in Mod.HostWhitelist)
-                {
-                    string host = whitelistHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? whitelistHost.Substring(4) : whitelistHost;
-                    if (textureHost.Equals(host, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return new WWW(url);
-                    }
-                }
-
-                if (textureHost.Length > 0)
-                {
-                    Mod.Logger.Warn($"Unwhitelisted host: {textureHost}");
-                }
-            }
-
-            return null;
         }
 
         public static HERO GetHero(PhotonPlayer player)
@@ -145,7 +115,7 @@ namespace Guardian.Utilities
         // C# equivalent of java.lang.System#currentTimeMillis()
         public static long CurrentTimeMillis()
         {
-            return (long)DateTime.UtcNow.Subtract(s_epoch).TotalMilliseconds;
+            return (long)DateTime.UtcNow.Subtract(Epoch).TotalMilliseconds;
         }
 
         public static string FormatTimeOld(float time, bool precise = false, bool isSeconds = true)

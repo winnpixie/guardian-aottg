@@ -15,15 +15,17 @@ namespace Guardian.Features.Commands.Impl
             if (addr.Length > 1 && int.TryParse(addr[1], out port)) { }
 
             PhotonNetwork.Disconnect();
-            PhotonNetwork.ConnectToMaster(host, port, Networking.NetworkHelper.App.Id, UIMainReferences.Version);
 
-            new Thread(() =>
-             {
-                 while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby
-                     && IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop
-                     && !Mod.IsProgramQuitting) { }
-                 PhotonNetwork.JoinRoom(room);
-             }).Start();
+            if(PhotonNetwork.ConnectToMaster(host, port, Networking.NetworkHelper.App.Id, UIMainReferences.Version))
+            {
+                new Thread(() =>
+                {
+                    while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby
+                        && IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop
+                        && !Mod.IsProgramQuitting) { }
+                    PhotonNetwork.JoinRoom(room);
+                }).Start();
+            }
         }
     }
 }

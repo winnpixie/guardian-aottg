@@ -23,6 +23,12 @@ namespace Guardian.AntiAbuse
             {
                 player.IsFoxMod = true;
             }
+
+            if (properties.ContainsKey("guildName") && properties["guildName"] is string guild
+                && (guild.Equals("photonMod") || guild.Equals("photonMod2")))
+            {
+                player.IsPhotonMod = true;
+            }
         }
 
         public static List<string> GetMods(PhotonPlayer player)
@@ -94,12 +100,12 @@ namespace Guardian.AntiAbuse
              *  "GuardianMod" int = legacy Guardian identifier
              *  "Stats" int = legacy Guardian feature
              */
-            if (properties.ContainsKey("GuardianMod"))
+            if (properties.ContainsKey(PhotonPlayerProperty.GuardianMod))
             {
                 List<string> tags = new List<string>();
-                if (properties["GuardianMod"] is string)
+                if (properties[PhotonPlayerProperty.GuardianMod] is string)
                 {
-                    tags.Add(GExtensions.AsString(properties["GuardianMod"]));
+                    tags.Add(GExtensions.AsString(properties[PhotonPlayerProperty.GuardianMod]));
                 }
                 else if (properties["GuardianMod"] is int)
                 {
@@ -348,6 +354,11 @@ namespace Guardian.AntiAbuse
             if (properties.ContainsKey("FSociety") || properties.ContainsKey("Fsociety"))
             {
                 mods.Add("Fsociety");
+            }
+
+            if (player.IsPhotonMod)
+            {
+                mods.Add("Photon");
             }
 
             string name = GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]);

@@ -266,7 +266,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(hairLink))
                 {
-                    WWW link = Guardian.Utilities.GameHelper.CreateWWW(hairLink);
+                    WWW link = Guardian.AntiAbuse.Validators.Skins.CreateWWW(hairLink);
                     if (link != null)
                     {
                         yield return link;

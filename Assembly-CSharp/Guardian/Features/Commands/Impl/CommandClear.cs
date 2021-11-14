@@ -11,7 +11,7 @@ namespace Guardian.Features.Commands.Impl
         {
             if (args.Length > 0 && args[0].Equals("log", System.StringComparison.OrdinalIgnoreCase))
             {
-                Mod.Logger.Entries = new List<string>();
+                Mod.Logger.Entries = new List<Logger.Entry>();
                 Mod.Logger.Info("Cleared event log!");
                 return;
             }

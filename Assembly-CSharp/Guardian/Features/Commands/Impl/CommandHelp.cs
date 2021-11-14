@@ -28,6 +28,9 @@
                 }
             }
 
+            irc.AddLine("For general help regarding Guardian, visit".AsColor("FFFF00"));
+            irc.AddLine("\thttps://alerithe.github.io/guardian/".AsColor("0099FF") + "!".AsColor("FFFF00"));
+
             irc.AddLine($"Commands (Page {page + 1}/{pages})".AsColor("AAFF00").AsBold());
             irc.AddLine("<arg> = Required, [arg] = Optional".AsColor("AAAAAA").AsBold());
 

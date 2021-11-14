@@ -99,11 +99,11 @@ public class PanelMultiJoin : MonoBehaviour
         string roomMeta = string.Empty;
         if (!room.open || (room.maxPlayers != 0 && room.playerCount >= room.maxPlayers))
         {
-            roomMeta = "[FF0000]";
+            roomMeta = "[FF4444]";
         }
         roomMeta += $"({room.playerCount}/{room.maxPlayers})";
 
-        string pwd = info[5].Length == 0 ? string.Empty : "[FF0000](Pwd)[-] ";
+        string pwd = info[5].Length == 0 ? string.Empty : "[FF4444](Pwd)[-] ";
         return $"{pwd}{info[0]}[-] [AAAAAA]:: [FFFFFF]{info[1]}[AAAAAA] / {difficulty} / {daylight}[-] {roomMeta}";
     }
 

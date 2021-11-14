@@ -83,7 +83,7 @@ namespace Guardian.Features.Gamemodes.Impl
                             {
                                 PhotonNetwork.Instantiate("FX/Thunder", hero.transform.position, hero.transform.rotation, 0);
                                 hero.MarkDead();
-                                hero.photonView.RPC("netDie2", player, -1, "[FF0000]Time's Up!");
+                                hero.photonView.RPC("netDie2", player, -1, "[FF4444]Time's Up!");
 
                                 GameHelper.Broadcast($"{GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed().AsColor("FFFFFF")} ran out of time!"
                                     .AsColor("FF0000"));

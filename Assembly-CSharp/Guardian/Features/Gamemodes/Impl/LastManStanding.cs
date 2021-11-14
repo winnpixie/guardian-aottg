@@ -88,8 +88,7 @@ namespace Guardian.Features.Gamemodes.Impl
 
                         if (playersAlive < 3 && bestPlayer != null)
                         {
-                            GameHelper.Broadcast($"{GExtensions.AsString(bestPlayer.photonView.owner.customProperties[PhotonPlayerProperty.Name]).ColorParsed().AsColor("FFFFFF")} wins!"
-                                                .AsColor("AAFF00"));
+                            GameHelper.Broadcast($"{GExtensions.AsString(bestPlayer.photonView.owner.customProperties[PhotonPlayerProperty.Name]).ColorParsed().AsColor("FFFFFF")} wins!".AsColor("AAFF00"));
                             FengGameManagerMKII.Instance.WinGame();
 
                             return;

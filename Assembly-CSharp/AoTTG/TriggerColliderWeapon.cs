@@ -91,7 +91,7 @@ public class TriggerColliderWeapon : MonoBehaviour
 
                         if (!hero.HasDied() && !hero.isGrabbed)
                         {
-                            if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)
+                            if (PlayerPrefs.GetInt("EnableSS", 0) == 1)
                             {
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartSnapshot2(hitbox.transform.position, 0, hitbox.transform.root.gameObject, 0.02f);
                             }
@@ -127,7 +127,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     {
                         if (titan != null && !titan.hasDie)
                         {
-                            if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)
+                            if (PlayerPrefs.GetInt("EnableSS", 0) == 1)
                             {
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartSnapshot2(hitbox.transform.position, damage, hitbox.transform.root.gameObject, 0.02f);
                             }
@@ -145,7 +145,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     {
                         if (!titan.hasDie)
                         {
-                            if (PlayerPrefs.HasKey("EnableSS") && PlayerPrefs.GetInt("EnableSS") == 1)
+                            if (PlayerPrefs.GetInt("EnableSS", 0) == 1)
                             {
                                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartSnapshot2(hitbox.transform.position, damage, hitbox.transform.root.gameObject, 0.02f);
                             }

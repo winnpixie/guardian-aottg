@@ -56,6 +56,9 @@ namespace Guardian.Utilities
             else if (typeof(AudioClip).IsAssignableFrom(type))
             {
                 val = www.audioClip;
+            } else if (typeof(AssetBundle).IsAssignableFrom(type))
+            {
+                val = www.assetBundle;
             }
             else if (typeof(string).IsAssignableFrom(type))
             {

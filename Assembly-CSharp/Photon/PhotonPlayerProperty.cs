@@ -42,4 +42,7 @@ public class PhotonPlayerProperty
     public static string RCBombB = "RCBombB";
     public static string RCBombA = "RCBombA";
     public static string RCBombRadius = "RCBombRadius";
+
+    // Guardian Properties
+    public static string GuardianMod = "GuardianMod";
 }

@@ -109,8 +109,6 @@ public class TITAN : Photon.MonoBehaviour
     public int skinColor;
     private FengGameManagerMKII fengGame;
 
-    private Material oldEyeMaterial;
-
     private bool shouldLookAtTarget;
     private bool shouldRotateFast;
 
@@ -181,7 +179,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Titans.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Titan.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -190,7 +188,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Titans.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Titan.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -200,7 +198,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Titans.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.Titan.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -222,7 +220,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netSetAbnormalType(int type, PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.Titans.IsTitanTypeSetValid(this, info) && PhotonNetwork.isMasterClient)
+        if (!Guardian.AntiAbuse.Validators.Titan.IsTitanTypeSetValid(this, info) && PhotonNetwork.isMasterClient)
         {
             this.photonView.RPC("netSetAbnormalType", PhotonTargets.OthersBuffered, (int)abnormalType);
             return;
@@ -364,7 +362,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void setMyTarget(int viewId, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.Titans.IsTargetSetValid(this, info) && PhotonNetwork.isMasterClient)
+        if (!Guardian.AntiAbuse.Validators.Titan.IsTargetSetValid(this, info) && PhotonNetwork.isMasterClient)
         {
             return;
         }
@@ -947,7 +945,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void playsoundRPC(string sndname, PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.Titans.IsSoundPlayValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.Titan.IsSoundPlayValid(this, info))
         {
             return;
         }
@@ -1247,7 +1245,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     public void grabToRight(PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.Titans.IsRightGrabValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.Titan.IsRightGrabValid(this, info))
         {
             return;
         }
@@ -1271,7 +1269,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     public void grabToLeft(PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.Titans.IsRightGrabValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.Titan.IsRightGrabValid(this, info))
         {
             return;
         }
@@ -1483,7 +1481,7 @@ public class TITAN : Photon.MonoBehaviour
                 OnTitanDie(photonView);
 
                 // TODO: Mod
-                Guardian.Mod.Gamemodes.Current.OnTitanKilled(this, photonView.owner, speed);
+                Guardian.Mod.Gamemodes.CurrentMode.OnTitanKilled(this, photonView.owner, speed);
             }
             base.photonView.RPC("netDie", PhotonTargets.OthersBuffered);
             if (grabbedTarget != null)
@@ -2185,7 +2183,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netSetLevel(float level, int AI, int skinColor, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.Titans.IsLevelSetValid(this, info) && base.photonView.isMine)
+        if (!Guardian.AntiAbuse.Validators.Titan.IsLevelSetValid(this, info) && base.photonView.isMine)
         {
             base.photonView.RPC("netSetLevel", PhotonTargets.OthersBuffered, this.myLevel, this.myDifficulty, this.skinColor);
             return;
@@ -3652,7 +3650,7 @@ public class TITAN : Photon.MonoBehaviour
 
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
                 {
-                    hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "[FF0000]Explosion ");
+                    hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "[FF4444]Explosion ");
                 }
                 else
                 {
@@ -3765,18 +3763,8 @@ public class TITAN : Photon.MonoBehaviour
         {
             foreach (Renderer renderer in GetComponentsInChildren<Renderer>())
             {
-                renderer.enabled = true;
                 if (renderer.name.Contains("eye")) // Eyes
                 {
-                    if (oldEyeMaterial != null)
-                    {
-                        renderer.material = oldEyeMaterial;
-                    }
-                    else
-                    {
-                        oldEyeMaterial = new Material(renderer.material);
-                    }
-
                     if (eye.ToLower() == "transparent")
                     {
                         renderer.enabled = false;
@@ -3785,7 +3773,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(eye))
                         {
-                            WWW link2 = Guardian.Utilities.GameHelper.CreateWWW(eye);
+                            WWW link2 = Guardian.AntiAbuse.Validators.Skins.CreateWWW(eye);
                             if (link2 != null)
                             {
                                 yield return link2;
@@ -3796,11 +3784,10 @@ public class TITAN : Photon.MonoBehaviour
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(eye))
                                 {
                                     unload = true;
-                                    Material eyeMat = new Material(renderer.material);
-                                    eyeMat.mainTextureScale = new Vector2(eyeMat.mainTextureScale.x * 4f, eyeMat.mainTextureScale.y * 8f);
-                                    eyeMat.mainTextureOffset = new Vector2(0f, 0f);
-                                    eyeMat.mainTexture = tex2;
-                                    FengGameManagerMKII.LinkHash[0].Add(eye, eyeMat);
+                                    renderer.material.mainTextureScale = new Vector2(renderer.material.mainTextureScale.x * 4f, renderer.material.mainTextureScale.y * 8f);
+                                    renderer.material.mainTextureOffset = new Vector2(0f, 0f);
+                                    renderer.material.mainTexture = tex2;
+                                    FengGameManagerMKII.LinkHash[0].Add(eye, renderer.material);
                                 }
                                 renderer.material = (Material)FengGameManagerMKII.LinkHash[0][eye];
                             }
@@ -3815,7 +3802,7 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     if (!FengGameManagerMKII.LinkHash[2].ContainsKey(body))
                     {
-                        WWW link = Guardian.Utilities.GameHelper.CreateWWW(body);
+                        WWW link = Guardian.AntiAbuse.Validators.Skins.CreateWWW(body);
                         if (link != null)
                         {
                             yield return link;

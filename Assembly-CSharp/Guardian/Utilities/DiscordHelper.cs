@@ -16,7 +16,7 @@
                     s_discordInstance.GetUserManager().OnCurrentUserUpdate += () =>
                     {
                         Discord.User currentUser = s_discordInstance.GetUserManager().GetCurrentUser();
-                        Mod.Logger.Debug($"Connected to Discord as {currentUser.Username}#{currentUser.Discriminator}");
+                        Mod.Logger.Debug($"Connected to Discord for Rich Presence.");
                     };
 
                     s_discordInstance.SetLogHook(Discord.LogLevel.Debug, (logLevel, message) =>

@@ -98,7 +98,7 @@ public class HeroStat
 
             // Custom default
             HeroStat customDefault = new HeroStat();
-            customDefault.SkillId = "petra";
+            customDefault.SkillId = "jean";
             customDefault.Speed = 100;
             customDefault.Gas = 100;
             customDefault.Blade = 100;
@@ -107,7 +107,7 @@ public class HeroStat
             // AHSS default
             HeroStat ahssDefault = new HeroStat();
             ahssDefault.Name = "AHSS";
-            ahssDefault.SkillId = "sasha";
+            ahssDefault.SkillId = "jean";
             ahssDefault.Speed = 100;
             ahssDefault.Gas = 100;
             ahssDefault.Blade = 100;

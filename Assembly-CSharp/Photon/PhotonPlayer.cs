@@ -61,6 +61,7 @@ public class PhotonPlayer
     public bool IsExp;
     public bool IsTRAP;
     public bool IsRRC;
+    public bool IsPhotonMod;
     public bool IsAnarchy;
     public bool IsAnarchyExp;
     public bool IsCyrus;

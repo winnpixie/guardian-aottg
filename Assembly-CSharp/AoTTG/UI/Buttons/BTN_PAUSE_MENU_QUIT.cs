@@ -15,8 +15,15 @@ public class BTN_PAUSE_MENU_QUIT : MonoBehaviour
         Screen.lockCursor = false;
         Screen.showCursor = true;
         IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
-        GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().gameStart = false;
-        GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = false;
+
+        FengGameManagerMKII.Instance.gameStart = false;
+
+        GameObject imc = GameObject.Find("InputManagerController");
+        if(imc != null)
+        {
+            imc.GetComponent<FengCustomInputs>().menuOn = false;
+        }
+
         Object.Destroy(GameObject.Find("MultiplayerManager"));
         Application.LoadLevel("menu");
     }

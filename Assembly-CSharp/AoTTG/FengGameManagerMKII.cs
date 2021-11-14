@@ -198,6 +198,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     }
     // END: MOD
 
+    // BEGIN: TLW/RRC
+    [RPC]
+    public void TheirPing(int ping, PhotonMessageInfo info)
+    {
+        info.sender.Ping = ping;
+    }
+    // END: TLW/RRC
+
     public void AddHero(HERO hero)
     {
         heroes.Add(hero);
@@ -2365,7 +2373,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
                 if (!PhotonNetwork.room.open || (maxPlayers != 0 && playerCount >= maxPlayers) || !PhotonNetwork.room.open)
                 {
-                    topRightText += "[FF0000]";
+                    topRightText += "[FF4444]";
                 }
                 else
                 {
@@ -3019,6 +3027,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             totalDmg
         );
 
+        if (player.Ping >= 0)
+        {
+            content += " [" + player.Ping + "ms]";
+        }
+
         return content + $" {Guardian.AntiAbuse.ModDetector.GetMods(player)[0]}\n";
     }
 
@@ -3339,10 +3352,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                         else
                         {
-                            for (int j = 0; j < 5; j++)
-                            {
-                                UpdatePlayerKillInfo(0, player);
-                            }
+                            UpdatePlayerKillInfo(0, player);
                         }
                         base.photonView.RPC("Chat", PhotonTargets.All, winnerName.ColorParsed() + " wins.".AsColor("FFCC00"), string.Empty);
                         WinGame();
@@ -5759,6 +5769,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     {
                         continue;
                     }
+
                     if (titanSpawner.name == "spawnAnnie")
                     {
                         PhotonNetwork.Instantiate("FEMALE_TITAN", titanSpawner.location, new Quaternion(0f, 0f, 0f, 1f), 0);
@@ -5783,6 +5794,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 break;
                         }
                     }
+
                     if (titanSpawner.endless)
                     {
                         titanSpawner.time = titanSpawner.delay;
@@ -6290,10 +6302,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             PlayerPrefs.GetFloat("bombG", 1f),
             PlayerPrefs.GetFloat("bombB", 1f),
             PlayerPrefs.GetFloat("bombA", 1f),
-            PlayerPrefs.GetInt("bombRadius", 5),
-            PlayerPrefs.GetInt("bombRange", 5),
-            PlayerPrefs.GetInt("bombSpeed", 5),
-            PlayerPrefs.GetInt("bombCD", 5),
+            PlayerPrefs.GetFloat("bombRadius", 5),
+            PlayerPrefs.GetFloat("bombRange", 5),
+            PlayerPrefs.GetFloat("bombSpeed", 5),
+            PlayerPrefs.GetFloat("bombCD", 5),
             PlayerPrefs.GetString("cannonUp", "W"),
             PlayerPrefs.GetString("cannonDown", "S"),
             PlayerPrefs.GetString("cannonLeft", "A"),
@@ -7110,7 +7122,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 // TODO: Old limit: 500KB
                 if (skyFront.EndsWith(".jpg") || skyFront.EndsWith(".png") || skyFront.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyFront);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyFront);
                     if (www != null)
                     {
                         using (www)
@@ -7124,7 +7136,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyBack.EndsWith(".jpg") || skyBack.EndsWith(".png") || skyBack.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyBack);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyBack);
                     if (www != null)
                     {
                         using (www)
@@ -7138,7 +7150,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyLeft.EndsWith(".jpg") || skyLeft.EndsWith(".png") || skyLeft.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyLeft);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyLeft);
                     if (www != null)
                     {
                         using (www)
@@ -7152,7 +7164,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyRight.EndsWith(".jpg") || skyRight.EndsWith(".png") || skyRight.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyRight);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyRight);
                     if (www != null)
                     {
                         using (www)
@@ -7166,7 +7178,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyUp.EndsWith(".jpg") || skyUp.EndsWith(".png") || skyUp.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyUp);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyUp);
                     if (www != null)
                     {
                         using (www)
@@ -7180,7 +7192,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyDown.EndsWith(".jpg") || skyDown.EndsWith(".png") || skyDown.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyDown);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyDown);
                     if (www != null)
                     {
                         using (www)
@@ -7204,17 +7216,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Load ground skin
-        foreach (GameObject ground in groundList)
-        {
-            if (ground != null && ground.renderer != null)
-            {
-                foreach (Renderer renderer in ground.GetComponentsInChildren<Renderer>())
-                {
-                    renderer.enabled = true;
-                }
-            }
-        }
-
         if (linkGround.EndsWith(".jpg") || linkGround.EndsWith(".png") || linkGround.EndsWith(".jpeg"))
         {
             foreach (GameObject ground in groundList)
@@ -7227,7 +7228,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             if (!LinkHash[0].ContainsKey(linkGround))
                             {
-                                WWW www = Guardian.Utilities.GameHelper.CreateWWW(linkGround);
+                                WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(linkGround);
                                 if (www != null)
                                 {
                                     using (www)
@@ -7372,7 +7373,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 // TODO: Old limit: 500KB
                 if (skyFront.EndsWith(".jpg") || skyFront.EndsWith(".png") || skyFront.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyFront);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyFront);
                     if (www != null)
                     {
                         using (www)
@@ -7386,7 +7387,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyBack.EndsWith(".jpg") || skyBack.EndsWith(".png") || skyBack.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyBack);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyBack);
                     if (www != null)
                     {
                         using (www)
@@ -7400,7 +7401,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyLeft.EndsWith(".jpg") || skyLeft.EndsWith(".png") || skyLeft.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyLeft);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyLeft);
                     if (www != null)
                     {
                         using (www)
@@ -7414,7 +7415,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyRight.EndsWith(".jpg") || skyRight.EndsWith(".png") || skyRight.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyRight);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyRight);
                     if (www != null)
                     {
                         using (www)
@@ -7428,7 +7429,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyUp.EndsWith(".jpg") || skyUp.EndsWith(".png") || skyUp.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyUp);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyUp);
                     if (www != null)
                     {
                         using (www)
@@ -7442,7 +7443,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyDown.EndsWith(".jpg") || skyDown.EndsWith(".png") || skyDown.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(skyDown);
+                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(skyDown);
                     if (www != null)
                     {
                         using (www)
@@ -7476,11 +7477,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     if (obj4 != null)
                     {
-                        foreach (Renderer renderer in obj4.GetComponentsInChildren<Renderer>())
-                        {
-                            renderer.enabled = true;
-                        }
-
                         if (obj4.name.Contains("TREE") && n.Length > startIndex + 1)
                         {
                             string str12 = n.Substring(startIndex, 1);
@@ -7499,7 +7495,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                             {
                                                 if (!LinkHash[2].ContainsKey(key2))
                                                 {
-                                                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(key2);
+                                                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(key2);
                                                     if (www != null)
                                                     {
                                                         using (www)
@@ -7530,7 +7526,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                             {
                                                 if (!LinkHash[0].ContainsKey(str10))
                                                 {
-                                                    WWW www = Guardian.Utilities.GameHelper.CreateWWW(str10);
+                                                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(str10);
                                                     if (www != null)
                                                     {
                                                         using (www)
@@ -7578,7 +7574,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     {
                                         if (!LinkHash[0].ContainsKey(str9))
                                         {
-                                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(str9);
+                                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(str9);
                                             if (www != null)
                                             {
                                                 using (www)
@@ -7642,7 +7638,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     {
                                         if (!LinkHash[0].ContainsKey(str8))
                                         {
-                                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(str8);
+                                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(str8);
                                             if (www != null)
                                             {
                                                 using (www)
@@ -7691,7 +7687,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     {
                                         if (!LinkHash[0].ContainsKey(str7))
                                         {
-                                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(str7);
+                                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(str7);
                                             if (www != null)
                                             {
                                                 using (www)
@@ -7736,7 +7732,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     {
                                         if (!LinkHash[2].ContainsKey(str5))
                                         {
-                                            WWW www = Guardian.Utilities.GameHelper.CreateWWW(str5);
+                                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(str5);
                                             if (www != null)
                                             {
                                                 using (www)
@@ -7777,7 +7773,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 {
                                     if (!LinkHash[2].ContainsKey(str4))
                                     {
-                                        WWW www = Guardian.Utilities.GameHelper.CreateWWW(str4);
+                                        WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(str4);
                                         if (www != null)
                                         {
                                             using (www)
@@ -7846,7 +7842,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     if (GUI.Button(new Rect(10, 265, 220, 150), aot2Patreon))
                     {
-                        Application.OpenURL("https://www.patreon.com/aottg2");
+                        Application.OpenURL("http://ad.aottg.tk/6498380/aottg2-patreon");
                     }
                 }
 
@@ -11069,55 +11065,55 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 285f, 95f, 22f), "Bomb Speed:", "Label");
                         GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 310f, 95f, 22f), "Bomb CD:", "Label");
                         GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 335f, 95f, 22f), "Unused Points:", "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 235f, 20f, 22f), ((int)Settings[250]).ToString(), "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 260f, 20f, 22f), ((int)Settings[251]).ToString(), "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 285f, 20f, 22f), ((int)Settings[252]).ToString(), "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 310f, 20f, 22f), ((int)Settings[253]).ToString(), "Label");
-                        int unusedBombPoints = 20 - (int)Settings[250] - (int)Settings[251] - (int)Settings[252] - (int)Settings[253];
+                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 235f, 20f, 22f), ((float)Settings[250]).ToString(), "Label");
+                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 260f, 20f, 22f), ((float)Settings[251]).ToString(), "Label");
+                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 285f, 20f, 22f), ((float)Settings[252]).ToString(), "Label");
+                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 310f, 20f, 22f), ((float)Settings[253]).ToString(), "Label");
+                        float unusedBombPoints = 20 - (float)Settings[250] - (float)Settings[251] - (float)Settings[252] - (float)Settings[253];
                         GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 335f, 20f, 22f), unusedBombPoints.ToString(), "Label");
                         if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 235f, 20f, 20f), "-"))
                         {
-                            if ((int)Settings[250] > 0)
+                            if ((float)Settings[250] > 0)
                             {
-                                Settings[250] = (int)Settings[250] - 1;
+                                Settings[250] = (float)Settings[250] - 0.5f;
                             }
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 235f, 20f, 20f), "+") && (int)Settings[250] < 10 && unusedBombPoints > 0)
+                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 235f, 20f, 20f), "+") && (float)Settings[250] < 10 && unusedBombPoints > 0)
                         {
-                            Settings[250] = (int)Settings[250] + 1;
+                            Settings[250] = (float)Settings[250] + 0.5f;
                         }
                         if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 260f, 20f, 20f), "-"))
                         {
-                            if ((int)Settings[251] > 0)
+                            if ((float)Settings[251] > 0)
                             {
-                                Settings[251] = (int)Settings[251] - 1;
+                                Settings[251] = (float)Settings[251] - 0.5f;
                             }
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 260f, 20f, 20f), "+") && (int)Settings[251] < 10 && unusedBombPoints > 0)
+                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 260f, 20f, 20f), "+") && (float)Settings[251] < 10 && unusedBombPoints > 0)
                         {
-                            Settings[251] = (int)Settings[251] + 1;
+                            Settings[251] = (float)Settings[251] + 0.5f;
                         }
                         if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 285f, 20f, 20f), "-"))
                         {
-                            if ((int)Settings[252] > 0)
+                            if ((float)Settings[252] > 0)
                             {
-                                Settings[252] = (int)Settings[252] - 1;
+                                Settings[252] = (float)Settings[252] - 0.5f;
                             }
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 285f, 20f, 20f), "+") && (int)Settings[252] < 10 && unusedBombPoints > 0)
+                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 285f, 20f, 20f), "+") && (float)Settings[252] < 10 && unusedBombPoints > 0)
                         {
-                            Settings[252] = (int)Settings[252] + 1;
+                            Settings[252] = (float)Settings[252] + 0.5f;
                         }
                         if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 310f, 20f, 20f), "-"))
                         {
-                            if ((int)Settings[253] > 0)
+                            if ((float)Settings[253] > 0)
                             {
-                                Settings[253] = (int)Settings[253] - 1;
+                                Settings[253] = (float)Settings[253] - 0.5f;
                             }
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 310f, 20f, 20f), "+") && (int)Settings[253] < 10 && unusedBombPoints > 0)
+                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 310f, 20f, 20f), "+") && (float)Settings[253] < 10 && unusedBombPoints > 0)
                         {
-                            Settings[253] = (int)Settings[253] + 1;
+                            Settings[253] = (float)Settings[253] + 0.5f;
                         }
                         break;
                 }
