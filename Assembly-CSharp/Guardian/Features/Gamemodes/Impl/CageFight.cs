@@ -65,7 +65,7 @@ namespace Guardian.Features.Gamemodes.Impl
                 roundStartTime = GameHelper.CurrentTimeMillis();
 
                 GameHelper.Broadcast("Cage Fight! Each kill puts another titan in the opponents ring, whoever dies first loses!");
-                GameHelper.Broadcast("\tStarting in 5 seconds...");
+                GameHelper.Broadcast("Starting in 5 seconds...");
             }
         }
 
@@ -149,11 +149,15 @@ namespace Guardian.Features.Gamemodes.Impl
         {
             if (killer == playerOne)
             {
-                SpawnTitan(1);
+                SpawnTitan(1, titan);
             }
             else if (killer == playerTwo)
             {
-                SpawnTitan(0);
+                SpawnTitan(0, titan);
+            }
+            else
+            {
+                SpawnTitan(titan.transform.position, titan);
             }
         }
 
@@ -173,6 +177,11 @@ namespace Guardian.Features.Gamemodes.Impl
                     break;
             }
 
+            return SpawnTitan(position, originalTitan);
+        }
+
+        private TITAN SpawnTitan(Vector3 position, TITAN originalTitan = null)
+        {
             GameObject go = FengGameManagerMKII.Instance.SpawnTitanRaw(position, Quaternion.identity);
 
             if (originalTitan != null)

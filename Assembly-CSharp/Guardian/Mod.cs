@@ -11,7 +11,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "11142021";
+        public static string Build = "11152021";
         public static string RootDir = Application.dataPath + "\\..";
 
         public static CommandManager Commands = new CommandManager();
@@ -20,7 +20,6 @@ namespace Guardian
         public static UI.UIManager Menus;
         public static Regex BlacklistedTags = new Regex("<(\\/?)(size|material|quad)(.*)>", RegexOptions.IgnoreCase);
         public static Logger Logger = new Logger();
-        public static bool IsMultiMap = false;
         public static bool IsProgramQuitting = false;
         public static FrameCounter FpsCounter = new FrameCounter();
 
@@ -99,7 +98,7 @@ namespace Guardian
 
                 try
                 {
-                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF4444]Could not verify version. If errors persists, contact me @ [0099FF]https://cb.run/FFT[-]!";
+                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Could not verify version.[-] If errors persists, contact me @ [0099FF]https://cb.run/FFT[-]!";
                 }
                 catch { }
             }
@@ -110,13 +109,13 @@ namespace Guardian
 
                 if (!latestVersion.Equals(Build))
                 {
-                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().AsColor("FF4444")}, please update using the launcher!");
+                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().AsColor("FF0000")}, please update using the launcher!");
                     Logger.Info("Launcher Download:");
                     Logger.Info($"\t- {"https://cb.run/GuardianAoT".AsColor("0099FF")}");
 
                     try
                     {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF4444]Outdated![-] Please update using the launcher @ [0099FF]https://cb.run/GuardianAoT[-]!";
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Please update using the launcher @ [0099FF]https://cb.run/GuardianAoT[-]!";
                     }
                     catch { }
                 }
@@ -278,7 +277,7 @@ namespace Guardian
 
                 if (sender == null || sender.isMasterClient)
                 {
-                    if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string mapName && IsMultiMap)
+                    if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string mapName)
                     {
                         LevelInfo levelInfo = LevelInfo.GetInfo(mapName);
                         if (levelInfo != null)
@@ -315,7 +314,6 @@ namespace Guardian
 
         void OnJoinedRoom()
         {
-            IsMultiMap = PhotonNetwork.room.name.Split('`')[1].StartsWith("Multi-Map");
             s_firstJoin = true;
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable

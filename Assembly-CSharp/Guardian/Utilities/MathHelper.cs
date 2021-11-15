@@ -31,6 +31,14 @@ namespace Guardian.Utilities
         // Min-inclusive, max-exclusive
         public static int RandomInt(int min, int max)
         {
+            // Swap min and max values if min > max
+            if (min > max)
+            {
+                min += max;
+                max = min - max;
+                min -= max;
+            }
+
             return s_rng.Next(min, max);
         }
 

@@ -1210,8 +1210,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             IN_GAME_MAIN_CAMERA.Lighting = dayLight;
         }
 
-        if (roomInfo[1].StartsWith("Multi-Map")
-            && PhotonNetwork.room.customProperties.ContainsKey("Map")
+        if (PhotonNetwork.room.customProperties.ContainsKey("Map")
             && PhotonNetwork.room.customProperties["Map"] is string)
         {
             string map = (string)PhotonNetwork.room.customProperties["Map"];
@@ -11326,10 +11325,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     PlayerPrefs.SetFloat("bombG", (float)Settings[247]);
                     PlayerPrefs.SetFloat("bombB", (float)Settings[248]);
                     PlayerPrefs.SetFloat("bombA", (float)Settings[249]);
-                    PlayerPrefs.SetInt("bombRadius", (int)Settings[250]);
-                    PlayerPrefs.SetInt("bombRange", (int)Settings[251]);
-                    PlayerPrefs.SetInt("bombSpeed", (int)Settings[252]);
-                    PlayerPrefs.SetInt("bombCD", (int)Settings[253]);
+                    PlayerPrefs.SetFloat("bombRadius", (float)Settings[250]);
+                    PlayerPrefs.SetFloat("bombRange", (float)Settings[251]);
+                    PlayerPrefs.SetFloat("bombSpeed", (float)Settings[252]);
+                    PlayerPrefs.SetFloat("bombCD", (float)Settings[253]);
                     PlayerPrefs.SetString("cannonUp", (string)Settings[254]);
                     PlayerPrefs.SetString("cannonDown", (string)Settings[255]);
                     PlayerPrefs.SetString("cannonLeft", (string)Settings[256]);

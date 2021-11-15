@@ -396,20 +396,6 @@ public class LevelInfo
                     HasSupply = true,
                     PlayerTitans = false
                 },
-                // Guardian
-                new LevelInfo
-                {
-                    Name = "Multi-Map",
-                    Map = "The City I",
-                    Description = "Play any map at any point during the game.",
-                    Enemies = 10,
-                    Mode = GameMode.KillTitans,
-                    RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
-                    PlayerTitans = true,
-                    PVP = true,
-                    Punks = true
-                },
                 // Anarchy
                 new LevelInfo
                 {

@@ -2170,7 +2170,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!PhotonNetwork.isMasterClient || Guardian.Mod.Properties.UseSkyBarrier.Value)
                 {
-                    float y = FengGameManagerMKII.Level.Map.StartsWith("The City") ? 210 : FengGameManagerMKII.Level.Map.StartsWith("The Forest") ? 280 : -1;
+                    float y = FengGameManagerMKII.Level.Name.Contains("City") ? 210
+                        : FengGameManagerMKII.Level.Name.Contains("Forest") ? 280 : -1;
 
                     if (y > 0)
                     {

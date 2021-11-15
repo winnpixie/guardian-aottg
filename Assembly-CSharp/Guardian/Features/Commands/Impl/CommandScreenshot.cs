@@ -9,7 +9,7 @@ namespace Guardian.Features.Commands.Impl
     {
         private string SaveDir = Mod.RootDir + "\\Screenshots";
 
-        public CommandScreenshot() : base("screenshot", new string[] { "ss" }, string.Empty, false) { }
+        public CommandScreenshot() : base("screenshot", new string[] { "ss" }, "[scale]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
@@ -19,6 +19,10 @@ namespace Guardian.Features.Commands.Impl
                 if (scale > 4)
                 {
                     scale = 4;
+                }
+                else if (scale < 0.1)
+                {
+                    scale = 0.1f;
                 }
             }
 
