@@ -1,8 +1,6 @@
-﻿using Guardian.Utilities;
-
-namespace Guardian.AntiAbuse.Validators
+﻿namespace Guardian.AntiAbuse.Validators
 {
-    class FGManager
+    class FGMChecker
     {
         // FengGameManagerMKII.pauseRPC
         public static bool IsPauseStateChangeValid(PhotonMessageInfo info)
@@ -110,7 +108,7 @@ namespace Guardian.AntiAbuse.Validators
         public static bool IsNetShowDamageValid(PhotonMessageInfo info)
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer
-                && (info == null || !(info.sender.isMasterClient || GameHelper.IsPT(info.sender))))
+                && (info == null || !(info.sender.isMasterClient || info.sender.IsTitan)))
             {
                 Mod.Logger.Error($"'FengGameManagerMKII.netShowDamage' from #{(info == null ? "?" : info.sender.Id.ToString())}");
                 if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
@@ -131,7 +129,7 @@ namespace Guardian.AntiAbuse.Validators
                 && (info.sender.isMasterClient
                 || info.sender.isLocal
                 || (isKillerTitan && damage == 0)
-                || (isVictimTitan && (damage >= 10 || GameHelper.IsPT(info.sender)))
+                || (isVictimTitan && (damage >= 10 || info.sender.IsTitan))
                 || (isKillerTitan == isVictimTitan && damage == 0)))
             {
                 return true;

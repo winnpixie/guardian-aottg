@@ -14,6 +14,8 @@ namespace Guardian.Features.Properties
         public Property<bool> UseSkyBarrier = new Property<bool>("Gamemodes_Bomb:UseSkyBarrier", new string[0], true);
 
         // Master Client
+        public Property<bool> AnnounceRoundTime = new Property<bool>("MC_AnnounceRoundTime", new string[0], true);
+        public Property<bool> AnnounceWaveTime = new Property<bool>("MC_AnnounceWaveTime", new string[0], true);
         public Property<bool> EndlessTitans = new Property<bool>("MC_EndlessTitans", new string[0], false);
         public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], true);
         public Property<bool> OGPunkHair = new Property<bool>("MC_OGPunkHair", new string[0], true);
@@ -60,12 +62,16 @@ namespace Guardian.Features.Properties
 
         // Visual [Render]
         public Property<int> DrawDistance = new Property<int>("Visual_DrawDistance", new string[0], 1500);
-        public Property<bool> Fog = new Property<bool>("Visual_Fog", new string[0], false);
+        public Property<int> FieldOfView = new Property<int>("Visual_FieldOfView", new string[0], 50);
+        public Property<bool> Fog = new Property<bool>("Visual_Fog", new string[0], true);
+        public Property<string> FogColor = new Property<string>("Visual_FogColor", new string[0], "18181865");
+        public Property<float> FogDensity = new Property<float>("Visual_FogDensity", new string[0], 0.01f);
         public Property<bool> SoftShadows = new Property<bool>("Visual_SoftShadows", new string[0], false);
         // Visual [Misc]
         public Property<string> Flare1Color = new Property<string>("Visual_Flare1Color", new string[0], "00FF007B");
         public Property<string> Flare2Color = new Property<string>("Visual_Flare2Color", new string[0], "FF00007B");
         public Property<string> Flare3Color = new Property<string>("Visual_Flare3Color", new string[0], "00000087");
+        public Property<bool> EmissiveFlares = new Property<bool>("Visual_EmissiveFlares", new string[0], true);
         public Property<bool> FPSCamera = new Property<bool>("Visual_FPSCamera", new string[0], false);
         public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], false);
 
@@ -85,6 +91,8 @@ namespace Guardian.Features.Properties
             base.Add(UseSkyBarrier);
 
             // Master-Client
+            base.Add(AnnounceRoundTime);
+            base.Add(AnnounceWaveTime);
             base.Add(EndlessTitans);
             base.Add(InfiniteRoom);
             base.Add(OGPunkHair);
@@ -104,7 +112,7 @@ namespace Guardian.Features.Properties
             Interpolation.OnValueChanged = () =>
             {
                 HERO myHero = IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer ?
-                    FengGameManagerMKII.Instance.Heroes[0] : GameHelper.GetHero(PhotonNetwork.player);
+                    FengGameManagerMKII.Instance.Heroes[0] : PhotonNetwork.player.GetHero();
 
                 if (myHero != null)
                 {
@@ -183,10 +191,23 @@ namespace Guardian.Features.Properties
 
             Fog.OnValueChanged = () =>
             {
-                RenderSettings.fogColor = 0x222222FF.ToColor();
                 RenderSettings.fog = Fog.Value;
+                RenderSettings.fogMode = FogMode.Linear;
+                RenderSettings.fogEndDistance = 650f;
             };
             base.Add(Fog);
+
+            FogColor.OnValueChanged = () =>
+            {
+                RenderSettings.fogColor = FogColor.Value.ToColor();
+            };
+            base.Add(FogColor);
+
+            FogDensity.OnValueChanged = () =>
+            {
+                RenderSettings.fogDensity = FogDensity.Value;
+            };
+            base.Add(FogDensity);
 
             SoftShadows.OnValueChanged = () =>
             {
@@ -215,6 +236,7 @@ namespace Guardian.Features.Properties
             base.Add(Flare1Color);
             base.Add(Flare2Color);
             base.Add(Flare3Color);
+            base.Add(EmissiveFlares);
             base.Add(FPSCamera);
             base.Add(MultiplayerNapeMeat);
 
@@ -230,6 +252,8 @@ namespace Guardian.Features.Properties
             base.Add(MaxLogLines);
             base.Add(ShowLog);
             base.Add(LogBackground);
+
+            Mod.Logger.Debug($"Registered {Elements.Count} properties.");
 
             LoadFromFile();
             Save();

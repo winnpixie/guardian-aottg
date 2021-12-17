@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Guardian.AntiAbuse.Validators
 {
-    class Skins
+    class SkinChecker
     {
         public static string HostWhitelistPath = Mod.RootDir + "\\Hosts.txt";
         public static List<string> HostWhitelist = new List<string>();
@@ -27,9 +27,10 @@ namespace Guardian.AntiAbuse.Validators
 
             if (HostWhitelist.Count < 1)
             {
-                Mod.Logger.Warn("Accepting ALL hosts for the skin whitelist.");
+                Mod.Logger.Warn("Accepting ALL hosts for skins.");
                 Mod.Logger.Warn("\tThis leaves you at risk of being IP-logged!".AsColor("FF4444"));
-            } else
+            }
+            else
             {
                 Mod.Logger.Debug($"Accepting {HostWhitelist.Count} host(s) for the skin whitelist.");
             }
@@ -42,26 +43,22 @@ namespace Guardian.AntiAbuse.Validators
                 return new WWW(url);
             }
 
-            if (Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri)) return null;
+
+            string textureHost = uri.Authority;
+            textureHost = textureHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? textureHost.Substring(4) : textureHost;
+
+            foreach (string hostEntry in HostWhitelist)
             {
-                string textureHost = uri.Authority;
-                textureHost = textureHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? textureHost.Substring(4) : textureHost;
+                string host = hostEntry.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? hostEntry.Substring(4) : hostEntry;
+                if (!textureHost.Equals(host, StringComparison.OrdinalIgnoreCase)) continue;
 
-                foreach (string whitelistHost in HostWhitelist)
-                {
-                    string host = whitelistHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? whitelistHost.Substring(4) : whitelistHost;
-                    if (textureHost.Equals(host, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return new WWW(url);
-                    }
-                }
-
-                if (textureHost.Length > 0)
-                {
-                    Mod.Logger.Warn($"Unwhitelisted host: {textureHost}");
-                }
+                return new WWW(url);
             }
 
+            if (textureHost.Length < 1) return null;
+
+            Mod.Logger.Warn($"Unwhitelisted host: {textureHost}");
             return null;
         }
     }

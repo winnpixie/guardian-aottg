@@ -18,29 +18,26 @@ namespace Guardian.Features.Commands.Impl
                         Mod.Logger.Info("Event log has been cleared!");
                         break;
                     case "global":
-                        if (PhotonNetwork.isMasterClient)
+                        if (!PhotonNetwork.isMasterClient) break;
+
+                        InRoomChat.Messages = new List<InRoomChat.Message>();
+                        for (int i = 0; i < 14; i++)
                         {
-                            InRoomChat.Messages = new List<InRoomChat.Message>();
-                            for (int i = 0; i < 14; i++)
-                            {
-                                GameHelper.Broadcast(" ");
-                            }
-                            GameHelper.Broadcast("Global chat has been cleared!".AsColor("AAFF00"));
+                            GameHelper.Broadcast(" ");
                         }
+                        GameHelper.Broadcast("Global chat has been cleared!".AsColor("AAFF00"));
                         break;
                     default:
-                        if (int.TryParse(args[0], out int id) && PhotonNetwork.isMasterClient)
+                        if (!PhotonNetwork.isMasterClient || !int.TryParse(args[0], out int id)) break;
+
+                        PhotonPlayer player = PhotonPlayer.Find(id);
+                        if (player == null) break;
+
+                        for (int i = 0; i < 14; i++)
                         {
-                            PhotonPlayer player = PhotonPlayer.Find(id);
-                            if (player != null)
-                            {
-                                for (int i = 0; i < 14; i++)
-                                {
-                                    FengGameManagerMKII.Instance.photonView.RPC("Chat", player, " ", "[MC]".AsColor("AAFF00").AsBold());
-                                }
-                                GameHelper.Broadcast("Your chat has been cleared!".AsColor("AAFF00"));
-                            }
+                            FengGameManagerMKII.Instance.photonView.RPC("Chat", player, " ", "[MC]".AsColor("AAFF00").AsBold());
                         }
+                        GameHelper.Broadcast("Your chat has been cleared!".AsColor("AAFF00"));
                         break;
                 }
             }

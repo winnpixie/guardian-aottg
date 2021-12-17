@@ -22,7 +22,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     private bool isdestroying;
     public TITAN myTitan;
 
-    // BEGIN Anarchy
+    // BEGIN: Anarchy
     public Transform Transform
     {
         get
@@ -43,7 +43,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     {
         master.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, new object[] { -1, "Trap" });
     }
-    // END Anarchy
+    // END: Anarchy
 
     public void Launch(Vector3 v, Vector3 v2, string launcherRef, bool isLeft, GameObject master, bool leviMode = false)
     {
@@ -90,7 +90,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void myMasterIs(int viewId, string launcherRef, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hooks.IsHookMasterSetValid(this, viewId, info))
+        if (Guardian.AntiAbuse.Validators.HookChecker.IsHookMasterSetValid(this, viewId, info))
         {
             master = PhotonView.Find(viewId).gameObject;
 
@@ -108,7 +108,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void netLaunch(Vector3 newPosition, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hooks.IsLaunchValid(info))
+        if (Guardian.AntiAbuse.Validators.HookChecker.IsLaunchValid(info))
         {
             nodes = new ArrayList();
             nodes.Add(newPosition);
@@ -118,7 +118,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void netUpdatePhase1(Vector3 newPosition, Vector3 masterPosition, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hooks.IsPhaseUpdateValid(info))
+        if (Guardian.AntiAbuse.Validators.HookChecker.IsPhaseUpdateValid(info))
         {
             lineRenderer.SetVertexCount(2);
             lineRenderer.SetPosition(0, newPosition);
@@ -130,7 +130,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void netUpdateLeviSpiral(Vector3 newPosition, Vector3 masterPosition, Vector3 masterrotation, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hooks.IsLeviSpiralValid(info))
+        if (Guardian.AntiAbuse.Validators.HookChecker.IsLeviSpiralValid(info))
         {
             phase = 2;
             leviMode = true;
@@ -239,39 +239,34 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         base.transform.position = p;
     }
 
-    // TODO: Mod, deadly hooks
+    // Deadly hooks
     private void HandleHookToObj(int viewId)
     {
         PhotonView pv = PhotonView.Find(viewId);
+        if (pv == null || !Guardian.Mod.Properties.DeadlyHooks.Value || !PhotonNetwork.isMasterClient) return;
 
-        if (Guardian.Mod.Properties.DeadlyHooks.Value && PhotonNetwork.isMasterClient
-            && pv != null)
+        HERO hero = pv.gameObject.GetComponent<HERO>();
+        if (hero == null || hero.HasDied()) return;
+
+        string killer = GExtensions.AsString(photonView.owner.customProperties[PhotonPlayerProperty.Name]);
+        if (killer.StripNGUI().Length < 1)
         {
-            HERO hero = pv.gameObject.GetComponent<HERO>();
-
-            if (hero != null && !hero.HasDied())
-            {
-                string killer = GExtensions.AsString(photonView.owner.customProperties[PhotonPlayerProperty.Name]);
-                if (killer.Uncolored().Length < 1)
-                {
-                    killer = "Player";
-                }
-                killer += $" [FFCC00]({photonView.owner.Id})[FFFFFF]";
-
-                hero.MarkDead();
-                hero.photonView.RPC("netDie2", pv.owner, -1, $"{killer}'s hook");
-            }
+            killer = "Player";
         }
+        killer += $" [FFCC00]({photonView.owner.Id})[FFFFFF]";
+
+        hero.MarkDead();
+        hero.photonView.RPC("netDie2", pv.owner, -1, $"{killer}'s hook");
     }
 
     [RPC]
     private void tieMeToOBJ(int id, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hooks.IsHookTieValid(this, id, info))
+        if (Guardian.AntiAbuse.Validators.HookChecker.IsHookTieValid(this, id, info))
         {
             base.transform.parent = PhotonView.Find(id).gameObject.transform;
 
-            // TODO: Mod, deadly hooks
+            // Deadly hooks
             HandleHookToObj(id);
         }
     }
@@ -422,7 +417,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [RPC]
     private void killObject(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hooks.IsKillObjectValid(info))
+        if (Guardian.AntiAbuse.Validators.HookChecker.IsKillObjectValid(info))
         {
             UnityEngine.Object.Destroy(rope);
             UnityEngine.Object.Destroy(base.gameObject);
@@ -580,9 +575,9 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
 
     private void Start()
     {
-        // TODO: Mod, load custom textures and audio clips
+        // Load custom textures and audio clips
         {
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Textures/hook.png", out Texture2D hookTexture))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Textures/hook.png", out Texture2D hookTexture))
             {
                 base.gameObject.renderer.material.mainTexture = hookTexture;
             }

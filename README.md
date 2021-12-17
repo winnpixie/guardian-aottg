@@ -85,6 +85,8 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
     - "Quickmatch" button now acts as a way to enter "Offline Mode".
 - Notable and/or more Technical Changes
     - Ability to switch between a UDP or TCP connection to [Photon](https://photonengine.com/)
+- TODO:
+    [ ] Compile 64-bit and 32-bit binaries instead of just 64-bit.
 
 ## In-game Commands
 To view the list of available commands and how to use them, type `/help` in game!

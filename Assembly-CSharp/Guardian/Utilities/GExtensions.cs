@@ -5,7 +5,8 @@ using UnityEngine;
 
 public static class GExtensions
 {
-    private static readonly Regex s_colorPattern = new Regex("\\[([a-fA-F0-9]{6}|-)\\]", RegexOptions.IgnoreCase);
+    private static readonly Regex HexColorPattern = new Regex("\\[([a-f0-9]{6}|-)\\]", RegexOptions.IgnoreCase);
+    private static readonly Regex ColorTagPattern = new Regex("<\\/?color(=#?\\w+)?>", RegexOptions.IgnoreCase);
 
     public static T[] CopyOfRange<T>(this T[] arrIn, int startIndex, int endIndex)
     {
@@ -32,45 +33,41 @@ public static class GExtensions
         return sorted;
     }
 
-    // My implementation of NGUI color parsing
-    public static string ColorParsed(this string str)
+    // Converts a NGUI colored string to be usable in Unity Text
+    public static string NGUIToUnity(this string str)
     {
         string output = string.Empty;
-        Stack<string> colors = new Stack<string>(); // Thank you to Kevin for telling me to use a Stack
-        bool coloring = false;
+        Stack<string> colorStack = new Stack<string>(); // Kudos to Kevin, using a Stack makes this a helluva lot simpler
+        bool needsClosingTag = false;
 
         for (int i = 0; i < str.Length; i++)
         {
             char c = str[i];
 
-            if (c == '[' && i + 2 < str.Length)
+            if (c.Equals('[') && i + 2 < str.Length)
             {
-                if (str[i + 1] == '-' && str[i + 2] == ']') // [-], aka return to previous color in the stack
+                if (str[i + 1].Equals('-') && str[i + 2].Equals(']')) // [-], aka return to previous color in the stack
                 {
-                    string previous = "FFFFFF"; // Default to white
-
-                    if (colors.Count > 0)
+                    if (colorStack.Count > 0)
                     {
-                        colors.Pop();
-
-                        // Is there any color left to use?
-                        if (colors.Count > 0)
-                        {
-                            previous = colors.Peek();
-                        }
+                        colorStack.Pop();
+                    }
+                    if (colorStack.Count < 1)
+                    {
+                        colorStack.Push("FFFFFF"); // No color history, add FFFFFF as the default
                     }
 
-                    output += coloring ? $"</color><color=#{previous}>" : $"<color=#{previous}>";
-                    coloring = true;
+                    output += needsClosingTag ? $"</color><color=#{colorStack.Peek()}>" : $"<color=#{colorStack.Peek()}>";
+                    needsClosingTag = true;
                     i += 2;
                     continue;
                 }
-                else if (i + 7 < str.Length && str[i + 7] == ']' && str.Substring(i + 1, 6).IsHex()) // [RRGGBB], aka use the color supplied by RRGGBB
+                else if (i + 7 < str.Length && str[i + 7].Equals(']') && str.Substring(i + 1, 6).IsHex()) // [RRGGBB], aka use the color supplied by RRGGBB
                 {
                     string color = str.Substring(i + 1, 6).ToUpper();
-                    colors.Push(color);
-                    output += coloring ? $"</color><color=#{color}>" : $"<color=#{color}>";
-                    coloring = true;
+                    colorStack.Push(color);
+                    output += needsClosingTag ? $"</color><color=#{color}>" : $"<color=#{color}>";
+                    needsClosingTag = true;
                     i += 7;
                     continue;
                 }
@@ -79,12 +76,17 @@ public static class GExtensions
             output += c;
         }
 
-        return output + (coloring ? "</color>" : string.Empty);
+        return output + (needsClosingTag ? "</color>" : string.Empty);
     }
 
-    public static string Uncolored(this string str)
+    public static string StripNGUI(this string str)
     {
-        return s_colorPattern.Replace(str, string.Empty);
+        return HexColorPattern.Replace(str, string.Empty);
+    }
+
+    public static string StripUnityColors(this string str)
+    {
+        return ColorTagPattern.Replace(str, string.Empty);
     }
 
     public static bool IsHex(this string str)
@@ -134,26 +136,6 @@ public static class GExtensions
         }
 
         return new Color(r, g, b, a);
-    }
-
-    public static Color ToColor(this int color)
-    {
-        int r = color >> 24 & 0xFF;
-        int g = color >> 16 & 0xFF;
-        int b = color >> 8 & 0xFF;
-        int a = color & 0xFF;
-
-        return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
-    }
-
-    public static Color ToColor(this uint color)
-    {
-        return ToColor(unchecked((int)color));
-    }
-
-    public static Color WithAlpha(this Color color, float alpha)
-    {
-        return new Color(color.r, color.g, color.b, alpha);
     }
 
     public static string AsBold(this string str)
@@ -217,7 +199,7 @@ public static class GExtensions
 
     public static bool TryParseEnum<T>(string input, out T value) where T : Enum
     {
-        value = default;
+        value = default(T);
         try
         {
             Type enumType = typeof(T);
@@ -246,23 +228,22 @@ public static class GExtensions
         return str.Substring(startIndex, len);
     }
 
-    public static bool IsKeyDownInGUI(this KeyCode keyCode)
+    public static bool IsKeyDown(this KeyCode keyCode)
     {
-        if (Event.current != null && Event.current.type == EventType.KeyDown)
-        {
-            return Event.current.keyCode == keyCode;
-        }
-
-        return false;
+        return Event.current != null
+            && Event.current.type == EventType.KeyDown
+            && Event.current.keyCode == keyCode;
     }
 
-    public static bool WasKeyDownInGUI(this KeyCode keyCode)
+    public static bool IsKeyUp(this KeyCode keyCode)
     {
-        if (Event.current != null && Event.current.type == EventType.KeyUp)
-        {
-            return Event.current.keyCode == keyCode;
-        }
+        return Event.current != null
+            && Event.current.type == EventType.KeyUp
+            && Event.current.keyCode == keyCode;
+    }
 
-        return false;
+    public static Vector2 GetScaleVector(this Texture image, int originalWidth, int originalHeight)
+    {
+        return new Vector2(image.width / (float)originalWidth, image.height / (float)originalHeight);
     }
 }

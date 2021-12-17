@@ -16,6 +16,8 @@ namespace Guardian.Features.Gamemodes
             base.Add(new TimeBomb());
 
             CurrentMode = DefaultMode;
+
+            Mod.Logger.Debug($"Registered {Elements.Count} game-modes.");
         }
     }
 }

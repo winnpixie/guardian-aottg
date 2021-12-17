@@ -6,51 +6,51 @@ namespace Guardian.Features.Gamemodes.Impl
 {
     class CageFight : Gamemode
     {
-        private Property<int> _groundLevel = new Property<int>("Gamemodes_CageFight:GroundLevel", new string[0], 0);
+        private Property<int> GroundLevel = new Property<int>("Gamemodes_CageFight:GroundLevel", new string[0], 0);
 
         // Left Bounds
-        private Property<int> _minXLeft = new Property<int>("Gamemodes_CageFight:MinX-Left", new string[0], -400);
-        private Property<int> _maxXLeft = new Property<int>("Gamemodes_CageFight:MaxX-Left", new string[0], -50);
+        private Property<int> LeftMinX = new Property<int>("Gamemodes_CageFight:MinX-Left", new string[0], -400);
+        private Property<int> LeftMaxX = new Property<int>("Gamemodes_CageFight:MaxX-Left", new string[0], -50);
 
-        private Property<int> _minZLeft = new Property<int>("Gamemodes_CageFight:MinZ-Left", new string[0], -400);
-        private Property<int> _maxZLeft = new Property<int>("Gamemodes_CageFight:MaxZ-Left", new string[0], 400);
+        private Property<int> LeftMinZ = new Property<int>("Gamemodes_CageFight:MinZ-Left", new string[0], -400);
+        private Property<int> LeftMaxZ = new Property<int>("Gamemodes_CageFight:MaxZ-Left", new string[0], 400);
 
         // Right Bounds
-        private Property<int> _minXRight = new Property<int>("Gamemodes_CageFight:MinX-Right", new string[0], 50);
-        private Property<int> _maxXRight = new Property<int>("Gamemodes_CageFight:MaxX-Right", new string[0], 400);
+        private Property<int> RightMinX = new Property<int>("Gamemodes_CageFight:MinX-Right", new string[0], 50);
+        private Property<int> RightMaxX = new Property<int>("Gamemodes_CageFight:MaxX-Right", new string[0], 400);
 
-        private Property<int> _minZRight = new Property<int>("Gamemodes_CageFight:MinZ-Right", new string[0], -400);
-        private Property<int> _maxZRight = new Property<int>("Gamemodes_CageFight:MaxZ-Right", new string[0], 400);
+        private Property<int> RightMinZ = new Property<int>("Gamemodes_CageFight:MinZ-Right", new string[0], -400);
+        private Property<int> RightMaxZ = new Property<int>("Gamemodes_CageFight:MaxZ-Right", new string[0], 400);
 
-        private long roundStartTime;
-        private PhotonPlayer playerOne; // Left side
-        private PhotonPlayer playerTwo; // Right side
-        private bool isRoundOver;
+        private long RoundStartTime;
+        private PhotonPlayer PlayerOne; // Left side
+        private PhotonPlayer PlayerTwo; // Right side
+        private bool GameOver;
 
         public CageFight() : base("CageFight", new string[] { "cf", "standoff", "sf" })
         {
-            Mod.Properties.Add(_groundLevel);
+            Mod.Properties.Add(GroundLevel);
 
             // Left
-            Mod.Properties.Add(_minXLeft);
-            Mod.Properties.Add(_maxXLeft);
-            Mod.Properties.Add(_minZLeft);
-            Mod.Properties.Add(_maxZLeft);
+            Mod.Properties.Add(LeftMinX);
+            Mod.Properties.Add(LeftMaxX);
+            Mod.Properties.Add(LeftMinZ);
+            Mod.Properties.Add(LeftMaxZ);
 
             // Right
-            Mod.Properties.Add(_minXRight);
-            Mod.Properties.Add(_maxXRight);
-            Mod.Properties.Add(_minZRight);
-            Mod.Properties.Add(_maxZRight);
+            Mod.Properties.Add(RightMinX);
+            Mod.Properties.Add(RightMaxX);
+            Mod.Properties.Add(RightMinZ);
+            Mod.Properties.Add(RightMaxZ);
         }
 
         public override void OnReset()
         {
-            isRoundOver = false;
-            roundStartTime = -1;
+            GameOver = false;
+            RoundStartTime = -1;
 
-            playerOne = null;
-            playerTwo = null;
+            PlayerOne = null;
+            PlayerTwo = null;
 
             if (!FengGameManagerMKII.Level.Name.StartsWith("Custom"))
             {
@@ -62,7 +62,7 @@ namespace Guardian.Features.Gamemodes.Impl
             }
             else
             {
-                roundStartTime = GameHelper.CurrentTimeMillis();
+                RoundStartTime = GameHelper.CurrentTimeMillis();
 
                 GameHelper.Broadcast("Cage Fight! Each kill puts another titan in the opponents ring, whoever dies first loses!");
                 GameHelper.Broadcast("Starting in 5 seconds...");
@@ -71,87 +71,79 @@ namespace Guardian.Features.Gamemodes.Impl
 
         public override void OnUpdate()
         {
-            if (roundStartTime != -1 && GameHelper.CurrentTimeMillis() - roundStartTime >= 5000)
+            if (RoundStartTime == -1 || GameHelper.CurrentTimeMillis() - RoundStartTime < 5000) return;
+
+            RoundStartTime = -1;
+
+            PlayerOne = PhotonNetwork.playerList[MathHelper.RandomInt(0, PhotonNetwork.playerList.Length)];
+            do
             {
-                roundStartTime = -1;
+                PlayerTwo = PhotonNetwork.playerList[MathHelper.RandomInt(0, PhotonNetwork.playerList.Length)];
+            } while (PlayerOne == PlayerTwo);
 
-                playerOne = PhotonNetwork.playerList[MathHelper.RandomInt(0, PhotonNetwork.playerList.Length)];
+            HERO playerOneHero = PlayerOne.GetHero();
+            HERO playerTwoHero = PlayerTwo.GetHero();
 
-                do
-                {
-                    playerTwo = PhotonNetwork.playerList[MathHelper.RandomInt(0, PhotonNetwork.playerList.Length)];
-                } while (playerOne == playerTwo);
+            if (playerOneHero != null && playerTwoHero != null)
+            {
+                float spawnXL = (LeftMinX.Value + LeftMaxX.Value) / 2f;
+                float spawnZL = (LeftMinZ.Value + LeftMaxZ.Value) / 2f;
+                playerOneHero.photonView.RPC("moveToRPC", PlayerOne, spawnXL, (float)GroundLevel.Value, spawnZL);
 
-                HERO playerOneHero = GameHelper.GetHero(playerOne);
-                HERO playerTwoHero = GameHelper.GetHero(playerTwo);
-
-                if (playerOneHero != null && playerTwoHero != null)
-                {
-                    float spawnXL = (_minXLeft.Value + _maxXLeft.Value) / 2f;
-                    float spawnZL = (_minZLeft.Value + _maxZLeft.Value) / 2f;
-                    playerOneHero.photonView.RPC("moveToRPC", playerOne, spawnXL, (float)_groundLevel.Value, spawnZL);
-
-                    float spawnXR = (_minXRight.Value + _maxXRight.Value) / 2f;
-                    float spawnZR = (_minZRight.Value + _maxZRight.Value) / 2f;
-                    playerTwoHero.photonView.RPC("moveToRPC", playerTwo, spawnXR, (float)_groundLevel.Value, spawnZR);
-                }
-                else
-                {
-                    InRoomChat.Instance.AddLine("One or more players are not spawned in! Trying again in 5 seconds...");
-                    roundStartTime = GameHelper.CurrentTimeMillis();
-                }
-
-                foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
-                {
-                    PhotonNetwork.Destroy(titan.gameObject);
-                }
-
-                SpawnTitan(0);
-                SpawnTitan(1);
+                float spawnXR = (RightMinX.Value + RightMaxX.Value) / 2f;
+                float spawnZR = (RightMinZ.Value + RightMaxZ.Value) / 2f;
+                playerTwoHero.photonView.RPC("moveToRPC", PlayerTwo, spawnXR, (float)GroundLevel.Value, spawnZR);
             }
+            else
+            {
+                InRoomChat.Instance.AddLine("One or more players are not spawned in! Trying again in 5 seconds...");
+                RoundStartTime = GameHelper.CurrentTimeMillis();
+            }
+
+            foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
+            {
+                PhotonNetwork.Destroy(titan.gameObject);
+            }
+
+            SpawnTitan(0);
+            SpawnTitan(1);
         }
 
         public override void OnPlayerLeave(PhotonPlayer player)
         {
-            if (player == playerOne || player == playerTwo)
-            {
-                isRoundOver = true;
+            if (GameOver || (player != PlayerOne && player != PlayerTwo)) return;
+            GameOver = true;
 
-                GameHelper.Broadcast($"{GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed().AsColor("FFFFFF")} forfeit!".AsColor("FF0000"));
+            GameHelper.Broadcast($"{GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity().AsColor("FFFFFF")} forfeit!".AsColor("FF0000"));
 
-                FengGameManagerMKII.Instance.WinGame();
-            }
+            FengGameManagerMKII.Instance.FinishGame();
         }
 
         public override void OnPlayerKilled(HERO hero, int killerId, bool wasKilledByTitan)
         {
-            if (!isRoundOver)
+            if (GameOver || (hero.photonView.owner != PlayerOne && hero.photonView.owner != PlayerTwo)) return;
+
+            GameOver = true;
+
+            if (hero.photonView.owner == PlayerOne)
             {
-                if (hero.photonView.owner == playerOne || hero.photonView.owner == playerTwo)
-                {
-                    isRoundOver = true;
-
-                    if (hero.photonView.owner == playerOne)
-                    {
-                        GameHelper.Broadcast($"{GExtensions.AsString(playerTwo.customProperties[PhotonPlayerProperty.Name]).ColorParsed().AsColor("FFFFFF")} wins!".AsColor("AAFF00"));
-                    }
-                    else if (hero.photonView.owner == playerTwo)
-                    {
-                        GameHelper.Broadcast($"{GExtensions.AsString(playerOne.customProperties[PhotonPlayerProperty.Name]).ColorParsed().AsColor("FFFFFF")} wins!".AsColor("AAFF00"));
-                    }
-
-                    FengGameManagerMKII.Instance.WinGame();
-                }
+                GameHelper.Broadcast($"{GExtensions.AsString(PlayerTwo.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity().AsColor("FFFFFF")} wins!".AsColor("AAFF00"));
             }
+            else if (hero.photonView.owner == PlayerTwo)
+            {
+                GameHelper.Broadcast($"{GExtensions.AsString(PlayerOne.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity().AsColor("FFFFFF")} wins!".AsColor("AAFF00"));
+            }
+
+            FengGameManagerMKII.Instance.FinishGame();
         }
 
         public override void OnTitanKilled(TITAN titan, PhotonPlayer killer, int damage)
         {
-            if (killer == playerOne)
+            if (killer == PlayerOne)
             {
                 SpawnTitan(1, titan);
             }
-            else if (killer == playerTwo)
+            else if (killer == PlayerTwo)
             {
                 SpawnTitan(0, titan);
             }
@@ -170,10 +162,10 @@ namespace Guardian.Features.Gamemodes.Impl
             switch (side)
             {
                 case 0:
-                    position = new Vector3(MathHelper.RandomInt(_minXLeft.Value, _maxXLeft.Value), _groundLevel.Value, MathHelper.RandomInt(_minZLeft.Value, _maxZLeft.Value));
+                    position = new Vector3(MathHelper.RandomInt(LeftMinX.Value, LeftMaxX.Value), GroundLevel.Value, MathHelper.RandomInt(LeftMinZ.Value, LeftMaxZ.Value));
                     break;
                 case 1:
-                    position = new Vector3(MathHelper.RandomInt(_minXRight.Value, _maxXRight.Value), _groundLevel.Value, MathHelper.RandomInt(_minZRight.Value, _maxZRight.Value));
+                    position = new Vector3(MathHelper.RandomInt(RightMinX.Value, RightMaxX.Value), GroundLevel.Value, MathHelper.RandomInt(RightMinZ.Value, RightMaxZ.Value));
                     break;
             }
 

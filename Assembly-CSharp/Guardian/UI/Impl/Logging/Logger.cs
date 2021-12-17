@@ -11,7 +11,7 @@ namespace Guardian
 
         private void Log(string message)
         {
-            message = Mod.BlacklistedTags.Replace(message, string.Empty);
+            message = Mod.BlacklistedTagsPattern.Replace(message, string.Empty);
 
             if (message.Length > 0)
             {

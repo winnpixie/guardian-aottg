@@ -16,13 +16,9 @@ namespace Guardian.Features.Commands.Impl
             float scale = 1f;
             if (args.Length > 0 && float.TryParse(args[0], out scale))
             {
-                if (scale > 4)
+                if (scale <= 0)
                 {
-                    scale = 4;
-                }
-                else if (scale < 0.1)
-                {
-                    scale = 0.1f;
+                    scale = 1f;
                 }
             }
 
@@ -38,6 +34,7 @@ namespace Guardian.Features.Commands.Impl
 
             int width = (int)(Screen.width * scale);
             int height = (int)(Screen.height * scale);
+
             RenderTexture rt = new RenderTexture(width, height, 24);
 
             Camera.main.targetTexture = rt;

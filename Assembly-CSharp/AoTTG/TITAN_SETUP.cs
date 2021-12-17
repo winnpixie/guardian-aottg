@@ -82,7 +82,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             {
                 if (isSkinned)
                 {
-                    StartCoroutine(loadskinE(hairIndex, eyeIndex, text));
+                    StartCoroutine(CoLoadSkin(hairIndex, eyeIndex, text));
                     return;
                 }
                 Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
@@ -188,7 +188,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             {
                 if (isSkinned)
                 {
-                    StartCoroutine(loadskinE(hairIndex, eyeIndex, text));
+                    StartCoroutine(CoLoadSkin(hairIndex, eyeIndex, text));
                     return;
                 }
                 Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
@@ -239,11 +239,11 @@ public class TITAN_SETUP : Photon.MonoBehaviour
     {
         if ((int)FengGameManagerMKII.Settings[1] == 1)
         {
-            StartCoroutine(loadskinE(hair, eye, hairlink));
+            StartCoroutine(CoLoadSkin(hair, eye, hairlink));
         }
     }
 
-    public IEnumerator loadskinE(int hairIndex, int eyeIndex, string hairLink)
+    public IEnumerator CoLoadSkin(int hairIndex, int eyeIndex, string hairLink)
     {
         bool unload = false;
         Object.Destroy(part_hair);
@@ -266,12 +266,12 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(hairLink))
                 {
-                    WWW link = Guardian.AntiAbuse.Validators.Skins.CreateWWW(hairLink);
+                    WWW link = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(hairLink);
                     if (link != null)
                     {
                         yield return link;
 
-                        // TODO: Old limit: 200KB
+                        // Old limit: 200KB
                         Texture2D tex = RCextensions.LoadImage(link, flag, 300000);
                         link.Dispose();
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(hairLink))

@@ -12,17 +12,15 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             if (args.Length > 0)
             {
                 Gamemode oldMode = Mod.Gamemodes.CurrentMode;
-
                 Gamemode newMode = Mod.Gamemodes.Find(args[0]);
-                if (newMode != null)
-                {
-                    GameHelper.Broadcast($"Gamemode Switch ({oldMode.Name} -> {newMode.Name})!");
+                if (newMode == null) return;
 
-                    newMode.OnReset();
-                    Mod.Gamemodes.CurrentMode = newMode;
+                GameHelper.Broadcast($"Gamemode Switch ({oldMode.Name} -> {newMode.Name})!");
 
-                    oldMode.CleanUp();
-                }
+                newMode.OnReset();
+                Mod.Gamemodes.CurrentMode = newMode;
+
+                oldMode.CleanUp();
             }
             else
             {

@@ -46,6 +46,8 @@ public class TITAN_EREN : Photon.MonoBehaviour
     private bool isHitWhileCarryingRock;
     public bool hasSpawn;
 
+    private GameObject mainCamera;
+
     private void OnDestroy()
     {
         GameObject mm = GameObject.Find("MultiplayerManager");
@@ -108,27 +110,33 @@ public class TITAN_EREN : Photon.MonoBehaviour
     }
 
     [RPC]
-    private void netPlayAnimation(string aniName)
+    private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
+        if (!Guardian.AntiAbuse.Validators.ErenChecker.IsAnimationPlayValid(this, info)) return;
+
         LocalPlayAnimation(aniName);
     }
 
     [RPC]
-    private void netPlayAnimationAt(string aniName, float normalizedTime)
+    private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
+        if (!Guardian.AntiAbuse.Validators.ErenChecker.IsAnimationSeekedPlayValid(this, info)) return;
+
         LocalPlayAnimationAt(aniName, normalizedTime);
     }
 
     [RPC]
-    private void netCrossFade(string aniName, float time)
+    private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
+        if (!Guardian.AntiAbuse.Validators.ErenChecker.IsCrossFadeValid(this, info)) return;
+
         LocalCrossFade(aniName, time);
     }
 
     [RPC]
     private void removeMe(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.TitanEren.IsRemovalValid(info))
+        if (Guardian.AntiAbuse.Validators.ErenChecker.IsRemovalValid(info))
         {
             PhotonNetwork.RemoveRPCs(base.photonView);
             UnityEngine.Object.Destroy(base.gameObject);
@@ -551,7 +559,6 @@ public class TITAN_EREN : Photon.MonoBehaviour
     {
         if ((!IN_GAME_MAIN_CAMERA.IsPausing || IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer) && !rockLift && (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine))
         {
-            GameObject mainCamera = GameObject.Find("MainCamera");
             Vector3 eulerAngles = mainCamera.transform.rotation.eulerAngles;
             Quaternion to = Quaternion.Euler(eulerAngles.x, eulerAngles.y, 0f);
             mainCamera.transform.rotation = Quaternion.Lerp(mainCamera.transform.rotation, to, Time.deltaTime * 2f);
@@ -824,7 +831,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             {
                 CrossFade("die", 0.1f);
                 isHitWhileCarryingRock = true;
-                FengGameManagerMKII.Instance.LoseGame();
+                FengGameManagerMKII.Instance.FinishGame(true);
                 base.photonView.RPC("rockPlayAnimation", PhotonTargets.All, "set");
             }
             else
@@ -1082,7 +1089,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
                 {
                     CrossFade("die", 0.1f);
                     rockPhase++;
-                    FengGameManagerMKII.Instance.WinGame();
+                    FengGameManagerMKII.Instance.FinishGame();
                 }
                 if (base.animation["rock_fix_hole"].normalizedTime >= 0.62f && !rockHitGround)
                 {
@@ -1142,7 +1149,8 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
         else
         {
-            currentCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
+            mainCamera = GameObject.Find("MainCamera");
+            currentCamera = mainCamera.GetComponent<Camera>();
             inputManager = GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>();
             oldCorePosition = base.transform.position - base.transform.Find("Amarture/Core").position;
             base.animation["hit_annie_1"].speed = 0.8f;
@@ -1197,12 +1205,12 @@ public class TITAN_EREN : Photon.MonoBehaviour
             {
                 if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
                 {
-                    WWW link = Guardian.AntiAbuse.Validators.Skins.CreateWWW(url);
+                    WWW link = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(url);
                     if (link != null)
                     {
                         yield return link;
 
-                        // TODO: Old limit: 1MB
+                        // Old limit: 1MB
                         Texture2D tex = RCextensions.LoadImage(link, flag, 2000000);
                         link.Dispose();
                         if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))

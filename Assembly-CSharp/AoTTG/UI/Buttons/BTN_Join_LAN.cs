@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 public class BTN_Join_LAN : MonoBehaviour
 {
-    private static readonly Regex PhotonCloud = new Regex("app-[\\w]+\\.exitgames(cloud)?\\.com", RegexOptions.IgnoreCase);
+    private static readonly Regex PhotonCloud = new Regex("app-\\w+\\.exitgames(cloud)?\\.com", RegexOptions.IgnoreCase);
 
     private void OnClick()
     {

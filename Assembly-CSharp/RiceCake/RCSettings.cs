@@ -11,7 +11,7 @@ public static class RCSettings
     public static int InfectionMode;
     public static int BanEren;
     public static int MoreTitans;
-    public static int DamageMode;
+    public static int MinimumDamage;
     public static int SizeMode;
     public static float SizeLower;
     public static float SizeUpper;

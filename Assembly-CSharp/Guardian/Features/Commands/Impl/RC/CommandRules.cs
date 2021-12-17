@@ -104,9 +104,9 @@
             }
 
             // Minimum Damage
-            if (RCSettings.DamageMode > 0)
+            if (RCSettings.MinimumDamage > 0)
             {
-                irc.AddLine("Minimum nape damage enabled (".AsColor("FFCC00") + RCSettings.DamageMode + ").".AsColor("FFCC00"));
+                irc.AddLine("Minimum nape damage enabled (".AsColor("FFCC00") + RCSettings.MinimumDamage + ").".AsColor("FFCC00"));
             }
 
             // Custom Titan Sizes

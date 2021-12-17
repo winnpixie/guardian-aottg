@@ -2,11 +2,11 @@
 using UnityEngine;
 using System.Runtime.InteropServices;
 
-namespace Guardian.UI
+namespace Guardian.Ui
 {
     class WindowManager
     {
-        private static bool s_isFullscreen;
+        private static bool IsFullscreen;
 
         [DllImport("user32.dll")]
         public static extern int GetActiveWindow();
@@ -16,7 +16,7 @@ namespace Guardian.UI
 
         public static void HandleWindowFocusEvent(bool hasFocus)
         {
-            // Exclusive Fullscreen requires more testing before being properly implemented again.
+            // FIXME: Exclusive Fullscreen requires more testing before being properly implemented again.
             /*
             if (hasFocus)
             {

@@ -8,24 +8,25 @@ namespace Guardian.Features.Commands.Impl
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            string room = PhotonNetwork.room.name;
-            string[] addr = PhotonNetwork.networkingPeer.MasterServerAddress.Split(':');
-            string host = addr[0];
-            int port = Networking.NetworkHelper.Connection.Port;
-            if (addr.Length > 1 && int.TryParse(addr[1], out port)) { }
+            string lastRoomName = PhotonNetwork.room.name;
+
+            string[] lastMasterAddr = PhotonNetwork.networkingPeer.MasterServerAddress.Split(':');
+            string lastHost = lastMasterAddr[0];
+
+            int lastPort = Networking.NetworkHelper.Connection.Port;
+            if (lastMasterAddr.Length > 1 && !int.TryParse(lastMasterAddr[1], out lastPort)) return;
 
             PhotonNetwork.Disconnect();
 
-            if(PhotonNetwork.ConnectToMaster(host, port, Networking.NetworkHelper.App.Id, UIMainReferences.Version))
+            if (!PhotonNetwork.ConnectToMaster(lastHost, lastPort, Networking.NetworkHelper.App.Id, UIMainReferences.Version)) return;
+
+            new Thread(() =>
             {
-                new Thread(() =>
-                {
-                    while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby
-                        && IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop
-                        && !Mod.IsProgramQuitting) { }
-                    PhotonNetwork.JoinRoom(room);
-                }).Start();
-            }
+                while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby
+                    && IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop
+                    && !Mod.IsProgramQuitting) { }
+                PhotonNetwork.JoinRoom(lastRoomName);
+            }).Start();
         }
     }
 }

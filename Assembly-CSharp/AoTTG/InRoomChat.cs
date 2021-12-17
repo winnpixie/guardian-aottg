@@ -9,7 +9,6 @@ public class InRoomChat : Photon.MonoBehaviour
     public static Rect MessagesRect = new Rect(1f, 0f, 329f, 225f);
     public static Rect ChatBoxRect = new Rect(30f, 575f, 300f, 25f);
     public static List<Message> Messages = new List<Message>();
-    public static List<PhotonPlayer> Ignored = new List<PhotonPlayer>();
     private static readonly Regex Detagger = new Regex("<\\/?(color|size|b|i|material|quad)[^>]*>", RegexOptions.IgnoreCase);
 
     public bool IsVisible = true;
@@ -42,8 +41,8 @@ public class InRoomChat : Photon.MonoBehaviour
 
     public void AddMessage(string sender, string text)
     {
-        sender = Guardian.Mod.BlacklistedTags.Replace(sender, string.Empty);
-        text = Guardian.Mod.BlacklistedTags.Replace(text, string.Empty);
+        sender = Guardian.Mod.BlacklistedTagsPattern.Replace(sender, string.Empty);
+        text = Guardian.Mod.BlacklistedTagsPattern.Replace(text, string.Empty);
 
         if (sender.Length != 0 || text.Length != 0)
         {
@@ -72,7 +71,7 @@ public class InRoomChat : Photon.MonoBehaviour
 
         if (Guardian.Mod.Properties.ChatBackground.Value)
         {
-            GUILayout.BeginArea(MessagesRect, Guardian.UI.GSkins.Box);
+            GUILayout.BeginArea(MessagesRect, Guardian.Ui.GuiSkins.Box);
         }
         else
         {
@@ -103,15 +102,15 @@ public class InRoomChat : Photon.MonoBehaviour
                         string text = Detagger.Replace(message.Content, string.Empty);
 
                         Guardian.Mod.Commands.Find("translate").Execute(this, new string[] {
-                            "auto",
-                            Guardian.Mod.SystemLanguage,
-                            text
+                            "auto", Guardian.Mod.SystemLanguage, text
                         });
                     }
                     else if (Input.GetMouseButtonDown(1)) // Right-click
                     {
-                        TextEditor te = new TextEditor();
-                        te.content = new GUIContent(message.Content);
+                        TextEditor te = new TextEditor
+                        {
+                            content = new GUIContent(message.Content)
+                        };
                         te.SelectAll();
                         te.Copy();
                     }
@@ -126,68 +125,74 @@ public class InRoomChat : Photon.MonoBehaviour
 
     private void HandleInput()
     {
+        if (Event.current == null) return;
+
         KeyCode rcChatKey = FengGameManagerMKII.InputRC.humanKeys[InputCodeRC.Chat];
-        if (rcChatKey != KeyCode.None && rcChatKey.WasKeyDownInGUI() && !GUI.GetNameOfFocusedControl().Equals(TextFieldName))
+        if (Event.current.type == EventType.KeyUp)
         {
+            if (rcChatKey == KeyCode.None || Event.current.keyCode != rcChatKey
+                || GUI.GetNameOfFocusedControl().Equals(TextFieldName)) return;
             GUI.FocusControl(TextFieldName);
             inputLine = "\t";
         }
-        else if (KeyCode.Slash.IsKeyDownInGUI() && !GUI.GetNameOfFocusedControl().Equals(TextFieldName))
+
+        if (Event.current.type != EventType.KeyDown) return;
+
+        if (Event.current.character == '/'
+            && !GUI.GetNameOfFocusedControl().Equals(TextFieldName))
         {
             GUI.FocusControl(TextFieldName);
             inputLine = "/";
         }
-        else if (Event.current.type == EventType.KeyDown)
+        else if (Event.current.character == '\t' && rcChatKey != KeyCode.Tab
+            && !IN_GAME_MAIN_CAMERA.IsPausing)
         {
-            if ((Event.current.keyCode == KeyCode.Tab || Event.current.character == '\t') && rcChatKey != KeyCode.Tab && !IN_GAME_MAIN_CAMERA.IsPausing)
+            Event.current.Use();
+        }
+
+        if (Event.current.keyCode != KeyCode.KeypadEnter && Event.current.keyCode != KeyCode.Return) return;
+
+        if (GUI.GetNameOfFocusedControl().Equals(TextFieldName))
+        {
+            if (!string.IsNullOrEmpty(inputLine) && inputLine != "\t")
             {
-                Event.current.Use();
-            }
-            else if (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return)
-            {
-                if (GUI.GetNameOfFocusedControl().Equals(TextFieldName))
+                if (FengGameManagerMKII.RCEvents.ContainsKey("OnChatInput"))
                 {
-                    if (!string.IsNullOrEmpty(inputLine) && inputLine != "\t")
+                    string key = (string)FengGameManagerMKII.RCVariableNames["OnChatInput"];
+                    if (FengGameManagerMKII.StringVariables.ContainsKey(key))
                     {
-                        if (FengGameManagerMKII.RCEvents.ContainsKey("OnChatInput"))
-                        {
-                            string key = (string)FengGameManagerMKII.RCVariableNames["OnChatInput"];
-                            if (FengGameManagerMKII.StringVariables.ContainsKey(key))
-                            {
-                                FengGameManagerMKII.StringVariables[key] = inputLine;
-                            }
-                            else
-                            {
-                                FengGameManagerMKII.StringVariables.Add(key, inputLine);
-                            }
-                            RCEvent rcEvent = (RCEvent)FengGameManagerMKII.RCEvents["OnChatInput"];
-                            rcEvent.CheckEvent();
-                        }
-
-                        if (!inputLine.StartsWith("/"))
-                        {
-                            string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).ColorParsed();
-                            if (name.Uncolored().Length <= 0)
-                            {
-                                name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
-                            }
-                            FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, FormatMessage(inputLine, name));
-                        }
-                        else
-                        {
-                            Guardian.Mod.Commands.HandleCommand(this);
-                        }
+                        FengGameManagerMKII.StringVariables[key] = inputLine;
                     }
+                    else
+                    {
+                        FengGameManagerMKII.StringVariables.Add(key, inputLine);
+                    }
+                    RCEvent rcEvent = (RCEvent)FengGameManagerMKII.RCEvents["OnChatInput"];
+                    rcEvent.CheckEvent();
+                }
 
-                    GUI.FocusControl(string.Empty);
-                    inputLine = string.Empty;
+                if (!inputLine.StartsWith("/"))
+                {
+                    string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity();
+                    if (name.StripNGUI().Length < 1)
+                    {
+                        name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
+                    }
+                    FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, FormatMessage(inputLine, name));
                 }
                 else
                 {
-                    GUI.FocusControl(TextFieldName);
-                    inputLine = "\t";
+                    Guardian.Mod.Commands.HandleCommand(this);
                 }
             }
+
+            GUI.FocusControl(string.Empty);
+            inputLine = string.Empty;
+        }
+        else
+        {
+            GUI.FocusControl(TextFieldName);
+            inputLine = "\t";
         }
     }
 
@@ -203,15 +208,10 @@ public class InRoomChat : Photon.MonoBehaviour
 
     public void OnGUI()
     {
-        if (!IsVisible || !PhotonNetwork.connected)
-        {
-            return;
-        }
+        if (!IsVisible || !PhotonNetwork.connected) return;
 
         DrawMessageHistory();
-
         HandleInput();
-
         DrawMessageTextField();
     }
 
@@ -232,11 +232,19 @@ public class InRoomChat : Photon.MonoBehaviour
         input = input.Replace("<3", "\u2665");
         input = input.Replace(":lenny:", "( ͡° ͜ʖ ͡°)");
 
-        // Color and fading
-        string chatColor = Guardian.Mod.Properties.TextColor.Value;
-        if (chatColor.Length > 0)
+        // 4chan green-text
+        if (input.StripUnityColors().StartsWith(">"))
         {
-            input = input.AsColor(chatColor);
+            input = input.StripUnityColors().AsColor("B5BD68"); // #789922 is the true color, but contrasts terribly :(
+        }
+        else
+        {
+            // Color and fading
+            string chatColor = Guardian.Mod.Properties.TextColor.Value;
+            if (chatColor.Length > 0)
+            {
+                input = input.AsColor(chatColor);
+            }
         }
 
         // Bold chat
@@ -254,7 +262,7 @@ public class InRoomChat : Photon.MonoBehaviour
         string customName = Guardian.Mod.Properties.ChatName.Value;
         if (customName.Length != 0)
         {
-            name = customName.ColorParsed();
+            name = customName.NGUIToUnity();
         }
         // Bold name
         if (Guardian.Mod.Properties.BoldName.Value)

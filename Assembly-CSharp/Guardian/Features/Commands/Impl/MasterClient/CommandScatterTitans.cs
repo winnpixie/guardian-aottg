@@ -11,12 +11,11 @@ namespace Guardian.Features.Commands.Impl.MasterClient
         {
             foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
             {
-                if (titan.photonView.isMine)
-                {
-                    object[] point = GameHelper.GetRandomTitanRespawnPoint();
-                    titan.transform.position = (Vector3)point[0];
-                    titan.transform.rotation = (Quaternion)point[1];
-                }
+                if (!titan.photonView.isMine) continue;
+
+                object[] point = GameHelper.GetRandomTitanRespawnPoint();
+                titan.transform.position = (Vector3)point[0];
+                titan.transform.rotation = (Quaternion)point[1];
             }
 
             GameHelper.Broadcast("All titans have been scattered!");

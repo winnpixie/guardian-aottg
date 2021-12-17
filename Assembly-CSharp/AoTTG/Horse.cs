@@ -399,7 +399,7 @@ public class Horse : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Horse.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.HorseChecker.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -408,7 +408,7 @@ public class Horse : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Horse.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.HorseChecker.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -417,7 +417,7 @@ public class Horse : Photon.MonoBehaviour
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Horse.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.HorseChecker.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }

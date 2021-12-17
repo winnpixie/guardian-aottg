@@ -4,7 +4,7 @@ namespace Guardian.Utilities
 {
     class MathHelper
     {
-        private static readonly Random s_rng = new Random();
+        private static readonly Random random = new Random();
 
         public static int Abs(int val)
         {
@@ -39,7 +39,7 @@ namespace Guardian.Utilities
                 min -= max;
             }
 
-            return s_rng.Next(min, max);
+            return random.Next(min, max);
         }
 
         // Thank you, https://stackoverflow.com/a/45859570

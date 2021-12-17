@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Guardian.Utilities
+namespace Guardian.AntiAbuse
 {
+    // Legacy class for reading infinite stat data from old Guardian builds
     class ModifiedStats
     {
         public static readonly byte InfiniteGas = 1;
@@ -34,7 +35,7 @@ namespace Guardian.Utilities
         {
             int stats = 0;
 
-            /* Legacy code, kept in the event that I do ever bring this back.
+            /* These properties no longer exist
             if (Mod.Properties.InfiniteGas.Value)
             {
                 stats |= INFINITE_GAS;

@@ -22,7 +22,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
     private float hitTestR = 15f;
     private GameObject supply;
     private float syncTimer;
-    private float syncInterval = 0.6f; // TODO: Mod, change to 1 second sync instead?
+    private float syncInterval = 0.6f; // TODO: Change to 1 second sync instead?
     private float getPtsTimer;
     private float getPtsInterval = 20f;
     public GameObject[] chkPtNextArr;
@@ -314,7 +314,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             fengGame.CheckPvPPoints();
             if (HasTeamWon(CheckPointState.Human))
             {
-                fengGame.WinGame();
+                fengGame.FinishGame();
             }
         }
         else
@@ -339,7 +339,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             fengGame.CheckPvPPoints();
             if (HasTeamWon(CheckPointState.Titan))
             {
-                fengGame.LoseGame();
+                fengGame.FinishGame(true);
             }
             if (hasAnnie)
             {

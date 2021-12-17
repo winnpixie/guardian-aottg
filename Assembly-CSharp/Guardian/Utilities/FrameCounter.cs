@@ -2,22 +2,20 @@
 {
     class FrameCounter
     {
-        public int Frames;
+        public int FrameCount;
 
-        private int _frames;
-        private long _lastUpdate;
+        private int CurrentFrameCount;
+        private long LastPollTime;
 
         public void UpdateCounter()
         {
-            _frames++;
+            CurrentFrameCount++;
 
-            if (GameHelper.CurrentTimeMillis() - _lastUpdate >= 1000)
-            {
-                Frames = _frames;
-                _frames = 0;
+            if (GameHelper.CurrentTimeMillis() - LastPollTime < 1000) return;
 
-                _lastUpdate = GameHelper.CurrentTimeMillis();
-            }
+            FrameCount = CurrentFrameCount;
+            CurrentFrameCount = 0;
+            LastPollTime = GameHelper.CurrentTimeMillis();
         }
     }
 }

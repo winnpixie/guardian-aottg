@@ -150,7 +150,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Colossal.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.ColossalChecker.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -159,7 +159,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Colossal.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.ColossalChecker.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -168,7 +168,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Colossal.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.ColossalChecker.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -433,7 +433,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
         {
             return;
         }
-        if (speed >= RCSettings.DamageMode)
+        if (speed >= RCSettings.MinimumDamage)
         {
             NapeArmor -= speed;
         }
@@ -463,7 +463,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [RPC]
     private void removeMe(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Colossal.IsRemovalValid(info))
+        if (Guardian.AntiAbuse.Validators.ColossalChecker.IsRemovalValid(info))
         {
             UnityEngine.Object.Destroy(base.gameObject);
         }
@@ -729,7 +729,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                     {
                         PhotonNetwork.Destroy(base.photonView);
                     }
-                    FengGameManagerMKII.Instance.WinGame();
+                    FengGameManagerMKII.Instance.FinishGame();
                 }
                 FindNearestHero();
                 idle();
@@ -922,12 +922,12 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                 {
                     if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
                     {
-                        WWW link = Guardian.AntiAbuse.Validators.Skins.CreateWWW(url);
+                        WWW link = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(url);
                         if (link != null)
                         {
                             yield return link;
 
-                            // TODO: Old limit: 1MB
+                            // Old limit: 1MB
                             Texture2D tex = RCextensions.LoadImage(link, flag, 2000000);
                             link.Dispose();
                             if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))

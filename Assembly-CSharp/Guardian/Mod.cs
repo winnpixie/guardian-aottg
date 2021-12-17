@@ -1,9 +1,13 @@
-﻿using Guardian.Features.Commands;
+﻿using Guardian.AntiAbuse;
+using Guardian.AntiAbuse.Validators;
+using Guardian.Features.Commands;
 using Guardian.Features.Properties;
 using Guardian.Features.Gamemodes;
 using Guardian.Networking;
 using Guardian.Utilities;
+using SimpleJSON;
 using System.Collections;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -11,34 +15,35 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "11152021";
+        public static string Build = "12162021";
         public static string RootDir = Application.dataPath + "\\..";
+        public static string CustomPropertyName = "GuardianMod";
 
         public static CommandManager Commands = new CommandManager();
         public static GamemodeManager Gamemodes = new GamemodeManager();
         public static PropertyManager Properties = new PropertyManager();
-        public static UI.UIManager Menus;
-        public static Regex BlacklistedTags = new Regex("<(\\/?)(size|material|quad)(.*)>", RegexOptions.IgnoreCase);
-        public static Logger Logger = new Logger();
-        public static bool IsProgramQuitting = false;
+        public static Ui.GuiController GuiController;
         public static FrameCounter FpsCounter = new FrameCounter();
+        public static Logger Logger = new Logger();
+        public static Regex BlacklistedTagsPattern = new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
+        public static bool IsProgramQuitting = false;
 
-        public static string SystemLanguage => System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+        public static string SystemLanguage => CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
-        private static bool s_initialized = false;
-        private static bool s_firstJoin = true;
+        private static bool IsFirstInit = true;
+        private static bool HasJoinedRoom = false;
 
         void Start()
         {
             // Load custom textures and audio clips
             {
-                if (Gesources.TryGetAsset("Custom/Textures/hud.png", out Texture2D hudTextures))
+                if (ResourceLoader.TryGetAsset("Custom/Textures/hud.png", out Texture2D hudTextures))
                 {
                     GameObject backgroundGo = GameObject.Find("Background");
                     if (backgroundGo != null)
                     {
                         Material uiMat = backgroundGo.GetComponent<UISprite>().material;
-                        uiMat.mainTextureScale = Gesources.Scale(hudTextures, 2048, 2048);
+                        uiMat.mainTextureScale = hudTextures.GetScaleVector(2048, 2048);
                         uiMat.mainTexture = hudTextures;
                     }
                 }
@@ -46,38 +51,35 @@ namespace Guardian
                 StartCoroutine(CoWaitAndSetParticleTexture());
             }
 
-            if (!s_initialized)
-            {
-                // Load skin validation service
-                AntiAbuse.Validators.Skins.Init();
-
-                // Load name and guild (if possible)
-                FengGameManagerMKII.NameField = PlayerPrefs.GetString("name", string.Empty);
-                if (FengGameManagerMKII.NameField.Uncolored().Length == 0)
-                {
-                    FengGameManagerMKII.NameField = LoginFengKAI.Player.Name;
-                }
-                LoginFengKAI.Player.Guild = PlayerPrefs.GetString("guildname", string.Empty);
-
-                // Load various features
-                Commands.Load();
-                Gamemodes.Load();
-                Properties.Load();
-
-                // Load network validation service
-                AntiAbuse.Validators.Network.Init();
-
-                s_initialized = true;
-
-                DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
-
-                // Check for an update
-                StartCoroutine(CoCheckForUpdate());
-
-            }
-
-            Menus = base.gameObject.AddComponent<UI.UIManager>();
+            GuiController = base.gameObject.AddComponent<Ui.GuiController>();
             base.gameObject.AddComponent<MicEF>();
+
+            if (!IsFirstInit) return;
+            IsFirstInit = false;
+
+            // Load skin validation service
+            SkinChecker.Init();
+
+            // Load name and guild (if possible)
+            FengGameManagerMKII.NameField = PlayerPrefs.GetString("name", string.Empty);
+            if (FengGameManagerMKII.NameField.StripNGUI().Length < 1)
+            {
+                FengGameManagerMKII.NameField = LoginFengKAI.Player.Name;
+            }
+            LoginFengKAI.Player.Guild = PlayerPrefs.GetString("guildname", string.Empty);
+
+            // Load various features
+            Commands.Load();
+            Gamemodes.Load();
+            Properties.Load();
+
+            // Load network validation service
+            AntiAbuse.Validators.NetworkChecker.Init();
+
+            DiscordRPC.StartTime = GameHelper.CurrentTimeMillis();
+
+            // Check for an update
+            StartCoroutine(CoCheckForUpdate());
         }
 
         private IEnumerator CoCheckForUpdate()
@@ -85,95 +87,100 @@ namespace Guardian
             Logger.Info("Checking for update...");
             Logger.Info($"Installed: {Build}");
 
-            using WWW www = new WWW("https://aottg.tk/mods/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
+            using WWW www = new WWW("https://summie.tk/guardian/version_data.json?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
             yield return www;
 
             if (www.error != null)
             {
                 Logger.Error(www.error);
 
-                Logger.Error($"\nIf errors persist, contact me on Discord!");
+                Logger.Error($"\nIf errors persist, PLEASE contact me!");
                 Logger.Info("Discord:");
-                Logger.Info($"\t- {"https://cb.run/FFT".AsColor("0099FF")}");
+                Logger.Info($"\t- {"https://discord.gg/JGzTdWm".AsColor("0099FF")}");
 
                 try
                 {
-                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Could not verify version.[-] If errors persists, contact me @ [0099FF]https://cb.run/FFT[-]!";
+                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]COULD NOT VERIFY BUILD.[-] If this persists, PLEASE contact me @ [0099FF]https://discord.gg/JGzTdWm[-]!";
                 }
                 catch { }
             }
             else
             {
-                string latestVersion = www.text.Split('\n')[0];
-                Logger.Info("Latest: " + latestVersion);
+                JSONNode node = JSON.Parse(www.text);
+                string latestBuild = node["current_build"].Value;
+                Logger.Info("Latest: " + latestBuild);
 
-                if (!latestVersion.Equals(Build))
+                if (!latestBuild.Equals(Build))
                 {
-                    Logger.Info($"You are {"OUTDATED".AsBold().AsItalic().AsColor("FF0000")}, please update using the launcher!");
-                    Logger.Info("Launcher Download:");
+                    Logger.Info($"Your copy of Guardian is {"OUT OF DATE".AsBold().AsItalic().AsColor("FF0000")}!");
+
+                    if (node["required"].AsBool)
+                    {
+                        Logger.Info("This build is marked as <b><i>REQUIRED</i></b>, updating is HIGHLY recommended!");
+                    }
+                    Logger.Info("If you don't have the launcher, download it here:");
                     Logger.Info($"\t- {"https://cb.run/GuardianAoT".AsColor("0099FF")}");
 
                     try
                     {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]Outdated![-] Please update using the launcher @ [0099FF]https://cb.run/GuardianAoT[-]!";
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]OUT OF DATE![-] Please update from the launcher @ [0099FF]https://cb.run/GuardianAoT[-]!";
                     }
                     catch { }
                 }
                 else
                 {
-                    Logger.Info($"You are {"UP TO DATE".AsBold().AsItalic().AsColor("AAFF00")}, yay!");
+                    Logger.Info($"Your copy of Guardian is {"UP TO DATE".AsBold().AsItalic().AsColor("AAFF00")}!");
                 }
             }
         }
 
         private IEnumerator CoWaitAndSetParticleTexture()
         {
-            yield return new WaitForSeconds(0.1f);
+            // Load custom textures and audio clips
+            ResourceLoader.TryGetAsset("Custom/Textures/dust.png", out Texture2D dustTexture);
+            ResourceLoader.TryGetAsset("Custom/Textures/blood.png", out Texture2D bloodTexture);
+            ResourceLoader.TryGetAsset("Custom/Textures/gun_smoke.png", out Texture2D gunSmokeTexture);
 
-            // TODO: Load custom textures and audio clips
+            for (; ; )
             {
-                Gesources.TryGetAsset("Custom/Textures/dust.png", out Texture2D dustTexture);
-                Gesources.TryGetAsset("Custom/Textures/blood.png", out Texture2D bloodTexture);
-                Gesources.TryGetAsset("Custom/Textures/gun_smoke.png", out Texture2D gunSmokeTexture);
-
                 foreach (ParticleSystem ps in UnityEngine.Object.FindObjectsOfType<ParticleSystem>())
                 {
-                    if (dustTexture != null)
+                    if (dustTexture != null
+                        && (ps.name.Contains("smoke")
+                            || ps.name.StartsWith("boom")
+                            || ps.name.StartsWith("bite")
+                            || ps.name.StartsWith("Particle System 2")
+                            || ps.name.StartsWith("Particle System 3")
+                            || ps.name.StartsWith("Particle System 4")
+                            || ps.name.Contains("colossal_steam")
+                            || ps.name.Contains("FXtitan")
+                            || ps.name.StartsWith("dust"))
+                        && !ps.name.StartsWith("3dmg"))
                     {
-                        if ((ps.name.Contains("smoke") || ps.name.StartsWith("boom") || ps.name.StartsWith("bite")
-                            || ps.name.StartsWith("Particle System 2") || ps.name.StartsWith("Particle System 3")
-                            || ps.name.StartsWith("Particle System 4") || ps.name.Contains("colossal_steam")
-                            || ps.name.Contains("FXtitan") || ps.name.StartsWith("dust")) && !ps.name.StartsWith("3dmg"))
-                        {
-                            ps.renderer.material.mainTexture = dustTexture;
-                        }
+                        ps.renderer.material.mainTexture = dustTexture;
                     }
 
-                    if (bloodTexture != null)
+                    if (bloodTexture != null && ps.name.Contains("blood"))
                     {
-                        if (ps.name.Contains("blood"))
-                        {
-                            ps.renderer.material.mainTexture = bloodTexture;
-                        }
+                        ps.renderer.material.mainTexture = bloodTexture;
                     }
 
-                    if (gunSmokeTexture != null)
+                    if (gunSmokeTexture != null && ps.name.Contains("shotGun"))
                     {
-                        if (ps.name.Contains("shotGun"))
-                        {
-                            ps.renderer.material.mainTexture = gunSmokeTexture;
-                        }
+                        ps.renderer.material.mainTexture = gunSmokeTexture;
                     }
                 }
-            }
 
-            StartCoroutine(CoWaitAndSetParticleTexture());
+                yield return new WaitForSeconds(0.1f);
+            }
         }
 
         public void ApplyCustomRenderSettings()
         {
             Properties.DrawDistance.OnValueChanged();
             Properties.Fog.OnValueChanged();
+            Properties.FogColor.OnValueChanged();
+            Properties.FogDensity.OnValueChanged();
             Properties.SoftShadows.OnValueChanged();
         }
 
@@ -184,7 +191,7 @@ namespace Guardian
                 Gamemodes.CurrentMode.OnUpdate();
             }
 
-            DiscordHelper.RunCallbacks();
+            DiscordRPC.RunCallbacks();
 
             FpsCounter.UpdateCounter();
         }
@@ -195,21 +202,15 @@ namespace Guardian
 
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || PhotonNetwork.offlineMode)
             {
-                string difficulty = "Training";
-                switch (IN_GAME_MAIN_CAMERA.Difficulty)
+                string difficulty = IN_GAME_MAIN_CAMERA.Difficulty switch
                 {
-                    case 0:
-                        difficulty = "Normal";
-                        break;
-                    case 1:
-                        difficulty = "Hard";
-                        break;
-                    case 2:
-                        difficulty = "Abnormal";
-                        break;
-                }
+                    0 => "Normal",
+                    1 => "Hard",
+                    2 => "Abnormal",
+                    _ => "Training"
+                };
 
-                DiscordHelper.SetPresence(new Discord.Activity
+                DiscordRPC.SetPresence(new Discord.Activity
                 {
                     Details = $"Playing offline.",
                     State = $"{FengGameManagerMKII.Level.Name} / {difficulty}"
@@ -221,19 +222,17 @@ namespace Guardian
                 Gamemodes.CurrentMode.OnReset();
             }
 
-            if (s_firstJoin)
+            if (HasJoinedRoom) { return; }
+            HasJoinedRoom = true;
+
+            string joinMessage = Properties.JoinMessage.Value.NGUIToUnity();
+            if (joinMessage.StripNGUI().Length < 1)
             {
-                s_firstJoin = false;
-                string joinMessage = Properties.JoinMessage.Value.ColorParsed();
-                if (joinMessage.Uncolored().Length <= 0)
-                {
-                    joinMessage = Properties.JoinMessage.Value;
-                }
-                if (joinMessage.Length > 0)
-                {
-                    Commands.Find("say").Execute(InRoomChat.Instance, joinMessage.Split(' '));
-                }
+                joinMessage = Properties.JoinMessage.Value;
             }
+
+            if (joinMessage.Length < 1) return;
+            Commands.Find("say").Execute(InRoomChat.Instance, joinMessage.Split(' '));
         }
 
         void OnPhotonPlayerConnected(PhotonPlayer player)
@@ -243,7 +242,7 @@ namespace Guardian
                 Gamemodes.CurrentMode.OnPlayerJoin(player);
             }
 
-            Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed() + " connected.".AsColor("00FF00"));
+            Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() + " connected.".AsColor("00FF00"));
         }
 
         void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -253,54 +252,53 @@ namespace Guardian
                 Gamemodes.CurrentMode.OnPlayerLeave(player);
             }
 
-            Logger.Info($"({player.Id}) " + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).ColorParsed() + " disconnected.".AsColor("FF0000"));
+            Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() + " disconnected.".AsColor("FF0000"));
         }
 
         void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
         {
-            AntiAbuse.Validators.Network.OnPlayerPropertyModification(playerAndUpdatedProps);
+            AntiAbuse.Validators.NetworkChecker.OnPlayerPropertyModification(playerAndUpdatedProps);
 
-            AntiAbuse.ModDetector.OnPlayerPropertyModification(playerAndUpdatedProps);
+            ModDetector.OnPlayerPropertyModification(playerAndUpdatedProps);
         }
 
         void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
-            AntiAbuse.Validators.Network.OnRoomPropertyModification(propertiesThatChanged);
+            AntiAbuse.Validators.NetworkChecker.OnRoomPropertyModification(propertiesThatChanged);
 
-            if (!s_firstJoin)
+            PhotonPlayer sender = null;
+            if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer player)
             {
-                PhotonPlayer sender = null;
-                if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer player)
-                {
-                    sender = player;
-                }
+                sender = player;
+            }
 
-                if (sender == null || sender.isMasterClient)
-                {
-                    if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string mapName)
-                    {
-                        LevelInfo levelInfo = LevelInfo.GetInfo(mapName);
-                        if (levelInfo != null)
-                        {
-                            FengGameManagerMKII.Level = levelInfo;
-                        }
-                    }
+            if (sender != null && !sender.isMasterClient) return;
 
-                    if (propertiesThatChanged.ContainsKey("Lighting") && propertiesThatChanged["Lighting"] is string lightLevel)
-                    {
-                        if (GExtensions.TryParseEnum(lightLevel, out DayLight time))
-                        {
-                            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetLighting(time);
-                        }
-                    }
+            if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string mapName)
+            {
+                LevelInfo levelInfo = LevelInfo.GetInfo(mapName);
+                if (levelInfo != null)
+                {
+                    FengGameManagerMKII.Level = levelInfo;
                 }
+            }
+
+            if (propertiesThatChanged.ContainsKey("Lighting") && propertiesThatChanged["Lighting"] is string lightLevel
+                && GExtensions.TryParseEnum(lightLevel, out DayLight time))
+            {
+                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetLighting(time);
             }
         }
 
         void OnJoinedLobby()
         {
-            // TODO: Begin testing with Photon Friends API
+            // TODO: Assign users with a (hopefully) unique identifier to be findable with Photon's Friend system
             PhotonNetwork.playerName = SystemInfo.deviceUniqueIdentifier;
+        }
+
+        void OnJoinedRoom()
+        {
+            HasJoinedRoom = false;
 
             // TODO: Potentially use custom event/group combo to sync game-settings whilst not triggering other mods
             int[] groups = new int[byte.MaxValue];
@@ -308,27 +306,42 @@ namespace Guardian
             {
                 groups[i] = i + 1;
             }
-            PhotonNetwork.SetReceivingEnabled(groups, new int[0]);
-            PhotonNetwork.SetSendingEnabled(groups, new int[0]);
-        }
-
-        void OnJoinedRoom()
-        {
-            s_firstJoin = true;
+            PhotonNetwork.SetReceivingEnabled(groups, null);
+            PhotonNetwork.SetSendingEnabled(groups, null);
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                 { PhotonPlayerProperty.GuardianMod, Build }
+                 { CustomPropertyName, Build }
             });
 
+            StartCoroutine(CoUpdateMyPing());
+
             string[] roomInfo = PhotonNetwork.room.name.Split('`');
-            if (roomInfo.Length > 6)
+            if (roomInfo.Length < 7) return;
+
+            DiscordRPC.SetPresence(new Discord.Activity
             {
-                DiscordHelper.SetPresence(new Discord.Activity
+                Details = $"Playing in {(roomInfo[5].Length < 1 ? string.Empty : "[PWD]")} {roomInfo[0].StripNGUI()}",
+                State = $"({NetworkHelper.GetRegionCode().ToUpper()}) {roomInfo[1]} / {roomInfo[2].ToUpper()}"
+            });
+        }
+
+        private IEnumerator CoUpdateMyPing()
+        {
+            while (PhotonNetwork.inRoom)
+            {
+                int currentPing = PhotonNetwork.player.Ping;
+                int newPing = PhotonNetwork.GetPing();
+
+                if (newPing != currentPing)
                 {
-                    Details = $"Playing in {(roomInfo[5].Length == 0 ? string.Empty : "[PWD]")} {roomInfo[0].Uncolored()}",
-                    State = $"({NetworkHelper.GetRegionCode().ToUpper()}) {roomInfo[1]} / {roomInfo[2].ToUpper()}"
-                });
+                    PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
+                    {
+                        { "Ping", newPing }
+                    });
+                }
+
+                yield return new WaitForSeconds(3f);
             }
         }
 
@@ -338,7 +351,7 @@ namespace Guardian
 
             PhotonNetwork.SetPlayerCustomProperties(null);
 
-            DiscordHelper.SetPresence(new Discord.Activity
+            DiscordRPC.SetPresence(new Discord.Activity
             {
                 Details = "Idle..."
             });
@@ -369,28 +382,25 @@ namespace Guardian
             }
         }
 
-        // Attempts to fix some dumb bugs that occur when you alt-tab
+        // Attempt to fix dumb bugs that occur when you alt-tab the game
         void OnApplicationFocus(bool hasFocus)
         {
-            UI.WindowManager.HandleWindowFocusEvent(hasFocus);
+            Ui.WindowManager.HandleWindowFocusEvent(hasFocus);
 
-            if (hasFocus)
+            if (!hasFocus
+                || IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop) return;
+
+            // Minimap turns white
+            if (Minimap.Instance != null)
             {
-                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
-                {
-                    // Minimap turning white
-                    if (Minimap.Instance != null)
-                    {
-                        Minimap.WaitAndTryRecaptureInstance(0.1f);
-                    }
+                Minimap.WaitAndTryRecaptureInstance(0.5f);
+            }
 
-                    // TPS crosshair ending up where it shouldn't
-                    if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS)
-                    {
-                        Screen.lockCursor = false;
-                        Screen.lockCursor = true;
-                    }
-                }
+            // TPS crosshair ending up where it shouldn't
+            if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS)
+            {
+                Screen.lockCursor = false;
+                Screen.lockCursor = true;
             }
         }
 
@@ -400,7 +410,7 @@ namespace Guardian
 
             Properties.Save();
 
-            DiscordHelper.Dispose();
+            DiscordRPC.Dispose();
         }
     }
 }

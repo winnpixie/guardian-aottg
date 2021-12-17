@@ -10,7 +10,7 @@
 
             foreach (int id in FengGameManagerMKII.BanHash.Keys)
             {
-                irc.AddLine($"#{id} ({GExtensions.AsString(FengGameManagerMKII.BanHash[id]).ColorParsed()})");
+                irc.AddLine($"#{id} ({GExtensions.AsString(FengGameManagerMKII.BanHash[id]).NGUIToUnity()})");
             }
         }
     }

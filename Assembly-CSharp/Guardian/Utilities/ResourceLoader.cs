@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Guardian.Utilities
 {
-    class Gesources
+    class ResourceLoader
     {
-        public static Dictionary<string, object> Cache = new Dictionary<string, object>();
+        public static Dictionary<string, object> AssetCache = new Dictionary<string, object>();
 
         public static bool TryGetAsset<T>(string path, out T value)
         {
@@ -16,7 +16,7 @@ namespace Guardian.Utilities
 
         public static bool TryGet<T>(string path, out T value)
         {
-            if (Cache.TryGetValue(path, out object cachedValue))
+            if (AssetCache.TryGetValue(path, out object cachedValue))
             {
                 value = (T)cachedValue;
                 return true;
@@ -24,7 +24,7 @@ namespace Guardian.Utilities
 
             if (TryGetRaw(path, out value))
             {
-                Cache.Add(path, value);
+                AssetCache.Add(path, value);
                 return true;
             }
 
@@ -34,49 +34,37 @@ namespace Guardian.Utilities
 
         public static bool TryGetRaw<T>(string path, out T value)
         {
+            value = default(T);
             using WWW www = new WWW(path);
             while (!www.isDone) { }
 
-            if (www.error != null)
-            {
-                value = default(T);
-                return false;
-            }
+            if (www.error != null) return false;
 
-            object val;
-            System.Type type = typeof(T);
-            if (typeof(MovieTexture).IsAssignableFrom(type))
+            System.Type assetType = typeof(T);
+            object val = www.bytes;
+            if (typeof(MovieTexture).IsAssignableFrom(assetType))
             {
                 val = www.movie;
             }
-            else if (typeof(Texture).IsAssignableFrom(type))
+            else if (typeof(Texture).IsAssignableFrom(assetType))
             {
                 val = www.texture;
             }
-            else if (typeof(AudioClip).IsAssignableFrom(type))
+            else if (typeof(AudioClip).IsAssignableFrom(assetType))
             {
                 val = www.audioClip;
-            } else if (typeof(AssetBundle).IsAssignableFrom(type))
+            }
+            else if (typeof(AssetBundle).IsAssignableFrom(assetType))
             {
                 val = www.assetBundle;
             }
-            else if (typeof(string).IsAssignableFrom(type))
+            else if (typeof(string).IsAssignableFrom(assetType))
             {
                 val = www.text;
-            }
-            else
-            {
-                // When in doubt, return raw bytes
-                val = www.bytes;
             }
 
             value = (T)val;
             return true;
-        }
-
-        public static Vector2 Scale(Texture image, int originalWidth, int originalHeight)
-        {
-            return new Vector2(image.width / (float)originalWidth, image.height / (float)originalHeight);
         }
     }
 }

@@ -11,17 +11,16 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             if (args.Length > 0)
             {
                 LevelInfo levelInfo = LevelInfo.GetInfo(string.Join(" ", args));
-                if (levelInfo != null)
+                if (levelInfo == null) return;
+
+                PhotonNetwork.room.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                 {
-                    PhotonNetwork.room.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
-                    {
-                        { "Map", levelInfo.Name }
-                    });
+                    { "Map", levelInfo.Name }
+                });
 
-                    FengGameManagerMKII.Instance.RestartGame();
+                FengGameManagerMKII.Instance.RestartGame();
 
-                    GameHelper.Broadcast($"The map in play is now {levelInfo.Name}!");
-                }
+                GameHelper.Broadcast($"The map in play is now {levelInfo.Name}!");
             }
             else
             {

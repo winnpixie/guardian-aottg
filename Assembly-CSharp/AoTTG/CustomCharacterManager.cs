@@ -463,7 +463,7 @@ public class CustomCharacterManager : MonoBehaviour
         RefreshLabel();
     }
 
-    // TODO: Mod, stat presets
+    // Stat presets
     public void SetStatPoint(CreateStat type, int pt)
     {
         switch (type)

@@ -121,7 +121,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Annie.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.AnnieChecker.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -130,7 +130,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Annie.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.AnnieChecker.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -139,7 +139,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Annie.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.AnnieChecker.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -1510,7 +1510,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         {
             return;
         }
-        if (speed >= RCSettings.DamageMode)
+        if (speed >= RCSettings.MinimumDamage)
         {
             NapeArmor -= speed;
         }
@@ -1583,7 +1583,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         size = 4f;
         if (Minimap.Instance != null)
         {
-            Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.black, trackOrientation: false, depthAboveAll: true);
+            Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.black, trackOrientation: true, depthAboveAll: true);
         }
         if (base.photonView.isMine)
         {
@@ -1656,12 +1656,12 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         {
             if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
             {
-                WWW link = Guardian.AntiAbuse.Validators.Skins.CreateWWW(url);
+                WWW link = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(url);
                 if (link != null)
                 {
                     yield return link;
 
-                    // TODO: Old limit: 1MB
+                    // Old limit: 1MB
                     Texture2D tex = RCextensions.LoadImage(link, flag, 2000000);
                     link.Dispose();
                     if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))

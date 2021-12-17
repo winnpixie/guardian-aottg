@@ -17,11 +17,11 @@ public class AHSSShotGunCollider : MonoBehaviour
 
     private void Start()
     {
-        // TODO: Mod, load custom textures and audio clips
+        // Load custom textures and audio clips
         {
             hitSound = gameObject.AddComponent<AudioSource>();
 
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
             {
                 hitSound.clip = deathClip;
             }
@@ -137,13 +137,13 @@ public class AHSSShotGunCollider : MonoBehaviour
                     hitbox.hitPosition = (base.transform.position + hitbox.transform.position) * 0.5f;
                     currentHits.Add(hitbox);
 
-                    // TODO: Mod
+                    // Custom hit sound
                     hitSound.Play();
 
                     int damage = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - hitbox.transform.root.rigidbody.velocity).magnitude * 10f * scoreMulti);
                     damage = Mathf.Max(10, damage);
 
-                    // TODO: Mod, local minimum damage
+                    // Local minimum damage
                     if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
                     {
                         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
@@ -279,7 +279,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                         int damage = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - gameObject2.rigidbody.velocity).magnitude * 10f * scoreMulti);
                         damage = Mathf.Max(10, damage);
 
-                        // TODO: Mod, local minimum damage
+                        // Local minimum damage
                         if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
                         {
                             GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);

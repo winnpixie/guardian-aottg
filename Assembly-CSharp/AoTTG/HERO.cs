@@ -14,7 +14,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private float invincible = 3f;
     public GameObject myHorse;
     private bool isMounted;
-    // TODO: Mod, alternative idle stance
+
+    // Alternative idle stance
     private string _standAnimation = "stand";
     private string standAnimation
     {
@@ -25,6 +26,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         set { _standAnimation = value; }
     }
+
     public GameObject speedFX;
     public GameObject speedFX1;
     private ParticleSystem speedFXPS;
@@ -179,7 +181,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public GameObject myFlashlight;
     public bool isGrabbed => state == HeroState.Grabbed;
 
-    // Anarchy
+    // BEGIN: Anarchy
     private float gasMultiplier = 1f;
     public float GasUsageModifier
     {
@@ -195,6 +197,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
         }
     }
+    // END: Anarchy
 
     private HeroState state
     {
@@ -213,25 +216,25 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    // TODO: Mod, RC networking optimizations
+    // RC networking optimizations
     private bool cancelGasDisable;
     private bool areAnimationsPaused;
 
-    // TODO: Mod, RC reel smoothing
+    // RC reel smoothing
     private float reelInAxis;
     private float reelOutAxis;
     private float reelOutScrollTimeLeft;
 
-    // TODO: Mod, custom assets
+    // Custom assets
     private AudioSource _burstSound;
     private AudioSource _flareSound;
     private Texture _gasTexture;
 
-    // TODO: Mod, RC TS
+    // RC/Guardian ThunderSpear monstrosity
     public GameObject _thunderSpearLeft;
     public GameObject _thunderSpearRight;
 
-    // TODO: Mod, Syal's bomb sky barrier
+    // Syal's bomb sky barrier
     public GameObject _skyBarrier;
 
     private System.Diagnostics.Stopwatch _lastGasBurst = new System.Diagnostics.Stopwatch();
@@ -403,7 +406,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             Unmount();
         }
 
-        // TODO: Mod, remove hooks once grabbed.
         if (bulletLeft != null)
         {
             bulletLeft.GetComponent<Bullet>().RemoveMe();
@@ -435,7 +437,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netGrabbed(int id, bool leftHand, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hero.IsGrabValid(id, info))
+        if (Guardian.AntiAbuse.Validators.HeroChecker.IsGrabValid(id, info))
         {
             titanWhoGrabMeID = id;
             GetGrabbed(PhotonView.Find(id).gameObject, leftHand);
@@ -565,7 +567,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info = null)
     {
-        if (Guardian.AntiAbuse.Validators.Hero.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -574,7 +576,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hero.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -583,7 +585,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hero.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.HeroChecker.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -670,7 +672,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void whoIsMyErenTitan(int id, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hero.IsErenTitanDeclarationValid(id, info))
+        if (Guardian.AntiAbuse.Validators.HeroChecker.IsErenTitanDeclarationValid(id, info))
         {
             eren_titan = PhotonView.Find(id).gameObject;
             titanForm = true;
@@ -1161,9 +1163,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             amount = useGasSpeed;
         }
 
-        // BEGIN Anarchy
+        // Anarchy
         amount *= GasUsageModifier;
-        // END Anarchy
 
         if (currentGas > 0f)
         {
@@ -1405,7 +1406,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netPauseAnimation(PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.Hero.IsAnimationPauseValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationPauseValid(this, info))
         {
             return;
         }
@@ -1418,7 +1419,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netContinueAnimation(PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.Hero.IsAnimationResumeValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationResumeValid(this, info))
         {
             return;
         }
@@ -1532,7 +1533,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void Launch(Vector3 des, bool left = true, bool leviMode = false)
     {
-        // TODO: Mod, this should fix noclipping when grabbed by a titan right after hooking an object
         if (state == HeroState.Grabbed)
         {
             return;
@@ -1796,7 +1796,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             BreakApart2(v, isBite);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
-            FengGameManagerMKII.Instance.LoseGame();
+            FengGameManagerMKII.Instance.FinishGame(true);
             falseAttack();
             hasDied = true;
             Transform transform = base.transform.Find("audio_die");
@@ -1838,7 +1838,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             meatDie.Play();
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
-            FengGameManagerMKII.Instance.LoseGame();
+            FengGameManagerMKII.Instance.FinishGame(true);
             falseAttack();
             hasDied = true;
             GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("hitMeat2"));
@@ -1883,7 +1883,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void showHitDamage(PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.Hero.IsHitDamageShowValid(info))
+        if (!Guardian.AntiAbuse.Validators.HeroChecker.IsHitDamageShowValid(info))
         {
             return;
         }
@@ -1906,7 +1906,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
-            if (Guardian.AntiAbuse.Validators.Hero.IsBlowAwayValid(info))
+            if (Guardian.AntiAbuse.Validators.HeroChecker.IsBlowAwayValid(info))
             {
                 base.rigidbody.AddForce(force, ForceMode.Impulse);
                 base.transform.LookAt(base.transform.position);
@@ -1917,7 +1917,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void killObject(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Hero.IsKillObjectValid(info))
+        if (Guardian.AntiAbuse.Validators.HeroChecker.IsKillObjectValid(info))
         {
             UnityEngine.Object.Destroy(base.gameObject);
         }
@@ -1985,36 +1985,36 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void Start()
     {
-        // TODO: Mod, load custom textures and audio clips
+        // Load custom textures and audio clips
         {
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/hook_shot.wav", out AudioClip hookShotClip))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/hook_shot.wav", out AudioClip hookShotClip))
             {
                 rope.clip = hookShotClip;
             }
 
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/sword_swing.wav", out AudioClip swordSwingClip))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/sword_swing.wav", out AudioClip swordSwingClip))
             {
                 slash.clip = swordSwingClip;
             }
 
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/sword_hit.wav", out AudioClip swordHitClip))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/sword_hit.wav", out AudioClip swordHitClip))
             {
                 slashHit.clip = swordHitClip;
             }
 
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/player_die.wav", out AudioClip deathClip))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/player_die.wav", out AudioClip deathClip))
             {
                 meatDie.clip = deathClip;
             }
 
             _burstSound = base.gameObject.AddComponent<AudioSource>();
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/burst.wav", out AudioClip burstClip))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/burst.wav", out AudioClip burstClip))
             {
                 _burstSound.clip = burstClip;
             }
 
             _flareSound = base.gameObject.AddComponent<AudioSource>();
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/flare_shot.wav", out AudioClip flareClip))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/flare_shot.wav", out AudioClip flareClip))
             {
                 _flareSound.clip = flareClip;
             }
@@ -2070,7 +2070,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
                 if (Minimap.Instance != null)
                 {
-                    Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.green, trackOrientation: false, depthAboveAll: true);
+                    Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.green, trackOrientation: true, depthAboveAll: true);
                 }
                 GetComponent<SmoothSyncMovement>().PhotonCamera = true;
                 base.photonView.RPC("SetMyPhotonCamera", PhotonTargets.OthersBuffered, PlayerPrefs.GetFloat("cameraDistance") + 0.3f);
@@ -2086,14 +2086,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             flag = true;
                             if (Minimap.Instance != null)
                             {
-                                Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.cyan, trackOrientation: false, depthAboveAll: true);
+                                Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.cyan, trackOrientation: true, depthAboveAll: true);
                             }
                             break;
                         case 2:
                             flag = true;
                             if (Minimap.Instance != null)
                             {
-                                Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.magenta, trackOrientation: false, depthAboveAll: true);
+                                Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.magenta, trackOrientation: true, depthAboveAll: true);
                             }
                             break;
                     }
@@ -2102,12 +2102,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 {
                     if (!flag && Minimap.Instance != null)
                     {
-                        Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.red, trackOrientation: false, depthAboveAll: true);
+                        Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.red, trackOrientation: true, depthAboveAll: true);
                     }
                 }
                 else if (!flag && Minimap.Instance != null)
                 {
-                    Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.blue, trackOrientation: false, depthAboveAll: true);
+                    Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.blue, trackOrientation: true, depthAboveAll: true);
                 }
             }
 
@@ -2139,7 +2139,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         else if (Minimap.Instance != null)
         {
-            Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.green, trackOrientation: false, depthAboveAll: true);
+            Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.green, trackOrientation: true, depthAboveAll: true);
         }
 
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine)
@@ -2165,7 +2165,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             LoadSkin();
             hasspawn = true;
 
-            // TODO: Mod, Syal's bomb sky barrier
+            // Initialize Syal's bomb sky barrier
             if (RCSettings.BombMode > 0)
             {
                 if (!PhotonNetwork.isMasterClient || Guardian.Mod.Properties.UseSkyBarrier.Value)
@@ -2183,7 +2183,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
         }
 
-        // TODO: Mod, flashlight Fix?
         if (IN_GAME_MAIN_CAMERA.Lighting == DayLight.Night)
         {
             myFlashlight = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("flashlight"));
@@ -2851,7 +2850,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, 50f, 0.1f);
         }
 
-        // TODO: Mod, gas spam fix
         if (!cancelGasDisable)
         {
             if (flag)
@@ -3035,7 +3033,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         LayerMask layerMask = (int)mask2 | (int)mask;
         if (!Physics.Raycast(ray, out RaycastHit hitInfo, 1E+07f, layerMask.value))
         {
-            // TODO: Mod, Stop cross-hair freezes?
+            // Stop cross-hair freezes, for kind of?
             // return;
         }
         cross1.transform.localPosition = Input.mousePosition;
@@ -3068,7 +3066,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         labelDistance2.transform.localPosition -= new Vector3(0f, 15f, 0f);
 
-        // TODO: Mod, hide hook arrows
+        // Hide hook arrows
         if (Guardian.Mod.Properties.HideHookArrows.Value)
         {
             Vector3 localPosition = Vector3.up * 10000f;
@@ -3454,7 +3452,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             ExtendedUpdate();
             if (!grounded && state != HeroState.Dashing)
             {
-                // TODO: Mod, fix rebind disabling double-tap
                 if ((int)FengGameManagerMKII.Settings[181] == 1)
                 {
                     CheckDashRebind();
@@ -3674,7 +3671,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         }
                         else if (inputManager.isInputDown[InputCode.Attack0])
                         {
-                            // TODO: Mod, weapon trail for when you're holding attack down
+                            // Weapon trail when you're holding attack down
                             if ((int)FengGameManagerMKII.Settings[92] == 0 && Guardian.Mod.Properties.HoldForBladeTrails.Value)
                             {
                                 leftbladetrail2.Activate();
@@ -4662,7 +4659,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
         PhotonNetwork.RemoveRPCs(base.photonView);
         ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add(PhotonPlayerProperty.Dead, true);
+        hashtable.Add(PhotonPlayerProperty.IsDead, true);
         hashtable.Add(PhotonPlayerProperty.Deaths, GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths]) + 1);
         PhotonNetwork.player.SetCustomProperties(hashtable);
         FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, 0);
@@ -4675,7 +4672,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             OnDeathEvent(viewId, killByTitan);
 
-            // TODO: Mod
+            // Dispatch event to the current custom game-mode
             Guardian.Mod.Gamemodes.CurrentMode.OnPlayerKilled(this, viewId, killByTitan);
 
             if (FengGameManagerMKII.HeroHash.ContainsKey(base.photonView.owner.Id))
@@ -4830,7 +4827,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             OnDeathEvent(viewId, killByTitan);
 
-            // TODO: Mod
+            // Dispatch event to the current custom game-mode
             Guardian.Mod.Gamemodes.CurrentMode.OnPlayerKilled(this, viewId, killByTitan);
 
             int id = base.photonView.owner.Id;
@@ -4895,7 +4892,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             PhotonNetwork.RemoveRPCs(base.photonView);
             ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add(PhotonPlayerProperty.Dead, true);
+            hashtable.Add(PhotonPlayerProperty.IsDead, true);
             hashtable.Add(PhotonPlayerProperty.Deaths, GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths]) + 1);
             PhotonNetwork.player.SetCustomProperties(hashtable);
             FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, (!(titanName == string.Empty)) ? 1 : 0);
@@ -5009,7 +5006,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             PhotonNetwork.RemoveRPCs(base.photonView);
             ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add(PhotonPlayerProperty.Dead, true);
+            hashtable.Add(PhotonPlayerProperty.IsDead, true);
             hashtable.Add(PhotonPlayerProperty.Deaths, (int)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths] + 1);
             PhotonNetwork.player.SetCustomProperties(hashtable);
             if (viewId != -1)
@@ -5039,7 +5036,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             OnDeathEvent(viewId, isTitan: true);
 
-            // TODO: Mod
+            // Dispatch event to the current custom game-mode
             Guardian.Mod.Gamemodes.CurrentMode.OnPlayerKilled(this, viewId, true);
 
             int id = base.photonView.owner.Id;
@@ -5068,7 +5065,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
-        if (!Guardian.AntiAbuse.Validators.Hero.IsCannonSetValid(viewID, info))
+        if (!Guardian.AntiAbuse.Validators.HeroChecker.IsCannonSetValid(viewID, info))
         {
             return;
         }
@@ -5441,7 +5438,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 FengGameManagerMKII.Settings[253] = 5;
             }
 
-            // TODO: Syal, new bomb stat limitations
+            // Syal's new bomb stat limitations
             if (bombRangeStat > 3)
             {
                 bombRangeStat = 3;
@@ -5578,7 +5575,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if ((int)FengGameManagerMKII.Settings[0] == 1)
         {
-            if (Guardian.AntiAbuse.Validators.Hero.IsSkinLoadValid(this, info))
+            if (Guardian.AntiAbuse.Validators.HeroChecker.IsSkinLoadValid(this, info))
             {
                 StartCoroutine(CoLoadSkin(horse, url));
             }
@@ -5620,7 +5617,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[1]);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[1]);
                     if (www != null)
                     {
                         yield return www;
@@ -5660,7 +5657,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[7]);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[7]);
                     if (www != null)
                     {
                         yield return www;
@@ -5696,7 +5693,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[6]);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[6]);
                     if (www != null)
                     {
                         yield return www;
@@ -5735,12 +5732,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[1]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[1]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 200KB
+                                // Old limit: 200KB
                                 Texture2D tex6 = RCextensions.LoadImage(www, mipmapping, 1000000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
@@ -5776,12 +5773,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[2]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[2]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[2]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 200KB
+                                // Old limit: 200KB
                                 Texture2D tex7 = RCextensions.LoadImage(www, mipmapping, 500000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[2]))
@@ -5811,12 +5808,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[3]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[3]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[3]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 200KB
+                                // Old limit: 200KB
                                 Texture2D tex8 = RCextensions.LoadImage(www, mipmapping, 500000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[3]))
@@ -5846,12 +5843,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[4]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[4]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[4]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 200KB
+                                // Old limit: 200KB
                                 Texture2D tex16 = RCextensions.LoadImage(www, mipmapping, 500000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[4]))
@@ -5885,12 +5882,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[5]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[5]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[5]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 200KB
+                                // Old limit: 200KB
                                 Texture2D tex15 = RCextensions.LoadImage(www, mipmapping, 1000000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[5]))
@@ -5922,12 +5919,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[6]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[6]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 500KB
+                                // Old limit: 500KB
                                 Texture2D tex14 = RCextensions.LoadImage(www, mipmapping, 1000000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
@@ -5959,12 +5956,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[7]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[7]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 200KB
+                                // Old limit: 200KB
                                 Texture2D tex13 = RCextensions.LoadImage(www, mipmapping, 500000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
@@ -5996,12 +5993,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[8]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[8]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[8]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 500KB
+                                // Old limit: 500KB
                                 Texture2D tex12 = RCextensions.LoadImage(www, mipmapping, 1000000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[8]))
@@ -6033,12 +6030,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[9]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[9]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[9]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 500KB
+                                // Old limit: 500KB
                                 Texture2D tex11 = RCextensions.LoadImage(www, mipmapping, 1000000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[9]))
@@ -6070,12 +6067,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[10]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[10]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[10]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 200KB
+                                // Old limit: 200KB
                                 Texture2D tex10 = RCextensions.LoadImage(www, mipmapping, 500000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[10]))
@@ -6083,7 +6080,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                     unload = true;
                                     renderer4.material.mainTexture = tex10;
 
-                                    // TODO: Mod
+                                    // Set smoke/dash texture to the custom gas texture
                                     _gasTexture = tex10;
 
                                     FengGameManagerMKII.LinkHash[0].Add(strArray[10], renderer4.material);
@@ -6108,12 +6105,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[11]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[11]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[11]);
                             if (www != null)
                             {
                                 yield return www;
 
-                                // TODO: Old limit: 200KB
+                                // Old limit: 200KB
                                 Texture2D tex9 = RCextensions.LoadImage(www, mipmapping, 500000);
                                 www.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[11]))
@@ -6145,12 +6142,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[12]))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[12]);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[12]);
                     if (www != null)
                     {
                         yield return www;
 
-                        // TODO: Old limit: 200KB
+                        // Old limit: 200KB
                         Texture2D tex = RCextensions.LoadImage(www, mipmapping, 500000);
                         www.Dispose();
                         unload = true;
@@ -6189,12 +6186,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             {
                                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[0]))
                                 {
-                                    WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[0]);
+                                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[0]);
                                     if (www != null)
                                     {
                                         yield return www;
 
-                                        // TODO: Old limit: 500KB
+                                        // Old limit: 500KB
                                         Texture2D tex2 = RCextensions.LoadImage(www, mipmapping, 1000000);
                                         www.Dispose();
                                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[0]))
@@ -6237,7 +6234,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[13]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[13]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[13]);
                             if (www != null)
                             {
                                 yield return www;
@@ -6277,7 +6274,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[14]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.Skins.CreateWWW(strArray[14]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[14]);
                             if (www != null)
                             {
                                 yield return www;

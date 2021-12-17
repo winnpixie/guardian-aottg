@@ -1187,7 +1187,6 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
                 if (!didAuthenticate && (!IsUsingNameServer || CloudRegion != CloudRegionCode.none))
                 {
-                    // TODO: Mod
                     didAuthenticate = OpAuthenticate(mAppId, mAppVersionPun, PlayerName, CustomAuthenticationValues, CloudRegion.ToString());
                     if (didAuthenticate)
                     {
@@ -1503,6 +1502,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         break;
                     case "SetupThunderSpearsRPC": // Updated RC
                     case "SetThunderSpearsRPC":
+                    case "EmoteEmojiRPC":
+                    case "EmoteTextRPC":
+                    case "SetWeatherRPC":
                     case "IsUpdatedRPC":
                     case "DisableRPC":
                         sender.IsNewRC = true;
@@ -1833,7 +1835,6 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         view.destroyedByPhotonNetworkOrQuit = true;
         photonViewList.Remove(view.viewID);
 
-        // TODO: Mod
         monoRPCBehavioursCache.Remove(view);
     }
 
@@ -2235,7 +2236,6 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             {
                 list.Add(photonView.Key);
 
-                // TODO: Mod
                 monoRPCBehavioursCache.Remove(value);
             }
         }
@@ -2767,7 +2767,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        if (!Guardian.AntiAbuse.Validators.Network.IsRPCValid(payload, sender))
+                        if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsRPCValid(payload, sender))
                         {
                             return;
                         }
@@ -2799,7 +2799,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         for (short num5 = num4; num5 < payload.Count; num5 = (short)(num5 + 1))
                         {
                             ExitGames.Client.Photon.Hashtable hashtable = payload[num5] as ExitGames.Client.Photon.Hashtable;
-                            if (!Guardian.AntiAbuse.Validators.Network.IsSerializeReadValid(hashtable, sender))
+                            if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsSerializeReadValid(hashtable, sender))
                             {
                                 return;
                             }
@@ -2817,7 +2817,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                             string resourceName = (string)payload[(byte)0];
                             if (resourceName != null)
                             {
-                                if (!Guardian.AntiAbuse.Validators.Network.IsInstantiatePacketValid(payload, sender))
+                                if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsInstantiatePacketValid(payload, sender))
                                 {
                                     return;
                                 }
@@ -2844,7 +2844,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                             {
                                 if (value != null && sender != null)
                                 {
-                                    if (!Guardian.AntiAbuse.Validators.Network.IsPVDestroyValid(value.GetPhotonViewsInChildren(), sender))
+                                    if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsPVDestroyValid(value.GetPhotonViewsInChildren(), sender))
                                     {
                                         return;
                                     }
@@ -2922,7 +2922,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     break;
                 }
             case EventCode.QueueState:
-                if (!Guardian.AntiAbuse.Validators.Network.IsStateChangeValid(sender))
+                if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsStateChangeValid(sender))
                 {
                     return;
                 }

@@ -1,6 +1,6 @@
-﻿namespace Guardian.UI
+﻿namespace Guardian.Ui
 {
-    abstract class UIBase
+    abstract class Gui
     {
         public abstract void Draw();
 

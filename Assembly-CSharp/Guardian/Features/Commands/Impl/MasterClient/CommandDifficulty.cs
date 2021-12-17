@@ -8,26 +8,24 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            if (args.Length > 0)
+            if (args.Length < 1) return;
+
+            int difficulty = args[0].ToLower() switch
             {
-                int difficulty = args[0].ToLower() switch
-                {
-                    "training" => -1,
-                    "normal" => 0,
-                    "hard" => 1,
-                    "abnormal" => 2,
-                    _ => -2
-                };
+                "training" => -1,
+                "normal" => 0,
+                "hard" => 1,
+                "abnormal" => 2,
+                _ => -2
+            };
 
-                if (difficulty > -2)
-                {
-                    GameHelper.Broadcast($"Room difficulty is now {args[0].ToUpper()}!");
+            if (difficulty < -1) return;
 
-                    FengGameManagerMKII.Instance.difficulty = difficulty;
-                    IN_GAME_MAIN_CAMERA.Difficulty = difficulty;
-                    GameHelper.Broadcast("This change will be effective on the next wave OR game restart.");
-                }
-            }
+            FengGameManagerMKII.Instance.difficulty = difficulty;
+            IN_GAME_MAIN_CAMERA.Difficulty = difficulty;
+
+            GameHelper.Broadcast($"Room difficulty is now {args[0].ToUpper()}!");
+            GameHelper.Broadcast("This change will be effective on the next wave OR game restart.");
         }
     }
 }

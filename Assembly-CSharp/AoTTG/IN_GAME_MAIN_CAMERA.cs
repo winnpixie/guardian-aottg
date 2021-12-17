@@ -20,7 +20,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public static int InvertY = 1;
     public static int CameraTilt = 1;
     public static STEREO_3D_TYPE StereoType;
-    public static DayLight Lighting = DayLight.Dawn;
+    public static DayLight Lighting = DayLight.Day;
     public static bool UsingTitan;
     public static float CameraDistance = 0.6f;
     public static CameraType CameraMode;
@@ -79,6 +79,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public float justHit;
     public RenderTexture snapshotRT;
 
+    public float FieldOfView = 50f;
+
     private void Start()
     {
         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().SetCamera(this);
@@ -86,7 +88,14 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         IsPausing = false;
         SensitivityMulti = PlayerPrefs.GetFloat("MouseSensitivity");
         InvertY = PlayerPrefs.GetInt("invertMouseY");
+
         inputManager = GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>();
+        if (inputManager == null)
+        {
+            // Fallback
+            inputManager = UIMainReferences.InputManagerObj.GetComponent<FengCustomInputs>();
+        }
+
         SetLighting(Lighting);
         locker = GameObject.Find("locker");
         if (PlayerPrefs.HasKey("cameraTilt"))
@@ -121,7 +130,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 base.gameObject.GetComponent<Skybox>().material = skyBoxDAWN;
                 break;
             case DayLight.Night:
-                /* TODO: Mod, Flashlight is now handled in HERO#Start()*/
                 RenderSettings.ambientLight = FengColor.AmbientNight;
                 GameObject.Find("mainLight").GetComponent<Light>().color = FengColor.Night;
                 base.gameObject.GetComponent<Skybox>().material = skyBoxNIGHT;
@@ -300,7 +308,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 }
         }
 
-        // TODO: Mod, god awful FPS camera
+        // God awful FPS camera
         if (Guardian.Mod.Properties.FPSCamera.Value)
         {
             base.transform.position = head == null ? main_object.transform.position : head.transform.position;
@@ -621,8 +629,10 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             {
                 flashDuration = 0f;
             }
+
             GameObject.Find("flash").GetComponent<UISprite>().alpha = flashDuration * 0.5f;
         }
+
         if (Gametype == GameType.Stop)
         {
             Screen.showCursor = true;
@@ -678,6 +688,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     currentPeekPlayerIndex = 0;
                 }
             }
+
             if (spectatorMode)
             {
                 return;
@@ -698,6 +709,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 }
                 return;
             }
+
             IsPausing = !IsPausing;
             if (IsPausing)
             {
@@ -715,8 +727,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         if (needSetHUD)
         {
             needSetHUD = false;
-
-            Minimap.OnScreenResolutionChanged();
 
             SetHUDPosition();
             Screen.lockCursor = !Screen.lockCursor;
@@ -766,24 +776,24 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     Screen.lockCursor = true;
                     break;
             }
-            if ((int)FengGameManagerMKII.Settings[245] == 1 || main_object.GetComponent<HERO>() == null)
+
+            if ((int)FengGameManagerMKII.Settings[245] == 1 || (main_object != null && main_object.GetComponent<HERO>() == null))
             {
                 Screen.showCursor = false;
             }
         }
+
         if (inputManager.isInputDown[InputCode.ToggleCursor])
         {
             Screen.showCursor = !Screen.showCursor;
         }
 
-        if (main_object == null)
-        {
-            return;
-        }
+        if (main_object == null) return;
 
         if (inputManager.isInputDown[InputCode.Focus])
         {
             TriggerAutoLock = !TriggerAutoLock;
+
             if (TriggerAutoLock)
             {
                 lockTarget = FindNearestTitan();
@@ -827,6 +837,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             MoveCamera();
         }
+
         if (TriggerAutoLock && lockTarget != null)
         {
             float z = base.transform.eulerAngles.z;
@@ -857,6 +868,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             locker.transform.localPosition = new Vector3(0f, (float)(-Screen.height) * 0.5f - 50f, 0f);
         }
+
         Vector3 end = (head == null) ? main_object.transform.position : head.transform.position;
         Vector3 normalized = (((head == null) ? main_object.transform.position : head.transform.position) - base.transform.position).normalized;
         end -= distance * normalized * distanceMulti;
@@ -894,6 +906,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 Minimap.Instance.myCam.nearClipPlane = 0.3f;
                 Minimap.Instance.myCam.farClipPlane = 1000f;
                 Minimap.Instance.myCam.enabled = false;
+                gameObject = (GameObject)UnityEngine.Object.Instantiate(gameObject, Vector3.zero, Quaternion.identity);
             }
             minimap.CreateMinimap(Minimap.Instance.myCam, 512, 0.3f, FengGameManagerMKII.Level.MinimapPreset);
             if ((int)FengGameManagerMKII.Settings[231] == 0 || RCSettings.GlobalDisableMinimap == 1)

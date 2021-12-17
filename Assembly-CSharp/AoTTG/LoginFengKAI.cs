@@ -245,6 +245,7 @@ public class LoginFengKAI : MonoBehaviour
                 NGUITools.SetActive(panelLogin, state: true);
             }
         }
+
         ClearCookies();
     }
 

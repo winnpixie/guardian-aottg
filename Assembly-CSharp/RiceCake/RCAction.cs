@@ -593,7 +593,7 @@ public class RCAction
                         FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, parameters[0].ReturnString(null), string.Empty);
                         break;
                     case 2:
-                        FengGameManagerMKII.Instance.LoseGame();
+                        FengGameManagerMKII.Instance.FinishGame(true);
                         if (parameters[0].ReturnBool(null))
                         {
                             FengGameManagerMKII.IntVariables.Clear();
@@ -605,7 +605,7 @@ public class RCAction
                         }
                         break;
                     case 1:
-                        FengGameManagerMKII.Instance.WinGame();
+                        FengGameManagerMKII.Instance.FinishGame();
                         if (parameters[0].ReturnBool(null))
                         {
                             FengGameManagerMKII.IntVariables.Clear();

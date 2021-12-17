@@ -47,6 +47,7 @@ public class PhotonPlayer
         }
     }
 
+    public bool Muted = false;
     public int Ping = -1;
 
     public bool IsNewRC;
@@ -185,6 +186,221 @@ public class PhotonPlayer
         }
         return (num == int.MaxValue) ? mActors[num2] : mActors[num];
     }
+
+    // BEGIN Guardian
+    public HERO GetHero()
+    {
+        foreach (HERO hero in FengGameManagerMKII.Instance.Heroes)
+        {
+            if (hero.photonView.ownerId == Id)
+            {
+                return hero;
+            }
+        }
+
+        return null;
+    }
+
+    public TITAN GetTitan()
+    {
+        foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
+        {
+            if (titan.photonView.ownerId == Id)
+            {
+                return titan;
+            }
+        }
+
+        return null;
+    }
+
+    public string Username
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.Name)
+                    && customProperties[PhotonPlayerProperty.Name] is string username)
+            {
+                return username;
+            }
+
+            return string.Empty;
+        }
+    }
+
+    public string Guild
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.Guild)
+                && customProperties[PhotonPlayerProperty.Guild] is string guild)
+            {
+                return guild;
+            }
+
+            return string.Empty;
+        }
+    }
+
+    public bool IsDead
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.IsDead)
+                && customProperties[PhotonPlayerProperty.IsDead] is bool state)
+            {
+                return state;
+            }
+
+            return false;
+        }
+    }
+
+    public int Team
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.Team)
+                && customProperties[PhotonPlayerProperty.Team] is int team)
+            {
+                return team;
+            }
+
+            return 0;
+        }
+    }
+
+    public bool IsAhss
+    {
+        get { return Team == 2; }
+    }
+
+    public bool IsTitan
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.IsTitan)
+                && customProperties[PhotonPlayerProperty.IsTitan] is int state)
+            {
+                return state == 2;
+            }
+
+            return false;
+        }
+    }
+
+    public int Kills
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.Kills)
+                            && customProperties[PhotonPlayerProperty.Kills] is int kills)
+            {
+                return kills;
+            }
+
+            return 0;
+        }
+    }
+
+    public int Deaths
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.Deaths)
+                            && customProperties[PhotonPlayerProperty.Deaths] is int deaths)
+            {
+                return deaths;
+            }
+
+            return 0;
+        }
+    }
+
+    public int MaxDamage
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.MaxDamage)
+                            && customProperties[PhotonPlayerProperty.MaxDamage] is int maxDamage)
+            {
+                return maxDamage;
+            }
+
+            return 0;
+        }
+    }
+
+    public int TotalDamage
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.TotalDamage)
+                            && customProperties[PhotonPlayerProperty.TotalDamage] is int totalDamage)
+            {
+                return totalDamage;
+            }
+
+            return 0;
+        }
+    }
+
+    public int SpeedStat
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.StatSpeed)
+                            && customProperties[PhotonPlayerProperty.StatSpeed] is int speed)
+            {
+                return speed;
+            }
+
+            return 0;
+        }
+    }
+
+    public int BladeStat
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.StatBlade)
+                            && customProperties[PhotonPlayerProperty.StatBlade] is int blade)
+            {
+                return blade;
+            }
+
+            return 0;
+        }
+    }
+
+    public int GasStat
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.StatGas)
+                            && customProperties[PhotonPlayerProperty.StatGas] is int gas)
+            {
+                return gas;
+            }
+
+            return 0;
+        }
+    }
+
+    public int AccelStat
+    {
+        get
+        {
+            if (customProperties.ContainsKey(PhotonPlayerProperty.StatAccel)
+                            && customProperties[PhotonPlayerProperty.StatAccel] is int accel)
+            {
+                return accel;
+            }
+
+            return 0;
+        }
+    }
+    // END Guardian
 
     public override string ToString()
     {

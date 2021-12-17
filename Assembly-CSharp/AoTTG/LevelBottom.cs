@@ -12,15 +12,17 @@ public class LevelBottom : MonoBehaviour
             switch (type)
             {
                 case BottomType.Die:
-                    if (other.gameObject.GetComponent<HERO>() != null)
+                    HERO hero = other.gameObject.GetComponent<HERO>();
+
+                    if (hero != null && !hero.HasDied())
                     {
                         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                         {
-                            other.gameObject.GetComponent<HERO>().Die(other.gameObject.rigidbody.velocity * 50f, false);
+                            hero.Die(other.gameObject.rigidbody.velocity * 50f, false);
                         }
-                        else if (other.gameObject.GetPhotonView().isMine)
+                        else if (hero.photonView.isMine)
                         {
-                            other.gameObject.GetComponent<HERO>().NetDieLocal2(base.rigidbody.velocity * 50f, isBite: false, -1, Guardian.Mod.Properties.LavaDeathMessage.Value);
+                            hero.NetDieLocal2(other.gameObject.rigidbody.velocity * 50f, false, -1, Guardian.Mod.Properties.LavaDeathMessage.Value, true);
                         }
                     }
                     break;

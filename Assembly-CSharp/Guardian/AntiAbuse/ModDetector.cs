@@ -10,6 +10,12 @@ namespace Guardian.AntiAbuse
             PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
             ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
 
+            // Ping
+            if (properties.ContainsKey("Ping") && properties["Ping"] is int ping)
+            {
+                player.Ping = ping;
+            }
+
             // Neko Mod detection
             if (properties.ContainsValue("N_user") || properties.ContainsValue("N_owner"))
             {
@@ -100,12 +106,12 @@ namespace Guardian.AntiAbuse
              *  "GuardianMod" int = legacy Guardian identifier
              *  "Stats" int = legacy Guardian feature
              */
-            if (properties.ContainsKey(PhotonPlayerProperty.GuardianMod))
+            if (properties.ContainsKey("GuardianMod"))
             {
                 List<string> tags = new List<string>();
-                if (properties[PhotonPlayerProperty.GuardianMod] is string)
+                if (properties["GuardianMod"] is string)
                 {
-                    tags.Add(GExtensions.AsString(properties[PhotonPlayerProperty.GuardianMod]));
+                    tags.Add(GExtensions.AsString(properties["GuardianMod"]));
                 }
                 else if (properties["GuardianMod"] is int)
                 {
@@ -114,7 +120,7 @@ namespace Guardian.AntiAbuse
 
                 if (properties.ContainsKey("Stats") && properties["Stats"] is int)
                 {
-                    List<char> modifications = Utilities.ModifiedStats.FromInt(GExtensions.AsInt(properties["Stats"]));
+                    List<char> modifications = ModifiedStats.FromInt(GExtensions.AsInt(properties["Stats"]));
                     if (modifications.Count > 0)
                     {
                         tags.Add($"inf:{string.Join(",", modifications.Select(c => c.ToString()).ToArray())}");
@@ -417,12 +423,6 @@ namespace Guardian.AntiAbuse
                 }
 
                 mods.Add($"[FFFFFF][{lengthFlags}]");
-            }
-
-            // Vanilla
-            if (mods.Count == 0)
-            {
-                mods.Add("[FFDDAA][Vanilla]");
             }
 
             return mods;

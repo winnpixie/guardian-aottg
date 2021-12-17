@@ -164,7 +164,7 @@ public class RCActionHelper
                             case 1:
                                 return (int)photonPlayer.customProperties[PhotonPlayerProperty.RCTeam];
                             case 2:
-                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.Dead]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.IsDead]);
                             case 3:
                                 return (int)photonPlayer.customProperties[PhotonPlayerProperty.IsTitan];
                             case 4:
@@ -342,7 +342,7 @@ public class RCActionHelper
                             case 1:
                                 return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
                             case 2:
-                                return !(bool)photonPlayer.customProperties[PhotonPlayerProperty.Dead];
+                                return !(bool)photonPlayer.customProperties[PhotonPlayerProperty.IsDead];
                             case 3:
                                 return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]);
                             case 4:
@@ -511,7 +511,7 @@ public class RCActionHelper
                             case 1:
                                 return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
                             case 2:
-                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.Dead]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.IsDead]);
                             case 3:
                                 return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]);
                             case 4:
@@ -693,7 +693,7 @@ public class RCActionHelper
                             case 1:
                                 return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
                             case 2:
-                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Dead]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.IsDead]);
                             case 3:
                                 return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]);
                             case 4:

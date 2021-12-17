@@ -2,10 +2,10 @@
 using System;
 using UnityEngine;
 
-namespace Guardian.UI.Impl.Logging
+namespace Guardian.Ui.Impl.Logging
 {
     // Unconventional UI that won't actually be invoked by .OpenScreen, but rather as an always-on UI
-    class UILogger : UIBase
+    class GuiLogger : Gui
     {
         public override void Draw()
         {
@@ -13,7 +13,7 @@ namespace Guardian.UI.Impl.Logging
             {
                 if (Mod.Properties.LogBackground.Value)
                 {
-                    GUILayout.BeginArea(new Rect(Screen.width - 331f, Screen.height - 255f, 330f, 225f), GSkins.Box);
+                    GUILayout.BeginArea(new Rect(Screen.width - 331f, Screen.height - 255f, 330f, 225f), GuiSkins.Box);
                 }
                 else
                 {
@@ -43,7 +43,7 @@ namespace Guardian.UI.Impl.Logging
                 GUILayout.EndScrollView();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label($"{Mod.FpsCounter.Frames} FPS");
+                GUILayout.Label($"{Mod.FpsCounter.FrameCount} FPS");
 
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
                 {
@@ -59,13 +59,13 @@ namespace Guardian.UI.Impl.Logging
                     }
                     else
                     {
-                        if (GameHelper.IsPT(PhotonNetwork.player))
+                        if (PhotonNetwork.player.IsTitan)
                         {
-                            myObj = GameHelper.GetPT(PhotonNetwork.player);
+                            myObj = PhotonNetwork.player.GetTitan();
                         }
                         else
                         {
-                            myObj = GameHelper.GetHero(PhotonNetwork.player);
+                            myObj = PhotonNetwork.player.GetHero();
                         }
                     }
 

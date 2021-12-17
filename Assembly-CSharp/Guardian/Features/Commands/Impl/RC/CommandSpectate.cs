@@ -1,35 +1,31 @@
 ﻿using UnityEngine;
-using Guardian.Utilities;
 
 namespace Guardian.Features.Commands.Impl.RC
 {
     class CommandSpectate : Command
     {
-        public CommandSpectate() : base("spectate", new string[] { "spec" }, "[id]", false) { }
+        public CommandSpectate() : base("spectate", new string[] { "spec", "specmode" }, "[id]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
             if (args.Length > 0)
             {
-                if (int.TryParse(args[0], out int id))
+                if (!int.TryParse(args[0], out int id)) return;
+
+                PhotonPlayer player = PhotonPlayer.Find(id);
+                if (player == null || player.IsDead) return;
+
+                if (player.IsTitan)
                 {
-                    PhotonPlayer player = PhotonPlayer.Find(id);
-                    if (player != null)
-                    {
-                        if (!GameHelper.IsDead(player))
-                        {
-                            if (GameHelper.IsPT(player))
-                            {
-                                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObjectTitan(GameHelper.GetPT(player).gameObject);
-                            } else
-                            {
-                                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(GameHelper.GetHero(player).gameObject);
-                            }
-                            Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(false);
-                            irc.AddLine($"Now spectating #{id}.".AsColor("FFCC00"));
-                        }
-                    }
+                    Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObjectTitan(player.GetTitan().gameObject);
                 }
+                else
+                {
+                    Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(player.GetHero().gameObject);
+                }
+
+                Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(false);
+                irc.AddLine($"Now spectating #{id}.".AsColor("FFCC00"));
             }
             else
             {

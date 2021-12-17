@@ -16,7 +16,7 @@ public class BTN_choose_human : MonoBehaviour
         {
             if (GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.IsTitan]) == 1)
             {
-                if (!GExtensions.AsBool(photonPlayer.customProperties[PhotonPlayerProperty.Dead]))
+                if (!GExtensions.AsBool(photonPlayer.customProperties[PhotonPlayerProperty.IsDead]))
                 {
                     return false;
                 }

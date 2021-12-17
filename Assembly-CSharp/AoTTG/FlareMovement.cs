@@ -11,9 +11,9 @@ public class FlareMovement : MonoBehaviour
 
     private void Start()
     {
-        // TODO: Mod, load custom textures and audio clips
+        // Load custom textures and audio clips
         {
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Textures/flare.png", out Texture2D flareTexture))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Textures/flare.png", out Texture2D flareTexture))
             {
                 base.GetComponent<ParticleSystem>().renderer.material.mainTexture = flareTexture;
             }
@@ -30,12 +30,15 @@ public class FlareMovement : MonoBehaviour
 
         base.GetComponent<ParticleSystem>().startColor = customColor;
 
-        Light light = base.gameObject.AddComponent<Light>();
-        light.type = LightType.Point;
-        light.intensity = 1f;
-        light.range = 125f;
-        light.color = base.GetComponent<ParticleSystem>().startColor;
-        light.renderMode = LightRenderMode.ForcePixel;
+        if (Guardian.Mod.Properties.EmissiveFlares.Value)
+        {
+            Light light = base.gameObject.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.intensity = 1f;
+            light.range = 125f;
+            light.color = base.GetComponent<ParticleSystem>().startColor;
+            light.renderMode = LightRenderMode.ForcePixel;
+        }
 
         if (!nohint && hero != null)
         {

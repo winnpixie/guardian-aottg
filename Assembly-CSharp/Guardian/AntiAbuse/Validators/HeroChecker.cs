@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using Guardian.Utilities;
 
 namespace Guardian.AntiAbuse.Validators
 {
-    class Hero
+    class HeroChecker
     {
         // HERO.killObject
         public static bool IsKillObjectValid(PhotonMessageInfo info)
@@ -115,7 +114,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
             {
-                if (info == null || (!info.sender.isMasterClient && !info.sender.isLocal && !GameHelper.IsPT(info.sender)))
+                if (info == null || (!info.sender.isMasterClient && !info.sender.isLocal && !info.sender.IsTitan))
                 {
                     Mod.Logger.Error($"'HERO.blowAway' from #{(info == null ? "?" : info.sender.Id.ToString())}");
                     if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
@@ -131,7 +130,7 @@ namespace Guardian.AntiAbuse.Validators
         // HERO.netPlayAnimation
         public static bool IsAnimationPlayValid(HERO hero, PhotonMessageInfo info)
         {
-            if (info != null && hero.photonView.ownerId != info.sender.Id && !(info.sender.isMasterClient || GameHelper.IsPT(info.sender)))
+            if (info != null && hero.photonView.ownerId != info.sender.Id && !(info.sender.isMasterClient || info.sender.IsTitan))
             {
                 Mod.Logger.Error($"'HERO.netPlayAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}");
                 if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))

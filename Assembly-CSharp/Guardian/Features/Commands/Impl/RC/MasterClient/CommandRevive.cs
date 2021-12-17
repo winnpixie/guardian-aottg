@@ -15,10 +15,9 @@ namespace Guardian.Features.Commands.Impl.RC.MasterClient
                 {
                     foreach (PhotonPlayer player in PhotonNetwork.playerList)
                     {
-                        if (GameHelper.IsDead(player) && !GameHelper.IsPT(player))
-                        {
-                            FengGameManagerMKII.Instance.photonView.RPC("respawnHeroInNewRound", player);
-                        }
+                        if (!player.IsDead || player.IsTitan) continue;
+
+                        FengGameManagerMKII.Instance.photonView.RPC("respawnHeroInNewRound", player);
                     }
 
                     GameHelper.Broadcast("All players have been revived.");
@@ -26,17 +25,13 @@ namespace Guardian.Features.Commands.Impl.RC.MasterClient
                 else if (int.TryParse(args[0], out int id))
                 {
                     PhotonPlayer player = PhotonPlayer.Find(id);
-                    if (player != null)
-                    {
-                        if (GameHelper.IsDead(player) && !GameHelper.IsPT(player))
-                        {
-                            FengGameManagerMKII.Instance.photonView.RPC("respawnHeroInNewRound", player);
-                            irc.AddLine($"Revived #{id}.");
-                        }
-                    }
+                    if (player == null || !player.IsDead || player.IsTitan) return;
+
+                    FengGameManagerMKII.Instance.photonView.RPC("respawnHeroInNewRound", player);
+                    irc.AddLine($"Revived #{id}.");
                 }
             }
-            else if (GameHelper.IsDead(PhotonNetwork.player) && !GameHelper.IsPT(PhotonNetwork.player))
+            else if (PhotonNetwork.player.IsDead && !PhotonNetwork.player.IsTitan)
             {
                 FengGameManagerMKII.Instance.photonView.RPC("respawnHeroInNewRound", PhotonNetwork.player);
                 irc.AddLine("Revived self.");

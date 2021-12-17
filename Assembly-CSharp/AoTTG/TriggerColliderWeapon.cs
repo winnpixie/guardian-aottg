@@ -14,7 +14,7 @@ public class TriggerColliderWeapon : MonoBehaviour
     private void Start()
     {
         {
-            if (Guardian.Utilities.Gesources.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
+            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
             {
                 Object.Destroy(base.gameObject.GetComponent<AudioSource>());
                 meatDie = gameObject.AddComponent<AudioSource>();
@@ -115,7 +115,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     int damage = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - hitbox.transform.root.rigidbody.velocity).magnitude * 10f * scoreMulti);
                     damage = Mathf.Max(10, damage);
 
-                    // TODO: Mod
+                    // Local minimum damage
                     if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
                     {
                         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
@@ -257,7 +257,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                         int damage = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - gameObject3.rigidbody.velocity).magnitude * 10f * scoreMulti);
                         damage = Mathf.Max(10, damage);
 
-                        // TODO: Mod
+                        // Local minimum damage
                         if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
                         {
                             GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);

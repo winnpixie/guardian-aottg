@@ -107,6 +107,7 @@ public class TITAN : Photon.MonoBehaviour
     public bool hasSetLevel;
     public bool hasSpawn;
     public int skinColor;
+
     private FengGameManagerMKII fengGame;
 
     private bool shouldLookAtTarget;
@@ -179,7 +180,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Titan.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.TitanChecker.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -188,7 +189,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Titan.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.TitanChecker.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -198,7 +199,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.Titan.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.TitanChecker.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -220,7 +221,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netSetAbnormalType(int type, PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.Titan.IsTitanTypeSetValid(this, info) && PhotonNetwork.isMasterClient)
+        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsTitanTypeSetValid(this, info) && PhotonNetwork.isMasterClient)
         {
             this.photonView.RPC("netSetAbnormalType", PhotonTargets.OthersBuffered, (int)abnormalType);
             return;
@@ -362,7 +363,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void setMyTarget(int viewId, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.Titan.IsTargetSetValid(this, info) && PhotonNetwork.isMasterClient)
+        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsTargetSetValid(this, info) && PhotonNetwork.isMasterClient)
         {
             return;
         }
@@ -845,7 +846,7 @@ public class TITAN : Photon.MonoBehaviour
             DieBlowFunc(attacker, hitPauseTime);
             if (FengGameManagerMKII.Instance.AllTitans.Count <= 1)
             {
-                GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             }
         }
         else
@@ -897,7 +898,7 @@ public class TITAN : Photon.MonoBehaviour
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                 {
-                    { PhotonPlayerProperty.Dead, true },
+                    { PhotonPlayerProperty.IsDead, true },
                     { PhotonPlayerProperty.Deaths, (int)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths] + 1 }
                 });
             }
@@ -915,7 +916,7 @@ public class TITAN : Photon.MonoBehaviour
             DieHeadBlowFunc(attacker, hitPauseTime);
             if (FengGameManagerMKII.Instance.AllTitans.Count <= 1)
             {
-                GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             }
         }
         else
@@ -945,7 +946,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void playsoundRPC(string sndname, PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.Titan.IsSoundPlayValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsSoundPlayValid(this, info))
         {
             return;
         }
@@ -1008,7 +1009,7 @@ public class TITAN : Photon.MonoBehaviour
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                 {
-                    { PhotonPlayerProperty.Dead, true },
+                    { PhotonPlayerProperty.IsDead, true },
                     { PhotonPlayerProperty.Deaths, (int)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths] + 1 }
                 });
             }
@@ -1245,7 +1246,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     public void grabToRight(PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.Titan.IsRightGrabValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsRightGrabValid(this, info))
         {
             return;
         }
@@ -1269,7 +1270,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     public void grabToLeft(PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.Titan.IsRightGrabValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsRightGrabValid(this, info))
         {
             return;
         }
@@ -1422,7 +1423,6 @@ public class TITAN : Photon.MonoBehaviour
 
     private void CoAnimateDeath()
     {
-        // TODO: Mod
         if ((PhotonNetwork.isMasterClient && base.photonView.isMine) || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             // Endless
@@ -1466,7 +1466,7 @@ public class TITAN : Photon.MonoBehaviour
             return;
         }
         healthTime = Time.time;
-        if (speed >= RCSettings.DamageMode || abnormalType == TitanClass.Crawler)
+        if (speed >= RCSettings.MinimumDamage || abnormalType == TitanClass.Crawler)
         {
             currentHealth -= speed;
         }
@@ -1480,7 +1480,7 @@ public class TITAN : Photon.MonoBehaviour
             {
                 OnTitanDie(photonView);
 
-                // TODO: Mod
+                // Dispatch event to the current custom game-mode
                 Guardian.Mod.Gamemodes.CurrentMode.OnTitanKilled(this, photonView.owner, speed);
             }
             base.photonView.RPC("netDie", PhotonTargets.OthersBuffered);
@@ -1517,7 +1517,7 @@ public class TITAN : Photon.MonoBehaviour
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
                 PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                 {
-                    { PhotonPlayerProperty.Dead, true },
+                    { PhotonPlayerProperty.IsDead, true },
                     { PhotonPlayerProperty.Deaths, (int)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths] + 1 }
                 });
             }
@@ -1548,7 +1548,8 @@ public class TITAN : Photon.MonoBehaviour
         FengGameManagerMKII.Instance.AddTitan(this);
         if (Minimap.Instance != null)
         {
-            Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.yellow, trackOrientation: false, depthAboveAll: true);
+            // Color.yellow
+            Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Guardian.Utilities.Colors.Orange, trackOrientation: true, depthAboveAll: true);
         }
         currentCamera = GameObject.Find("MainCamera");
         runAnimation = "run_walk";
@@ -1612,7 +1613,7 @@ public class TITAN : Photon.MonoBehaviour
         float distance = float.PositiveInfinity;
         Vector3 position = baseTransform.position;
 
-        foreach(GameObject player in FengGameManagerMKII.Instance.Players)
+        foreach (GameObject player in FengGameManagerMKII.Instance.Players)
         {
             float sqrDist = (player.transform.position - position).sqrMagnitude;
             if (sqrDist < distance)
@@ -2183,7 +2184,7 @@ public class TITAN : Photon.MonoBehaviour
     [RPC]
     private void netSetLevel(float level, int AI, int skinColor, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.Titan.IsLevelSetValid(this, info) && base.photonView.isMine)
+        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsLevelSetValid(this, info) && base.photonView.isMine)
         {
             base.photonView.RPC("netSetLevel", PhotonTargets.OthersBuffered, this.myLevel, this.myDifficulty, this.skinColor);
             return;
@@ -3130,7 +3131,7 @@ public class TITAN : Photon.MonoBehaviour
                         {
                             if (FengGameManagerMKII.Level.Mode == GameMode.Colossal)
                             {
-                                FengGameManagerMKII.Instance.LoseGame();
+                                FengGameManagerMKII.Instance.FinishGame(true);
                                 checkPoints = new ArrayList();
                                 SetIdle();
                             }
@@ -3773,12 +3774,12 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(eye))
                         {
-                            WWW link2 = Guardian.AntiAbuse.Validators.Skins.CreateWWW(eye);
+                            WWW link2 = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(eye);
                             if (link2 != null)
                             {
                                 yield return link2;
 
-                                // TODO: Old limit: 200KB
+                                // Old limit: 200KB
                                 Texture2D tex2 = RCextensions.LoadImage(link2, flag, 500000);
                                 link2.Dispose();
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(eye))
@@ -3802,12 +3803,12 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     if (!FengGameManagerMKII.LinkHash[2].ContainsKey(body))
                     {
-                        WWW link = Guardian.AntiAbuse.Validators.Skins.CreateWWW(body);
+                        WWW link = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(body);
                         if (link != null)
                         {
                             yield return link;
 
-                            // TODO: Old limit: 1MB (current)
+                            // Old limit: 1MB (current)
                             Texture2D tex = RCextensions.LoadImage(link, flag, 2000000);
                             link.Dispose();
                             if (!FengGameManagerMKII.LinkHash[2].ContainsKey(body))

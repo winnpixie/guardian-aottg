@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class UIMainReferences : MonoBehaviour
 {
+    public static GameObject InputManagerObj;
+    public static string Version = "01042015";
+    public static string FengVersion = "01042015";
+    private static bool IsFirstInit = true;
+
     public GameObject panelMain;
     public GameObject panelOption;
     public GameObject panelMultiROOM;
@@ -16,9 +21,7 @@ public class UIMainReferences : MonoBehaviour
     public GameObject panelSingleSet;
     public GameObject PanelMultiPWD;
     public GameObject PanelSnapShot;
-    private static bool IsFirstLaunch = true;
-    public static string Version = "01042015";
-    public static string FengVersion = "01042015";
+
 
     private void Start()
     {
@@ -27,14 +30,14 @@ public class UIMainReferences : MonoBehaviour
         NGUITools.SetActive(panelMain, state: true);
         GameObject.Find("VERSION").GetComponent<UILabel>().text = "[9999FF]RC [-]" + rcBuild + " | [FFBB00]Guardian [-]" + Guardian.Mod.Build;
 
-        if (IsFirstLaunch)
+        if (IsFirstInit)
         {
-            IsFirstLaunch = false;
+            IsFirstInit = false;
 
             Version = FengVersion;
-            GameObject inputController = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("InputManagerController"));
-            inputController.name = "InputManagerController";
-            UnityEngine.Object.DontDestroyOnLoad(inputController);
+            InputManagerObj = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("InputManagerController"));
+            InputManagerObj.name = "InputManagerController";
+            UnityEngine.Object.DontDestroyOnLoad(InputManagerObj);
             LoginFengKAI.LoginState = LoginState.LoggedOut;
 
             StartCoroutine(CoLoadAssets());
