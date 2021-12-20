@@ -31,9 +31,9 @@ namespace Launcher
         {
             this.actionGroup = new System.Windows.Forms.GroupBox();
             this.uploadLog = new System.Windows.Forms.Button();
-            this.startNoUpdate = new System.Windows.Forms.Button();
             this.updateAndStart = new System.Windows.Forms.Button();
             this.outputLog = new System.Windows.Forms.RichTextBox();
+            this.startNoUpdate = new System.Windows.Forms.Button();
             this.actionGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,16 +60,6 @@ namespace Launcher
             this.uploadLog.UseVisualStyleBackColor = true;
             this.uploadLog.Click += new System.EventHandler(this.uploadLog_Click);
             // 
-            // startNoUpdate
-            // 
-            this.startNoUpdate.Location = new System.Drawing.Point(347, 19);
-            this.startNoUpdate.Name = "startNoUpdate";
-            this.startNoUpdate.Size = new System.Drawing.Size(335, 32);
-            this.startNoUpdate.TabIndex = 1;
-            this.startNoUpdate.Text = "Just Play (No Downloading/Updating)";
-            this.startNoUpdate.UseVisualStyleBackColor = true;
-            this.startNoUpdate.Click += new System.EventHandler(this.startNoUpdate_Click);
-            // 
             // updateAndStart
             // 
             this.updateAndStart.Location = new System.Drawing.Point(6, 19);
@@ -89,6 +79,16 @@ namespace Launcher
             this.outputLog.TabIndex = 3;
             this.outputLog.Text = "";
             // 
+            // startNoUpdate
+            // 
+            this.startNoUpdate.Location = new System.Drawing.Point(347, 19);
+            this.startNoUpdate.Name = "startNoUpdate";
+            this.startNoUpdate.Size = new System.Drawing.Size(335, 32);
+            this.startNoUpdate.TabIndex = 1;
+            this.startNoUpdate.Text = "Just Play (Don\'t Update)";
+            this.startNoUpdate.UseVisualStyleBackColor = true;
+            this.startNoUpdate.Click += new System.EventHandler(this.startNoUpdate_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -97,7 +97,7 @@ namespace Launcher
             this.Controls.Add(this.actionGroup);
             this.DoubleBuffered = true;
             this.Name = "MainWindow";
-            this.Text = "Guardian Install Manager";
+            this.Text = "Guardian Mod Launcher";
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.actionGroup.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -108,9 +108,9 @@ namespace Launcher
 
         private System.Windows.Forms.GroupBox actionGroup;
         private System.Windows.Forms.RichTextBox outputLog;
-        private System.Windows.Forms.Button startNoUpdate;
         private System.Windows.Forms.Button updateAndStart;
         private System.Windows.Forms.Button uploadLog;
+        private System.Windows.Forms.Button startNoUpdate;
     }
 }
 

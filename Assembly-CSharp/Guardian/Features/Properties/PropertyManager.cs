@@ -22,7 +22,11 @@ namespace Guardian.Features.Properties
         public Property<bool> DeadlyHooks = new Property<bool>("MC_DeadlyHooks", new string[0], false);
 
         // Assets
-        public Property<string> ThunderSpearSkin = new Property<string>("Skins_ThunderSpear", new string[0], string.Empty);
+        public Property<string> ThunderSpearSkin = new Property<string>("Assets_ThunderSpearSkin", new string[0], string.Empty);
+        public Property<string> LeftRopeSkin = new Property<string>("Assets_LeftRopeSkin", new string[0], string.Empty);
+        public Property<float> LeftRopeTileScale = new Property<float>("Assets_LeftRopeTileScale", new string[0], 1f);
+        public Property<string> RightRopeSkin = new Property<string>("Assets_RightRopeSkin", new string[0], string.Empty);
+        public Property<float> RightRopeTileScale = new Property<float>("Assets_RightRopeTileScale", new string[0], 1f);
 
         // Player
         public Property<bool> UseRawInput = new Property<bool>("Player_RawTPS-WOWInput", new string[0], true);
@@ -100,6 +104,10 @@ namespace Guardian.Features.Properties
 
             // Assets
             base.Add(ThunderSpearSkin);
+            base.Add(LeftRopeSkin);
+            base.Add(LeftRopeTileScale);
+            base.Add(RightRopeSkin);
+            base.Add(RightRopeTileScale);
 
             // Player
             base.Add(UseRawInput);

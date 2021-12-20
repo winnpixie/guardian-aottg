@@ -7838,7 +7838,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     if (GUI.Button(new Rect(10, 265, 220, 150), aot2Patreon))
                     {
-                        Application.OpenURL("http://ad.aottg.tk/6498380/aottg2-patreon");
+                        Application.OpenURL("https://www.patreon.com/aottg2");
                     }
                 }
 

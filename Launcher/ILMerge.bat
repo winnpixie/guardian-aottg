@@ -1,5 +1,4 @@
 @echo off
-color 0c
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                       ILMerge Batch Script                       +
 echo +                             by Summer                            +
@@ -15,12 +14,16 @@ set /P APP_NAME="Set your target executable name. (ex: [ProjectName].exe): "
 
 :: What build type are we making portable?
 set /P ILMERGE_BUILD="Set build, used for directory. (ex: Release / Debug): "
+if not defined ILMERGE_BUILD (
+	echo No build defined, assuming Release.
+	set ILMERGE_BUILD=Release
+)
 
 :: What platform are we exporting for?
-set /P ILMERGE_PLATFORM="Set platform. (ex: x64) This can be left blank.: "
+set /P ILMERGE_PLATFORM="OPTIONAL: Set platform. (ex: x64): "
 
 :: What version of ILMerge is going to be used?
-set /P ILMERGE_VERSION="Set your ILMerge version. (latest: 3.0.41): "
+set /P ILMERGE_VERSION="Set your ILMerge version. (ex: 3.0.41): "
 
 :: Grab ILMerge from NuGet cache if available
 set ILMERGE_PATH=%USERPROFILE%\.nuget\packages\ilmerge\%ILMERGE_VERSION%\tools\net452
@@ -29,23 +32,19 @@ dir "%ILMERGE_PATH%"\ILMerge.exe
 :: Merge into standalone application
 echo Merging %APP_NAME% ...
 if not defined ILMERGE_PLATFORM (
-
-  "%ILMERGE_PATH%"\ILMerge.exe bin\%ILMERGE_BUILD%\%APP_NAME%  ^
-    /wildcards ^
-    /lib:bin\%ILMERGE_BUILD%\ ^
-    /out:%APP_NAME% ^
-    *.dll
-
+	"%ILMERGE_PATH%"\ILMerge.exe bin\%ILMERGE_BUILD%\%APP_NAME%  ^
+	/wildcards ^
+	/lib:bin\%ILMERGE_BUILD%\ ^
+	/out:%APP_NAME% ^
+	*.dll
 ) else (
+	echo Merging for platform %ILMERGE_PLATFORM%
 
-  echo Merging for platform %ILMERGE_PLATFORM%
-
-  "%ILMERGE_PATH%"\ILMerge.exe bin\%ILMERGE_PLATFORM%\%ILMERGE_BUILD%\%APP_NAME%  ^
-    /wildcards ^
-    /lib:bin\%ILMERGE_PLATFORM%\%ILMERGE_BUILD%\ ^
-    /out:%APP_NAME% ^
-    *.dll
-
+	"%ILMERGE_PATH%"\ILMerge.exe bin\%ILMERGE_PLATFORM%\%ILMERGE_BUILD%\%APP_NAME%  ^
+	/wildcards ^
+	/lib:bin\%ILMERGE_PLATFORM%\%ILMERGE_BUILD%\ ^
+	/out:%APP_NAME% ^
+	*.dll
 )
 
 dir %APP_NAME%

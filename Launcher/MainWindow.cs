@@ -12,8 +12,6 @@ namespace Launcher
 {
     public partial class MainWindow : Form
     {
-        private string _currentDirectory;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -21,7 +19,8 @@ namespace Launcher
 
         private void MainWindow_Load(object sender, EventArgs args)
         {
-            _currentDirectory = Environment.CurrentDirectory;
+            base.Text += $" (v.{Program.Build})";
+            outputLog.AutoWordSelection = true;
         }
 
         private void updateAndStart_Click(object sender, EventArgs e)
@@ -33,46 +32,84 @@ namespace Launcher
                     outputLog.Text = "Attempting to terminate active Guardian tasks...";
 
                     Process.Start(new ProcessStartInfo("taskkill.exe", "/F /IM Guardian.exe"));
+
+                    outputLog.Text += "OK!\n";
                 }
                 catch { }
 
+                byte[] zipData;
+                using (HttpClient client = new HttpClient())
+                {
+                    try
+                    {
+                        outputLog.Text += "\nObtaining latest build information...";
+
+                        string latestVersion = await client.GetStringAsync("https://summie.tk/guardian/version.txt?t=" + Environment.TickCount);
+
+                        outputLog.Text += "OK! (" + latestVersion + ")\n";
+                    }
+                    catch (Exception ex)
+                    {
+                        outputLog.Text += $"FAILED!\n\n{ex}\n\n";
+                    }
+
+                    try
+                    {
+                        outputLog.Text += "Downloading Guardian.zip from https://alerithe.github.io/guardian/Guardian.zip...";
+
+                        zipData = await client.GetByteArrayAsync("https://alerithe.github.io/guardian/Guardian.zip?t=" + Environment.TickCount);
+
+                        outputLog.Text += "OK!\n";
+                    }
+                    catch (Exception ex)
+                    {
+                        outputLog.Text += $"FAILED!\n\n{ex}";
+
+                        return;
+                    }
+                }
+
+                FileInfo zipFile = new FileInfo(Program.CurrentDirectory + "\\Guardian.zip");
                 try
                 {
-                    outputLog.Text += "\nBeginning download of Guardian.zip";
+                    outputLog.Text += "Writing downloaded data to local file...";
 
-                    FileInfo updateFileRef = new FileInfo(_currentDirectory + "\\Guardian.zip");
-                    if (updateFileRef.Exists)
+                    using (FileStream fs = zipFile.Open(FileMode.Create, FileAccess.Write))
                     {
-                        updateFileRef.Delete();
+                        fs.Write(zipData, 0, zipData.Length);
                     }
 
-                    using (HttpClient hc = new HttpClient())
-                    {
-                        string latestVersion = await hc.GetStringAsync("https://aottg.tk/mods/guardian/version.txt?t=" + Environment.TickCount);
-                        outputLog.Text += $"\nLatest Version : {latestVersion}";
+                    outputLog.Text += "OK!\n";
+                }
+                catch (Exception ex)
+                {
+                    outputLog.Text += $"FAILED!\n\n{ex}";
 
-                        outputLog.Text += "\nDownloading Guardian.zip from https://alerithe.github.io/guardian/Guardian.zip";
-                        using (FileStream fs = updateFileRef.OpenWrite())
+                    if (zipFile.Exists)
+                    {
+                        try
                         {
-                            byte[] data = await hc.GetByteArrayAsync("https://alerithe.github.io/guardian/Guardian.zip?t=" + Environment.TickCount);
-                            fs.Write(data, 0, data.Length);
+                            zipFile.Delete();
                         }
-
-                        outputLog.Text += "\nDownload successful!";
+                        catch { }
                     }
+                    return;
+                }
 
-                    using (ZipArchive archive = ZipFile.OpenRead(_currentDirectory + "\\Guardian.zip"))
+                try
+                {
+                    outputLog.Text += $"\nExtracting Guardian.zip to current directory ({Program.CurrentDirectory})...";
+
+                    using (ZipArchive archive = ZipFile.Open(zipFile.FullName, ZipArchiveMode.Read))
                     {
-                        outputLog.Text += $"\nExtracting Guardian.zip to current directory ({_currentDirectory})";
-
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
                             outputLog.Text += $"\nExtracting {entry.FullName}...";
 
-                            string realPath = _currentDirectory + "\\" + entry.FullName;
-                            if (realPath.EndsWith("\\") || realPath.EndsWith("/"))
+                            string path = Program.CurrentDirectory + "\\" + entry.FullName;
+                            if (path.EndsWith("\\") || path.EndsWith("/"))
                             {
-                                DirectoryInfo di = new DirectoryInfo(realPath.Substring(0, realPath.Length - 1));
+                                DirectoryInfo di = new DirectoryInfo(path.Substring(0, path.Length - 1));
                                 if (!di.Exists)
                                 {
                                     di.Create();
@@ -80,42 +117,44 @@ namespace Launcher
                             }
                             else
                             {
-                                entry.ExtractToFile(realPath, true);
+                                entry.ExtractToFile(path, true);
                             }
 
-                            outputLog.Text += $"OK!";
+                            outputLog.Text += "OK!";
                         }
-
-                        outputLog.Text += "\nExtraction completed!";
                     }
-
-                    updateFileRef.Delete();
-
-                    startNoUpdate.PerformClick();
                 }
                 catch (Exception ex)
                 {
                     outputLog.Text += $"\n\n{ex}";
-
-                    outputLog.Text += "\n\nIf errors persist, please contact me on Discord!";
-                    outputLog.Text += "\n\nhttps://cb.run/FFT";
                 }
+
+                if (zipFile.Exists)
+                {
+                    try
+                    {
+                        zipFile.Delete();
+                    }
+                    catch { }
+                }
+
+                startNoUpdate.PerformClick();
             }).Start();
         }
 
         private void startNoUpdate_Click(object sender, EventArgs e)
         {
-            outputLog.Text += "\nLaunching Guardian.exe...";
-
             try
             {
+                outputLog.Text += "\nLaunching Guardian.exe...";
+
                 Process.Start(new ProcessStartInfo("Guardian.exe"));
-                this.Close();
+
+                outputLog.Text += "OK!";
             }
             catch (Exception ex)
             {
-                outputLog.Text += "\nCould not launch application 'Guardian.exe'!";
-                outputLog.Text += $"\n\n{ex}";
+                outputLog.Text += $"FAILED!\n\n{ex}";
             }
         }
 
@@ -125,26 +164,27 @@ namespace Launcher
             {
                 try
                 {
-                    FileInfo outputLogFileRef = new FileInfo(_currentDirectory + "\\Guardian_Data\\output_log.txt");
-                    if (outputLogFileRef.Exists)
+                    outputLog.Text = "Uploading Guardian_Data\\output_log.txt to hastebin.com...";
+
+                    FileInfo outputLogFile = new FileInfo(Program.CurrentDirectory + "\\Guardian_Data\\output_log.txt");
+                    if (outputLogFile.Exists)
                     {
-                        using (FileStream fs = outputLogFileRef.OpenRead())
+                        using (FileStream fs = outputLogFile.Open(FileMode.Open, FileAccess.Read))
                         {
                             using (StreamReader sr = new StreamReader(fs))
                             {
                                 string content = await sr.ReadToEndAsync();
-                                using (StringContent sc = new StringContent(content, Encoding.UTF8, "application/json"))
+                                using (HttpClient client = new HttpClient())
                                 {
-                                    using (HttpClient hc = new HttpClient())
+                                    using (StringContent payload = new StringContent(content, Encoding.UTF8, "application/json"))
                                     {
-                                        HttpResponseMessage response = await hc.PostAsync("https://hastebin.com/documents", sc);
+                                        HttpResponseMessage response = await client.PostAsync("https://hastebin.com/documents", payload);
                                         if (response.IsSuccessStatusCode)
                                         {
-                                            string resData = await response.Content.ReadAsStringAsync();
-                                            using (JsonDocument jd = JsonDocument.Parse(resData))
+                                            string data = await response.Content.ReadAsStringAsync();
+                                            using (JsonDocument jd = JsonDocument.Parse(data))
                                             {
-                                                outputLog.Text += "Log contents uploaded!\n\n";
-                                                outputLog.Text += "https://hastebin.com/" + jd.RootElement.GetProperty("key").GetString() + ".txt";
+                                                outputLog.Text += "OK!\n\nhttps://hastebin.com/" + jd.RootElement.GetProperty("key").GetString() + ".txt";
                                             }
                                         }
                                         else
@@ -163,7 +203,7 @@ namespace Launcher
                 }
                 catch (Exception ex)
                 {
-                    outputLog.Text += $"\n\n{ex}";
+                    outputLog.Text = $"FAILED!\n\n{ex}";
                 }
             }).Start();
         }

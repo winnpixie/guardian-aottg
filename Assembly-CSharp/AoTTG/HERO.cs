@@ -230,6 +230,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private AudioSource _flareSound;
     private Texture _gasTexture;
 
+    public Material _leftRopeMat;
+    public float _leftRopeXScale;
+    public Material _rightRopeMat;
+    public float _rightRopeXScale;
+
     // RC/Guardian ThunderSpear monstrosity
     public GameObject _thunderSpearLeft;
     public GameObject _thunderSpearRight;
@@ -1265,11 +1270,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             GameObject gameObject = (!useGun) ? hookRefL1 : hookRefL2;
             string launcher_ref = (!useGun) ? "hookRefL1" : "hookRefL2";
             bulletLeft.transform.position = gameObject.transform.position;
-            Bullet component = bulletLeft.GetComponent<Bullet>();
+            Bullet hook = bulletLeft.GetComponent<Bullet>();
             float d = single ? 0f : ((!(hit.distance > 50f)) ? (hit.distance * 0.05f) : (hit.distance * 0.3f));
             Vector3 a = hit.point - base.transform.right * d - bulletLeft.transform.position;
             a.Normalize();
-            component.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject, leviMode: isLevi);
+            hook.Launch(a * 3f, base.rigidbody.velocity, launcher_ref, isLeft: true, base.gameObject, leviMode: isLevi);
             launchPointLeft = Vector3.zero;
         }
     }
@@ -1290,11 +1295,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             GameObject gameObject = (!useGun) ? hookRefR1 : hookRefR2;
             string launcher_ref = (!useGun) ? "hookRefR1" : "hookRefR2";
             bulletRight.transform.position = gameObject.transform.position;
-            Bullet component = bulletRight.GetComponent<Bullet>();
+            Bullet hook = bulletRight.GetComponent<Bullet>();
             float d = single ? 0f : !(hit.distance > 50f) ? (hit.distance * 0.05f) : (hit.distance * 0.3f);
             Vector3 a = hit.point + base.transform.right * d - bulletRight.transform.position;
             a.Normalize();
-            component.Launch(a * (isLevi ? 5f : 3f), base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: isLevi);
+            hook.Launch(a * (isLevi ? 5f : 3f), base.rigidbody.velocity, launcher_ref, isLeft: false, base.gameObject, leviMode: isLevi);
             launchPointRight = Vector3.zero;
         }
     }
@@ -5552,14 +5557,43 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         string text8 = (string)FengGameManagerMKII.Settings[num8];
         string text9 = (string)FengGameManagerMKII.Settings[num9];
         string text10 = (string)FengGameManagerMKII.Settings[num10];
-        string text11 = (string)FengGameManagerMKII.Settings[num11];
+        string gasSkin = (string)FengGameManagerMKII.Settings[num11];
         string horseSkin = (string)FengGameManagerMKII.Settings[num12];
         string trailSkin = (string)FengGameManagerMKII.Settings[num13];
-        string tsSkin = Guardian.Mod.Properties.ThunderSpearSkin.Value;
-        string text14 = horseSkin + "," + text2 + "," + text3 + "," + text4 + "," + text5 + "," + text6 + "," + text7 + "," + text8 + "," + text9 + "," + text10 + "," + text11 + "," + text + "," + trailSkin + $",{tsSkin},{tsSkin}";
+
+        string thunderSpearSkin = Guardian.Mod.Properties.ThunderSpearSkin.Value;
+        string leftRopeSkin = Guardian.Mod.Properties.LeftRopeSkin.Value;
+        float leftRopeTileScale = Guardian.Mod.Properties.LeftRopeTileScale.Value;
+        string rightRopeSkin = Guardian.Mod.Properties.RightRopeSkin.Value;
+        float rightRopeTileScale = Guardian.Mod.Properties.RightRopeTileScale.Value;
+
+        string[] skinData =
+        {
+            horseSkin,
+            text2,
+            text3,
+            text4,
+            text5,
+            text6,
+            text7,
+            text8,
+            text9,
+            text10,
+            gasSkin,
+            text,
+            trailSkin,
+            // BEGIN: Guardian
+            thunderSpearSkin,
+            thunderSpearSkin,
+            leftRopeSkin,
+            leftRopeTileScale.ToString("F3"),
+            rightRopeSkin,
+            rightRopeTileScale.ToString("F3")
+            // END: Guardian
+        };
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
-            StartCoroutine(CoLoadSkin(-1, text14));
+            StartCoroutine(CoLoadSkin(-1, string.Join(",", skinData)));
             return;
         }
         int horseId = -1;
@@ -5567,7 +5601,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             horseId = myHorse.GetPhotonView().viewID;
         }
-        base.photonView.RPC("loadskinRPC", PhotonTargets.AllBuffered, horseId, text14);
+        base.photonView.RPC("loadskinRPC", PhotonTargets.AllBuffered, horseId, string.Join(",", skinData));
     }
 
     [RPC]
@@ -6223,9 +6257,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
         }
 
-        // ThunderSpears
         if (strArray.Length > 14)
         {
+            // BEGIN: ThunderSpear Skins
             if (_thunderSpearLeft != null)
             {
                 foreach (Renderer renderer in _thunderSpearLeft.GetComponentsInChildren<Renderer>())
@@ -6304,6 +6338,82 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         renderer.enabled = false;
                     }
                 }
+            }
+            // END: ThunderSpear Skins
+
+            if (strArray.Length > 18)
+            {
+                // BEGIN: Hook Textures
+                if (strArray[15].EndsWith(".png") || strArray[15].EndsWith(".jpg") || strArray[15].EndsWith(".jpeg")) // Left rope
+                {
+                    if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[15]))
+                    {
+                        WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[15]);
+                        if (www != null)
+                        {
+                            yield return www;
+
+                            Texture2D ropeTex = RCextensions.LoadImage(www, mipmapping, 1000000);
+                            www.Dispose();
+                            if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[15]))
+                            {
+                                unload = true;
+                                _leftRopeMat = new Material(Shader.Find("Transparent/Diffuse"));
+                                _leftRopeMat.mainTexture = ropeTex;
+                                FengGameManagerMKII.LinkHash[0].Add(strArray[15], _leftRopeMat);
+                                _leftRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
+                            }
+                            else
+                            {
+                                _leftRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _leftRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
+                    }
+                }
+                if (float.TryParse(strArray[16], out float l_xScale)) // Left rope tiling
+                {
+                    _leftRopeXScale = l_xScale;
+                }
+
+                if (strArray[17].EndsWith(".png") || strArray[17].EndsWith(".jpg") || strArray[17].EndsWith(".jpeg")) // Right rope
+                {
+                    if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[17]))
+                    {
+                        WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[17]);
+                        if (www != null)
+                        {
+                            yield return www;
+
+                            Texture2D ropeTex = RCextensions.LoadImage(www, mipmapping, 1000000);
+                            www.Dispose();
+                            if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[17]))
+                            {
+                                unload = true;
+                                _rightRopeMat = new Material(Shader.Find("Transparent/Diffuse"));
+                                _rightRopeMat.mainTexture = ropeTex;
+                                FengGameManagerMKII.LinkHash[0].Add(strArray[17], _rightRopeMat);
+                                _rightRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
+                            }
+                            else
+                            {
+                                _rightRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _rightRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
+                    }
+                }
+                if (float.TryParse(strArray[18], out float r_xScale)) // Right rope tiling
+                {
+                    _rightRopeXScale = r_xScale;
+                }
+                // END: Hook Textures
             }
         }
 

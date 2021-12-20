@@ -5,7 +5,6 @@ using Guardian.Features.Properties;
 using Guardian.Features.Gamemodes;
 using Guardian.Networking;
 using Guardian.Utilities;
-using SimpleJSON;
 using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -15,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "12162021";
+        public static string Build = "12202021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string CustomPropertyName = "GuardianMod";
 
@@ -74,7 +73,7 @@ namespace Guardian
             Properties.Load();
 
             // Load network validation service
-            AntiAbuse.Validators.NetworkChecker.Init();
+            NetworkChecker.Init();
 
             DiscordRPC.StartTime = GameHelper.CurrentTimeMillis();
 
@@ -87,7 +86,7 @@ namespace Guardian
             Logger.Info("Checking for update...");
             Logger.Info($"Installed: {Build}");
 
-            using WWW www = new WWW("https://summie.tk/guardian/version_data.json?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
+            using WWW www = new WWW("https://summie.tk/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
             yield return www;
 
             if (www.error != null)
@@ -106,18 +105,12 @@ namespace Guardian
             }
             else
             {
-                JSONNode node = JSON.Parse(www.text);
-                string latestBuild = node["current_build"].Value;
+                string latestBuild = www.text.Trim();
                 Logger.Info("Latest: " + latestBuild);
 
                 if (!latestBuild.Equals(Build))
                 {
                     Logger.Info($"Your copy of Guardian is {"OUT OF DATE".AsBold().AsItalic().AsColor("FF0000")}!");
-
-                    if (node["required"].AsBool)
-                    {
-                        Logger.Info("This build is marked as <b><i>REQUIRED</i></b>, updating is HIGHLY recommended!");
-                    }
                     Logger.Info("If you don't have the launcher, download it here:");
                     Logger.Info($"\t- {"https://cb.run/GuardianAoT".AsColor("0099FF")}");
 

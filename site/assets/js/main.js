@@ -1,17 +1,15 @@
 (function () {
     window.onBodyLoad = () => {
-        window.fetch('version_data.json', {
+        window.fetch('version.txt', {
             cache: 'no-store'
         }).then(response => {
             if (!response.ok) return;
 
-            response.json().then(jsonObj => {
+            response.text().then(txt => {
                 let infoText = document.getElementById('info-text');
                 if (!infoText) return; // How.
 
-                infoText.innerText = infoText.innerText
-                    .replace('$BUILD$', jsonObj.current_build)
-                    .replace('$REQUIRED$', jsonObj.required ? 'required' : 'recommended, but not necessary');
+                infoText.innerText = infoText.innerText.replace('$BUILD$', txt);
             });
         });
     }

@@ -8,7 +8,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     private Vector3 velocity = Vector3.zero;
     private Vector3 velocity2 = Vector3.zero;
     public GameObject rope;
-    private LineRenderer lineRenderer;
+    public LineRenderer lineRenderer;
     private ArrayList nodes = new ArrayList();
     private ArrayList spiralNodes;
     private int phase;
@@ -21,6 +21,8 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     private int spiralcount;
     private bool isdestroying;
     public TITAN myTitan;
+
+    public float tileScale = 1f;
 
     // BEGIN: Anarchy
     public Transform Transform
@@ -383,6 +385,14 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                     }
                     break;
             }
+
+            // BEGIN: Guardian
+            if (lineRenderer.material != null)
+            {
+                float ropeLength = (base.transform.position - myRef.transform.position).magnitude;
+                lineRenderer.material.mainTextureScale = new Vector2(tileScale * ropeLength, 1f);
+            }
+            // END: Guardian
         }
     }
 
@@ -576,15 +586,36 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     private void Start()
     {
         // Load custom textures and audio clips
+        if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Textures/hook.png", out Texture2D hookTexture))
         {
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Textures/hook.png", out Texture2D hookTexture))
-            {
-                base.gameObject.renderer.material.mainTexture = hookTexture;
-            }
+            base.gameObject.renderer.material.mainTexture = hookTexture;
         }
 
         rope = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("rope"));
         lineRenderer = rope.GetComponent<LineRenderer>();
+
         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().AddHook(this);
+
+        if (master == null) return;
+
+        HERO parentHero = master.GetComponent<HERO>();
+        if (parentHero == null) return;
+
+        if (left)
+        {
+            if (parentHero._leftRopeMat != null)
+            {
+                lineRenderer.material = parentHero._leftRopeMat;
+                tileScale = parentHero._leftRopeXScale;
+            }
+        }
+        else
+        {
+            if (parentHero._rightRopeMat != null)
+            {
+                lineRenderer.material = parentHero._rightRopeMat;
+                tileScale = parentHero._rightRopeXScale;
+            }
+        }
     }
 }
