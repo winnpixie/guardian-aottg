@@ -14,11 +14,11 @@ namespace Launcher
         [STAThread]
         static void Main()
         {
+            CurrentDirectory = Environment.CurrentDirectory;
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainWindow());
-
-            CurrentDirectory = Environment.CurrentDirectory;
         }
     }
 }
