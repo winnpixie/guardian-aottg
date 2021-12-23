@@ -19,6 +19,7 @@ public class FlareMovement : MonoBehaviour
             }
         }
 
+
         hero = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
         Color customColor = color switch
         {
@@ -27,6 +28,8 @@ public class FlareMovement : MonoBehaviour
             "Black" => Guardian.Mod.Properties.Flare3Color.Value.ToColor(),
             _ => Color.white
         };
+
+        Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, base.GetComponent<ParticleSystem>().startColor, true, true);
 
         base.GetComponent<ParticleSystem>().startColor = customColor;
 
@@ -74,6 +77,7 @@ public class FlareMovement : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
+
         if (hint != null)
         {
             if (timer < 3f)

@@ -98,7 +98,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
                 || (info != null && titan.photonView.ownerId == info.sender.Id)) return true;
 
-            Mod.Logger.Error($"'TITAN.grabToRight' from #{info.sender.Id}.");
+            Mod.Logger.Error($"'TITAN.grabToRight' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -113,7 +113,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
                 || (info != null && titan.photonView.ownerId == info.sender.Id)) return true;
 
-            Mod.Logger.Error($"'TITAN.grabToLeft' from #{info.sender.Id}.");
+            Mod.Logger.Error($"'TITAN.grabToLeft' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);

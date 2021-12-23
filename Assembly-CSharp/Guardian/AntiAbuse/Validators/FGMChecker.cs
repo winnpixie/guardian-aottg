@@ -90,18 +90,15 @@
         // FengGameManagerMKII.titanGetKill
         public static bool IsTitanKillValid(PhotonMessageInfo info)
         {
-            if (info != null)
-            {
-                Mod.Logger.Error($"'FengGameManagerMKII.titanGetKill' from #{info.sender.Id}");
-                if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
-                {
-                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
-                }
+            if (info == null) return true;
 
-                return false;
+            Mod.Logger.Error($"'FengGameManagerMKII.titanGetKill' from #{info.sender.Id}");
+            if (!FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
+            {
+                FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
             }
 
-            return true;
+            return false;
         }
 
         // FengGameManager.netShowDamage
@@ -147,18 +144,15 @@
         // FengGameManagerMKII.showChatContent
         public static bool IsChatContentShowValid(PhotonMessageInfo info)
         {
-            if (info != null)
-            {
-                Mod.Logger.Error($"'FengGameManagerMKII.showChatContent' from #{info.sender.Id}");
-                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
-                {
-                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
-                }
+            if (info == null) return true;
 
-                return false;
+            Mod.Logger.Error($"'FengGameManagerMKII.showChatContent' from #{info.sender.Id}");
+            if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
+            {
+                FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
             }
 
-            return true;
+            return false;
         }
     }
 }

@@ -651,17 +651,23 @@ public class Minimap : MonoBehaviour
     private void Initialize()
     {
         Vector3 v = new Vector3(0.5f, 0.5f);
+
         Texture2D texture2D = (Texture2D)FengGameManagerMKII.RCAssets.Load("icon");
         Rect rect = new Rect(0f, 0f, texture2D.width, texture2D.height);
         whiteIconSprite = UnityEngine.Sprite.Create(texture2D, rect, v);
+
         texture2D = (Texture2D)FengGameManagerMKII.RCAssets.Load("iconpointer");
         rect = new Rect(0f, 0f, texture2D.width, texture2D.height);
         pointerSprite = UnityEngine.Sprite.Create(texture2D, rect, v);
+
         texture2D = (Texture2D)FengGameManagerMKII.RCAssets.Load("supplyicon");
         rect = new Rect(0f, 0f, texture2D.width, texture2D.height);
         supplySprite = UnityEngine.Sprite.Create(texture2D, rect, v);
+
         texture2D = (Texture2D)FengGameManagerMKII.RCAssets.Load("mapborder");
-        borderSprite = UnityEngine.Sprite.Create(rect: new Rect(0f, 0f, texture2D.width, texture2D.height), border: new Vector4(5f, 5f, 5f, 5f), texture: texture2D, pivot: v, pixelsPerUnit: 100f, extrude: 1u, meshType: SpriteMeshType.FullRect);
+        rect = new Rect(0f, 0f, texture2D.width, texture2D.height);
+        borderSprite = UnityEngine.Sprite.Create(texture2D, rect, pivot: v, pixelsPerUnit: 100f, extrude: 1u, meshType: SpriteMeshType.FullRect, border: new Vector4(5f, 5f, 5f, 5f));
+
         MINIMAP_ICON_SIZE = new Vector2(whiteIconSprite.texture.width, whiteIconSprite.texture.height);
         MINIMAP_POINTER_SIZE = (float)(pointerSprite.texture.width + pointerSprite.texture.height) / 2f;
         MINIMAP_POINTER_DIST = (MINIMAP_ICON_SIZE.x + MINIMAP_ICON_SIZE.y) * 0.25f;

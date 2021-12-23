@@ -6353,7 +6353,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         {
                             yield return www;
 
-                            Texture2D ropeTex = RCextensions.LoadImage(www, mipmapping, 1000000);
+                            Texture2D ropeTex = RCextensions.LoadImage(www, mipmapping, 500000);
                             www.Dispose();
                             if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[15]))
                             {
@@ -6388,7 +6388,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         {
                             yield return www;
 
-                            Texture2D ropeTex = RCextensions.LoadImage(www, mipmapping, 1000000);
+                            Texture2D ropeTex = RCextensions.LoadImage(www, mipmapping, 500000);
                             www.Dispose();
                             if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[17]))
                             {

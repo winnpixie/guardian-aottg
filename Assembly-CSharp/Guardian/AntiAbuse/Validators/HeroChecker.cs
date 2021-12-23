@@ -7,31 +7,27 @@ namespace Guardian.AntiAbuse.Validators
         // HERO.killObject
         public static bool IsKillObjectValid(PhotonMessageInfo info)
         {
-            if (info != null)
+            if (info == null) return true;
+
+            Mod.Logger.Error($"'HERO.killObject' from #{info.sender.Id}.");
+            if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
-                Mod.Logger.Error($"'HERO.killObject' from #{info.sender.Id}.");
-                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
-                {
-                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
-                }
-                return false;
+                FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
             }
-            return true;
+            return false;
         }
 
         // HERO.showHitDamage
         public static bool IsHitDamageShowValid(PhotonMessageInfo info)
         {
-            if (info != null)
+            if (info == null) return true;
+
+            Mod.Logger.Error($"'HERO.showHitDamage' from #{info.sender.Id}.");
+            if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
-                Mod.Logger.Error($"'HERO.showHitDamage' from #{info.sender.Id}.");
-                if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
-                {
-                    FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
-                }
-                return false;
+                FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
             }
-            return true;
+            return false;
         }
 
         // HERO.whoIsMyErenTitan

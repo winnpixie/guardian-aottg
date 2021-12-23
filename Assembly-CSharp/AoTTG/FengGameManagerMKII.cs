@@ -3205,6 +3205,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
         playerList = content;
+
         if (PhotonNetwork.isMasterClient && !isWinning && !isLosing && roundTime >= 5f)
         {
             if (RCSettings.InfectionMode > 0)
@@ -11711,6 +11712,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     PhotonNetwork.Destroy(titan.gameObject);
                 }
             }
+
+            SpawnNonAITitan2(myLastHero);
         }
     }
 

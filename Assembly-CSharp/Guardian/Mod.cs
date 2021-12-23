@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "12202021";
+        public static string Build = "12232021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string CustomPropertyName = "GuardianMod";
 
