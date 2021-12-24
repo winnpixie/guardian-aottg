@@ -82,8 +82,9 @@ namespace Guardian.Features.Properties
         public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], false);
 
         // Misc
-        public Property<string> CustomAppId = new Property<string>("Misc_AppId", new string[0], string.Empty);
         public Property<bool> UseRichPresence = new Property<bool>("Misc_DiscordPresence", new string[0], true);
+        public Property<string> PhotonAppId = new Property<string>("Misc_PhotonAppId", new string[0], string.Empty);
+        public Property<string> PhotonUserId = new Property<string>("Misc_PhotonUserId", new string[0], string.Empty);
 
         // Logging
         public Property<int> MaxLogLines = new Property<int>("Log_MaxEntries", new string[0], 100);
@@ -253,12 +254,15 @@ namespace Guardian.Features.Properties
             base.Add(MultiplayerNapeMeat);
 
             // Misc
-            CustomAppId.OnValueChanged = () =>
-            {
-                Networking.PhotonApplication.Custom.Id = CustomAppId.Value;
-            };
-            base.Add(CustomAppId);
             base.Add(UseRichPresence);
+
+            PhotonAppId.OnValueChanged = () =>
+            {
+                Networking.PhotonApplication.Custom.Id = PhotonAppId.Value;
+            };
+            base.Add(PhotonAppId);
+
+            base.Add(PhotonUserId);
 
             // Logging
             base.Add(MaxLogLines);

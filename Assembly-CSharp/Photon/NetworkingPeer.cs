@@ -12,7 +12,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     protected internal const string CurrentSceneProperty = "curScn";
     protected internal string mAppVersion;
     protected internal string mAppId;
-    private string playername = string.Empty;
+    private string playerName = string.Empty;
     private IPhotonPeerListener externalListener;
     private JoinType mLastJoinType;
     private bool mPlayernameHasToBeUpdated;
@@ -82,17 +82,17 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     {
         get
         {
-            return playername;
+            return playerName;
         }
         set
         {
-            if (!string.IsNullOrEmpty(value) && !value.Equals(playername))
+            if (!string.IsNullOrEmpty(value) && !value.Equals(playerName))
             {
                 if (mLocalActor != null)
                 {
                     mLocalActor.name = value;
                 }
-                playername = value;
+                playerName = value;
                 if (mCurrentGame != null)
                 {
                     SendPlayerName();
@@ -218,7 +218,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         base.LimitOfUnreliableCommands = 40;
         externalListener = listener;
         PlayerName = playername;
-        mLocalActor = new PhotonPlayer(isLocal: true, -1, this.playername);
+        mLocalActor = new PhotonPlayer(isLocal: true, -1, this.playerName);
         AddNewPlayer(mLocalActor.Id, mLocalActor);
         rpcShortcuts = new Dictionary<string, int>(PhotonNetwork.PhotonServerSettings.RpcList.Count);
         for (int i = 0; i < PhotonNetwork.PhotonServerSettings.RpcList.Count; i++)

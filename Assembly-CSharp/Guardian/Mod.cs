@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "12242021";
+        public static string Build = "12242021-1";
         public static string RootDir = Application.dataPath + "\\..";
         public static string CustomPropertyName = "GuardianMod";
 
@@ -282,6 +282,12 @@ namespace Guardian
             {
                 Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetLighting(time);
             }
+        }
+
+        void OnJoinedLobby()
+        {
+            // TODO: Begin working on Friend system with Photon Friend API
+            PhotonNetwork.playerName = Properties.PhotonUserId.Value;
         }
 
         void OnJoinedRoom()
