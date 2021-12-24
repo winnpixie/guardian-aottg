@@ -3024,13 +3024,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             totalDmg
         );
 
-        List<string> detectedMods = Guardian.AntiAbuse.ModDetector.GetMods(player);
-        if (detectedMods.Count > 0)
+        if (Guardian.Mod.Properties.ShowPlayerMods.Value)
         {
-            content += " " + detectedMods[0];
+            List<string> detectedMods = Guardian.AntiAbuse.ModDetector.GetMods(player);
+            if (detectedMods.Count > 0)
+            {
+                content += " " + detectedMods[0];
+            }
         }
 
-        if (player.Ping >= 0)
+        if (Guardian.Mod.Properties.ShowPlayerPings.Value && player.Ping >= 0)
         {
             content += " [FFFFFF][" + player.Ping + "ms]";
         }

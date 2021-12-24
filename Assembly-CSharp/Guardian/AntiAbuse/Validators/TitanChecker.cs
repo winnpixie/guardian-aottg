@@ -5,8 +5,8 @@
         // TITAN.netSetAbnormalType
         public static bool IsTitanTypeSetValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
-                || (info != null && (titan.photonView.ownerId == info.sender.Id || info.sender.isMasterClient))) return true;
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || info == null
+                || titan.photonView.ownerId == info.sender.Id || info.sender.isMasterClient) return true;
 
             Mod.Logger.Error($"'TITAN.netSetAbnormalType' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
@@ -80,8 +80,8 @@
         // TITAN.playsoundRPC
         public static bool IsSoundPlayValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
-                || (info != null && titan.photonView.ownerId == info.sender.Id)) return true;
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || info == null
+                || titan.photonView.ownerId == info.sender.Id) return true;
 
             Mod.Logger.Error($"'TITAN.playsoundRPC' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
@@ -95,8 +95,8 @@
         // TITAN.grabToRight
         public static bool IsRightGrabValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
-                || (info != null && titan.photonView.ownerId == info.sender.Id)) return true;
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || info == null
+                || titan.photonView.ownerId == info.sender.Id) return true;
 
             Mod.Logger.Error($"'TITAN.grabToRight' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
@@ -110,8 +110,8 @@
         // TITAN.grabToLeft
         public static bool IsLeftGrabValid(TITAN titan, PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
-                || (info != null && titan.photonView.ownerId == info.sender.Id)) return true;
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || info == null
+                || titan.photonView.ownerId == info.sender.Id) return true;
 
             Mod.Logger.Error($"'TITAN.grabToLeft' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))

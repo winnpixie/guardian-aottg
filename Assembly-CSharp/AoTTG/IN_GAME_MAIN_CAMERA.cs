@@ -728,6 +728,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             needSetHUD = false;
 
+            Minimap.OnScreenResolutionChanged();
+
             SetHUDPosition();
             Screen.lockCursor = !Screen.lockCursor;
             Screen.lockCursor = !Screen.lockCursor;

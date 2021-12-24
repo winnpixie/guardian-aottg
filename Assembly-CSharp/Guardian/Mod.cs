@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "12232021";
+        public static string Build = "12242021";
         public static string RootDir = Application.dataPath + "\\..";
         public static string CustomPropertyName = "GuardianMod";
 
@@ -76,6 +76,7 @@ namespace Guardian
             NetworkChecker.Init();
 
             DiscordRPC.StartTime = GameHelper.CurrentTimeMillis();
+            DiscordRPC.Initialize();
 
             // Check for an update
             StartCoroutine(CoCheckForUpdate());
@@ -250,14 +251,14 @@ namespace Guardian
 
         void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
         {
-            AntiAbuse.Validators.NetworkChecker.OnPlayerPropertyModification(playerAndUpdatedProps);
+            NetworkChecker.OnPlayerPropertyModification(playerAndUpdatedProps);
 
             ModDetector.OnPlayerPropertyModification(playerAndUpdatedProps);
         }
 
         void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
-            AntiAbuse.Validators.NetworkChecker.OnRoomPropertyModification(propertiesThatChanged);
+            NetworkChecker.OnRoomPropertyModification(propertiesThatChanged);
 
             PhotonPlayer sender = null;
             if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer player)
@@ -281,12 +282,6 @@ namespace Guardian
             {
                 Camera.main.GetComponent<IN_GAME_MAIN_CAMERA>().SetLighting(time);
             }
-        }
-
-        void OnJoinedLobby()
-        {
-            // TODO: Assign users with a (hopefully) unique identifier to be findable with Photon's Friend system
-            PhotonNetwork.playerName = SystemInfo.deviceUniqueIdentifier;
         }
 
         void OnJoinedRoom()

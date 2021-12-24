@@ -76,6 +76,8 @@ namespace Guardian.Features.Properties
         public Property<string> Flare2Color = new Property<string>("Visual_Flare2Color", new string[0], "FF00007B");
         public Property<string> Flare3Color = new Property<string>("Visual_Flare3Color", new string[0], "00000087");
         public Property<bool> EmissiveFlares = new Property<bool>("Visual_EmissiveFlares", new string[0], true);
+        public Property<bool> ShowPlayerMods = new Property<bool>("Visual_ShowPlayerMods", new string[0], true);
+        public Property<bool> ShowPlayerPings = new Property<bool>("Visual_ShowPlayerPings", new string[0], true);
         public Property<bool> FPSCamera = new Property<bool>("Visual_FPSCamera", new string[0], false);
         public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], false);
 
@@ -245,6 +247,8 @@ namespace Guardian.Features.Properties
             base.Add(Flare2Color);
             base.Add(Flare3Color);
             base.Add(EmissiveFlares);
+            base.Add(ShowPlayerMods);
+            base.Add(ShowPlayerPings);
             base.Add(FPSCamera);
             base.Add(MultiplayerNapeMeat);
 

@@ -227,7 +227,7 @@ namespace Guardian.AntiAbuse
             if (player.IsPedoBear
                 || properties.ContainsKey("PBModRC"))
             {
-                mods.Add("[FFFFFF][[FF6600]Pedo[553300]Bear[-][-]]");
+                mods.Add("[FF6600][Pedo[553300]Bear]");
             }
 
             // Disciple
