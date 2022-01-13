@@ -1861,6 +1861,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 killInfoObj.GetComponent<KillInfoComponent>().MoveOn();
             }
         }
+
         if (killInfoGO.Count > 4)
         {
             GameObject gameObject3 = (GameObject)killInfoGO[0];

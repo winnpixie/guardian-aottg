@@ -14,7 +14,7 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "12242021-1";
+        public static string Build = "01122022";
         public static string RootDir = Application.dataPath + "\\..";
         public static string CustomPropertyName = "GuardianMod";
 
@@ -87,7 +87,7 @@ namespace Guardian
             Logger.Info("Checking for update...");
             Logger.Info($"Installed: {Build}");
 
-            using WWW www = new WWW("https://summie.tk/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
+            using WWW www = new WWW("https://www.sativa.tk/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
             yield return www;
 
             if (www.error != null)

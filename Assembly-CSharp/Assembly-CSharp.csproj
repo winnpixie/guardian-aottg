@@ -10,15 +10,15 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\Guardian\Guardian_Data\Managed\</OutputPath>
-    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>..\Guardian64\Guardian_Data\Managed\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <OutputPath>..\Guardian\Guardian_Data\Managed\</OutputPath>
-    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>..\Guardian32\Guardian_Data\Managed\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutputPath>..\Guardian\Guardian_Data\Managed\</OutputPath>
+    <OutputPath>..\Guardian64\Guardian_Data\Managed\</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
@@ -31,40 +31,40 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Anarchy.Custom">
-      <HintPath>..\Guardian\Guardian_Data\Managed\Anarchy.Custom.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\Anarchy.Custom.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\Guardian\Guardian_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-UnityScript">
-      <HintPath>..\Guardian\Guardian_Data\Managed\Assembly-UnityScript.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\Assembly-UnityScript.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-UnityScript-firstpass">
-      <HintPath>..\Guardian\Guardian_Data\Managed\Assembly-UnityScript-firstpass.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\Assembly-UnityScript-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Boo.Lang">
-      <HintPath>..\Guardian\Guardian_Data\Managed\Boo.Lang.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\Boo.Lang.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\Guardian\Guardian_Data\Managed\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Security">
-      <HintPath>..\Guardian\Guardian_Data\Managed\Mono.Security.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\Mono.Security.dll</HintPath>
     </Reference>
     <Reference Include="Photon3Unity3D">
-      <HintPath>..\Guardian\Guardian_Data\Managed\Photon3Unity3D.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\Photon3Unity3D.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\Guardian\Guardian_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\Guardian\Guardian_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityScript.Lang">
-      <HintPath>..\Guardian\Guardian_Data\Managed\UnityScript.Lang.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\UnityScript.Lang.dll</HintPath>
     </Reference>
     <Reference Include="System.Core">
-      <HintPath>..\Guardian\Guardian_Data\Managed\System.Core.dll</HintPath>
+      <HintPath>..\Guardian64\Guardian_Data\Managed\System.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

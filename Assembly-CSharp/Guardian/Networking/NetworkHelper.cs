@@ -14,9 +14,9 @@
             {
                 return masterAddress.Substr(masterAddress.IndexOf('-') + 1, masterAddress.IndexOf('.') - 1);
             }
-            else if (masterAddress.Contains("aottg.tk"))
+            else if (masterAddress.Contains(".aottg.tk"))
             {
-                return masterAddress.Substr(0, masterAddress.IndexOf('.') - 1);
+                return masterAddress.Substr(4, masterAddress.IndexOf('.') - 1);
             }
 
             return "??";

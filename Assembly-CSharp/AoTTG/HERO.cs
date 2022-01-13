@@ -4906,7 +4906,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 PhotonView photonView2 = PhotonView.Find(viewId);
                 if (photonView2 != null)
                 {
-                    FengGameManagerMKII.Instance.SendKillInfo(killByTitan, "[FFCC00][" + info.sender.Id.ToString() + "][FFFFFF] " + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                    FengGameManagerMKII.Instance.SendKillInfo(killByTitan, "[FFCC00][" + info.sender.Id.ToString() + "][-] " + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
                     hashtable = new ExitGames.Client.Photon.Hashtable();
                     hashtable.Add(PhotonPlayerProperty.Kills, GExtensions.AsInt(photonView2.owner.customProperties[PhotonPlayerProperty.Kills]) + 1);
                     photonView2.owner.SetCustomProperties(hashtable);
@@ -4914,7 +4914,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             else
             {
-                FengGameManagerMKII.Instance.SendKillInfo(titanName.Length > 0, "[FFCC00][" + info.sender.Id.ToString() + "][FFFFFF] " + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                FengGameManagerMKII.Instance.SendKillInfo(titanName.Length > 0, "[FFCC00][" + info.sender.Id.ToString() + "][-] " + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
             }
         }
         if (base.photonView.isMine)
@@ -5019,7 +5019,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 PhotonView photonView2 = PhotonView.Find(viewId);
                 if (photonView2 != null)
                 {
-                    FengGameManagerMKII.Instance.SendKillInfo(isKillerTitan: true, "[FFCC00][" + info.sender.Id + "] [-]" + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                    FengGameManagerMKII.Instance.SendKillInfo(isKillerTitan: true, "[FFCC00][" + info.sender.Id + "][-] " + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
                     hashtable = new ExitGames.Client.Photon.Hashtable();
                     hashtable.Add(PhotonPlayerProperty.Kills, GExtensions.AsInt(photonView2.owner.customProperties[PhotonPlayerProperty.Kills]) + 1);
                     photonView2.owner.SetCustomProperties(hashtable);
@@ -5027,7 +5027,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             else
             {
-                FengGameManagerMKII.Instance.SendKillInfo(isKillerTitan: true, "[FFCC00][" + info.sender.Id + "] [-]" + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                FengGameManagerMKII.Instance.SendKillInfo(isKillerTitan: true, "[FFCC00][" + info.sender.Id + "][-] " + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
             }
             FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, (!(titanName == string.Empty)) ? 1 : 0);
         }

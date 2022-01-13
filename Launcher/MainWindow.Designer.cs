@@ -30,19 +30,19 @@ namespace Launcher
         private void InitializeComponent()
         {
             this.actionGroup = new System.Windows.Forms.GroupBox();
-            this.uploadLog = new System.Windows.Forms.Button();
-            this.updateAndStart = new System.Windows.Forms.Button();
-            this.outputLog = new System.Windows.Forms.RichTextBox();
-            this.startNoUpdate = new System.Windows.Forms.Button();
+            this.uploadLogBtn = new System.Windows.Forms.Button();
+            this.startGameBtn = new System.Windows.Forms.Button();
+            this.updateAndPlayBtn = new System.Windows.Forms.Button();
+            this.outputLogArea = new System.Windows.Forms.RichTextBox();
             this.actionGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // actionGroup
             // 
-            this.actionGroup.Controls.Add(this.uploadLog);
-            this.actionGroup.Controls.Add(this.startNoUpdate);
-            this.actionGroup.Controls.Add(this.updateAndStart);
-            this.actionGroup.Controls.Add(this.outputLog);
+            this.actionGroup.Controls.Add(this.uploadLogBtn);
+            this.actionGroup.Controls.Add(this.startGameBtn);
+            this.actionGroup.Controls.Add(this.updateAndPlayBtn);
+            this.actionGroup.Controls.Add(this.outputLogArea);
             this.actionGroup.Location = new System.Drawing.Point(12, 11);
             this.actionGroup.Name = "actionGroup";
             this.actionGroup.Size = new System.Drawing.Size(690, 438);
@@ -50,44 +50,44 @@ namespace Launcher
             this.actionGroup.TabStop = false;
             this.actionGroup.Text = "Actions";
             // 
-            // uploadLog
+            // uploadLogBtn
             // 
-            this.uploadLog.Location = new System.Drawing.Point(6, 384);
-            this.uploadLog.Name = "uploadLog";
-            this.uploadLog.Size = new System.Drawing.Size(335, 48);
-            this.uploadLog.TabIndex = 2;
-            this.uploadLog.Text = "Upload output_log.txt*\r\n\r\n* Game must be ran at least once!";
-            this.uploadLog.UseVisualStyleBackColor = true;
-            this.uploadLog.Click += new System.EventHandler(this.uploadLog_Click);
+            this.uploadLogBtn.Location = new System.Drawing.Point(6, 384);
+            this.uploadLogBtn.Name = "uploadLogBtn";
+            this.uploadLogBtn.Size = new System.Drawing.Size(335, 48);
+            this.uploadLogBtn.TabIndex = 2;
+            this.uploadLogBtn.Text = "Upload output_log.txt*\r\n\r\n* Game must be ran at least once!";
+            this.uploadLogBtn.UseVisualStyleBackColor = true;
+            this.uploadLogBtn.Click += new System.EventHandler(this.uploadLogBtn_Click);
             // 
-            // updateAndStart
+            // startGameBtn
             // 
-            this.updateAndStart.Location = new System.Drawing.Point(6, 19);
-            this.updateAndStart.Name = "updateAndStart";
-            this.updateAndStart.Size = new System.Drawing.Size(335, 32);
-            this.updateAndStart.TabIndex = 0;
-            this.updateAndStart.Text = "Download/Update and Play";
-            this.updateAndStart.UseVisualStyleBackColor = true;
-            this.updateAndStart.Click += new System.EventHandler(this.updateAndStart_Click);
+            this.startGameBtn.Location = new System.Drawing.Point(347, 19);
+            this.startGameBtn.Name = "startGameBtn";
+            this.startGameBtn.Size = new System.Drawing.Size(335, 32);
+            this.startGameBtn.TabIndex = 1;
+            this.startGameBtn.Text = "Start Game";
+            this.startGameBtn.UseVisualStyleBackColor = true;
+            this.startGameBtn.Click += new System.EventHandler(this.startGameBtn_Click);
             // 
-            // outputLog
+            // updateAndPlayBtn
             // 
-            this.outputLog.Location = new System.Drawing.Point(6, 57);
-            this.outputLog.Name = "outputLog";
-            this.outputLog.ReadOnly = true;
-            this.outputLog.Size = new System.Drawing.Size(677, 321);
-            this.outputLog.TabIndex = 3;
-            this.outputLog.Text = "";
+            this.updateAndPlayBtn.Location = new System.Drawing.Point(6, 19);
+            this.updateAndPlayBtn.Name = "updateAndPlayBtn";
+            this.updateAndPlayBtn.Size = new System.Drawing.Size(335, 32);
+            this.updateAndPlayBtn.TabIndex = 0;
+            this.updateAndPlayBtn.Text = "Download/Update and Play";
+            this.updateAndPlayBtn.UseVisualStyleBackColor = true;
+            this.updateAndPlayBtn.Click += new System.EventHandler(this.updateAndPlayBtn_Start);
             // 
-            // startNoUpdate
+            // outputLogArea
             // 
-            this.startNoUpdate.Location = new System.Drawing.Point(347, 19);
-            this.startNoUpdate.Name = "startNoUpdate";
-            this.startNoUpdate.Size = new System.Drawing.Size(335, 32);
-            this.startNoUpdate.TabIndex = 1;
-            this.startNoUpdate.Text = "Just Play (Don\'t Update)";
-            this.startNoUpdate.UseVisualStyleBackColor = true;
-            this.startNoUpdate.Click += new System.EventHandler(this.startNoUpdate_Click);
+            this.outputLogArea.Location = new System.Drawing.Point(6, 57);
+            this.outputLogArea.Name = "outputLogArea";
+            this.outputLogArea.ReadOnly = true;
+            this.outputLogArea.Size = new System.Drawing.Size(677, 321);
+            this.outputLogArea.TabIndex = 3;
+            this.outputLogArea.Text = "";
             // 
             // MainWindow
             // 
@@ -107,10 +107,10 @@ namespace Launcher
         #endregion
 
         private System.Windows.Forms.GroupBox actionGroup;
-        private System.Windows.Forms.RichTextBox outputLog;
-        private System.Windows.Forms.Button updateAndStart;
-        private System.Windows.Forms.Button uploadLog;
-        private System.Windows.Forms.Button startNoUpdate;
+        private System.Windows.Forms.RichTextBox outputLogArea;
+        private System.Windows.Forms.Button updateAndPlayBtn;
+        private System.Windows.Forms.Button uploadLogBtn;
+        private System.Windows.Forms.Button startGameBtn;
     }
 }
 

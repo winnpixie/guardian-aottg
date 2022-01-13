@@ -12,8 +12,8 @@ namespace Guardian.Ui.Impl
         private int Height = 320;
         private bool ShouldSave = false;
         private Dictionary<Property, bool> TempBoolProps = new Dictionary<Property, bool>();
-        private Dictionary<Property, int> TempIntProps = new Dictionary<Property, int>();
-        private Dictionary<Property, float> TempFloatProps = new Dictionary<Property, float>();
+        private Dictionary<Property, string> TempIntProps = new Dictionary<Property, string>();
+        private Dictionary<Property, string> TempFloatProps = new Dictionary<Property, string>();
         private Dictionary<Property, string> TempStringProps = new Dictionary<Property, string>();
         private List<string> Sections = new List<string>();
         private string CurrentSection = "MC";
@@ -35,11 +35,11 @@ namespace Guardian.Ui.Impl
                 }
                 else if (property.Value is int)
                 {
-                    TempIntProps.Add(property, (int)property.Value);
+                    TempIntProps.Add(property, property.Value.ToString());
                 }
                 else if (property.Value is float)
                 {
-                    TempFloatProps.Add(property, (float)property.Value);
+                    TempFloatProps.Add(property, property.Value.ToString());
                 }
                 else if (property.Value is string)
                 {
@@ -87,9 +87,9 @@ namespace Guardian.Ui.Impl
                         input += "0";
                     }
 
-                    if (NumericPattern.IsMatch(input) && int.TryParse(input, out int val))
+                    if (NumericPattern.IsMatch(input))
                     {
-                        TempIntProps[property] = val;
+                        TempIntProps[property] = input;
                     }
                 }
                 else if (property.Value is float)
@@ -104,9 +104,9 @@ namespace Guardian.Ui.Impl
                         input = "-0" + input.Substring(1);
                     }
 
-                    if (NumericPattern.IsMatch(input) && float.TryParse(input, out float val))
+                    if (NumericPattern.IsMatch(input))
                     {
-                        TempFloatProps[property] = val;
+                        TempFloatProps[property] = input;
                     }
                 }
                 else if (property.Value is string)
@@ -137,14 +137,20 @@ namespace Guardian.Ui.Impl
                     ((Property<bool>)pair.Key).Value = pair.Value;
                 }
 
-                foreach (KeyValuePair<Property, int> pair in TempIntProps)
+                foreach (KeyValuePair<Property, string> pair in TempIntProps)
                 {
-                    ((Property<int>)pair.Key).Value = pair.Value;
+                    if (int.TryParse(pair.Value, out int val))
+                    {
+                        ((Property<int>)pair.Key).Value = val;
+                    }
                 }
 
-                foreach (KeyValuePair<Property, float> pair in TempFloatProps)
+                foreach (KeyValuePair<Property, string> pair in TempFloatProps)
                 {
-                    ((Property<float>)pair.Key).Value = pair.Value;
+                    if (float.TryParse(pair.Value, out float val))
+                    {
+                        ((Property<float>)pair.Key).Value = val;
+                    }
                 }
 
                 foreach (KeyValuePair<Property, string> pair in TempStringProps)

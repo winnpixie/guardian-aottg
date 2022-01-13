@@ -1,9 +1,13 @@
-/Guardian/
+# Miscellaneous
+Guardian*/
 
 # Visual Studio
 .vs/
-bin/
-obj/
-lib/
+[Bb]in/
+[Oo]bj/
+[Ll]ib/
 *.sln
 *.pdb
+
+# VS Code
+.vscode/
