@@ -25,7 +25,6 @@ namespace Launcher
 
         private async void updateAndPlayBtn_Start(object sender, EventArgs e)
         {
-            // Try to kill all currently running tasks pertaining to us so we can overwrite files
             try
             {
                 outputLogArea.Text = "Attempting to terminate active Guardian tasks...";
@@ -35,88 +34,71 @@ namespace Launcher
 
             string fileName = $"Guardian{Program.Architecture}.zip";
 
-            byte[] updateZipData;
+            byte[] updateZipData = new byte[0];
             using (HttpClient client = new HttpClient())
             {
-                // Download latest version string
                 try
                 {
                     outputLogArea.Text += "\nObtaining latest build information...";
-                    string latestVersion = await client.GetStringAsync("https://www.sativa.tk/guardian/version.txt?t=" + Environment.TickCount);
-                    outputLogArea.Text += $" {latestVersion}\n";
+                    string latestVersion = await client.GetStringAsync("http://www.aottg.tk/mods/guardian/version.txt?t=" + Environment.TickCount);
+                    outputLogArea.Text += $"{latestVersion}\n";
                 }
                 catch (Exception ex)
                 {
-                    outputLogArea.Text = $" UNKNOWN\n\n{ex}\n";
+                    outputLogArea.Text = $"???\n\n{ex}\n";
                 }
 
-                // Download update data
                 try
                 {
-                    outputLogArea.Text += $"\nDownloading Guardian.zip from https://suhtiva.github.io/guardian/{fileName}...";
-                    updateZipData = await client.GetByteArrayAsync($"https://suhtiva.github.io/guardian/{fileName}?t=" + Environment.TickCount); // Attempt to avoid cache issues
+                    outputLogArea.Text += $"\nDownloading Guardian.zip...";
+                    updateZipData = await client.GetByteArrayAsync($"https://tivuhh.github.io/guardian/{fileName}?t=" + Environment.TickCount);
                 }
                 catch (Exception ex)
                 {
-                    outputLogArea.Text += $"FAILED!\n\n{ex}";
+                    outputLogArea.Text += $"FAILED\n\n{ex}";
                     return;
                 }
             }
 
             FileInfo updateZipFile = new FileInfo(Program.RunDirectory + $"\\{fileName}");
-
-            // Try to delete pre-existing update archive, possibly avoiding undefined behavior
-            try
+            if (updateZipFile.Exists)
             {
-                if (updateZipFile.Exists)
+                try
                 {
                     outputLogArea.Text += "Deleting pre-existing update ZIP file...";
                     updateZipFile.Delete();
+                    outputLogArea.Text += "OK\n";
+                }
+                catch (Exception ex)
+                {
+                    outputLogArea.Text += $"FAILED\nPlease delete it yourself and retry.\n\n{ex}";
+                    return;
                 }
             }
-            catch (Exception ex)
-            {
-                outputLogArea.Text += $"FAILED!\nPlease delete it yourself and retry.\n\n{ex}";
-                return;
-            }
 
-            // Write downloaded to a local update archive
             try
             {
                 outputLogArea.Text += "Writing downloaded data to local ZIP file...";
-
                 using (FileStream fs = updateZipFile.OpenWrite())
                 {
                     await fs.WriteAsync(updateZipData, 0, updateZipData.Length);
                 }
+                outputLogArea.Text += "OK\n";
             }
             catch (Exception ex)
             {
                 outputLogArea.Text += $"FAILED!\n\n{ex}";
-
-                // Try to remove potentially corrupted update archive
-                if (updateZipFile.Exists)
-                {
-                    try
-                    {
-                        updateZipFile.Delete();
-                    }
-                    catch { }
-                }
-
                 return;
             }
 
             try
             {
-                // Extract contents of update archive to their respective locations
-                outputLogArea.Text += $"\nExtracting {updateZipFile.Name} to current directory ({Program.RunDirectory})...";
+                outputLogArea.Text += $"\nExtracting {updateZipFile.Name} to current directory ({Program.RunDirectory})...\n";
 
                 using (ZipArchive archive = ZipFile.OpenRead(updateZipFile.FullName))
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
-                        outputLogArea.Text += $"\nExtracting {entry.FullName}...";
-
+                        outputLogArea.Text += $"Extracting {entry.FullName}...";
                         string path = Program.RunDirectory + "\\" + entry.FullName;
                         if (path.EndsWith("\\") || path.EndsWith("/"))
                         {
@@ -127,6 +109,7 @@ namespace Launcher
                         {
                             entry.ExtractToFile(path, true);
                         }
+                        outputLogArea.Text += "OK\n";
                     }
             }
             catch (Exception ex)
@@ -134,14 +117,18 @@ namespace Launcher
                 outputLogArea.Text += $"\n\n{ex}";
             }
 
-            // Delete update archive as we no longer need it
             if (updateZipFile.Exists)
             {
                 try
                 {
+                    outputLogArea.Text += "Cleaning up...";
                     updateZipFile.Delete();
+                    outputLogArea.Text += "OK\n";
                 }
-                catch { }
+                catch
+                {
+                    outputLogArea.Text += "FAILED\n\nPlease manually delete the update ZIP.";
+                }
             }
 
             startGameBtn.PerformClick();
@@ -151,32 +138,31 @@ namespace Launcher
         {
             try
             {
-                outputLogArea.Text += "\nLaunching Guardian.exe...";
-                Process.Start(new ProcessStartInfo("Guardian.exe"));
-                base.Close();
+                outputLogArea.Text += "Starting Guardian.exe...";
+                Process.Start("Guardian.exe");
+                outputLogArea.Text += "OK";
             }
             catch (Exception ex)
             {
-                outputLogArea.Text += $"FAILED!\n\n{ex}";
+                outputLogArea.Text += $"FAILED\n\n{ex}";
             }
         }
 
         private async void uploadLogBtn_Click(object sender, EventArgs e)
         {
-            try
+            FileInfo outputLogFile = new FileInfo(Program.RunDirectory + "\\Guardian_Data\\output_log.txt");
+            if (outputLogFile.Exists)
             {
-                outputLogArea.Text = "Uploading Guardian_Data\\output_log.txt to hastebin.com...";
-
-                FileInfo outputLogFile = new FileInfo(Program.RunDirectory + "\\Guardian_Data\\output_log.txt");
-                if (outputLogFile.Exists)
+                try
                 {
-                    using (FileStream fs = outputLogFile.Open(FileMode.Open, FileAccess.Read))
+                    using (FileStream fs = outputLogFile.OpenRead())
                     using (StreamReader sr = new StreamReader(fs))
                     using (HttpClient client = new HttpClient())
                     {
                         string content = await sr.ReadToEndAsync();
                         using (StringContent payload = new StringContent(content, Encoding.UTF8, "text/plain"))
                         {
+                            outputLogArea.Text = "Uploading Guardian_Data\\output_log.txt to hastebin.com...";
                             HttpResponseMessage response = await client.PostAsync("https://www.toptal.com/developers/hastebin/documents", payload);
                             if (response.IsSuccessStatusCode)
                             {
@@ -193,14 +179,14 @@ namespace Launcher
                         }
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    throw new Exception("No 'output_log.txt' found in 'Guardian_Data'!");
+                    outputLogArea.Text = $"FAILED!\n\n{ex}";
                 }
             }
-            catch (Exception ex)
+            else
             {
-                outputLogArea.Text = $"FAILED!\n\n{ex}";
+                outputLogArea.Text += "No 'output_log.txt' in Guardian_Data";
             }
         }
     }

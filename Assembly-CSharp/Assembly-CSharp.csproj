@@ -3,15 +3,11 @@
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <TargetFramework>net35</TargetFramework>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Platforms>x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <LangVersion>8.0</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\Guardian64\Guardian_Data\Managed\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <OutputPath>..\Guardian32\Guardian_Data\Managed\</OutputPath>

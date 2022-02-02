@@ -56,7 +56,7 @@ namespace Launcher
             this.uploadLogBtn.Name = "uploadLogBtn";
             this.uploadLogBtn.Size = new System.Drawing.Size(335, 48);
             this.uploadLogBtn.TabIndex = 2;
-            this.uploadLogBtn.Text = "Upload output_log.txt*\r\n\r\n* Game must be ran at least once!";
+            this.uploadLogBtn.Text = "Upload output_log.txt to Hastebin\r\n\r\n(Game must be ran at least once!)";
             this.uploadLogBtn.UseVisualStyleBackColor = true;
             this.uploadLogBtn.Click += new System.EventHandler(this.uploadLogBtn_Click);
             // 
@@ -66,7 +66,7 @@ namespace Launcher
             this.startGameBtn.Name = "startGameBtn";
             this.startGameBtn.Size = new System.Drawing.Size(335, 32);
             this.startGameBtn.TabIndex = 1;
-            this.startGameBtn.Text = "Start Game";
+            this.startGameBtn.Text = "Play (No Update)";
             this.startGameBtn.UseVisualStyleBackColor = true;
             this.startGameBtn.Click += new System.EventHandler(this.startGameBtn_Click);
             // 
@@ -76,7 +76,7 @@ namespace Launcher
             this.updateAndPlayBtn.Name = "updateAndPlayBtn";
             this.updateAndPlayBtn.Size = new System.Drawing.Size(335, 32);
             this.updateAndPlayBtn.TabIndex = 0;
-            this.updateAndPlayBtn.Text = "Download/Update and Play";
+            this.updateAndPlayBtn.Text = "Update && Play";
             this.updateAndPlayBtn.UseVisualStyleBackColor = true;
             this.updateAndPlayBtn.Click += new System.EventHandler(this.updateAndPlayBtn_Start);
             // 

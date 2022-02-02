@@ -14,19 +14,18 @@ namespace Guardian
 {
     class Mod : MonoBehaviour
     {
-        public static string Build = "01122022";
-        public static string RootDir = Application.dataPath + "\\..";
-        public static string CustomPropertyName = "GuardianMod";
+        public static readonly string Build = "01FEB2022";
+        public static readonly string RootDir = Application.dataPath + "\\..";
+        public static readonly string CustomPropertyName = "GuardianMod";
+        public static readonly CommandManager Commands = new CommandManager();
+        public static readonly GamemodeManager Gamemodes = new GamemodeManager();
+        public static readonly PropertyManager Properties = new PropertyManager();
+        public static readonly FrameCounter FpsCounter = new FrameCounter();
+        public static readonly Logger Logger = new Logger();
+        public static readonly Regex BlacklistedTagsPattern = new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
 
-        public static CommandManager Commands = new CommandManager();
-        public static GamemodeManager Gamemodes = new GamemodeManager();
-        public static PropertyManager Properties = new PropertyManager();
+        public static bool WasQuitRequested = false;
         public static Ui.GuiController GuiController;
-        public static FrameCounter FpsCounter = new FrameCounter();
-        public static Logger Logger = new Logger();
-        public static Regex BlacklistedTagsPattern = new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
-        public static bool IsProgramQuitting = false;
-
         public static string SystemLanguage => CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
         private static bool IsFirstInit = true;
@@ -87,7 +86,7 @@ namespace Guardian
             Logger.Info("Checking for update...");
             Logger.Info($"Installed: {Build}");
 
-            using WWW www = new WWW("https://www.sativa.tk/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
+            using WWW www = new WWW("http://www.aottg.tk/mods/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
             yield return www;
 
             if (www.error != null)
@@ -400,7 +399,7 @@ namespace Guardian
 
         void OnApplicationQuit()
         {
-            IsProgramQuitting = true;
+            WasQuitRequested = true;
 
             Properties.Save();
 

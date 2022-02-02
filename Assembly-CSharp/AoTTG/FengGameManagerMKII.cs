@@ -7829,16 +7829,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     return;
                 }
 
-                // Ko-fi link
+                // Ko-fi
                 if (Guardian.Utilities.ResourceLoader.TryGetAsset("Textures/ko-fi.png", out Texture2D kofi))
                 {
                     if (GUI.Button(new Rect(10, 185, 220, 75), kofi))
                     {
-                        Application.OpenURL("https://www.ko-fi.com/winnpixie");
+                        Application.OpenURL("https://www.ko-fi.com/tivuhh");
                     }
                 }
 
-                // AoTTG-2 patreon link
+                // AoTTG-2 Patreon
                 if (Guardian.Utilities.ResourceLoader.TryGetAsset("Textures/patreon.png", out Texture2D aot2Patreon))
                 {
                     if (GUI.Button(new Rect(10, 265, 220, 150), aot2Patreon))

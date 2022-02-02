@@ -1,6 +1,8 @@
 :: This script requires https://www.nuget.org/packages/ilmerge
 @ECHO OFF
-ECHO ILMerge Helper Script, by Summer (https://github.com/alerithe)
+ECHO ILMerge Script, by Sativa (https://github.com/suhtiva)
+ECHO:
+ECHO ILMerge made simple!
 ECHO:
 ECHO This script is a modified version of the one provided in
 ECHO - https://github.com/dotnet/ILMerge#to-run-ilmerge-in-a-batch-file

@@ -39,7 +39,8 @@ public class LevelInfo
                 }
             }
         }
-        return null;
+
+        return Levels[3];
     }
 
     public static void InitData()
