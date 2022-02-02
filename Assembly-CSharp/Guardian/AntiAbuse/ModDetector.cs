@@ -111,7 +111,7 @@ namespace Guardian.AntiAbuse
                 List<string> tags = new List<string>();
                 if (properties["GuardianMod"] is string)
                 {
-                    tags.Add("v." + GExtensions.AsString(properties["GuardianMod"]));
+                    tags.Add(GExtensions.AsString(properties["GuardianMod"]));
                 }
                 else if (properties["GuardianMod"] is int)
                 {

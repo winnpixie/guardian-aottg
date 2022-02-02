@@ -50,8 +50,9 @@ namespace Launcher
 
                 try
                 {
-                    outputLogArea.Text += $"\nDownloading Guardian.zip...";
+                    outputLogArea.Text += $"\nDownloading {fileName}...";
                     updateZipData = await client.GetByteArrayAsync($"https://tivuhh.github.io/guardian/{fileName}?t=" + Environment.TickCount);
+                    outputLogArea.Text += "OK\n";
                 }
                 catch (Exception ex)
                 {
@@ -115,20 +116,6 @@ namespace Launcher
             catch (Exception ex)
             {
                 outputLogArea.Text += $"\n\n{ex}";
-            }
-
-            if (updateZipFile.Exists)
-            {
-                try
-                {
-                    outputLogArea.Text += "Cleaning up...";
-                    updateZipFile.Delete();
-                    outputLogArea.Text += "OK\n";
-                }
-                catch
-                {
-                    outputLogArea.Text += "FAILED\n\nPlease manually delete the update ZIP.";
-                }
             }
 
             startGameBtn.PerformClick();

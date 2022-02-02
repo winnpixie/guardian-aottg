@@ -1,6 +1,6 @@
 :: This script requires https://www.nuget.org/packages/ilmerge
 @ECHO OFF
-ECHO ILMerge Script, by Sativa (https://github.com/suhtiva)
+ECHO ILMerge Script, by Tiva (https://github.com/tivuhh)
 ECHO:
 ECHO ILMerge made simple!
 ECHO:
