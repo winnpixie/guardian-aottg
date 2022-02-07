@@ -409,7 +409,7 @@ public class InstantiateTracker
                 case "fx/boom5":
                 case "fx/rockthrow":
                 case "fx/bite":
-                    if (!FengGameManagerMKII.Level.PlayerTitans && RCSettings.InfectionMode <= 0 && FengGameManagerMKII.Level.Mode != GameMode.Colossal)
+                    if (!FengGameManagerMKII.Level.PlayerTitans && RCSettings.InfectionMode <= 0 && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal)
                     {
                         if (PhotonNetwork.isMasterClient && !FengGameManagerMKII.Instance.restartingTitan)
                         {
@@ -484,14 +484,14 @@ public class InstantiateTracker
                 case "fx/colossal_steam_dmg":
                 case "fx/colossal_steam":
                 case "fx/boom1_ct_kick":
-                    if (PhotonNetwork.isMasterClient && FengGameManagerMKII.Level.Mode != GameMode.Colossal)
+                    if (PhotonNetwork.isMasterClient && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal)
                     {
                         FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: true, "spawning colossal effect (" + key + ").");
                         return false;
                     }
                     return Instantiated(photonPlayer, GameResource.Effect);
                 case "rock":
-                    if (PhotonNetwork.isMasterClient && FengGameManagerMKII.Level.Mode != GameMode.Colossal)
+                    if (PhotonNetwork.isMasterClient && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal)
                     {
                         FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: true, "spawning MC item (" + key + ").");
                         return false;
@@ -510,12 +510,12 @@ public class InstantiateTracker
                 case "titan_ver3.1":
                     if (PhotonNetwork.isMasterClient)
                     {
-                        if (!FengGameManagerMKII.Level.PlayerTitans && RCSettings.InfectionMode <= 0 && FengGameManagerMKII.Level.Mode != GameMode.Colossal && !FengGameManagerMKII.Instance.restartingTitan)
+                        if (!FengGameManagerMKII.Level.PlayerTitans && RCSettings.InfectionMode <= 0 && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal && !FengGameManagerMKII.Instance.restartingTitan)
                         {
                             FengGameManagerMKII.Instance.KickPlayer(photonPlayer, ban: false, "spawning titan (" + key + ").");
                             return false;
                         }
-                        if (FengGameManagerMKII.Level.Mode != GameMode.Colossal)
+                        if (IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal)
                         {
                             int num4 = 0;
                             foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
@@ -532,7 +532,7 @@ public class InstantiateTracker
                             }
                         }
                     }
-                    else if (FengGameManagerMKII.MasterRC && FengGameManagerMKII.Level.Mode != GameMode.Colossal)
+                    else if (FengGameManagerMKII.MasterRC && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal)
                     {
                         int num4 = 0;
                         foreach (TITAN titan2 in FengGameManagerMKII.Instance.Titans)

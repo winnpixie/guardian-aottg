@@ -4785,7 +4785,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     public void netDie(Vector3 v, bool isBite, int viewId = -1, string titanName = "", bool killByTitan = true, PhotonMessageInfo info = null)
     {
-        if (base.photonView.isMine && info != null && FengGameManagerMKII.Level.Mode != GameMode.Colossal)
+        if (base.photonView.isMine && info != null && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal)
         {
             if (FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
@@ -4926,7 +4926,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [RPC]
     private void netDie2(int viewId = -1, string titanName = "", PhotonMessageInfo info = null)
     {
-        if (base.photonView.isMine && info != null && FengGameManagerMKII.Level.Mode != GameMode.Colossal)
+        if (base.photonView.isMine && info != null && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal)
         {
             if (FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {

@@ -19,7 +19,7 @@ public class BTN_choose_titan : MonoBehaviour
 
     private void OnClick()
     {
-        if (FengGameManagerMKII.Level.Mode == GameMode.TeamDeathmatch)
+        if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.TeamDeathmatch)
         {
             string text = "AHSS";
             NGUITools.SetActive(GameObject.Find("UI_IN_GAME").GetComponent<UIReferArray>().panels[0], state: true);
@@ -46,7 +46,7 @@ public class BTN_choose_titan : MonoBehaviour
         }
         else
         {
-            if (FengGameManagerMKII.Level.Mode == GameMode.PvPCapture)
+            if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.PvPCapture)
             {
                 fgmkii.checkpoint = GameObject.Find("PVPchkPtT");
             }

@@ -10,6 +10,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     }
 
     public static GameType Gametype = GameType.Stop;
+    public static GameMode Gamemode = GameMode.None;
     public static int Difficulty;
     public static bool TriggerAutoLock;
     public static int Level;

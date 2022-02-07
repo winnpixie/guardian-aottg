@@ -379,7 +379,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public void SpawnPlayer(string id, string tag = "playerRespawn")
     {
-        if (Level.Mode == GameMode.PvPCapture)
+        if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.PvPCapture)
         {
             SpawnPlayerAt2(id, checkpoint);
             return;
@@ -431,7 +431,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         GameObject[] array = GameObject.FindGameObjectsWithTag(tag);
         GameObject gameObject = array[UnityEngine.Random.Range(0, array.Length)];
         myLastHero = id.ToUpper();
-        GameObject gameObject2 = (Level.Mode != GameMode.PvPCapture) ? PhotonNetwork.Instantiate("TITAN_VER3.1", gameObject.transform.position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
+        GameObject gameObject2 = (IN_GAME_MAIN_CAMERA.Gamemode != GameMode.PvPCapture) ? PhotonNetwork.Instantiate("TITAN_VER3.1", gameObject.transform.position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
         mainCamera.SetMainObjectTitan(gameObject2);
         gameObject2.GetComponent<TITAN>().nonAI = true;
         gameObject2.GetComponent<TITAN>().speed = 30f;
@@ -541,7 +541,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [RPC]
     public void someOneIsDead(int id = -1)
     {
-        switch (Level.Mode)
+        switch (IN_GAME_MAIN_CAMERA.Gamemode)
         {
             case GameMode.PvPCapture:
                 if (id != 0)
@@ -753,7 +753,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             return;
         }
 
-        switch (Level.Mode)
+        switch (IN_GAME_MAIN_CAMERA.Gamemode)
         {
             case GameMode.PvPCapture:
                 switch (titanName)
@@ -1217,6 +1217,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         Level = levelInfo;
+        IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.Mode;
         PhotonNetwork.LoadLevel(levelInfo.Map);
 
         ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
@@ -1406,6 +1407,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             mainCamGameObj.GetComponent<IN_GAME_MAIN_CAMERA>().enabled = true;
             mainCamGameObj.GetComponent<SpectatorMovement>().disable = true;
             mainCamGameObj.GetComponent<MouseLook>().disable = true;
+            IN_GAME_MAIN_CAMERA.Gamemode = Level.Mode;
             SpawnPlayer(IN_GAME_MAIN_CAMERA.SingleCharacter.ToUpper());
             Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
             Screen.showCursor = false;
@@ -1445,7 +1447,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         else if ((int)Settings[245] == 0)
         {
             Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-            if (Level.Mode == GameMode.PvPCapture)
+            if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.PvPCapture)
             {
                 if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.IsTitan]) == 2)
                 {
@@ -1903,7 +1905,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         humanScore = score;
         isWinning = true;
 
-        switch (Level.Mode)
+        switch (IN_GAME_MAIN_CAMERA.Gamemode)
         {
             case GameMode.TeamDeathmatch:
                 teamWinner = score;
@@ -2032,7 +2034,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             SetTextTopLeft(playerList);
 
             // Respawn message
-            if (Camera.main != null && Level.Mode != GameMode.Racing && mainCamera.gameOver && !needChooseSide && (int)Settings[245] == 0)
+            if (Camera.main != null && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Racing && mainCamera.gameOver && !needChooseSide && (int)Settings[245] == 0)
             {
                 SetTextCenter("Press [F7D358]" + inputManager.inputString[InputCode.Flare1] + "[-] to spectate the next player. \nPress [F7D358]" + inputManager.inputString[InputCode.Flare2] + "[-] to spectate the previous player.\nPress [F7D358]" + inputManager.inputString[InputCode.Attack1] + "[-] to enter the spectator mode.\n\n\n\n");
                 if (Level.RespawnMode == RespawnMode.Deathmatch || RCSettings.EndlessMode > 0 || ((RCSettings.BombMode == 1 || RCSettings.PvPMode > 0) && RCSettings.PointMode > 0))
@@ -2066,9 +2068,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
 
             // Game lose messages
-            if (isLosing && Level.Mode != GameMode.Racing)
+            if (isLosing && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Racing)
             {
-                if (Level.Mode == GameMode.Survival)
+                if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Survival)
                 {
                     SetTextCenter("Survived " + wave + " Waves!\nGame Restart in " + (int)gameEndCD + "s");
                 }
@@ -2095,7 +2097,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             // Game win messages
             if (isWinning)
             {
-                switch (Level.Mode)
+                switch (IN_GAME_MAIN_CAMERA.Gamemode)
                 {
                     case GameMode.Racing:
                         SetTextCenter(localRacingResult + "\n\nGame Restart in " + (int)gameEndCD + "s");
@@ -2137,7 +2139,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) // Singleplayer messages
         {
-            if (Level.Mode == GameMode.Racing)
+            if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Racing)
             {
                 if (!isLosing)
                 {
@@ -2153,7 +2155,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 // Game lose messages
                 if (isLosing)
                 {
-                    if (Level.Mode == GameMode.Survival)
+                    if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Survival)
                     {
                         SetTextCenter("Survived " + wave + " Waves!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
                     }
@@ -2167,7 +2169,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             // Game win messages
             if (isWinning)
             {
-                switch (Level.Mode)
+                switch (IN_GAME_MAIN_CAMERA.Gamemode)
                 {
                     case GameMode.Racing:
                         SetTextCenter(((timeTotalServer * 10f) * 0.1f - 5f) + "!\nPress " + inputManager.inputString[InputCode.Restart] + " to restart.");
@@ -2181,7 +2183,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
             }
 
-            if (Level.Mode == GameMode.Racing)
+            if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Racing)
             {
                 if (!isWinning)
                 {
@@ -2197,7 +2199,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         timeElapse += Time.deltaTime;
         roundTime += Time.deltaTime;
 
-        if (Level.Mode == GameMode.Racing)
+        if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Racing)
         {
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
@@ -2277,7 +2279,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             timeElapse -= 1f;
             string text = string.Empty;
-            switch (Level.Mode)
+            switch (IN_GAME_MAIN_CAMERA.Gamemode)
             {
                 case GameMode.Endless:
                     text = "Time: " + (int)(time - timeTotalServer);
@@ -2312,14 +2314,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
             {
-                if (Level.Mode == GameMode.Survival)
+                if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Survival)
                 {
                     text = "Time: " + (int)timeTotalServer;
                 }
             }
             else
             {
-                switch (Level.Mode)
+                switch (IN_GAME_MAIN_CAMERA.Gamemode)
                 {
                     case GameMode.Endless:
                     case GameMode.KillTitans:
@@ -2426,7 +2428,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             totalDamage += player.customProperties[PhotonPlayerProperty.TotalDamage] + "\n";
         }
         string gameResults = string.Empty;
-        switch (Level.Mode)
+        switch (IN_GAME_MAIN_CAMERA.Gamemode)
         {
             case GameMode.TeamDeathmatch:
                 for (int i = 0; i < teamScores.Length; i++)
@@ -2603,7 +2605,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                 }
                 CostumeConverter.ToPhotonData(setup.myCostume, PhotonNetwork.player);
-                if (Level.Mode == GameMode.PvPCapture)
+                if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.PvPCapture)
                 {
                     mainCamera.main_object.transform.position += new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20));
                 }
@@ -2640,7 +2642,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 position = titanSpawns[UnityEngine.Random.Range(0, titanSpawns.Count)];
             }
             myLastHero = id.ToUpper();
-            GameObject gameObject2 = (Level.Mode != GameMode.PvPCapture) ? PhotonNetwork.Instantiate("TITAN_VER3.1", position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
+            GameObject gameObject2 = (IN_GAME_MAIN_CAMERA.Gamemode != GameMode.PvPCapture) ? PhotonNetwork.Instantiate("TITAN_VER3.1", position, gameObject.transform.rotation, 0) : PhotonNetwork.Instantiate("TITAN_VER3.1", checkpoint.transform.position + new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20)), checkpoint.transform.rotation, 0);
             mainCamera.SetMainObjectTitan(gameObject2);
             gameObject2.GetComponent<TITAN>().nonAI = true;
             gameObject2.GetComponent<TITAN>().speed = 30f;
@@ -2705,7 +2707,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             humanScore++;
 
             int finalScore;
-            switch (Level.Mode)
+            switch (IN_GAME_MAIN_CAMERA.Gamemode)
             {
                 case GameMode.Racing:
                     finalScore = 0;
@@ -3257,7 +3259,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         num19++;
                     }
                 }
-                if (num19 <= 0 && Level.Mode != 0)
+                if (num19 <= 0 && IN_GAME_MAIN_CAMERA.Gamemode != 0)
                 {
                     FinishGame();
                 }
@@ -5426,7 +5428,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
         CostumeConverter.ToPhotonData(setup.myCostume, PhotonNetwork.player);
-        if (Level.Mode == GameMode.PvPCapture)
+        if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.PvPCapture)
         {
             mainCamera.main_object.transform.position += new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20));
         }
@@ -5889,6 +5891,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             GUI.FocusControl(null);
         }
+        Screen.showCursor = true;
 
         if (selectedObj != null)
         {
@@ -7314,19 +7317,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             switch (gametype)
             {
                 case 0:
-                    Level.Mode = GameMode.KillTitans;
+                    IN_GAME_MAIN_CAMERA.Gamemode = GameMode.KillTitans;
                     break;
                 case 1:
-                    Level.Mode = GameMode.Survival;
+                    IN_GAME_MAIN_CAMERA.Gamemode = GameMode.Survival;
                     break;
                 case 2:
-                    Level.Mode = GameMode.TeamDeathmatch;
+                    IN_GAME_MAIN_CAMERA.Gamemode = GameMode.TeamDeathmatch;
                     break;
                 case 3:
-                    Level.Mode = GameMode.Racing;
+                    IN_GAME_MAIN_CAMERA.Gamemode = GameMode.Racing;
                     break;
                 case 4:
-                    Level.Mode = GameMode.None;
+                    IN_GAME_MAIN_CAMERA.Gamemode = GameMode.None;
                     break;
             }
 
@@ -11466,12 +11469,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
 
-        if (RCSettings.MoreTitans > 0 || (RCSettings.MoreTitans == 0 && Level.Name.StartsWith("Custom") && RCSettings.GameType >= 2))
+        if (RCSettings.MoreTitans > 0 || ((RCSettings.MoreTitans == 0 && Level.Name.StartsWith("Custom")) && RCSettings.GameType >= 2))
         {
             titansToSpawn = RCSettings.MoreTitans;
         }
 
-        if (Level.Mode == GameMode.Survival)
+        if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Survival)
         {
             if (punk)
             {

@@ -3013,7 +3013,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         return;
                     }
-                    if (FengGameManagerMKII.Level.Mode == GameMode.PvPCapture && PVPfromCheckPt != null && myDistance > chaseDistance)
+                    if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.PvPCapture && PVPfromCheckPt != null && myDistance > chaseDistance)
                     {
                         SetIdle();
                     }
@@ -3129,7 +3129,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         if (checkPoints.Count == 1)
                         {
-                            if (FengGameManagerMKII.Level.Mode == GameMode.Colossal)
+                            if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Colossal)
                             {
                                 FengGameManagerMKII.Instance.FinishGame(true);
                                 checkPoints = new ArrayList();
@@ -3246,7 +3246,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         int num = 0;
         float num2 = 0.02f * (float)(IN_GAME_MAIN_CAMERA.Difficulty + 1);
-        if (FengGameManagerMKII.Level.Mode == GameMode.TeamDeathmatch)
+        if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.TeamDeathmatch)
         {
             num2 = 100f;
         }
@@ -3304,7 +3304,7 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     num = 1;
                 }
-                if (FengGameManagerMKII.Level.Mode == GameMode.Survival)
+                if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Survival)
                 {
                     int wave = FengGameManagerMKII.Instance.wave;
                     int num3;
@@ -3401,7 +3401,7 @@ public class TITAN : Photon.MonoBehaviour
             }
             chaseDistance *= myDifficulty == 1 ? 1.15f : 1.3f;
         }
-        if (FengGameManagerMKII.Level.Mode == GameMode.Endless || FengGameManagerMKII.Level.Mode == GameMode.Survival)
+        if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Endless || IN_GAME_MAIN_CAMERA.Gamemode == GameMode.Survival)
         {
             chaseDistance = 999999f;
         }

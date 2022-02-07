@@ -208,7 +208,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             }
             base.animation["turn180"].speed = 0.9f;
         }
-        if (FengGameManagerMKII.Level.Mode == GameMode.PvPCapture)
+        if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.PvPCapture)
         {
             NapeArmor = (int)((float)NapeArmor * 0.8f);
         }
@@ -539,7 +539,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
             if (base.animation["die"].normalizedTime >= 1f)
             {
                 PlayAnimation("die_cry");
-                if (FengGameManagerMKII.Level.Mode != GameMode.PvPCapture)
+                if (IN_GAME_MAIN_CAMERA.Gamemode != GameMode.PvPCapture)
                 {
                     for (int i = 0; i < 15; i++)
                     {
@@ -565,7 +565,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
                 }
             }
 
-            if (dieTime > ((FengGameManagerMKII.Level.Mode != GameMode.PvPCapture) ? 20f : 5f))
+            if (dieTime > ((IN_GAME_MAIN_CAMERA.Gamemode != GameMode.PvPCapture) ? 20f : 5f))
             {
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
