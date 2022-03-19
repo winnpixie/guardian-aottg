@@ -7837,7 +7837,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     if (GUI.Button(new Rect(10, 185, 220, 75), kofi))
                     {
-                        Application.OpenURL("https://www.ko-fi.com/tivuhh");
+                        Application.OpenURL("https://www.ko-fi.com/winnpixie");
                     }
                 }
 

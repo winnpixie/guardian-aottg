@@ -527,7 +527,6 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         {
             // player becomes inactive (but might return / is not gone for good)
             player.IsInactive = (bool)eventData.Parameters[ParameterCode.IsInactive];
-            Guardian.Mod.Logger.Info($"{player.Id} inactive: {player.IsInactive}");
 
             if (player.IsInactive && _isAlreadyInactive)
             {
