@@ -69,7 +69,7 @@ public class InRoomChat : Photon.MonoBehaviour
             };
         }
 
-        if (Guardian.Mod.Properties.ChatBackground.Value)
+        if (Guardian.Mod.Properties.DrawChatBackground.Value)
         {
             GUILayout.BeginArea(MessagesRect, Guardian.Ui.GuiSkins.Box);
         }
@@ -88,8 +88,7 @@ public class InRoomChat : Photon.MonoBehaviour
 
                 if (Guardian.Mod.Properties.ChatTimestamps.Value)
                 {
-                    DateTime date = Guardian.Utilities.GameHelper.Epoch.AddMilliseconds(message.Timestamp).ToLocalTime();
-                    messageText = "[" + date.ToString("HH:mm:ss") + "] " + messageText;
+                    messageText = $"[{message.Timestamp}] " + messageText;
                 }
 
                 GUILayout.Label(messageText, labelStyle);
@@ -282,14 +281,17 @@ public class InRoomChat : Photon.MonoBehaviour
     {
         public string Sender;
         public string Content;
-        public long Timestamp;
+        public long Time;
+        public string Timestamp;
 
         public Message(string sender, string content)
         {
             this.Sender = sender;
             this.Content = content;
+            this.Time = Guardian.Utilities.GameHelper.CurrentTimeMillis();
 
-            this.Timestamp = Guardian.Utilities.GameHelper.CurrentTimeMillis();
+            DateTime date = Guardian.Utilities.GameHelper.Epoch.AddMilliseconds(this.Time).ToLocalTime();
+            this.Timestamp = date.ToString("HH:mm:ss");
         }
 
         public override string ToString()

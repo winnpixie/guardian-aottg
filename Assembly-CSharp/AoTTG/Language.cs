@@ -168,6 +168,7 @@ public class Language
                         game_time[langIndex] = value;
                         break;
                     case "difficulty":
+                        difficulty[langIndex] = value;
                         break;
                     case "normal":
                         normal[langIndex] = value;
@@ -225,89 +226,52 @@ public class Language
         }
     }
 
-    // I tried to convert this to a switch statement and it all became Hebrew so... yeah..
     public static int GetLangIndex(string lang)
     {
-        if (lang == "ENGLISH")
+        switch (lang)
         {
-            return 0;
+            case "ENGLISH":
+                return 0;
+            case "简体中文":
+                return 1;
+            case "SPANISH":
+                return 2;
+            case "POLSKI":
+                return 3;
+            case "ITALIANO":
+                return 4;
+            case "NORWEGIAN":
+                return 5;
+            case "PORTUGUESE":
+                return 6;
+            case "PORTUGUESE_BR":
+                return 7;
+            case "繁體中文_台":
+                return 8;
+            case "繁體中文_港":
+                return 9;
+            case "SLOVAK":
+                return 10;
+            case "GERMAN":
+                return 11;
+            case "FRANCAIS":
+                return 12;
+            case "TÜRKÇE":
+                return 13;
+            case "ARABIC":
+                return 14;
+            case "Thai":
+                return 15;
+            case "Русский":
+                return 16;
+            case "NEDERLANDS":
+                return 17;
+            case "Hebrew":
+                return 18;
+            case "DANSK":
+                return 19;
         }
-        if (lang == "SPANISH")
-        {
-            return 2;
-        }
-        if (lang == "POLSKI")
-        {
-            return 3;
-        }
-        if (lang == "ITALIANO")
-        {
-            return 4;
-        }
-        if (lang == "NORWEGIAN")
-        {
-            return 5;
-        }
-        if (lang == "PORTUGUESE")
-        {
-            return 6;
-        }
-        if (lang == "PORTUGUESE_BR")
-        {
-            return 7;
-        }
-        if (lang == "SLOVAK")
-        {
-            return 10;
-        }
-        if (lang == "GERMAN")
-        {
-            return 11;
-        }
-        if (lang == "FRANCAIS")
-        {
-            return 12;
-        }
-        if (lang == "TÜRKÇE")
-        {
-            return 13;
-        }
-        if (lang == "ARABIC")
-        {
-            return 14;
-        }
-        if (lang == "Thai")
-        {
-            return 15;
-        }
-        if (lang == "Русский")
-        {
-            return 16;
-        }
-        if (lang == "NEDERLANDS")
-        {
-            return 17;
-        }
-        if (lang == "Hebrew")
-        {
-            return 18;
-        }
-        if (lang == "DANSK")
-        {
-            return 19;
-        }
-        if (lang == "简体中文")
-        {
-            return 1;
-        }
-        if (lang == "繁體中文_台")
-        {
-            return 8;
-        }
-        if (lang == "繁體中文_港")
-        {
-            return 9;
-        }
+
         return 0;
     }
 

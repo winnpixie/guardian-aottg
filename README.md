@@ -1,4 +1,4 @@
-# Guardian [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T33LM92)
+# Guardian [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A577AMK)
 A free, open-source, and feature-rich modification for the Attack on Titan Tribute Game.
 
 ## Where do I get/download Guardian Mod?
@@ -17,11 +17,19 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
     - Help on these are available in the `README.TXT` file found when you download and run Guardian's launcher, or when you extract the ZIP file.
 - A *boat-load* of new settings (ESCAPE key to open the configuration menu):
     - **Master Client**
+        - AnnounceRoundTime - Announces how many seconds a full round took to finish.
+        - AnnounceWaveTime - Announces how many seconds a survival wave took to finish.
         - EndlessTitans - Lets the game never have to restart by spawning new titans when one dies.
         - InfiniteRoom - Stops your room from expiring, thus allowing you to host forever.
         - OGPunkHair - Lets you play like its 2015 again when they still had brightly colored hair.
         - DeadlyHooks - Spice up gameplay by making hooks more 'realistic' by KILLING players instead of grappling to them.
         - BombsKillTitans - Expands upon normal Bomb-PVP to work with titans.
+    - **Assets**
+        - ThunderSpearSkin - ThunderSpear left/right skin url.
+        - LeftRopeSkin - Left ODMG rope/wire skin url.
+        - LeftRopeTileScale - Left ODMG rope/wire skin tile scale.
+        - RightRopeSkin - Right ODMG rope/wire skin url.
+        - RightRopeTileScale - Right ODMG rope/wire skin tile scale.
     - **Player**
         - RawTPS-WOWInput - Enables the use of 'Raw' mouse input from Unity for TPS and WOW.
         - DoubleTapBurst - Change whether or not double-tapping a movement key will perform a gas burst.
@@ -31,7 +39,8 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
         - HoldForBladeTrails - Allows your blade trail to be seen when you're readying an attack, rather than only once you swing.
         - Interpolation - Makes maneuvering around maps appear much smoother.
         - ReelOutScrollSmoothing - Makes scroll-wheel reel-out a viable option, it's literally magic and I don't understand how RiceCake did it.
-        - OpacityOfOwnName/OpacityOfOtherNames - Change name-tag opacity of others and/or yourself to possibly improve visibility or PVP difficulty.
+        - OpacityOfOwnName - Change the name-tag opacity of yourself.
+        - OpacityOfOtherNames - Change the name-tag opacity of others.
         - DirectionalFlares - Fire flares towards your cursor position instead of straight up.
             - I stole this one right out of Expedition Mod, #SorryNotSorry.
         - SuicideMessage - Display a custom message in the kill-feed when you press your Suicide/Reset key.
@@ -40,6 +49,7 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
             - Local Minimum *WILL NOT* override the current room's setting if it is lower.
     - **Chat**
         - MaxMessages - Change the max amount of messages saved in history.
+        - Timestamps - Toggles timestamp display in history.
         - DrawBackground - Toggle chat window background visibility.
         - *Translator Settings*
             - *Languages must be in the **two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.***
@@ -51,9 +61,12 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
         - JoinMessage - Send a message whenever you join a room.
         - UserName - Let your messages have a different name than your in-game one.
         - TextColor - Color your text however you'd like.
-        - TextPrefix/TextSuffix - Prepend and/or append text to your messages.
-        - BoldName/ItalicName - Stylize your chat name to be bold and/or italic.
-        - BoldText/ItalicText - Stylize your messages to be bold and/or italic.
+        - TextPrefix - Insert text before your messages.
+        - TextSuffix - Append text after your messages.
+        - BoldName - Toggles bold chat name.
+        - ItalicName - Toggles italic chat name.
+        - BoldText - Toggles bold messages.
+        - ItalicText - Toggles italic messages.
     - **Visual**
         - *Render Settings*
             - DrawDistance - See more or less of the map at once.
@@ -63,10 +76,13 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
         - FPSCamera - Allows you to play AoTTG from a First-Person View (EXPERIMENTAL).
         - MultiplayerNapeMeat - Adds nape meat slices into multiplayer (BUGGY).
     - **Miscellaneous**
-        - AppId - Use a custom [Photon](https://photonengine.com/) Application Id for multiplayer servers
         - DiscordPresence - Toggle Rich Presence to show as your status in [Discord](https://discord.com/) (requires a game/app restart).
-    - **Logging**
-        - MaxEntries - Change the max amount of log entries saved in history.
+        - PhotonAppId - Use a custom [Photon](https://photonengine.com/) Application Id for multiplayer servers.
+        - PhotonUserId - Set your Photonian friend-name for user discovery services.
+    - **Debug**
+        - ShowFramerate - Toggles displaying the game's framerate in the debug menu.
+        - ShowCoordinates - Toggles displaying the player's X/Y/Z in the debug menu.
+        - MaxLogEntries - Change the max amount of log entries saved in history.
         - ShowLog - Toggle visibility of the log completely.
         - DrawBackground - Toggle visibility of the log window background.
 - New Gamemodes

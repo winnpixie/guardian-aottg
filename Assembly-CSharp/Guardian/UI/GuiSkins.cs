@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Guardian.Utilities;
+using UnityEngine;
 
 namespace Guardian.Ui
 {
@@ -25,18 +26,30 @@ namespace Guardian.Ui
 
             // Boxes
             {
-                Utilities.ResourceLoader.TryGetAsset("Textures/UI/Boxes/normal.png", out Texture2D boxTexture);
+                if (!ResourceLoader.TryGetAsset("Custom/Textures/UI/Boxes/normal.png", out Texture2D normalTexture))
+                {
+                    ResourceLoader.TryGetAsset("Textures/UI/Boxes/normal.png", out normalTexture);
+                }
 
                 Box = new GUIStyle(GUI.skin.box);
-                Box.normal.background = boxTexture;
+                Box.normal.background = normalTexture;
                 GUI.skin.box = Box;
             }
 
             // Buttons
             {
-                Utilities.ResourceLoader.TryGetAsset("Textures/UI/Buttons/normal.png", out Texture2D normalTexture);
-                Utilities.ResourceLoader.TryGetAsset("Textures/UI/Buttons/hover.png", out Texture2D hoverTexture);
-                Utilities.ResourceLoader.TryGetAsset("Textures/UI/Buttons/active.png", out Texture2D activeTexture);
+                if (!ResourceLoader.TryGetAsset("Custom/Textures/UI/Buttons/normal.png", out Texture2D normalTexture))
+                {
+                    ResourceLoader.TryGetAsset("Textures/UI/Buttons/normal.png", out normalTexture);
+                }
+                if (!ResourceLoader.TryGetAsset("Custom/Textures/UI/Buttons/hover.png", out Texture2D hoverTexture))
+                {
+                    ResourceLoader.TryGetAsset("Textures/UI/Buttons/hover.png", out hoverTexture);
+                }
+                if (!ResourceLoader.TryGetAsset("Custom/Textures/UI/Buttons/active.png", out Texture2D activeTexture))
+                {
+                    ResourceLoader.TryGetAsset("Textures/UI/Buttons/active.png", out activeTexture);
+                }
 
                 Button = new GUIStyle(GUI.skin.button);
                 Button.normal.background = normalTexture;
@@ -47,9 +60,18 @@ namespace Guardian.Ui
 
             // Text
             {
-                Utilities.ResourceLoader.TryGetAsset("Textures/UI/Text/normal.png", out Texture2D normalTexture);
-                Utilities.ResourceLoader.TryGetAsset("Textures/UI/Text/hover.png", out Texture2D hoverTexture);
-                Utilities.ResourceLoader.TryGetAsset("Textures/UI/Text/active.png", out Texture2D activeTexture);
+                if (!ResourceLoader.TryGetAsset("Custom/Textures/UI/Text/normal.png", out Texture2D normalTexture))
+                {
+                    ResourceLoader.TryGetAsset("Textures/UI/Text/normal.png", out normalTexture);
+                }
+                if (!ResourceLoader.TryGetAsset("Custom/Textures/UI/Text/hover.png", out Texture2D hoverTexture))
+                {
+                    ResourceLoader.TryGetAsset("Textures/UI/Text/hover.png", out hoverTexture);
+                }
+                if (!ResourceLoader.TryGetAsset("Custom/Textures/UI/Text/active.png", out Texture2D activeTexture))
+                {
+                    ResourceLoader.TryGetAsset("Textures/UI/Text/active.png", out activeTexture);
+                }
 
                 // Text fields
                 TextField = new GUIStyle(GUI.skin.textField);
@@ -72,8 +94,14 @@ namespace Guardian.Ui
 
             // Scrollbars
             {
-                Utilities.ResourceLoader.TryGetAsset("Textures/UI/Scrollbars/background.png", out Texture2D backgroundTexture);
-                Utilities.ResourceLoader.TryGetAsset("Textures/UI/Scrollbars/bar.png", out Texture2D barTexture);
+                if (!ResourceLoader.TryGetAsset("Custom/Textures/UI/Scrollbars/background.png", out Texture2D backgroundTexture))
+                {
+                    ResourceLoader.TryGetAsset("Textures/UI/Scrollbars/background.png", out backgroundTexture);
+                }
+                if (!ResourceLoader.TryGetAsset("Custom/Textures/UI/Scrollbars/bar.png", out Texture2D barTexture))
+                {
+                    ResourceLoader.TryGetAsset("Textures/UI/Scrollbars/bar.png", out barTexture);
+                }
 
                 // Horizontal scrollbar
                 HorizontalScrollbar = new GUIStyle(GUI.skin.horizontalScrollbar);

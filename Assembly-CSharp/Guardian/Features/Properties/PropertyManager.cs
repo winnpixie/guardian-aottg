@@ -47,7 +47,7 @@ namespace Guardian.Features.Properties
         // Chat
         public Property<int> MaxChatLines = new Property<int>("Chat_MaxMessages", new string[0], 100);
         public Property<bool> ChatTimestamps = new Property<bool>("Chat_Timestamps", new string[0], false);
-        public Property<bool> ChatBackground = new Property<bool>("Chat_DrawBackground", new string[0], true);
+        public Property<bool> DrawChatBackground = new Property<bool>("Chat_DrawBackground", new string[0], true);
 
         public Property<bool> TranslateIncoming = new Property<bool>("Chat_TranslateIncoming", new string[0], false);
         public Property<string> IncomingLanguage = new Property<string>("Chat_IncomingLanguage", new string[0], "auto");
@@ -86,10 +86,12 @@ namespace Guardian.Features.Properties
         public Property<string> PhotonAppId = new Property<string>("Misc_PhotonAppId", new string[0], string.Empty);
         public Property<string> PhotonUserId = new Property<string>("Misc_PhotonUserId", new string[0], string.Empty);
 
-        // Logging
-        public Property<int> MaxLogLines = new Property<int>("Log_MaxEntries", new string[0], 100);
-        public Property<bool> ShowLog = new Property<bool>("Log_ShowLog", new string[0], true);
-        public Property<bool> LogBackground = new Property<bool>("Log_DrawBackground", new string[0], true);
+        // Debug
+        public Property<bool> ShowFramerate = new Property<bool>("Debug_ShowFramerate", new string[0], true);
+        public Property<bool> ShowCoordinates = new Property<bool>("Debug_ShowCoordinates", new string[0], true);
+        public Property<int> MaxLogLines = new Property<int>("Debug_MaxLogEntries", new string[0], 100);
+        public Property<bool> ShowLog = new Property<bool>("Debug_ShowDebug", new string[0], true);
+        public Property<bool> DrawDebugBackground = new Property<bool>("Debug_DrawBackground", new string[0], true);
 
         public override void Load()
         {
@@ -173,7 +175,7 @@ namespace Guardian.Features.Properties
             // Chat
             base.Add(MaxChatLines);
             base.Add(ChatTimestamps);
-            base.Add(ChatBackground);
+            base.Add(DrawChatBackground);
 
             base.Add(TranslateIncoming);
             base.Add(IncomingLanguage);
@@ -264,10 +266,12 @@ namespace Guardian.Features.Properties
 
             base.Add(PhotonUserId);
 
-            // Logging
+            // Debug
+            base.Add(ShowFramerate);
+            base.Add(ShowCoordinates);
             base.Add(MaxLogLines);
             base.Add(ShowLog);
-            base.Add(LogBackground);
+            base.Add(DrawDebugBackground);
 
             Mod.Logger.Debug($"Registered {Elements.Count} properties.");
 

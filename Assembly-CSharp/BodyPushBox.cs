@@ -10,6 +10,7 @@ public class BodyPushBox : MonoBehaviour
         {
             return;
         }
+
         BodyPushBox component = other.gameObject.GetComponent<BodyPushBox>();
         if ((bool)component && (bool)component.parent)
         {

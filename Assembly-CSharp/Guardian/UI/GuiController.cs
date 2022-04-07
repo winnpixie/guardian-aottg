@@ -8,7 +8,7 @@ namespace Guardian.Ui
     {
         public Gui CurrentScreen;
 
-        private GuiLogger LogScreen = new GuiLogger();
+        private GuiDebug DebugScreen = new GuiDebug();
 
         public void OpenScreen(Gui screen)
         {
@@ -39,7 +39,7 @@ namespace Guardian.Ui
                 CurrentScreen.Draw();
             }
 
-            LogScreen.Draw();
+            DebugScreen.Draw();
         }
     }
 }
