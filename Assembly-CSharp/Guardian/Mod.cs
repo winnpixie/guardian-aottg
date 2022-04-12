@@ -4,6 +4,7 @@ using Guardian.Features.Commands;
 using Guardian.Features.Properties;
 using Guardian.Features.Gamemodes;
 using Guardian.Networking;
+using Guardian.UI.Toasts;
 using Guardian.Utilities;
 using System.Collections;
 using System.Globalization;
@@ -21,11 +22,12 @@ namespace Guardian
         public static readonly GamemodeManager Gamemodes = new GamemodeManager();
         public static readonly PropertyManager Properties = new PropertyManager();
         public static readonly FrameCounter FpsCounter = new FrameCounter();
+        public static readonly ToastManager Toasts = new ToastManager();
         public static readonly Logger Logger = new Logger();
         public static readonly Regex BlacklistedTagsPattern = new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
 
         public static bool WasQuitRequested = false;
-        public static Ui.GuiController GuiController;
+        public static UI.GuiController GuiController;
         public static string SystemLanguage => CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
         private static bool IsFirstInit = true;
@@ -49,7 +51,7 @@ namespace Guardian
                 StartCoroutine(CoWaitAndSetParticleTexture());
             }
 
-            GuiController = base.gameObject.AddComponent<Ui.GuiController>();
+            GuiController = base.gameObject.AddComponent<UI.GuiController>();
             base.gameObject.AddComponent<MicEF>();
 
             if (!IsFirstInit) return;
@@ -110,6 +112,8 @@ namespace Guardian
 
                 if (!latestBuild.Equals(Build))
                 {
+                    Toasts.Add(new Toast("SYSTEM", "Your copy of Guardian is OUT OF DATE, please update!", 15));
+
                     Logger.Info($"Your copy of Guardian is {"OUT OF DATE".AsBold().AsItalic().AsColor("FF0000")}!");
                     Logger.Info("If you don't have the launcher, download it here:");
                     Logger.Info($"\t- {"https://cb.run/GuardianAoT".AsColor("0099FF")}");
@@ -235,6 +239,7 @@ namespace Guardian
                 Gamemodes.CurrentMode.OnPlayerJoin(player);
             }
 
+            Toasts.Add(new Toast("PLAYER CONNECTED".AsColor("00FF00"), $"({player.Id}) {player.Username.NGUIToUnity()} connected.", 15));
             Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() + " connected.".AsColor("00FF00"));
         }
 
@@ -245,6 +250,7 @@ namespace Guardian
                 Gamemodes.CurrentMode.OnPlayerLeave(player);
             }
 
+            Toasts.Add(new Toast("PLAYER DISCONNECTED".AsColor("FF0000"), $"({player.Id}) {player.Username.NGUIToUnity()} disconnected.", 15));
             Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() + " disconnected.".AsColor("FF0000"));
         }
 
@@ -378,7 +384,7 @@ namespace Guardian
         // Attempt to fix dumb bugs that occur when you alt-tab the game
         void OnApplicationFocus(bool hasFocus)
         {
-            Ui.WindowManager.HandleWindowFocusEvent(hasFocus);
+            UI.WindowManager.HandleWindowFocusEvent(hasFocus);
 
             if (!hasFocus
                 || IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop) return;

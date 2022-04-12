@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Guardian.Ui.Impl
+namespace Guardian.UI.Impl
 {
     class GuiCustomCharacter : Gui
     {

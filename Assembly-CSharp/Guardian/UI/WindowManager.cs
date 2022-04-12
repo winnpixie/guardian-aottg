@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Runtime.InteropServices;
 
-namespace Guardian.Ui
+namespace Guardian.UI
 {
     class WindowManager
     {

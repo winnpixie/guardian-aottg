@@ -71,7 +71,7 @@ public class InRoomChat : Photon.MonoBehaviour
 
         if (Guardian.Mod.Properties.DrawChatBackground.Value)
         {
-            GUILayout.BeginArea(MessagesRect, Guardian.Ui.GuiSkins.Box);
+            GUILayout.BeginArea(MessagesRect, Guardian.UI.GuiSkins.Box);
         }
         else
         {

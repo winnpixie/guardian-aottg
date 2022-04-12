@@ -7,8 +7,8 @@ namespace Guardian.AntiAbuse.Validators
 {
     class NetworkChecker
     {
-        public static List<string> PropertyWhitelist = new List<string>(new string[] {
-            "sender"
+        public static List<object> PropertyWhitelist = new List<object>(new object[] {
+            (byte)255, "sender"
         });
         private static List<object> RoomPropertyWhitelist = new List<object>(new object[] {
             (byte)255, (byte)254, (byte)253, (byte)250, (byte)249, (byte)248, "sender"

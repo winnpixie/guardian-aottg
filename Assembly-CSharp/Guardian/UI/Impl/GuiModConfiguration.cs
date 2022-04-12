@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace Guardian.Ui.Impl
+namespace Guardian.UI.Impl
 {
     class GuiModConfiguration : Gui
     {

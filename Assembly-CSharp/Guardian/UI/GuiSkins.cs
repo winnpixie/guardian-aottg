@@ -1,7 +1,7 @@
 ﻿using Guardian.Utilities;
 using UnityEngine;
 
-namespace Guardian.Ui
+namespace Guardian.UI
 {
     class GuiSkins
     {

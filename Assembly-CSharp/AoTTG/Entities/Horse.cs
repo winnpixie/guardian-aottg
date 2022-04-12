@@ -85,10 +85,10 @@ public class Horse : Photon.MonoBehaviour
                     base.gameObject.transform.rotation = Quaternion.Lerp(base.gameObject.transform.rotation, Quaternion.Euler(0f, controller.targetDirection, 0f), 100f * Time.deltaTime / (base.rigidbody.velocity.magnitude + 20f));
                     if (controller.isWALKDown)
                     {
-                        base.rigidbody.AddForce(base.transform.forward * speed * 0.6f, ForceMode.Acceleration);
+                        base.rigidbody.AddForce((base.transform.forward * speed) * 0.6f, ForceMode.Acceleration);
                         if (!(base.rigidbody.velocity.magnitude < speed * 0.6f))
                         {
-                            base.rigidbody.AddForce((0f - speed) * 0.6f * base.rigidbody.velocity.normalized, ForceMode.Acceleration);
+                            base.rigidbody.AddForce((-speed * 0.6f) * base.rigidbody.velocity.normalized, ForceMode.Acceleration);
                         }
                     }
                     else
@@ -118,7 +118,7 @@ public class Horse : Photon.MonoBehaviour
                     }
                     else
                     {
-                        if (!base.animation.IsPlaying("horse_WALK") && base.rigidbody.velocity.magnitude > 1f)
+                        if (!base.animation.IsPlaying("horse_WALK"))
                         {
                             CrossFade("horse_WALK", 0.1f);
                         }
@@ -285,7 +285,7 @@ public class Horse : Photon.MonoBehaviour
             }
             else
             {
-                if (!base.animation.IsPlaying("horse_WALK") && base.rigidbody.velocity.magnitude > 1f)
+                if (!base.animation.IsPlaying("horse_WALK"))
                 {
                     CrossFade("horse_WALK", 0.1f);
                 }
@@ -341,7 +341,7 @@ public class Horse : Photon.MonoBehaviour
             base.photonView.RPC("setDust", PhotonTargets.Others, false);
         }
 
-        base.rigidbody.AddForce(-base.rigidbody.velocity, ForceMode.VelocityChange);
+        // base.rigidbody.AddForce(-base.rigidbody.velocity, ForceMode.VelocityChange);
     }
 
     [RPC]

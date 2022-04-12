@@ -1,8 +1,8 @@
-﻿using Guardian.Ui.Impl;
-using Guardian.Ui.Impl.Logging;
+﻿using Guardian.UI.Impl;
+using Guardian.UI.Impl.Logging;
 using UnityEngine;
 
-namespace Guardian.Ui
+namespace Guardian.UI
 {
     class GuiController : MonoBehaviour
     {
@@ -38,6 +38,8 @@ namespace Guardian.Ui
             {
                 CurrentScreen.Draw();
             }
+
+            Mod.Toasts.Draw();
 
             DebugScreen.Draw();
         }

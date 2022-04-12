@@ -1,4 +1,4 @@
-﻿namespace Guardian.Ui
+﻿namespace Guardian.UI
 {
     abstract class Gui
     {

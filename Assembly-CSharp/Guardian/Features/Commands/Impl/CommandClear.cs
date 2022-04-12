@@ -14,7 +14,7 @@ namespace Guardian.Features.Commands.Impl
                 switch (args[0].ToLower())
                 {
                     case "log":
-                        Mod.Logger.Entries = new List<Logger.Entry>();
+                        Mod.Logger.Entries = new SynchronizedList<Logger.Entry>();
                         Mod.Logger.Info("Event log has been cleared!");
                         break;
                     case "global":

@@ -192,6 +192,18 @@ namespace Guardian.AntiAbuse
                 mods.Add($"[000000][Xeres[FFFFFF]({string.Join(",", tags.ToArray())})[-]]");
             }
 
+            // CatielRC
+            if (properties.ContainsKey("CatielRC"))
+            {
+                mods.Add("[FFFFFF][CatielRC]");
+            }
+
+            // NudelBot
+            if (properties.ContainsKey("NoodleDoodle"))
+            {
+                mods.Add("[FF6600][NudelBot]");
+            }
+
             // AllStar
             if ((properties.ContainsKey("A.S Guard") && properties["A.S Guard"] is int)
                     || (properties.ContainsKey("Allstar Mod") && properties["Allstar Mod"] is int))

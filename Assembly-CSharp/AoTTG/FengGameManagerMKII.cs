@@ -324,20 +324,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
         {
-            GameObject netStatus = GameObject.Find("LabelNetworkStatus");
-            if (netStatus)
+            if (PhotonNetwork.connected)
             {
-                UILabel component = netStatus.GetComponent<UILabel>();
-                component.text = PhotonNetwork.connectionStateDetailed.ToString();
-                if (PhotonNetwork.connected)
-                {
-                    component.text = component.text + " Ping: " + PhotonNetwork.GetPing() + "ms";
-                }
-                else
-                {
-                    component.text = "Disconnected";
-                }
+                SetTextNetworkStatus(PhotonNetwork.connectionStateDetailed.ToString());
+                AddTextNetworkStatus(" Ping: " + PhotonNetwork.GetPing() + "ms");
             }
+            else
+            {
+                SetTextNetworkStatus("Disconnected");
+            }
+        }
+        else
+        {
+            SetTextNetworkStatus("Singleplayer");
         }
 
         if (gameStart)
@@ -955,25 +954,43 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    private void SetTextTopCenter(string content)
+    public void SetTextTopCenter(string content)
     {
-        GameObject gameObject = GameObject.Find("LabelInfoTopCenter");
-        if ((bool)gameObject)
+        GameObject tcLbl = GameObject.Find("LabelInfoTopCenter");
+        if ((bool)tcLbl)
         {
-            gameObject.GetComponent<UILabel>().text = content;
+            tcLbl.GetComponent<UILabel>().text = content;
         }
     }
 
-    private void AddTextTopCenter(string content)
+    public void AddTextTopCenter(string content)
     {
-        GameObject gameObject = GameObject.Find("LabelInfoTopCenter");
-        if ((bool)gameObject)
+        GameObject tcLbl = GameObject.Find("LabelInfoTopCenter");
+        if ((bool)tcLbl)
         {
-            gameObject.GetComponent<UILabel>().text += content;
+            tcLbl.GetComponent<UILabel>().text += content;
         }
     }
 
-    private void SetTextTopLeft(string content)
+    public void SetTextNetworkStatus(string content)
+    {
+        GameObject nsLbl = GameObject.Find("LabelNetworkStatus");
+        if ((bool)nsLbl)
+        {
+            nsLbl.GetComponent<UILabel>().text = content;
+        }
+    }
+
+    public void AddTextNetworkStatus(string content)
+    {
+        GameObject nsLbl = GameObject.Find("LabelNetworkStatus");
+        if ((bool)nsLbl)
+        {
+            nsLbl.GetComponent<UILabel>().text += content;
+        }
+    }
+
+    public void SetTextTopLeft(string content)
     {
         GameObject tlLbl = GameObject.Find("LabelInfoTopLeft");
         if ((bool)tlLbl)
@@ -982,7 +999,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    private void SetTextTopRight(string content)
+    public void SetTextTopRight(string content)
     {
         GameObject trLbl = GameObject.Find("LabelInfoTopRight");
         if ((bool)trLbl)
@@ -991,7 +1008,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    private void AddTextTopRight(string content)
+    public void AddTextTopRight(string content)
     {
         GameObject trLbl = GameObject.Find("LabelInfoTopRight");
         if ((bool)trLbl)
@@ -1015,6 +1032,24 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         if ((bool)cLbl)
         {
             cLbl.GetComponent<UILabel>().text += content;
+        }
+    }
+
+    public void SetTextBottomRight(string content)
+    {
+        GameObject brLbl = GameObject.Find("LabelInfoBottomRight");
+        if ((bool)brLbl)
+        {
+            brLbl.GetComponent<UILabel>().text = content;
+        }
+    }
+
+    public void AddTextBottomRight(string content)
+    {
+        GameObject brLbl = GameObject.Find("LabelInfoBottomRight");
+        if ((bool)brLbl)
+        {
+            brLbl.GetComponent<UILabel>().text += content;
         }
     }
 
@@ -2287,13 +2322,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 case GameMode.KillTitans:
                 case GameMode.None:
                     text = "Titan Left: " + AllTitans.Count
-                        + " Time: " + (int)(IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer);
+                        + " | Time: " + (int)(IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer ? (time - timeTotalServer) : timeTotalServer);
                     break;
                 case GameMode.Survival:
-                    text = "Titan Left: " + AllTitans.Count + " Wave: " + wave;
+                    text = "Titan Left: " + AllTitans.Count + " | Wave: " + wave;
                     break;
                 case GameMode.Colossal:
-                    text = "Time: " + (int)(time - timeTotalServer) + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the north gate!";
+                    text = "Time: " + (int)(time - timeTotalServer) + "\nDefeat the Colossal Titan\nand prevent abnormal titans from reaching the North gate!";
                     break;
                 case GameMode.PvPCapture:
                     string str = "| ";
@@ -2327,7 +2362,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     case GameMode.KillTitans:
                     case GameMode.Colossal:
                     case GameMode.PvPCapture:
-                        text = "Humanity " + humanScore + " | Titan " + titanScore;
+                        text = "Humanity: " + humanScore + " | Titan: " + titanScore;
                         break;
                     case GameMode.Survival:
                         text = "Time: " + (int)(time - timeTotalServer);
@@ -2335,14 +2370,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     case GameMode.TeamDeathmatch:
                         for (int i = 0; i < teamScores.Length; i++)
                         {
-                            text += string.Concat(
-                                (i == 0) ? string.Empty : " | ",
-                                "Team",
-                                i + 1,
-                                " ",
-                                teamScores[i]
-                            );
+                            text += i == 0 ? string.Empty : " | ";
+                            text += "Team " + (i + 1) + ": " + teamScores[i];
                         }
+
                         text += "\nTime: " + (int)(time - timeTotalServer);
                         break;
                 }
@@ -2358,8 +2389,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 _ => "[000000]Unknown"
             };
 
-            AddTextTopRight("\n" + Level.Name + ": " + difficultyTxt);
-            AddTextTopRight("[-]\nCamera: [AAFF00]" + IN_GAME_MAIN_CAMERA.CameraMode + "[-]");
+            AddTextTopRight("\n" + Level.Name + "(" + difficultyTxt + "[-])");
+            AddTextTopRight("\nCamera([AAFF00]" + IN_GAME_MAIN_CAMERA.CameraMode + "[-])");
 
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
             {
