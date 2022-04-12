@@ -15,6 +15,7 @@ namespace Guardian.Features.Commands
             base.Add(new CommandClear());
             base.Add(new CommandIgnore());
             base.Add(new CommandMute());
+            base.Add(new CommandRageQuit());
             base.Add(new CommandRejoin());
             base.Add(new CommandReloadConfig());
             base.Add(new CommandSay());
