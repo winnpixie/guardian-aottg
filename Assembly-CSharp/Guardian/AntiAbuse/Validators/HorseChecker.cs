@@ -8,7 +8,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer
                 || (info != null && horse.photonView.ownerId == info.sender.Id)) return true;
 
-            Mod.Logger.Error($"'Horse.netPlayAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'Horse.netPlayAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -23,7 +23,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer
                 || (info != null && horse.photonView.ownerId == info.sender.Id)) return true;
 
-            Mod.Logger.Error($"'Horse.netPlayAnimationAt' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'Horse.netPlayAnimationAt' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -38,7 +38,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer
                 || (info != null && horse.photonView.ownerId == info.sender.Id)) return true;
 
-            Mod.Logger.Error($"'Horse.netCrossFade' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'Horse.netCrossFade' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);

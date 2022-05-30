@@ -11,7 +11,7 @@ namespace Guardian.Features.Gamemodes.Impl
 
         public LastManStanding() : base("LastManStanding", new string[] { "lms" })
         {
-            Mod.Properties.Add(KillInterval);
+            GuardianClient.Properties.Add(KillInterval);
         }
 
         public override void OnReset()

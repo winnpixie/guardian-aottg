@@ -29,19 +29,19 @@ namespace Guardian.Features.Gamemodes.Impl
 
         public CageFight() : base("CageFight", new string[] { "cf", "standoff", "sf" })
         {
-            Mod.Properties.Add(GroundLevel);
+            GuardianClient.Properties.Add(GroundLevel);
 
             // Left
-            Mod.Properties.Add(LeftMinX);
-            Mod.Properties.Add(LeftMaxX);
-            Mod.Properties.Add(LeftMinZ);
-            Mod.Properties.Add(LeftMaxZ);
+            GuardianClient.Properties.Add(LeftMinX);
+            GuardianClient.Properties.Add(LeftMaxX);
+            GuardianClient.Properties.Add(LeftMinZ);
+            GuardianClient.Properties.Add(LeftMaxZ);
 
             // Right
-            Mod.Properties.Add(RightMinX);
-            Mod.Properties.Add(RightMaxX);
-            Mod.Properties.Add(RightMinZ);
-            Mod.Properties.Add(RightMaxZ);
+            GuardianClient.Properties.Add(RightMinX);
+            GuardianClient.Properties.Add(RightMaxX);
+            GuardianClient.Properties.Add(RightMinZ);
+            GuardianClient.Properties.Add(RightMaxZ);
         }
 
         public override void OnReset()

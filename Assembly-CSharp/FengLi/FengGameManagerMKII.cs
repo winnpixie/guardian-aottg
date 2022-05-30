@@ -114,7 +114,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     private float _timeTotalServer;
     public float timeTotalServer
     {
-        get { return (PhotonNetwork.isMasterClient && Guardian.Mod.Properties.InfiniteRoom.Value) ? time - Guardian.Utilities.MathHelper.Abs(time) : _timeTotalServer; }
+        get { return (PhotonNetwork.isMasterClient && Guardian.GuardianClient.Properties.InfiniteRoom.Value) ? time - Guardian.Utilities.MathHelper.Abs(time) : _timeTotalServer; }
         set { _timeTotalServer = value; }
     }
 
@@ -177,7 +177,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public bool isFirstLoad = true;
     public float pauseWaitTime;
 
-    // BEGIN: Guardian
+    // BEGIN Guardian
     public List<HERO> Heroes = new List<HERO>();
     public List<TITAN_EREN> Erens = new List<TITAN_EREN>();
     public List<GameObject> Players = new List<GameObject>();
@@ -187,11 +187,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public List<GameObject> AllTitans = new List<GameObject>();
     public List<COLOSSAL_TITAN> Colossals = new List<COLOSSAL_TITAN>();
 
+    private Dictionary<int, VoteKick> VoteKicks = new Dictionary<int, VoteKick>();
     private long RoundStartTime;
     private long WaveStartTime;
     // END: Guardian
 
-    // BEGIN: TLW/RRC
+    // BEGIN TLW/RRC
     [RPC]
     public void TheirPing(int ping, PhotonMessageInfo info)
     {
@@ -794,11 +795,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     return;
                 }
 
-                // BEGIN: Guardian
+                // BEGIN Guardian
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     long currentTime = Guardian.Utilities.GameHelper.CurrentTimeMillis();
-                    if (Guardian.Mod.Properties.AnnounceWaveTime.Value)
+                    if (Guardian.GuardianClient.Properties.AnnounceWaveTime.Value)
                     {
                         Guardian.Utilities.GameHelper.Broadcast($"This wave lasted for <b>{(currentTime - WaveStartTime) / 1000f}</b> second(s)!");
                     }
@@ -873,7 +874,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         if (!info.sender.isMasterClient)
         {
-            Guardian.Mod.Logger.Info($"Non-MC revive from #{info.sender.Id}.");
+            Guardian.GuardianClient.Logger.Info($"Non-MC revive from #{info.sender.Id}.");
         }
 
         if (!needChooseSide && mainCamera.gameOver)
@@ -1063,7 +1064,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         Instance = this;
 
-        // BEGIN: Anarchy
+        // BEGIN Anarchy
         Anarchy.Custom.Level.CustomAnarchyLevel anarchyLevel = gameObject.AddComponent<Anarchy.Custom.Level.CustomAnarchyLevel>();
         anarchyLevel.GameManager = this;
         // END: Anarchy
@@ -1152,10 +1153,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         ChangeQuality.SetCurrentQuality();
 
         // Register our Mod as a component
-        base.gameObject.AddComponent<Guardian.Mod>();
+        base.gameObject.AddComponent<Guardian.GuardianClient>();
     }
 
-    // BEGIN: Anarchy
+    // BEGIN Anarchy
     public float GetRoundTime()
     {
         return roundTime;
@@ -1175,13 +1176,40 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [RPC]
     private void Chat(string message, string sender, PhotonMessageInfo info)
     {
+        // BEGIN Guardian
+        if (PhotonNetwork.isMasterClient
+            && message.StartsWith("/kick #") && message.Length > 7
+            && int.TryParse(message.Substring(7), out int targetId))
+        {
+            if (!VoteKicks.TryGetValue(targetId, out VoteKick voteKick))
+            {
+                VoteKicks.Add(targetId, voteKick = new VoteKick());
+                voteKick.Init(targetId);
+            }
+
+            voteKick.AddVote(info.sender.Id);
+
+            int halfPlayerCount = Guardian.Utilities.MathHelper.Floor(PhotonNetwork.otherPlayers.Length / 2f);
+            if (voteKick.GetVotes() >= halfPlayerCount)
+            {
+                Guardian.GuardianClient.Commands.Find("kick").Execute(InRoomChat.Instance, new string[] { voteKick.Id.ToString(), "Voted", "out", "by", "room" });
+            }
+            else
+            {
+                Guardian.Utilities.GameHelper.Broadcast($"Vote-kick for {voteKick.Id}, {voteKick.GetVotes()} out of {halfPlayerCount} vote(s) so far!");
+            }
+
+            return;
+        }
+        // END Guardian
+
         if (info.sender.Muted) { return; }
 
-        if (Guardian.Mod.Properties.TranslateIncoming.Value && !info.sender.isLocal)
+        if (Guardian.GuardianClient.Properties.TranslateIncoming.Value && !info.sender.isLocal)
         {
-            StartCoroutine(Guardian.Utilities.Translator.Translate(message, Guardian.Mod.Properties.IncomingLanguage.Value, Guardian.Mod.SystemLanguage, result =>
+            StartCoroutine(Guardian.Utilities.Translator.Translate(message, Guardian.GuardianClient.Properties.IncomingLanguage.Value, Guardian.GuardianClient.SystemLanguage, result =>
             {
-                if (result.Length > 1 && !result[0].Equals(Guardian.Mod.SystemLanguage, StringComparison.OrdinalIgnoreCase))
+                if (result.Length > 1 && !result[0].Equals(Guardian.GuardianClient.SystemLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     message = $"[gt] ".AsColor("0099ff") + result[1];
                 }
@@ -1570,7 +1598,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     break;
             }
 
-            // Guardian
+            // Mod
             RoundStartTime = Guardian.Utilities.GameHelper.CurrentTimeMillis();
             WaveStartTime = RoundStartTime;
         }
@@ -1757,6 +1785,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
+        // Mod
+        VoteKicks.Remove(player.Id);
+
         if (!gameTimesUp)
         {
             oneTitanDown(string.Empty, onPlayerLeave: true);
@@ -2008,6 +2039,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             if (masterClientSwitched)
             {
                 Guardian.Utilities.GameHelper.Broadcast("MasterClient has switched to " + ((string)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity().AsBold());
+
+                // Mod
+                VoteKicks = new Dictionary<int, VoteKick>();
             }
         }
     }
@@ -2423,7 +2457,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
 
             // Display rigidbody interpolation status
-            if (Guardian.Mod.Properties.Interpolation.Value)
+            if (Guardian.GuardianClient.Properties.Interpolation.Value)
             {
                 AddTextTopCenter("\nInterpolation is [00FF00]ON[-]");
             }
@@ -2687,9 +2721,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             mainCam.GetComponent<SpectatorMovement>().disable = true;
             mainCam.GetComponent<MouseLook>().disable = true;
             mainCamera.gameOver = false;
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add("dead", false);
-            hashtable.Add(PhotonPlayerProperty.IsTitan, 2);
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable
+            {
+                { "dead", false },
+                { PhotonPlayerProperty.IsTitan, 2 }
+            };
             PhotonNetwork.player.SetCustomProperties(hashtable);
             Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
             Screen.showCursor = true;
@@ -2708,8 +2744,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             return;
         }
 
-        // BEGIN: Guardian
-        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && Guardian.Mod.Properties.AnnounceRoundTime.Value)
+        // BEGIN Guardian
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && Guardian.GuardianClient.Properties.AnnounceRoundTime.Value)
         {
             float elapsedRoundTime = (Guardian.Utilities.GameHelper.CurrentTimeMillis() - RoundStartTime) / 1000f;
             Guardian.Utilities.GameHelper.Broadcast($"This round lasted for <b>{elapsedRoundTime}</b> second(s)!");
@@ -3058,7 +3094,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             totalDmg
         );
 
-        if (Guardian.Mod.Properties.ShowPlayerMods.Value)
+        if (Guardian.GuardianClient.Properties.ShowPlayerMods.Value)
         {
             List<string> detectedMods = Guardian.AntiAbuse.ModDetector.GetMods(player);
             if (detectedMods.Count > 0)
@@ -3067,7 +3103,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
 
-        if (Guardian.Mod.Properties.ShowPlayerPings.Value && player.Ping >= 0)
+        if (Guardian.GuardianClient.Properties.ShowPlayerPings.Value && player.Ping >= 0)
         {
             content += " [FFFFFF][" + player.Ping + "ms]";
         }
@@ -6733,7 +6769,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             this.spawnPlayerCustomMap();
             Minimap.TryRecaptureInstance();
             this.UnloadAssets();
-            Camera.main.GetComponent<TiltShift>().enabled = false;
         }
 
         if (renewHash)
@@ -9388,14 +9423,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             {
                                 QualitySettings.SetQualityLevel(5, applyExpensiveChanges: true);
                             }
-                            if (qualitySlider >= 0.9f && !Level.Name.StartsWith("Custom"))
-                            {
-                                Camera.main.GetComponent<TiltShift>().enabled = true;
-                            }
-                            else
-                            {
-                                Camera.main.GetComponent<TiltShift>().enabled = false;
-                            }
+
                             bool flag13 = false;
                             bool flag14 = false;
                             bool showSpeedLines = false;
@@ -12108,12 +12136,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         if (settings.ContainsKey("sizeMode") && settings.ContainsKey("sizeLower") && settings.ContainsKey("sizeUpper"))
         {
             // Temporary? fix for RiceCake not properly re-implementing all legacy settings
-            if (settings["sizeMode"] is bool)
+            if (settings["sizeMode"] is bool sizeMode)
             {
-                settings["sizeMode"] = (bool)settings["sizeMode"] ? 1 : 0;
+                settings["sizeMode"] = sizeMode ? 1 : 0;
 
                 // Logging it for funsies, lol
-                Guardian.Mod.Logger.Debug("RC2020 'sizeMode' as <b>bool</b> detected, replacing with <b>int</b> equivalent.");
+                Guardian.GuardianClient.Logger.Debug("RC2020 'sizeMode' as <b>bool</b> detected, replacing with <b>int</b> equivalent.");
             }
 
             if (RCSettings.SizeMode != (int)settings["sizeMode"] || RCSettings.SizeLower != (float)settings["sizeLower"] || RCSettings.SizeUpper != (float)settings["sizeUpper"])
@@ -12301,7 +12329,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         // https://github.com/aelariane/Anarchy/blob/master/Anarchy/Assembly/AoTTG/FengRPCs.cs
         if (((info.timeInt - 1000000) * -1) == info.sender.Id)
         {
-            info.sender.IsAnarchy = true;
+            info.sender.IsAnarchyMod = true;
         }
 
         PhotonView pv = PhotonView.Find(viewId);
@@ -12347,28 +12375,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     private string MasterTextureType(int type)
     {
-        switch (type)
+        return type switch
         {
-            case 0:
-                return "Highest";
-            case 1:
-                return "Medium";
-            case 2:
-                return "Low";
-            case 3:
-                return "Lower";
-            case 4:
-                return "Lowest";
-            case 5:
-                return "Ultra-Low";
-            case 6:
-                return "Ultra-Low..er?";
-            case 7:
-                return "We don't like 7.";
-            case 8:
-                return "Why Why Why";
-        }
-        return type + ", what???";
+            0 => "Highest",
+            1 => "Medium",
+            2 => "Low",
+            3 => "Lower",
+            4 => "Lowest",
+            5 => "Ultra-Low",
+            6 => "Ultra-Lower",
+            7 => "Ultra-Lowest",
+            8 => "NVIDIA GT 520",
+            _ => type.ToString()
+        };
     }
 
     public void RestartRC()

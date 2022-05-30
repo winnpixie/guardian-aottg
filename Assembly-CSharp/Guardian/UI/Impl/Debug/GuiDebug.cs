@@ -8,9 +8,9 @@ namespace Guardian.UI.Impl.Logging
     {
         public override void Draw()
         {
-            if (Mod.Properties.ShowLog.Value && !Application.loadedLevelName.Equals("SnapShot") && !Application.loadedLevelName.Equals("characterCreation"))
+            if (GuardianClient.Properties.ShowLog.Value && !Application.loadedLevelName.Equals("SnapShot") && !Application.loadedLevelName.Equals("characterCreation"))
             {
-                if (Mod.Properties.DrawDebugBackground.Value)
+                if (GuardianClient.Properties.DrawDebugBackground.Value)
                 {
                     GUILayout.BeginArea(new Rect(Screen.width - 331f, Screen.height - 255f, 330f, 225f), GuiSkins.Box);
                 }
@@ -20,7 +20,7 @@ namespace Guardian.UI.Impl.Logging
                 }
 
                 GUILayout.FlexibleSpace();
-                Mod.Logger.ScrollPosition = GUILayout.BeginScrollView(Mod.Logger.ScrollPosition);
+                GuardianClient.Logger.ScrollPosition = GUILayout.BeginScrollView(GuardianClient.Logger.ScrollPosition);
 
                 GUIStyle labelStyle = new GUIStyle(GUI.skin.label)
                 {
@@ -29,7 +29,7 @@ namespace Guardian.UI.Impl.Logging
                     border = new RectOffset(0, 0, 0, 0)
                 };
 
-                foreach (Logger.Entry entry in Mod.Logger.Entries)
+                foreach (Logger.Entry entry in GuardianClient.Logger.Entries)
                 {
                     try
                     {
@@ -42,13 +42,13 @@ namespace Guardian.UI.Impl.Logging
 
                 GUILayout.BeginHorizontal();
                 // FPS
-                if (Mod.Properties.ShowFramerate.Value)
+                if (GuardianClient.Properties.ShowFramerate.Value)
                 {
-                    GUILayout.Label($"{Mod.FpsCounter.FrameCount} FPS");
+                    GUILayout.Label($"{GuardianClient.FpsCounter.FrameCount} FPS");
                 }
 
                 // XYZ
-                if (Mod.Properties.ShowCoordinates.Value)
+                if (GuardianClient.Properties.ShowCoordinates.Value)
                 {
                     string coords = "Coordinates Unavailable";
                     if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)

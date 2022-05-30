@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Guardian.AntiAbuse
@@ -10,47 +11,55 @@ namespace Guardian.AntiAbuse
             PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
             ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
 
-            // Ping
-            if (properties.ContainsKey("Ping") && properties["Ping"] is int ping)
+            foreach (DictionaryEntry entry in properties)
             {
-                player.Ping = ping;
-            }
-
-            // Neko Mod detection
-            if (properties.ContainsValue("N_user") || properties.ContainsValue("N_owner"))
-            {
-                player.IsNeko = true;
-                player.IsNekoUser = properties.ContainsValue("N_user");
-                player.IsNekoOwner = properties.ContainsValue("N_owner");
-            }
-
-            // FoxMod detection
-            if (properties.ContainsKey("FoxMod"))
-            {
-                player.IsFoxMod = true;
-            }
-
-            if (properties.ContainsKey("guildName") && properties["guildName"] is string guild
-                && (guild.Equals("photonMod") || guild.Equals("photonMod2")))
-            {
-                player.IsPhotonMod = true;
+                switch (entry.Key as string)
+                {
+                    case "Ping":
+                        // Ping
+                        if (entry.Value is int ping)
+                        {
+                            player.Ping = ping;
+                        }
+                        break;
+                    case "FoxMod":
+                        // Fox Mod
+                        player.IsFoxMod = true;
+                        break;
+                    case "guildName":
+                        // Photon Mod
+                        if (entry.Value is string guildName && (guildName.Equals("photonMod") || guildName.Equals("photonMod2")))
+                        {
+                            player.IsPhotonMod = true;
+                        }
+                        break;
+                    default:
+                        // Neko Mod
+                        if (entry.Value is string value && (value.Equals("N_user") || value.Equals("N_owner")))
+                        {
+                            player.IsNekoMod = true;
+                            player.IsNekoModUser = value.Equals("N_user");
+                            player.IsNekoModOwner = value.Equals("N_owner");
+                        }
+                        break;
+                }
             }
         }
 
         public static List<string> GetMods(PhotonPlayer player)
         {
-            ExitGames.Client.Photon.Hashtable properties = player.customProperties;
             List<string> mods = new List<string>();
+            ExitGames.Client.Photon.Hashtable properties = player.customProperties;
 
             // Neko
-            if (player.IsNeko)
+            if (player.IsNekoMod)
             {
                 List<string> tags = new List<string>();
-                if (player.IsNekoUser)
+                if (player.IsNekoModUser)
                 {
                     tags.Add("user");
                 }
-                if (player.IsNekoOwner)
+                if (player.IsNekoModOwner)
                 {
                     tags.Add("owner");
                 }
@@ -64,13 +73,13 @@ namespace Guardian.AntiAbuse
             }
 
             // Cyrus Essentials
-            if (player.IsCyrus)
+            if (player.IsCyrusMod)
             {
                 mods.Add("[FFFF00][CE]");
             }
 
             // Anarchy
-            if (player.IsAnarchy
+            if (player.IsAnarchyMod
                 || (player.customProperties.ContainsKey("AnarchyFlags") && player.customProperties["AnarchyFlags"] is int)
                 || (player.customProperties.ContainsKey("AnarchyAbuseFlags") && player.customProperties["AnarchyAbuseFlags"] is int))
             {
@@ -78,25 +87,25 @@ namespace Guardian.AntiAbuse
             }
 
             // KnK
-            if (player.IsKNK)
+            if (player.IsKNKMod)
             {
                 mods.Add("[FF0000][KnK]");
             }
 
             // NRC
-            if (player.IsNRC)
+            if (player.IsNRCMod)
             {
                 mods.Add("[FFFFFF][NRC]");
             }
 
             // TRAP
-            if (player.IsTRAP)
+            if (player.IsTRAPMod)
             {
                 mods.Add("[EE66FF][TRAP]");
             }
 
             // RC83
-            if (player.IsRC83)
+            if (player.IsRC83Mod)
             {
                 mods.Add("[FFFFFF][RC83]");
             }
@@ -236,7 +245,7 @@ namespace Guardian.AntiAbuse
             }
 
             // PedoBear
-            if (player.IsPedoBear
+            if (player.IsPBMod
                 || properties.ContainsKey("PBModRC"))
             {
                 mods.Add("[FF6600][Pedo[553300]Bear]");
@@ -271,7 +280,7 @@ namespace Guardian.AntiAbuse
             }
 
             // Cyan Mod
-            if (player.IsCyan
+            if (player.IsCyanMod
                 || properties.ContainsKey("CyanMod")
                 || properties.ContainsKey("CyanModNew"))
             {
@@ -279,7 +288,7 @@ namespace Guardian.AntiAbuse
             }
 
             // Expedition
-            if (player.IsExp
+            if (player.IsExpeditionMod
                 || properties.ContainsKey("ExpMod")
                 || properties.ContainsKey("EMID")
                 || properties.ContainsKey("Version")
@@ -298,7 +307,7 @@ namespace Guardian.AntiAbuse
             }
 
             // Universe
-            if (player.IsUniverse
+            if (player.IsUniverseMod
                 || properties.ContainsKey("UPublica")
                 || properties.ContainsKey("UPublica2")
                 || properties.ContainsKey("UGrup")
@@ -341,7 +350,7 @@ namespace Guardian.AntiAbuse
             }
 
             // Ranked RC
-            if (player.IsRRC
+            if (player.IsRRCMod
                 || properties.ContainsKey("bronze")
                 || properties.ContainsKey("diamond")
                 || (properties.ContainsKey(string.Empty) && properties[string.Empty] is int))
@@ -389,7 +398,7 @@ namespace Guardian.AntiAbuse
             }
 
             // Unknown
-            if (player.IsUnknown
+            if (player.IsUnknownMod
                 || properties.ContainsKey("FGT") // This might just be Bahaa's super-ban property, humorously enough I only see it on Beer.
                 || properties.ContainsKey("me")
                 || properties.ContainsKey("Taquila")
@@ -412,7 +421,7 @@ namespace Guardian.AntiAbuse
                 || properties.ContainsKey(PhotonPlayerProperty.CustomString))
             {
                 List<string> tags = new List<string>();
-                if (player.IsNewRC)
+                if (player.IsNewRCMod)
                 {
                     tags.Add("new");
                 }

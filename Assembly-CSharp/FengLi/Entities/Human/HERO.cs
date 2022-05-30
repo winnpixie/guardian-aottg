@@ -22,7 +22,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         get
         {
             return (base.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
-                && Guardian.Mod.Properties.AlternateIdle.Value ? "AHSS_stand_gun" : _standAnimation;
+                && Guardian.GuardianClient.Properties.AlternateIdle.Value ? "AHSS_stand_gun" : _standAnimation;
         }
         set { _standAnimation = value; }
     }
@@ -181,7 +181,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public GameObject myFlashlight;
     public bool isGrabbed => state == HeroState.Grabbed;
 
-    // BEGIN: Anarchy
+    // BEGIN Anarchy
     private float gasMultiplier = 1f;
     public float GasUsageModifier
     {
@@ -303,7 +303,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
             if (scrollDir > 0f)
             {
-                reelOutScrollTimeLeft = Guardian.Mod.Properties.ReelOutScrollSmoothing.Value;
+                reelOutScrollTimeLeft = Guardian.GuardianClient.Properties.ReelOutScrollSmoothing.Value;
             }
         }
     }
@@ -1068,7 +1068,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             base.rigidbody.rotation = rotation;
             targetRotation = rotation;
 
-            if (Guardian.Mod.Properties.AlternateBurst.Value)
+            if (Guardian.GuardianClient.Properties.AlternateBurst.Value)
             {
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
@@ -1741,7 +1741,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             Quaternion firingDirection = base.transform.rotation;
 
-            if (Guardian.Mod.Properties.DirectionalFlares.Value)
+            if (Guardian.GuardianClient.Properties.DirectionalFlares.Value)
             {
                 // Yes I took this from Anarchy-Expedition, hush.
                 Quaternion cameraRot = Camera.main.transform.rotation;
@@ -1760,7 +1760,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 gameObject2.GetComponent<FlareMovement>().DontShowHint();
             }
 
-            _flareSound.Play();
+            if (_flareSound != null)
+            {
+                _flareSound.Play();
+            }
         }
     }
 
@@ -2068,10 +2071,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             myNetWorkName.transform.parent = gameObject.GetComponent<UIReferArray>().panels[0].transform;
             myNetWorkName.transform.localScale = new Vector3(14f, 14f, 14f);
             myNetWorkName.GetComponent<UILabel>().text = string.Empty;
-            myNetWorkName.GetComponent<UILabel>().alpha = (float)Guardian.Mod.Properties.OpacityOfOtherNames.Value;
+            myNetWorkName.GetComponent<UILabel>().alpha = (float)Guardian.GuardianClient.Properties.OpacityOfOtherNames.Value;
             if (base.photonView.isMine)
             {
-                myNetWorkName.GetComponent<UILabel>().alpha = (float)Guardian.Mod.Properties.OpacityOfOwnName.Value;
+                myNetWorkName.GetComponent<UILabel>().alpha = (float)Guardian.GuardianClient.Properties.OpacityOfOwnName.Value;
 
                 if (Minimap.Instance != null)
                 {
@@ -2173,7 +2176,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             // Initialize Syal's bomb sky barrier
             if (RCSettings.BombMode > 0)
             {
-                if (!PhotonNetwork.isMasterClient || Guardian.Mod.Properties.UseSkyBarrier.Value)
+                if (!PhotonNetwork.isMasterClient || Guardian.GuardianClient.Properties.UseSkyBarrier.Value)
                 {
                     float y = FengGameManagerMKII.Level.Name.Contains("City") ? 210
                         : FengGameManagerMKII.Level.Name.Contains("Forest") ? 280 : -1;
@@ -2217,7 +2220,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
-            base.rigidbody.interpolation = Guardian.Mod.Properties.Interpolation.Value ?
+            base.rigidbody.interpolation = Guardian.GuardianClient.Properties.Interpolation.Value ?
                 RigidbodyInterpolation.Interpolate : RigidbodyInterpolation.None;
         }
 
@@ -3072,7 +3075,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         labelDistance2.transform.localPosition -= new Vector3(0f, 15f, 0f);
 
         // Hide hook arrows
-        if (Guardian.Mod.Properties.HideHookArrows.Value)
+        if (Guardian.GuardianClient.Properties.HideHookArrows.Value)
         {
             Vector3 localPosition = Vector3.up * 10000f;
             crossR2.transform.localPosition = localPosition;
@@ -3462,7 +3465,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     CheckDashRebind();
                 }
 
-                if (Guardian.Mod.Properties.DoubleTapBurst.Value)
+                if (Guardian.GuardianClient.Properties.DoubleTapBurst.Value)
                 {
                     CheckDoubleTapDash();
                 }
@@ -3677,7 +3680,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         else if (inputManager.isInputDown[InputCode.Attack0])
                         {
                             // Weapon trail when you're holding attack down
-                            if ((int)FengGameManagerMKII.Settings[92] == 0 && Guardian.Mod.Properties.HoldForBladeTrails.Value)
+                            if ((int)FengGameManagerMKII.Settings[92] == 0 && Guardian.GuardianClient.Properties.HoldForBladeTrails.Value)
                             {
                                 leftbladetrail2.Activate();
                                 rightbladetrail2.Activate();
@@ -4604,7 +4607,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
         {
-            NetDieLocal2(base.rigidbody.velocity * 50f, isBite: false, -1, Guardian.Mod.Properties.SuicideMessage.Value);
+            NetDieLocal2(base.rigidbody.velocity * 50f, isBite: false, -1, Guardian.GuardianClient.Properties.SuicideMessage.Value);
 
             FengGameManagerMKII.Instance.needChooseSide = true;
             FengGameManagerMKII.Instance.justSuicide = true;
@@ -4678,7 +4681,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             OnDeathEvent(viewId, killByTitan);
 
             // Dispatch event to the current custom game-mode
-            Guardian.Mod.Gamemodes.CurrentMode.OnPlayerKilled(this, viewId, killByTitan);
+            Guardian.GuardianClient.Gamemodes.CurrentMode.OnPlayerKilled(this, viewId, killByTitan);
 
             if (FengGameManagerMKII.HeroHash.ContainsKey(base.photonView.owner.Id))
             {
@@ -4833,7 +4836,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             OnDeathEvent(viewId, killByTitan);
 
             // Dispatch event to the current custom game-mode
-            Guardian.Mod.Gamemodes.CurrentMode.OnPlayerKilled(this, viewId, killByTitan);
+            Guardian.GuardianClient.Gamemodes.CurrentMode.OnPlayerKilled(this, viewId, killByTitan);
 
             int id = base.photonView.owner.Id;
             if (FengGameManagerMKII.HeroHash.ContainsKey(id))
@@ -5042,7 +5045,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             OnDeathEvent(viewId, isTitan: true);
 
             // Dispatch event to the current custom game-mode
-            Guardian.Mod.Gamemodes.CurrentMode.OnPlayerKilled(this, viewId, true);
+            Guardian.GuardianClient.Gamemodes.CurrentMode.OnPlayerKilled(this, viewId, true);
 
             int id = base.photonView.owner.Id;
             if (FengGameManagerMKII.HeroHash.ContainsKey(id))
@@ -5447,12 +5450,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             if (bombRangeStat > 3)
             {
                 bombRangeStat = 3;
-                Guardian.Mod.Logger.Warn("Bomb Range was greater than 3, adjustments have been made.");
+                Guardian.GuardianClient.Logger.Warn("Bomb Range was greater than 3, adjustments have been made.");
             }
             if (bombCdStat < 4)
             {
                 bombCdStat = 4;
-                Guardian.Mod.Logger.Warn("Bomb CD was lower than 4, adjustments have been made.");
+                Guardian.GuardianClient.Logger.Warn("Bomb CD was lower than 4, adjustments have been made.");
             }
 
             if (bombRadiusStat + bombRangeStat + bombSpeedStat + bombCdStat > 20)
@@ -5493,96 +5496,94 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void LoadSkin()
     {
-        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine)
-        {
-            return;
-        }
-        if ((int)FengGameManagerMKII.Settings[0] != 1)
-        {
-            return;
-        }
+        if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine) return;
+        if ((int)FengGameManagerMKII.Settings[0] != 1) return;
 
-        int num = 14;
-        int num2 = 4;
-        int num3 = 5;
-        int num4 = 6;
-        int num5 = 7;
-        int num6 = 8;
-        int num7 = 9;
-        int num8 = 10;
-        int num9 = 11;
-        int num10 = 12;
-        int num11 = 13;
-        int num12 = 3;
-        int num13 = 94;
+        int hoodieIdx = 14;
+        int hairIdx = 4;
+        int eyeIdx = 5;
+        int glassesIdx = 6;
+        int faceIdx = 7;
+        int skinIdx = 8;
+        int costumeIdx = 9;
+        int logoIdx = 10;
+        int gearLeftIdx = 11;
+        int gearRightIdx = 12;
+        int gasIdx = 13;
+        int horseIdx = 3;
+        int trailIdx = 94;
+
         if ((int)FengGameManagerMKII.Settings[133] == 1)
         {
-            num12 = 134;
-            num2 = 135;
-            num3 = 136;
-            num4 = 137;
-            num5 = 138;
-            num6 = 139;
-            num7 = 140;
-            num8 = 141;
-            num9 = 142;
-            num10 = 143;
-            num11 = 144;
-            num = 145;
-            num13 = 146;
+            horseIdx = 134;
+            hairIdx = 135;
+            eyeIdx = 136;
+            glassesIdx = 137;
+            faceIdx = 138;
+            skinIdx = 139;
+            costumeIdx = 140;
+            logoIdx = 141;
+            gearLeftIdx = 142;
+            gearRightIdx = 143;
+            gasIdx = 144;
+            hoodieIdx = 145;
+            trailIdx = 146;
         }
         else if ((int)FengGameManagerMKII.Settings[133] == 2)
         {
-            num12 = 147;
-            num2 = 148;
-            num3 = 149;
-            num4 = 150;
-            num5 = 151;
-            num6 = 152;
-            num7 = 153;
-            num8 = 154;
-            num9 = 155;
-            num10 = 156;
-            num11 = 157;
-            num = 158;
-            num13 = 159;
+            horseIdx = 147;
+            hairIdx = 148;
+            eyeIdx = 149;
+            glassesIdx = 150;
+            faceIdx = 151;
+            skinIdx = 152;
+            costumeIdx = 153;
+            logoIdx = 154;
+            gearLeftIdx = 155;
+            gearRightIdx = 156;
+            gasIdx = 157;
+            hoodieIdx = 158;
+            trailIdx = 159;
         }
-        string text = (string)FengGameManagerMKII.Settings[num];
-        string text2 = (string)FengGameManagerMKII.Settings[num2];
-        string text3 = (string)FengGameManagerMKII.Settings[num3];
-        string text4 = (string)FengGameManagerMKII.Settings[num4];
-        string text5 = (string)FengGameManagerMKII.Settings[num5];
-        string text6 = (string)FengGameManagerMKII.Settings[num6];
-        string text7 = (string)FengGameManagerMKII.Settings[num7];
-        string text8 = (string)FengGameManagerMKII.Settings[num8];
-        string text9 = (string)FengGameManagerMKII.Settings[num9];
-        string text10 = (string)FengGameManagerMKII.Settings[num10];
-        string gasSkin = (string)FengGameManagerMKII.Settings[num11];
-        string horseSkin = (string)FengGameManagerMKII.Settings[num12];
-        string trailSkin = (string)FengGameManagerMKII.Settings[num13];
 
-        string thunderSpearSkin = Guardian.Mod.Properties.ThunderSpearSkin.Value;
-        string leftRopeSkin = Guardian.Mod.Properties.LeftRopeSkin.Value;
-        float leftRopeTileScale = Guardian.Mod.Properties.LeftRopeTileScale.Value;
-        string rightRopeSkin = Guardian.Mod.Properties.RightRopeSkin.Value;
-        float rightRopeTileScale = Guardian.Mod.Properties.RightRopeTileScale.Value;
+        string hoodieSkin = (string)FengGameManagerMKII.Settings[hoodieIdx];
+        string hairSkin = (string)FengGameManagerMKII.Settings[hairIdx];
+        string eyeSkin = (string)FengGameManagerMKII.Settings[eyeIdx];
+        string glassSkin = (string)FengGameManagerMKII.Settings[glassesIdx];
+        string faceSkin = (string)FengGameManagerMKII.Settings[faceIdx];
+        string skinSkin = (string)FengGameManagerMKII.Settings[skinIdx];
+        string costumeSkin = (string)FengGameManagerMKII.Settings[costumeIdx];
+        string logoSkin = (string)FengGameManagerMKII.Settings[logoIdx];
+        string gearLeftSkin = (string)FengGameManagerMKII.Settings[gearLeftIdx];
+        string gearRightSkin = (string)FengGameManagerMKII.Settings[gearRightIdx];
+        string gasSkin = (string)FengGameManagerMKII.Settings[gasIdx];
+        string horseSkin = (string)FengGameManagerMKII.Settings[horseIdx];
+        string trailSkin = (string)FengGameManagerMKII.Settings[trailIdx];
+
+        // BEGIN Guardian
+        string thunderSpearSkin = Guardian.GuardianClient.Properties.ThunderSpearSkin.Value;
+        string leftRopeSkin = Guardian.GuardianClient.Properties.LeftRopeSkin.Value;
+        float leftRopeTileScale = Guardian.GuardianClient.Properties.LeftRopeTileScale.Value;
+        string rightRopeSkin = Guardian.GuardianClient.Properties.RightRopeSkin.Value;
+        float rightRopeTileScale = Guardian.GuardianClient.Properties.RightRopeTileScale.Value;
+        // END Guardian
 
         string[] skinData =
         {
             horseSkin,
-            text2,
-            text3,
-            text4,
-            text5,
-            text6,
-            text7,
-            text8,
-            text9,
-            text10,
+            hairSkin,
+            eyeSkin,
+            glassSkin,
+            faceSkin,
+            skinSkin,
+            costumeSkin,
+            logoSkin,
+            gearLeftSkin,
+            gearRightSkin,
             gasSkin,
-            text,
+            hoodieSkin,
             trailSkin,
-            // BEGIN: Guardian
+            // BEGIN Guardian
             thunderSpearSkin,
             thunderSpearSkin,
             leftRopeSkin,
@@ -5591,16 +5592,19 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             rightRopeTileScale.ToString("F3")
             // END: Guardian
         };
+
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             StartCoroutine(CoLoadSkin(-1, string.Join(",", skinData)));
             return;
         }
+
         int horseId = -1;
         if (myHorse != null)
         {
             horseId = myHorse.GetPhotonView().viewID;
         }
+
         base.photonView.RPC("loadskinRPC", PhotonTargets.AllBuffered, horseId, string.Join(",", skinData));
     }
 
@@ -6259,7 +6263,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
         if (strArray.Length > 14)
         {
-            // BEGIN: ThunderSpear Skins
+            // BEGIN ThunderSpear Skins
             if (_thunderSpearLeft != null)
             {
                 foreach (Renderer renderer in _thunderSpearLeft.GetComponentsInChildren<Renderer>())
@@ -6343,7 +6347,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
             if (strArray.Length > 18)
             {
-                // BEGIN: Hook Textures
+                // BEGIN Hook Textures
                 if (strArray[15].EndsWith(".png") || strArray[15].EndsWith(".jpg") || strArray[15].EndsWith(".jpeg")) // Left rope
                 {
                     if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[15]))

@@ -19,14 +19,17 @@ namespace Guardian.UI.Toasts
                 }
 
                 GUILayout.BeginArea(new Rect(Screen.width - 305, 5 + (75 * offset), 300, 70), GuiSkins.Box);
+                GUILayout.BeginHorizontal();
                 GUILayout.Label(toast.Title.AsBold());
                 GUILayout.FlexibleSpace();
+                GUILayout.Label(toast.Timestamp);
+                GUILayout.EndHorizontal();
                 GUILayout.Label(toast.Message);
                 GUILayout.EndArea();
             }
 
             long now = GameHelper.CurrentTimeMillis();
-            Toasts.RemoveAll(toast => (now - toast.Now) / 1000f >= toast.TimeToLive);
+            Toasts.RemoveAll(toast => (now - toast.Time) / 1000f >= toast.TimeToLive);
         }
 
         public void Add(Toast toast)

@@ -24,7 +24,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
 
     public float tileScale = 1f;
 
-    // BEGIN: Anarchy
+    // BEGIN Anarchy
     public Transform Transform
     {
         get
@@ -245,7 +245,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     private void HandleHookToObj(int viewId)
     {
         PhotonView pv = PhotonView.Find(viewId);
-        if (pv == null || !Guardian.Mod.Properties.DeadlyHooks.Value || !PhotonNetwork.isMasterClient) return;
+        if (pv == null || !Guardian.GuardianClient.Properties.DeadlyHooks.Value || !PhotonNetwork.isMasterClient) return;
 
         HERO hero = pv.gameObject.GetComponent<HERO>();
         if (hero == null || hero.HasDied()) return;
@@ -386,7 +386,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                     break;
             }
 
-            // BEGIN: Guardian
+            // BEGIN Guardian
             if (lineRenderer.material != null)
             {
                 float ropeLength = (base.transform.position - myRef.transform.position).magnitude;

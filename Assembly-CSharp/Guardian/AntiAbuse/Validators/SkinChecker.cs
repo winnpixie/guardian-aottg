@@ -7,7 +7,7 @@ namespace Guardian.AntiAbuse.Validators
 {
     class SkinChecker
     {
-        public static string HostWhitelistPath = Mod.RootDir + "\\Hosts.txt";
+        public static string HostWhitelistPath = GuardianClient.RootDir + "\\Hosts.txt";
         public static List<string> HostWhitelist = new List<string>();
 
         public static void Init()
@@ -27,12 +27,12 @@ namespace Guardian.AntiAbuse.Validators
 
             if (HostWhitelist.Count < 1)
             {
-                Mod.Logger.Warn("Accepting ALL hosts for skins.");
-                Mod.Logger.Warn("\tThis leaves you at risk of being IP-logged!".AsColor("FF4444"));
+                GuardianClient.Logger.Warn("Accepting ALL hosts for skins.");
+                GuardianClient.Logger.Warn("\tThis leaves you at risk of being IP-logged!".AsColor("FF4444"));
             }
             else
             {
-                Mod.Logger.Debug($"Accepting {HostWhitelist.Count} host(s) for the skin whitelist.");
+                GuardianClient.Logger.Debug($"Accepting {HostWhitelist.Count} host(s) for the skin whitelist.");
             }
         }
 
@@ -58,7 +58,7 @@ namespace Guardian.AntiAbuse.Validators
 
             if (textureHost.Length < 1) return null;
 
-            Mod.Logger.Warn($"Unwhitelisted host: {textureHost}");
+            GuardianClient.Logger.Warn($"Unwhitelisted host: {textureHost}");
             return null;
         }
     }

@@ -45,7 +45,7 @@ public class BombExplode : Photon.MonoBehaviour
         float value = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombRadius]) * 2f;
         GetComponentInChildren<ParticleSystem>().startSize = Mathf.Clamp(value, 40f, 120f);
 
-        if (PhotonNetwork.isMasterClient && Guardian.Mod.Properties.BombsKillTitans.Value)
+        if (PhotonNetwork.isMasterClient && Guardian.GuardianClient.Properties.BombsKillTitans.Value)
         {
             foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
             {

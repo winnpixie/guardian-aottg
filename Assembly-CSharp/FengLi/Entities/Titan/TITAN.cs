@@ -263,7 +263,7 @@ public class TITAN : Photon.MonoBehaviour
                 base.name = "Punk";
                 runAnimation = "run_abnormal_1";
 
-                if (Guardian.Mod.Properties.OGPunkHair.Value)
+                if (Guardian.GuardianClient.Properties.OGPunkHair.Value)
                 {
                     GetComponent<TITAN_SETUP>().SetPunkHair2();
                 }
@@ -1426,7 +1426,7 @@ public class TITAN : Photon.MonoBehaviour
         if ((PhotonNetwork.isMasterClient && base.photonView.isMine) || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             // Endless
-            if (Guardian.Mod.Properties.EndlessTitans.Value && !nonAI)
+            if (Guardian.GuardianClient.Properties.EndlessTitans.Value && !nonAI)
             {
                 object[] respawnPoint = Guardian.Utilities.GameHelper.GetRandomTitanRespawnPoint();
                 GameObject go = FengGameManagerMKII.Instance.SpawnTitanRaw((Vector3)respawnPoint[0], (Quaternion)respawnPoint[1]);
@@ -1481,7 +1481,7 @@ public class TITAN : Photon.MonoBehaviour
                 OnTitanDie(photonView);
 
                 // Dispatch event to the current custom game-mode
-                Guardian.Mod.Gamemodes.CurrentMode.OnTitanKilled(this, photonView.owner, speed);
+                Guardian.GuardianClient.Gamemodes.CurrentMode.OnTitanKilled(this, photonView.owner, speed);
             }
             base.photonView.RPC("netDie", PhotonTargets.OthersBuffered);
             if (grabbedTarget != null)
@@ -1530,7 +1530,7 @@ public class TITAN : Photon.MonoBehaviour
         netDie();
         if (nonAI)
         {
-            fengGame.SendKillInfo(isKillerTitan: false, Guardian.Mod.Properties.SuicideMessage.Value, isVictimTitan: true, (string)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
+            fengGame.SendKillInfo(isKillerTitan: false, Guardian.GuardianClient.Properties.SuicideMessage.Value, isVictimTitan: true, (string)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
         }
         fengGame.needChooseSide = true;
         fengGame.justSuicide = true;
@@ -3710,8 +3710,10 @@ public class TITAN : Photon.MonoBehaviour
             {
                 UnityEngine.Object.Destroy(healthLabel);
             }
+
             return;
         }
+
         if (healthLabel == null)
         {
             healthLabel = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("UI/LabelNameOverHead"));
@@ -3722,6 +3724,7 @@ public class TITAN : Photon.MonoBehaviour
             {
                 healthLabel.transform.localPosition = new Vector3(0f, 10f + 1f / myLevel, 0f);
             }
+
             float num = 1f;
             if (myLevel < 1f)
             {
@@ -3730,6 +3733,7 @@ public class TITAN : Photon.MonoBehaviour
             healthLabel.transform.localScale = new Vector3(num, num, num);
             healthLabelEnabled = true;
         }
+
         string str = "[7FFF00]";
         float num2 = (float)health / (float)maxHealth;
         if (num2 < 0.75f && num2 >= 0.5f)
@@ -3744,6 +3748,7 @@ public class TITAN : Photon.MonoBehaviour
         {
             str = "[FF3333]";
         }
+
         healthLabel.GetComponent<UILabel>().text = str + Convert.ToString(health);
     }
 

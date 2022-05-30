@@ -7,7 +7,7 @@ namespace Guardian.Features.Properties
 {
     class PropertyManager : FeatureManager<Property>
     {
-        private string _dataPath = Mod.RootDir + "\\GameSettings.txt";
+        private string _dataPath = GuardianClient.RootDir + "\\GameSettings.txt";
 
         // Gamemodes
         public Property<bool> BombsKillTitans = new Property<bool>("Gamemodes_Bomb:BombsKillTitans", new string[0], true);
@@ -52,7 +52,7 @@ namespace Guardian.Features.Properties
         public Property<bool> TranslateIncoming = new Property<bool>("Chat_TranslateIncoming", new string[0], false);
         public Property<string> IncomingLanguage = new Property<string>("Chat_IncomingLanguage", new string[0], "auto");
         public Property<bool> TranslateOutgoing = new Property<bool>("Chat_TranslateOutgoing", new string[0], false);
-        public Property<string> OutgoingLanguage = new Property<string>("Chat_OutgoingLanguage", new string[0], Mod.SystemLanguage);
+        public Property<string> OutgoingLanguage = new Property<string>("Chat_OutgoingLanguage", new string[0], GuardianClient.SystemLanguage);
 
         public Property<string> JoinMessage = new Property<string>("Chat_JoinMessage", new string[0], string.Empty);
         public Property<string> ChatName = new Property<string>("Chat_UserName", new string[0], string.Empty);
@@ -67,6 +67,9 @@ namespace Guardian.Features.Properties
         // Visual [Render]
         public Property<int> DrawDistance = new Property<int>("Visual_DrawDistance", new string[0], 1500);
         public Property<int> FieldOfView = new Property<int>("Visual_FieldOfView", new string[0], 50);
+        public Property<bool> Blur = new Property<bool>("Visual_Blur", new string[0], true);
+        public Property<bool> UseMainLightColor = new Property<bool>("Visual_CustomMainLightColor", new string[0], true);
+        public Property<string> MainLightColor = new Property<string>("Visual_MainLightColor", new string[0], "FFFFFFFF");
         public Property<bool> Fog = new Property<bool>("Visual_Fog", new string[0], true);
         public Property<string> FogColor = new Property<string>("Visual_FogColor", new string[0], "18181865");
         public Property<float> FogDensity = new Property<float>("Visual_FogDensity", new string[0], 0.01f);
@@ -145,7 +148,7 @@ namespace Guardian.Features.Properties
                     {
                         if (hero.photonView.isMine && hero.myNetWorkName != null)
                         {
-                            hero.myNetWorkName.GetComponent<UILabel>().alpha = Mod.Properties.OpacityOfOwnName.Value;
+                            hero.myNetWorkName.GetComponent<UILabel>().alpha = GuardianClient.Properties.OpacityOfOwnName.Value;
                         }
                     }
                 }
@@ -160,7 +163,7 @@ namespace Guardian.Features.Properties
                     {
                         if (!hero.photonView.isMine && hero.myNetWorkName != null)
                         {
-                            hero.myNetWorkName.GetComponent<UILabel>().alpha = Mod.Properties.OpacityOfOtherNames.Value;
+                            hero.myNetWorkName.GetComponent<UILabel>().alpha = GuardianClient.Properties.OpacityOfOtherNames.Value;
                         }
                     }
                 }
@@ -201,6 +204,34 @@ namespace Guardian.Features.Properties
                 }
             };
             base.Add(DrawDistance);
+
+            Blur.OnValueChanged = () =>
+            {
+                if (Camera.main != null)
+                {
+                    Camera.main.GetComponent<TiltShift>().enabled = Blur.Value && !FengGameManagerMKII.Level.Name.StartsWith("Custom");
+                }
+            };
+            base.Add(Blur);
+
+            UseMainLightColor.OnValueChanged = () =>
+            {
+                MainLightColor.OnValueChanged();
+            };
+            base.Add(UseMainLightColor);
+
+            MainLightColor.OnValueChanged = () =>
+            {
+                if (UseMainLightColor.Value)
+                {
+                    GameObject mainLightSource = GameObject.Find("mainLight");
+                    if (mainLightSource != null)
+                    {
+                        mainLightSource.GetComponent<Light>().color = MainLightColor.Value.ToColor();
+                    }
+                }
+            };
+            base.Add(MainLightColor);
 
             Fog.OnValueChanged = () =>
             {
@@ -273,7 +304,7 @@ namespace Guardian.Features.Properties
             base.Add(ShowLog);
             base.Add(DrawDebugBackground);
 
-            Mod.Logger.Debug($"Registered {Elements.Count} properties.");
+            GuardianClient.Logger.Debug($"Registered {Elements.Count} properties.");
 
             LoadFromFile();
             Save();

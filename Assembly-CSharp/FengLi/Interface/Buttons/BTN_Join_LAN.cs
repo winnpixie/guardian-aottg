@@ -20,11 +20,11 @@ public class BTN_Join_LAN : MonoBehaviour
 
             if (PhotonCloud.IsMatch(ipStr))
             {
-                Guardian.Mod.Logger.Info("Joining a Photon Cloud server.");
+                Guardian.GuardianClient.Logger.Info("Joining a Photon Cloud server.");
             }
             else
             {
-                Guardian.Mod.Logger.Info("Joining a non-Photon Cloud server.");
+                Guardian.GuardianClient.Logger.Info("Joining a non-Photon Cloud server.");
             }
 
             FengGameManagerMKII.OnPrivateServer = !PhotonCloud.IsMatch(ipStr);

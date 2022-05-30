@@ -9,7 +9,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (info == null) return true;
 
-            Mod.Logger.Error($"'HERO.killObject' from #{info.sender.Id}.");
+            GuardianClient.Logger.Error($"'HERO.killObject' from #{info.sender.Id}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -23,7 +23,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (info == null) return true;
 
-            Mod.Logger.Error($"'HERO.showHitDamage' from #{info.sender.Id}.");
+            GuardianClient.Logger.Error($"'HERO.showHitDamage' from #{info.sender.Id}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -40,7 +40,7 @@ namespace Guardian.AntiAbuse.Validators
                 && view.ownerId == info.sender.Id
                 && view.gameObject.GetComponent<TITAN_EREN>() != null) return true;
 
-            Mod.Logger.Warn($"'HERO.whoIsMyErenTitan' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Warn($"'HERO.whoIsMyErenTitan' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             return false;
         }
 
@@ -51,7 +51,7 @@ namespace Guardian.AntiAbuse.Validators
             if (info != null && view != null
                 && view.gameObject.GetComponent<Cannon>() != null) return true;
 
-            Mod.Logger.Warn($"'HERO.SetMyCannon' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            GuardianClient.Logger.Warn($"'HERO.SetMyCannon' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             return false;
         }
 
@@ -60,7 +60,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (info != null && hero.photonView.ownerId == info.sender.Id) return true;
 
-            Mod.Logger.Error($"'HERO.loadskinRPC' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            GuardianClient.Logger.Error($"'HERO.loadskinRPC' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -87,7 +87,7 @@ namespace Guardian.AntiAbuse.Validators
                 }
             }
 
-            Mod.Logger.Error($"'HERO.netGrabbed' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            GuardianClient.Logger.Error($"'HERO.netGrabbed' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -103,7 +103,7 @@ namespace Guardian.AntiAbuse.Validators
                 || info.sender.isMasterClient || info.sender.isLocal || info.sender.IsTitan) return true;
 
 
-            Mod.Logger.Error($"'HERO.blowAway' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            GuardianClient.Logger.Error($"'HERO.blowAway' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -120,7 +120,7 @@ namespace Guardian.AntiAbuse.Validators
                 || info.sender.isMasterClient
                 || info.sender.IsTitan) return true;
 
-            Mod.Logger.Error($"'HERO.netPlayAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            GuardianClient.Logger.Error($"'HERO.netPlayAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -134,7 +134,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (info != null && hero.photonView.ownerId == info.sender.Id) return true;
 
-            Mod.Logger.Error($"'HERO.netPlayAnimationAt' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            GuardianClient.Logger.Error($"'HERO.netPlayAnimationAt' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -148,7 +148,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (info != null && hero.photonView.ownerId == info.sender.Id) return true;
 
-            Mod.Logger.Error($"'HERO.netCrossFade' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            GuardianClient.Logger.Error($"'HERO.netCrossFade' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -162,7 +162,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (info != null && hero.photonView.ownerId == info.sender.Id) return true;
 
-            Mod.Logger.Error($"'HERO.netPauseAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            GuardianClient.Logger.Error($"'HERO.netPauseAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -176,7 +176,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (info != null && hero.photonView.ownerId == info.sender.Id) return true;
 
-            Mod.Logger.Error($"'HERO.netContinueAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}");
+            GuardianClient.Logger.Error($"'HERO.netContinueAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);

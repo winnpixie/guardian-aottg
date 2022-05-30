@@ -144,7 +144,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     damage = Mathf.Max(10, damage);
 
                     // Local minimum damage
-                    if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
+                    if (damage < Guardian.GuardianClient.Properties.LocalMinDamage.Value)
                     {
                         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
                         return;
@@ -280,7 +280,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                         damage = Mathf.Max(10, damage);
 
                         // Local minimum damage
-                        if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
+                        if (damage < Guardian.GuardianClient.Properties.LocalMinDamage.Value)
                         {
                             GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
                             return;

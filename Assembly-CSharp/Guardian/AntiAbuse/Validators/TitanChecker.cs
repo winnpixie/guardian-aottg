@@ -8,7 +8,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || info == null
                 || titan.photonView.ownerId == info.sender.Id || info.sender.isMasterClient) return true;
 
-            Mod.Logger.Error($"'TITAN.netSetAbnormalType' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'TITAN.netSetAbnormalType' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -23,7 +23,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
                 || (info != null && titan.photonView.ownerId == info.sender.Id)) return true;
 
-            Mod.Logger.Error($"'TITAN.netCrossFade' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'TITAN.netCrossFade' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -38,7 +38,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
                 || (info != null && titan.photonView.ownerId == info.sender.Id)) return true;
 
-            Mod.Logger.Error($"'TITAN.netPlayAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'TITAN.netPlayAnimation' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -53,7 +53,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
                 || (info != null && titan.photonView.ownerId == info.sender.Id)) return true;
 
-            Mod.Logger.Error($"'TITAN.netPlayAnimationAt' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'TITAN.netPlayAnimationAt' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -68,7 +68,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
                 || (info != null && titan.photonView.ownerId == info.sender.Id)) return true;
 
-            Mod.Logger.Error($"'TITAN.setMyTarget' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'TITAN.setMyTarget' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -83,7 +83,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || info == null
                 || titan.photonView.ownerId == info.sender.Id) return true;
 
-            Mod.Logger.Error($"'TITAN.playsoundRPC' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'TITAN.playsoundRPC' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -98,7 +98,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || info == null
                 || titan.photonView.ownerId == info.sender.Id) return true;
 
-            Mod.Logger.Error($"'TITAN.grabToRight' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'TITAN.grabToRight' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -113,7 +113,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || info == null
                 || titan.photonView.ownerId == info.sender.Id) return true;
 
-            Mod.Logger.Error($"'TITAN.grabToLeft' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'TITAN.grabToLeft' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -128,7 +128,7 @@
             if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
                 || (info != null && (titan.photonView.ownerId == info.sender.Id || info.sender.isMasterClient))) return true;
 
-            Mod.Logger.Error($"'TITAN.netSetLevel' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Error($"'TITAN.netSetLevel' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);

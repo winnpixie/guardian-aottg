@@ -61,7 +61,7 @@ namespace Guardian.Features.Commands
             base.Add(new CommandTeam());
             base.Add(new CommandUnban());
 
-            Mod.Logger.Debug($"Registered {Elements.Count} commands.");
+            GuardianClient.Logger.Debug($"Registered {Elements.Count} commands.");
         }
 
         public void HandleCommand(InRoomChat irc)

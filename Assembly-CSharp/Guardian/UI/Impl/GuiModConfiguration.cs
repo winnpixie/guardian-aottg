@@ -21,7 +21,7 @@ namespace Guardian.UI.Impl
 
         public override void OnOpen()
         {
-            foreach (Property property in Mod.Properties.Elements)
+            foreach (Property property in GuardianClient.Properties.Elements)
             {
                 string section = property.Name.Substr(0, property.Name.IndexOf("_") - 1);
                 if (!Sections.Contains(section))
@@ -66,7 +66,7 @@ namespace Guardian.UI.Impl
 
             GUILayout.Label(CurrentSection.AsBold());
 
-            foreach (Property property in Mod.Properties.Elements)
+            foreach (Property property in GuardianClient.Properties.Elements)
             {
                 if (!property.Name.StartsWith(CurrentSection)) continue;
 
@@ -122,7 +122,7 @@ namespace Guardian.UI.Impl
             if (GUILayout.Button("Save & Close", GUILayout.Height(25)) || (KeyCode.Escape.IsKeyUp() && GUI.GetNameOfFocusedControl().Length == 0))
             {
                 ShouldSave = true;
-                Mod.GuiController.OpenScreen(null);
+                GuardianClient.GuiController.OpenScreen(null);
             }
 
             GUILayout.EndArea();
@@ -158,7 +158,7 @@ namespace Guardian.UI.Impl
                     ((Property<string>)pair.Key).Value = pair.Value;
                 }
 
-                Mod.Properties.Save();
+                GuardianClient.Properties.Save();
             }
         }
     }

@@ -22,7 +22,7 @@ public class LevelBottom : MonoBehaviour
                         }
                         else if (hero.photonView.isMine)
                         {
-                            hero.NetDieLocal2(other.gameObject.rigidbody.velocity * 50f, false, -1, Guardian.Mod.Properties.LavaDeathMessage.Value, true);
+                            hero.NetDieLocal2(other.gameObject.rigidbody.velocity * 50f, false, -1, Guardian.GuardianClient.Properties.LavaDeathMessage.Value, true);
                         }
                     }
                     break;

@@ -17,7 +17,7 @@ namespace Guardian.Features.Gamemodes
 
             CurrentMode = DefaultMode;
 
-            Mod.Logger.Debug($"Registered {Elements.Count} game-modes.");
+            GuardianClient.Logger.Debug($"Registered {Elements.Count} game-modes.");
         }
     }
 }

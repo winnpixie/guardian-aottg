@@ -19,13 +19,11 @@ public class FlareMovement : MonoBehaviour
             }
         }
 
-
-        hero = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
         Color customColor = color switch
         {
-            "Green" => Guardian.Mod.Properties.Flare1Color.Value.ToColor(),
-            "Red" => Guardian.Mod.Properties.Flare2Color.Value.ToColor(),
-            "Black" => Guardian.Mod.Properties.Flare3Color.Value.ToColor(),
+            "Green" => Guardian.GuardianClient.Properties.Flare1Color.Value.ToColor(),
+            "Red" => Guardian.GuardianClient.Properties.Flare2Color.Value.ToColor(),
+            "Black" => Guardian.GuardianClient.Properties.Flare3Color.Value.ToColor(),
             _ => Color.white
         };
 
@@ -33,7 +31,7 @@ public class FlareMovement : MonoBehaviour
 
         base.GetComponent<ParticleSystem>().startColor = customColor;
 
-        if (Guardian.Mod.Properties.EmissiveFlares.Value)
+        if (Guardian.GuardianClient.Properties.EmissiveFlares.Value)
         {
             Light light = base.gameObject.AddComponent<Light>();
             light.type = LightType.Point;
@@ -43,6 +41,7 @@ public class FlareMovement : MonoBehaviour
             light.renderMode = LightRenderMode.ForcePixel;
         }
 
+        hero = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
         if (!nohint && hero != null)
         {
             hint = (GameObject)Object.Instantiate(Resources.Load("UI/" + color + "FlareHint"));

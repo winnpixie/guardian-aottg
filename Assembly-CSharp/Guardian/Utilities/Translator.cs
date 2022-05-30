@@ -7,12 +7,12 @@ namespace Guardian.Utilities
 {
     class Translator
     {
-        // private static readonly string _apiUrl = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={0}&tl={1}&q={2}";
+        private static readonly string ApiUrl = "https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl={0}&tl={1}&dt=t&q={2}"; // "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={0}&tl={1}&q={2}";
 
-        public static IEnumerator Translate(string text, string langCodeFrom, string langCodeTo, Action<string[]> callback)
+        public static IEnumerator Translate(string text, string langFrom, string langTo, Action<string[]> callback)
         {
             string query = WWW.EscapeURL(text);
-            string url = $"https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl={langCodeFrom}&tl={langCodeTo}&dt=t&q={query}";
+            string url = string.Format(ApiUrl, langFrom, langTo, query);
 
             using WWW www = new WWW(url);
             yield return www;
@@ -24,6 +24,7 @@ namespace Guardian.Utilities
             else
             {
                 JSONArray json = JSON.Parse(www.text).AsArray;
+
                 callback.Invoke(new string[]
                 {
                         json[2].Value, // Language
@@ -32,10 +33,10 @@ namespace Guardian.Utilities
             }
         }
 
-        public static string[] Translate(string text, string langCodeFrom, string langCodeTo)
+        public static string[] Translate(string text, string langFrom, string langTo)
         {
             string query = WWW.EscapeURL(text);
-            string url = $"https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl={langCodeFrom}&tl={langCodeTo}&dt=t&q={query}";
+            string url = string.Format(ApiUrl, langFrom, langTo, query);
 
             using WWW www = new WWW(url);
             while (!www.isDone) { }

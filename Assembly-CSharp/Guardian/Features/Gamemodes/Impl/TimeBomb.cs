@@ -13,8 +13,8 @@ namespace Guardian.Features.Gamemodes.Impl
 
         public TimeBomb() : base("TimeBomb", new string[] { "tb" })
         {
-            Mod.Properties.Add(StartTime);
-            Mod.Properties.Add(ScoreMultiplier);
+            GuardianClient.Properties.Add(StartTime);
+            GuardianClient.Properties.Add(ScoreMultiplier);
         }
 
         public override void CleanUp()

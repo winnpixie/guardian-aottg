@@ -5,9 +5,14 @@ namespace Launcher
 {
     static class Program
     {
-        public static readonly string Build = "01FEB2022-1";
-        public static readonly string RunDirectory = Environment.CurrentDirectory;
-        public static readonly int Architecture = Environment.Is64BitOperatingSystem ? 64 : 32;
+        public static readonly string Build = "05-30-2022";
+        public static readonly string Cwd = Environment.CurrentDirectory;
+        public static readonly int Arch = Environment.Is64BitOperatingSystem ? 64 : 32;
+
+        public static readonly string BaseURL = "http://www.aottg.tk/mods/guardian";
+        public static readonly string VersionsURL = BaseURL + "/versions.txt";
+        public static readonly string BinaryName = "Guardian" + Arch + ".zip";
+        public static readonly string GameDataURL = BaseURL + "/binaries/" + BinaryName;
 
         /// <summary>
         /// The main entry point for the application.

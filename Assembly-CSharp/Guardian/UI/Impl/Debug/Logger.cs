@@ -11,13 +11,13 @@ namespace Guardian
 
         private void Log(string message)
         {
-            message = Mod.BlacklistedTagsPattern.Replace(message, string.Empty);
+            message = GuardianClient.BlacklistedTagsPattern.Replace(message, string.Empty);
 
             if (message.Length > 0)
             {
                 Entries.Add(new Entry(message));
 
-                if (Entries.Count > Mod.Properties.MaxLogLines.Value)
+                if (Entries.Count > GuardianClient.Properties.MaxLogLines.Value)
                 {
                     Entries.RemoveAt(0);
                 }

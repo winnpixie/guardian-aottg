@@ -28,7 +28,7 @@ public class UIMainReferences : MonoBehaviour
         string rcBuild = "8/12/2015";
 
         NGUITools.SetActive(panelMain, state: true);
-        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[9999FF]RC [-]" + rcBuild + " | [FFBB00]Guardian [-]" + Guardian.Mod.Build;
+        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[9999FF]RC [-]" + rcBuild + " | [FFBB00]Guardian [-]" + Guardian.GuardianClient.Build;
 
         if (IsFirstInit)
         {

@@ -8,7 +8,7 @@ public class BTN_save_snapshot : MonoBehaviour
     public GameObject targetTexture;
     public GameObject info;
     public GameObject[] thingsNeedToHide;
-    private string SaveDir = Guardian.Mod.RootDir + "\\Screenshots";
+    private string SaveDir = Guardian.GuardianClient.RootDir + "\\Screenshots";
 
     private void OnPress()
     {

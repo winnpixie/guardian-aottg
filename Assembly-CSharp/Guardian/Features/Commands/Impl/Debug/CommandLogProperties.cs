@@ -7,7 +7,7 @@ namespace Guardian.Features.Commands.Impl.Debug
 {
     class CommandLogProperties : Command
     {
-        private string SaveDir = Mod.RootDir + "\\Properties";
+        private string SaveDir = GuardianClient.RootDir + "\\Properties";
 
         public CommandLogProperties() : base("logpr", new string[0], "<id>", false) { }
 

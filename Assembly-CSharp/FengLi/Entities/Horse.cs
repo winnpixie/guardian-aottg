@@ -32,7 +32,7 @@ public class Horse : Photon.MonoBehaviour
         State = "idle";
         base.gameObject.GetComponent<TITAN_CONTROLLER>().enabled = false;
 
-        if (myHero != null && myHero.GetPhotonView().isMine && Guardian.Mod.Properties.Interpolation.Value)
+        if (myHero != null && myHero.GetPhotonView().isMine && Guardian.GuardianClient.Properties.Interpolation.Value)
         {
             myHero.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         }

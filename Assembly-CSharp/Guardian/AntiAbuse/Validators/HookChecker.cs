@@ -7,7 +7,7 @@
         {
             if (info == null) return true;
 
-            Mod.Logger.Error($"'Bullet.killObject' from #{info.sender.Id}.");
+            GuardianClient.Logger.Error($"'Bullet.killObject' from #{info.sender.Id}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -24,7 +24,7 @@
                 && hook.photonView.ownerId == info.sender.Id
                 && view.gameObject.GetComponent<HERO>() != null) return true;
 
-            Mod.Logger.Warn($"'Bullet.myMasterIs' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Warn($"'Bullet.myMasterIs' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             return false;
         }
 
@@ -35,7 +35,7 @@
             if (info != null && view != null
                 && hook.photonView.ownerId == info.sender.Id) return true;
 
-            Mod.Logger.Warn($"'Bullet.tieMeToOBJ' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
+            GuardianClient.Logger.Warn($"'Bullet.tieMeToOBJ' from #{(info == null ? "?" : info.sender.Id.ToString())}.");
             return false;
 
         }
@@ -45,7 +45,7 @@
         {
             if (info == null) return true;
 
-            Mod.Logger.Error($"'Bullet.netLaunch' from #{info.sender.Id}.");
+            GuardianClient.Logger.Error($"'Bullet.netLaunch' from #{info.sender.Id}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -59,7 +59,7 @@
         {
             if (info == null) return true;
 
-            Mod.Logger.Error($"'Bullet.netUpdatePhase1' from #{info.sender.Id}.");
+            GuardianClient.Logger.Error($"'Bullet.netUpdatePhase1' from #{info.sender.Id}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);
@@ -73,7 +73,7 @@
         {
             if (info == null) return true;
 
-            Mod.Logger.Error($"'Bullet.netUpdateLeviSpiral' from #{info.sender.Id}.");
+            GuardianClient.Logger.Error($"'Bullet.netUpdateLeviSpiral' from #{info.sender.Id}.");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(info.sender.Id);

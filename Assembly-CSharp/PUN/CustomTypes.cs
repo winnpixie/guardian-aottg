@@ -35,7 +35,7 @@ internal static class CustomTypes
         }
         catch
         {
-            Guardian.Mod.Logger.Error("Could not deserialize Vector3.");
+            Guardian.GuardianClient.Logger.Error("Could not deserialize Vector3.");
             return null;
         }
     }
@@ -62,7 +62,7 @@ internal static class CustomTypes
         }
         catch
         {
-            Guardian.Mod.Logger.Error("Could not deserialize Vector2.");
+            Guardian.GuardianClient.Logger.Error("Could not deserialize Vector2.");
             return null;
         }
     }
@@ -93,7 +93,7 @@ internal static class CustomTypes
         }
         catch
         {
-            Guardian.Mod.Logger.Error("Could not deserialize Quaternion.");
+            Guardian.GuardianClient.Logger.Error("Could not deserialize Quaternion.");
             return null;
         }
     }
@@ -120,7 +120,7 @@ internal static class CustomTypes
         }
         catch
         {
-            Guardian.Mod.Logger.Error("Could not deserialize PhotonPlayer.");
+            Guardian.GuardianClient.Logger.Error("Could not deserialize PhotonPlayer.");
         }
         return null;
     }

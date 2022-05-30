@@ -19,23 +19,23 @@
                     switch (logLevel)
                     {
                         case Discord.LogLevel.Debug:
-                            Mod.Logger.Debug(message);
+                            GuardianClient.Logger.Debug(message);
                             break;
                         case Discord.LogLevel.Info:
-                            Mod.Logger.Info(message);
+                            GuardianClient.Logger.Info(message);
                             break;
                         case Discord.LogLevel.Warn:
-                            Mod.Logger.Warn(message);
+                            GuardianClient.Logger.Warn(message);
                             break;
                         case Discord.LogLevel.Error:
-                            Mod.Logger.Error(message);
+                            GuardianClient.Logger.Error(message);
                             break;
                     }
                 });
 
                 _Discord.GetUserManager().OnCurrentUserUpdate += () =>
                 {
-                    Mod.Logger.Debug($"Connected to Discord for Rich Presence.");
+                    GuardianClient.Logger.Debug($"Connected to Discord for Rich Presence.");
                 };
             }
             catch { }
@@ -71,7 +71,7 @@
         {
             Initialize();
 
-            if (_Discord == null || !Mod.Properties.UseRichPresence.Value) return;
+            if (_Discord == null || !GuardianClient.Properties.UseRichPresence.Value) return;
 
             try
             {

@@ -11,18 +11,20 @@ namespace Guardian.UI
         [DllImport("user32.dll")]
         public static extern int GetActiveWindow();
 
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "SetWindowTextW")]
+        public static extern bool SetWindowTitle(int hWnd, string lpString);
+
         [DllImport("user32.dll")]
         public static extern void ShowWindow(int hWnd, int nCmdShow);
 
         public static void HandleWindowFocusEvent(bool hasFocus)
         {
             // FIXME: Exclusive Fullscreen requires more testing before being properly implemented again.
-            /*
             if (hasFocus)
             {
-                if (s_isFullscreen)
+                if (IsFullscreen)
                 {
-                    s_isFullscreen = false;
+                    IsFullscreen = false;
 
                     ShowWindow(GetActiveWindow(), 1); // SW_SHOWNORMAL
 
@@ -36,16 +38,16 @@ namespace Guardian.UI
                     }
                 }
             }
-            else if (!s_isFullscreen)
+            else if (!IsFullscreen)
             {
                 if (Screen.fullScreen)
                 {
-                    s_isFullscreen = true;
+                    IsFullscreen = true;
                     Screen.SetResolution(960, 600, false);
 
                     ShowWindow(GetActiveWindow(), 2); // SW_SHOWMINIMIZED
                 }
-            }*/
+            }
         }
 
         private static IEnumerator CoMarkHudDirty(IN_GAME_MAIN_CAMERA mainCamera)

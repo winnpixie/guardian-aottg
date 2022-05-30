@@ -50,25 +50,27 @@ public class PhotonPlayer
     public bool Muted = false;
     public int Ping = -1;
 
-    public bool IsNewRC;
-    public bool IsNeko;
-    public bool IsNekoUser;
-    public bool IsNekoOwner;
-    public bool IsPedoBear;
-    public bool IsCyan;
-    public bool IsUniverse;
-    public bool IsKNK;
-    public bool IsNRC;
-    public bool IsExp;
-    public bool IsTRAP;
-    public bool IsRRC;
-    public bool IsPhotonMod;
-    public bool IsAnarchy;
-    public bool IsAnarchyExp;
-    public bool IsCyrus;
+    public bool IsAnarchyMod;
+    public bool IsAnarchyExpMod;
+    public bool IsCyanMod;
+    public bool IsCyrusMod;
+    public bool IsExpeditionMod;
     public bool IsFoxMod;
-    public bool IsRC83;
-    public bool IsUnknown;
+    public bool IsKNKMod;
+    // BEGIN Neko Mod
+    public bool IsNekoMod;
+    public bool IsNekoModOwner;
+    public bool IsNekoModUser;
+    // END Neko Mod
+    public bool IsNewRCMod;
+    public bool IsNRCMod;
+    public bool IsPBMod;
+    public bool IsPhotonMod;
+    public bool IsRC83Mod;
+    public bool IsRRCMod;
+    public bool IsTRAPMod;
+    public bool IsUniverseMod;
+    public bool IsUnknownMod;
 
     public PhotonPlayer(bool isLocal, int actorID, string name)
     {
@@ -88,8 +90,7 @@ public class PhotonPlayer
 
     public override bool Equals(object p)
     {
-        PhotonPlayer photonPlayer = p as PhotonPlayer;
-        return photonPlayer != null && GetHashCode() == photonPlayer.GetHashCode();
+        return p is PhotonPlayer photonPlayer && GetHashCode() == photonPlayer.GetHashCode();
     }
 
     public override int GetHashCode()
@@ -137,12 +138,12 @@ public class PhotonPlayer
         }
     }
 
-    public static PhotonPlayer Find(int ID)
+    public static PhotonPlayer Find(int id)
     {
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
             PhotonPlayer photonPlayer = PhotonNetwork.playerList[i];
-            if (photonPlayer.Id == ID)
+            if (photonPlayer.Id == id)
             {
                 return photonPlayer;
             }

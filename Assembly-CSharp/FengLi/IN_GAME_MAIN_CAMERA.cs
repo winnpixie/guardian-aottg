@@ -137,6 +137,9 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 break;
         }
 
+        // Mod
+        Guardian.GuardianClient.Properties.UseMainLightColor.OnValueChanged();
+
         if (FengGameManagerMKII.SkyMaterial != null && FengGameManagerMKII.SkyMaterial != base.gameObject.GetComponent<Skybox>().material)
         {
             base.gameObject.GetComponent<Skybox>().material = FengGameManagerMKII.SkyMaterial;
@@ -252,8 +255,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         base.transform.position += Vector3.up * heightMulti;
         base.transform.position -= Vector3.up * (0.6f - CameraDistance) * 2f;
 
-        float mouseYaw = Guardian.Mod.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse X") : Input.GetAxis("Mouse X");
-        float mousePitch = Guardian.Mod.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse Y") : Input.GetAxis("Mouse Y");
+        float mouseYaw = Guardian.GuardianClient.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse X") : Input.GetAxis("Mouse X");
+        float mousePitch = Guardian.GuardianClient.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse Y") : Input.GetAxis("Mouse Y");
 
         float dYaw = mouseYaw * 10f * GetSensitivityMulti();
         float dPitch = (0f - mousePitch) * 10f * GetSensitivityMulti() * (float)GetReverse();
@@ -310,7 +313,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
 
         // God awful FPS camera
-        if (Guardian.Mod.Properties.FPSCamera.Value)
+        if (Guardian.GuardianClient.Properties.FPSCamera.Value)
         {
             base.transform.position = head == null ? main_object.transform.position : head.transform.position;
             base.transform.position += base.transform.up * (heightMulti / 2f);

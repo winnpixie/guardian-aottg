@@ -1,4 +1,5 @@
 ﻿using Guardian.Utilities;
+using System;
 
 namespace Guardian.UI.Toasts
 {
@@ -7,14 +8,18 @@ namespace Guardian.UI.Toasts
         public string Title;
         public string Message;
         public float TimeToLive;
-        public long Now;
+        public long Time;
+        public string Timestamp;
 
         public Toast(string title, string message, float timeToLive)
         {
             this.Title = title;
             this.Message = message;
             this.TimeToLive = timeToLive;
-            this.Now = GameHelper.CurrentTimeMillis();
+            this.Time = GameHelper.CurrentTimeMillis();
+
+            DateTime date = GameHelper.Epoch.AddMilliseconds(this.Time).ToLocalTime();
+            this.Timestamp = date.ToString("HH:mm:ss");
         }
     }
 }

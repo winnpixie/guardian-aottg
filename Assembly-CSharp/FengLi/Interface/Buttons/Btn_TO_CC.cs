@@ -6,6 +6,6 @@ public class Btn_TO_CC : MonoBehaviour
 	{
 		Application.LoadLevel("characterCreation");
 
-		Guardian.Mod.GuiController.OpenScreen(new Guardian.UI.Impl.GuiCustomCharacter());
+		Guardian.GuardianClient.GuiController.OpenScreen(new Guardian.UI.Impl.GuiCustomCharacter());
 	}
 }

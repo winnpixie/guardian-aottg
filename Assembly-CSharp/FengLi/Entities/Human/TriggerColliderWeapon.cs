@@ -116,7 +116,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     damage = Mathf.Max(10, damage);
 
                     // Local minimum damage
-                    if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
+                    if (damage < Guardian.GuardianClient.Properties.LocalMinDamage.Value)
                     {
                         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
                         return;
@@ -151,7 +151,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                             }
                             titan.photonView.RPC("titanGetHit", titan.photonView.owner, base.transform.root.gameObject.GetPhotonView().viewID, damage);
 
-                            if (Guardian.Mod.Properties.MultiplayerNapeMeat.Value)
+                            if (Guardian.GuardianClient.Properties.MultiplayerNapeMeat.Value)
                             {
                                 SpawnNapeMeat(currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity, hitbox.transform.root);
                             }
@@ -258,7 +258,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                         damage = Mathf.Max(10, damage);
 
                         // Local minimum damage
-                        if (damage < Guardian.Mod.Properties.LocalMinDamage.Value)
+                        if (damage < Guardian.GuardianClient.Properties.LocalMinDamage.Value)
                         {
                             GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
                             return;

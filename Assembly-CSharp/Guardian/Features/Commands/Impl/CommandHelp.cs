@@ -9,11 +9,11 @@
         public override void Execute(InRoomChat irc, string[] args)
         {
             int page = 0;
-            int pages = Utilities.MathHelper.Ceil((float)Mod.Commands.Elements.Count / CommandsPerPage);
+            int pages = Utilities.MathHelper.Ceil((float)GuardianClient.Commands.Elements.Count / CommandsPerPage);
 
             if (args.Length > 0)
             {
-                Command command = Mod.Commands.Find(args[0]);
+                Command command = GuardianClient.Commands.Find(args[0]);
 
                 if (command != null)
                 {
@@ -29,7 +29,7 @@
             }
 
             irc.AddLine("For general help regarding Guardian, visit".AsColor("FFFF00"));
-            irc.AddLine("\thttps://alerithe.github.io/guardian/".AsColor("0099FF") + "!".AsColor("FFFF00"));
+            irc.AddLine("\thttps://winnpixie.github.io/guardian/".AsColor("0099FF") + "!".AsColor("FFFF00"));
 
             irc.AddLine($"Commands (Page {page + 1}/{pages})".AsColor("AAFF00").AsBold());
             irc.AddLine("<arg> = Required, [arg] = Optional".AsColor("AAAAAA").AsBold());
@@ -38,12 +38,12 @@
             {
                 int index = i + (page * CommandsPerPage);
 
-                if (index >= Mod.Commands.Elements.Count)
+                if (index >= GuardianClient.Commands.Elements.Count)
                 {
                     break;
                 }
 
-                Command command = Mod.Commands.Elements[index];
+                Command command = GuardianClient.Commands.Elements[index];
                 string msg = "> ".AsColor("00FF00").AsBold() + $"/{command.Name} {command.Usage}";
 
                 if (command.MasterClient)

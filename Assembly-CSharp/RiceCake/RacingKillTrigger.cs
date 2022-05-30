@@ -14,6 +14,6 @@ public class RacingKillTrigger : MonoBehaviour
         if (component == null || !component.photonView.isMine || component.HasDied()) return;
 
         component.MarkDead();
-        component.photonView.RPC("netDie2", PhotonTargets.All, -1, Guardian.Mod.Properties.LavaDeathMessage.Value);
+        component.photonView.RPC("netDie2", PhotonTargets.All, -1, Guardian.GuardianClient.Properties.LavaDeathMessage.Value);
     }
 }

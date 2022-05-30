@@ -819,7 +819,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         }
         else if (operationResponse.ReturnCode == 32752)
         {
-            Guardian.Mod.Logger.Error("Opcode " + operationResponse.OperationCode + " failed in a server plugin. Message from plugin: " + operationResponse.DebugMessage);
+            Guardian.GuardianClient.Logger.Error("Opcode " + operationResponse.OperationCode + " failed in a server plugin. Message from plugin: " + operationResponse.DebugMessage);
 
             Debug.LogError("Operation " + operationResponse.OperationCode + " failed in a server-side plugin. Check the configuration in the Dashboard. Message from server-plugin: " + operationResponse.DebugMessage);
         }
@@ -1453,7 +1453,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                     {
                                         if (callParameterTypes.Length == methodParameters.Length)
                                         {
-                                            Guardian.Mod.Logger.Error($"Spoofed '{rpcName}({argsAsString})' RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                                            Guardian.GuardianClient.Logger.Error($"Spoofed '{rpcName}({argsAsString})' RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
                                             if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                                             {
                                                 FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -1482,7 +1482,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                 }
                                 else
                                 {
-                                    Guardian.Mod.Logger.Warn($"Invalid '{rpcName}' RPC from #{(sender == null ? "?" : sender.Id.ToString())}, parameters: {argsAsString}.");
+                                    Guardian.GuardianClient.Logger.Warn($"Invalid '{rpcName}' RPC from #{(sender == null ? "?" : sender.Id.ToString())}, parameters: {argsAsString}.");
                                 }
                             }
                         }
@@ -1497,7 +1497,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 switch (rpcName)
                 {
                     case "FlareColour":
-                        sender.IsAnarchyExp = true;
+                        sender.IsAnarchyExpMod = true;
                         break;
                     case "SetupThunderSpearsRPC": // Updated RC
                     case "SetThunderSpearsRPC":
@@ -1506,7 +1506,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     case "SetWeatherRPC":
                     case "IsUpdatedRPC":
                     case "DisableRPC":
-                        sender.IsNewRC = true;
+                        sender.IsNewRCMod = true;
                         break;
                     case "pedoModUser": // PedoBear
                     case "NetThrowBlade":
@@ -1514,7 +1514,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     case "dropObj":
                     case "GravityChange":
                     case "dropPicked":
-                        sender.IsPedoBear = true;
+                        sender.IsPBMod = true;
                         break;
                     case "whoIsMyReinerTitan": // Universe
                     case "whoIsMyAnnieTitan":
@@ -1524,18 +1524,18 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     case "GoBerserk":
                     case "SetBerserkTexture":
                     case "CrownRPC":
-                        sender.IsUniverse = true;
+                        sender.IsUniverseMod = true;
                         break;
                     case "Cyan_modRPC": // Cyan Mod
                     case "LoadObjects":
                     case "newObject":
-                        sender.IsCyan = true;
+                        sender.IsCyanMod = true;
                         break;
                     case "RPC_Ball":
-                        sender.IsKNK = true;
+                        sender.IsKNKMod = true;
                         break;
                     case "NRCRPC":
-                        sender.IsNRC = true;
+                        sender.IsNRCMod = true;
                         break;
                     case "RecompilePlayerRPC": // I'll never know
                     case "NekoEarsRPC":
@@ -1545,10 +1545,10 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     case "NekoRPC":
                         break;
                     case "receiveSatanPlayers": // RC83
-                        sender.IsRC83 = true;
+                        sender.IsRC83Mod = true;
                         break;
                     case "AddMeToCEList": // Cyrus Essentials
-                        sender.IsCyrus = true;
+                        sender.IsCyrusMod = true;
                         break;
                     case "ResetRPCMgr": // ExpMod
                     case "HookDMRPC":
@@ -1563,16 +1563,16 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     case "setBuilder":
                     case "SelfRevivePermissionRPC":
                     case "AniSpeed":
-                        sender.IsExp = true;
+                        sender.IsExpeditionMod = true;
                         break;
                     case "TrapJoin": // TRAP
-                        sender.IsTRAP = true;
+                        sender.IsTRAPMod = true;
                         break;
                     case "team_winner_popup": // Ranked RC
-                        sender.IsRRC = true;
+                        sender.IsRRCMod = true;
                         break;
                     default:
-                        Guardian.Mod.Logger.Warn($"No '{rpcName}({argsAsString})' from #{sender.Id} in PV {viewId}.");
+                        Guardian.GuardianClient.Logger.Warn($"No '{rpcName}({argsAsString})' from #{sender.Id} in PV {viewId}.");
                         break;
                 }
             }
@@ -2752,7 +2752,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         // Byte arrays never get sent, except by Elite Future/kevin's voice chat mod
         if (eventData[245] is byte[] && eventData.Code != 173)
         {
-            Guardian.Mod.Logger.Error($"E({eventData.Code}) byte[] ({((byte[])eventData[245]).Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+            Guardian.GuardianClient.Logger.Error($"E({eventData.Code}) byte[] ({((byte[])eventData[245]).Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
             if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -3122,12 +3122,12 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     object obj = eventData[ParameterCode.Info];
                     if (obj != null && obj is string)
                     {
-                        Guardian.Mod.Logger.Error((string)obj);
+                        Guardian.GuardianClient.Logger.Error((string)obj);
                     }
                     break;
                 }
             case 101: // Cyan Mod
-                sender.IsCyan = true;
+                sender.IsCyanMod = true;
                 return;
             case 173: // Voice Chat
                 if (!MicEF.Disconnected)
@@ -3137,7 +3137,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     {
                         if (payload.Length >= 12000) // Too large for a message
                         {
-                            Guardian.Mod.Logger.Warn($"E(173) Too large ({payload.Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+                            Guardian.GuardianClient.Logger.Warn($"E(173) Too large ({payload.Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                             return;
                         }
                         else if (payload.Length < 4) // 1 float requires at least 4 bytes
@@ -3176,7 +3176,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                         }
                                         break;
                                     default:
-                                        Guardian.Mod.Logger.Warn($"E(173) Unknown command from #{actorNr}.");
+                                        Guardian.GuardianClient.Logger.Warn($"E(173) Unknown command from #{actorNr}.");
                                         break;
                                 }
                             }
@@ -3217,7 +3217,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     }
                     else
                     {
-                        Guardian.Mod.Logger.Warn($"E(173) non-byte[] ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+                        Guardian.GuardianClient.Logger.Warn($"E(173) non-byte[] ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                     }
                 }
                 return;
@@ -3226,7 +3226,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     object obj = eventData[245];
                     if (obj != null && obj is string payload)
                     {
-                        sender.IsRRC = true;
+                        sender.IsRRCMod = true;
                     }
                     break;
                 }
@@ -3238,11 +3238,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
                 else if (actorNr == -1) // -1 = Server
                 {
-                    Guardian.Mod.Logger.Warn($"E({eventData.Code}) Unknown ({base.ByteCountCurrentDispatch} total bytes) from SERVER.");
+                    Guardian.GuardianClient.Logger.Warn($"E({eventData.Code}) Unknown ({base.ByteCountCurrentDispatch} total bytes) from SERVER.");
                 }
                 else
                 {
-                    Guardian.Mod.Logger.Error($"E({eventData.Code}) Unknown/PUE ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+                    Guardian.GuardianClient.Logger.Error($"E({eventData.Code}) Unknown/PUE ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                     if (!FengGameManagerMKII.IgnoreList.Contains(actorNr))
                     {
                         FengGameManagerMKII.IgnoreList.Add(actorNr);

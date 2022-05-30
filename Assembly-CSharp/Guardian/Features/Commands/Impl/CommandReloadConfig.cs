@@ -7,7 +7,7 @@
         public override void Execute(InRoomChat irc, string[] args)
         {
             irc.AddLine("Reloading configuration files...");
-            Mod.Properties.LoadFromFile();
+            GuardianClient.Properties.LoadFromFile();
             irc.AddLine("Configuration reloaded.");
 
             irc.AddLine("Reloading skin host whitelist...");

@@ -11,14 +11,14 @@ namespace Guardian.Features.Commands.Impl.MasterClient
         {
             if (args.Length > 0)
             {
-                Gamemode oldMode = Mod.Gamemodes.CurrentMode;
-                Gamemode newMode = Mod.Gamemodes.Find(args[0]);
+                Gamemode oldMode = GuardianClient.Gamemodes.CurrentMode;
+                Gamemode newMode = GuardianClient.Gamemodes.Find(args[0]);
                 if (newMode == null) return;
 
                 GameHelper.Broadcast($"Gamemode Switch ({oldMode.Name} -> {newMode.Name})!");
 
                 newMode.OnReset();
-                Mod.Gamemodes.CurrentMode = newMode;
+                GuardianClient.Gamemodes.CurrentMode = newMode;
 
                 oldMode.CleanUp();
             }
@@ -26,7 +26,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             {
                 irc.AddLine("Available Gamemodes:".AsColor("AAFF00"));
 
-                foreach (Gamemode mode in Mod.Gamemodes.Elements)
+                foreach (Gamemode mode in GuardianClient.Gamemodes.Elements)
                 {
                     irc.AddLine("> ".AsColor("00FF00").AsBold() + mode.Name);
                 }

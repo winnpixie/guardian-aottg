@@ -15,37 +15,37 @@ public class SpectatorMovement : MonoBehaviour
     {
         if (!disable)
         {
-            float num = speed;
-            if (inputManager.isInput[InputCode.Jump])
-            {
-                num *= 3f;
-            }
-            float num2 = inputManager.isInput[InputCode.Up] ? 1f : ((!inputManager.isInput[InputCode.Down]) ? 0f : (-1f));
-            float num3 = inputManager.isInput[InputCode.Left] ? (-1f) : ((!inputManager.isInput[InputCode.Right]) ? 0f : 1f);
+            float moveSpeed = inputManager.isInput[InputCode.Jump] ? (speed * 3f) : speed;
+
+            float forward = inputManager.isInput[InputCode.Up] ? 1f : (!inputManager.isInput[InputCode.Down] ? 0f : -1f);
+            float strafe = inputManager.isInput[InputCode.Left] ? -1f : (!inputManager.isInput[InputCode.Right] ? 0f : 1f);
             Transform transform = base.transform;
-            if (num2 > 0f)
+
+            if (forward > 0f)
             {
-                transform.position += base.transform.forward * num * Time.deltaTime;
+                transform.position += base.transform.forward * moveSpeed * Time.deltaTime;
             }
-            else if (num2 < 0f)
+            else if (forward < 0f)
             {
-                transform.position -= base.transform.forward * num * Time.deltaTime;
+                transform.position -= base.transform.forward * moveSpeed * Time.deltaTime;
             }
-            if (num3 > 0f)
+
+            if (strafe > 0f)
             {
-                transform.position += base.transform.right * num * Time.deltaTime;
+                transform.position += base.transform.right * moveSpeed * Time.deltaTime;
             }
-            else if (num3 < 0f)
+            else if (strafe < 0f)
             {
-                transform.position -= base.transform.right * num * Time.deltaTime;
+                transform.position -= base.transform.right * moveSpeed * Time.deltaTime;
             }
+
             if (inputManager.isInput[InputCode.HookLeft])
             {
-                transform.position -= base.transform.up * num * Time.deltaTime;
+                transform.position -= base.transform.up * moveSpeed * Time.deltaTime;
             }
             else if (inputManager.isInput[InputCode.HookRight])
             {
-                transform.position += base.transform.up * num * Time.deltaTime;
+                transform.position += base.transform.up * moveSpeed * Time.deltaTime;
             }
         }
     }

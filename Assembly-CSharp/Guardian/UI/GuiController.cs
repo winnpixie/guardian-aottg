@@ -39,7 +39,7 @@ namespace Guardian.UI
                 CurrentScreen.Draw();
             }
 
-            Mod.Toasts.Draw();
+            GuardianClient.Toasts.Draw();
 
             DebugScreen.Draw();
         }

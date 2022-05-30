@@ -41,14 +41,14 @@ public class InRoomChat : Photon.MonoBehaviour
 
     public void AddMessage(string sender, string text)
     {
-        sender = Guardian.Mod.BlacklistedTagsPattern.Replace(sender, string.Empty);
-        text = Guardian.Mod.BlacklistedTagsPattern.Replace(text, string.Empty);
+        sender = Guardian.GuardianClient.BlacklistedTagsPattern.Replace(sender, string.Empty);
+        text = Guardian.GuardianClient.BlacklistedTagsPattern.Replace(text, string.Empty);
 
         if (sender.Length != 0 || text.Length != 0)
         {
             Messages.Add(new Message(sender, text));
 
-            if (Messages.Count > Guardian.Mod.Properties.MaxChatLines.Value)
+            if (Messages.Count > Guardian.GuardianClient.Properties.MaxChatLines.Value)
             {
                 Messages.RemoveAt(0);
             }
@@ -69,7 +69,7 @@ public class InRoomChat : Photon.MonoBehaviour
             };
         }
 
-        if (Guardian.Mod.Properties.DrawChatBackground.Value)
+        if (Guardian.GuardianClient.Properties.DrawChatBackground.Value)
         {
             GUILayout.BeginArea(MessagesRect, Guardian.UI.GuiSkins.Box);
         }
@@ -86,7 +86,7 @@ public class InRoomChat : Photon.MonoBehaviour
             {
                 string messageText = message.ToString();
 
-                if (Guardian.Mod.Properties.ChatTimestamps.Value)
+                if (Guardian.GuardianClient.Properties.ChatTimestamps.Value)
                 {
                     messageText = $"[{message.Timestamp}] " + messageText;
                 }
@@ -100,8 +100,8 @@ public class InRoomChat : Photon.MonoBehaviour
                     {
                         string text = Detagger.Replace(message.Content, string.Empty);
 
-                        Guardian.Mod.Commands.Find("translate").Execute(this, new string[] {
-                            "auto", Guardian.Mod.SystemLanguage, text
+                        Guardian.GuardianClient.Commands.Find("translate").Execute(this, new string[] {
+                            "auto", Guardian.GuardianClient.SystemLanguage, text
                         });
                     }
                     else if (Input.GetMouseButtonDown(1)) // Right-click
@@ -181,7 +181,7 @@ public class InRoomChat : Photon.MonoBehaviour
                 }
                 else
                 {
-                    Guardian.Mod.Commands.HandleCommand(this);
+                    Guardian.GuardianClient.Commands.HandleCommand(this);
                 }
             }
 
@@ -217,11 +217,11 @@ public class InRoomChat : Photon.MonoBehaviour
     public static object[] FormatMessage(string input, string name)
     {
         // Auto-translate
-        if (Guardian.Mod.Properties.TranslateOutgoing.Value)
+        if (Guardian.GuardianClient.Properties.TranslateOutgoing.Value)
         {
-            string[] result = Guardian.Utilities.Translator.Translate(input, Guardian.Mod.Properties.IncomingLanguage.Value, Guardian.Mod.Properties.OutgoingLanguage.Value);
+            string[] result = Guardian.Utilities.Translator.Translate(input, Guardian.GuardianClient.Properties.IncomingLanguage.Value, Guardian.GuardianClient.Properties.OutgoingLanguage.Value);
 
-            if (result.Length > 1 && !result[0].Equals(Guardian.Mod.Properties.OutgoingLanguage.Value))
+            if (result.Length > 1 && !result[0].Equals(Guardian.GuardianClient.Properties.OutgoingLanguage.Value))
             {
                 input = result[1];
             }
@@ -239,7 +239,7 @@ public class InRoomChat : Photon.MonoBehaviour
         else
         {
             // Color and fading
-            string chatColor = Guardian.Mod.Properties.TextColor.Value;
+            string chatColor = Guardian.GuardianClient.Properties.TextColor.Value;
             if (chatColor.Length > 0)
             {
                 input = input.AsColor(chatColor);
@@ -247,34 +247,34 @@ public class InRoomChat : Photon.MonoBehaviour
         }
 
         // Bold chat
-        if (Guardian.Mod.Properties.BoldText.Value)
+        if (Guardian.GuardianClient.Properties.BoldText.Value)
         {
             input = input.AsBold();
         }
         // Italic chat
-        if (Guardian.Mod.Properties.ItalicText.Value)
+        if (Guardian.GuardianClient.Properties.ItalicText.Value)
         {
             input = input.AsItalic();
         }
 
         // Custom name
-        string customName = Guardian.Mod.Properties.ChatName.Value;
+        string customName = Guardian.GuardianClient.Properties.ChatName.Value;
         if (customName.Length != 0)
         {
             name = customName.NGUIToUnity();
         }
         // Bold name
-        if (Guardian.Mod.Properties.BoldName.Value)
+        if (Guardian.GuardianClient.Properties.BoldName.Value)
         {
             name = name.AsBold();
         }
         // Italic name
-        if (Guardian.Mod.Properties.ItalicName.Value)
+        if (Guardian.GuardianClient.Properties.ItalicName.Value)
         {
             name = name.AsItalic();
         }
 
-        return new object[] { $"{Guardian.Mod.Properties.TextPrefix.Value}{input}{Guardian.Mod.Properties.TextSuffix.Value}", name };
+        return new object[] { $"{Guardian.GuardianClient.Properties.TextPrefix.Value}{input}{Guardian.GuardianClient.Properties.TextSuffix.Value}", name };
     }
 
     public class Message

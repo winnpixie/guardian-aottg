@@ -6,7 +6,7 @@
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            PhotonNetwork.Disconnect();
+            UnityEngine.Application.Quit();
         }
     }
 }

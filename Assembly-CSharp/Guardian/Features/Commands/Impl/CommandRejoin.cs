@@ -24,7 +24,7 @@ namespace Guardian.Features.Commands.Impl
             {
                 while (PhotonNetwork.networkingPeer.State != PeerState.JoinedLobby
                     && IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop
-                    && !Mod.WasQuitRequested) { }
+                    && !GuardianClient.WasQuitRequested) { }
                 PhotonNetwork.JoinRoom(lastRoomName);
             }).Start();
         }

@@ -37,7 +37,7 @@ namespace Guardian.AntiAbuse.Validators
                 || !evData.ContainsKey((byte)7)
                 || (evData.ContainsKey((byte)8) && !(evData[(byte)8] is short)))
             {
-                Mod.Logger.Error($"E(202) Malformed instantiate from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                GuardianClient.Logger.Error($"E(202) Malformed instantiate from #{(sender == null ? "?" : sender.Id.ToString())}.");
                 if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -56,7 +56,7 @@ namespace Guardian.AntiAbuse.Validators
                 || (!data.ContainsKey((byte)0) || !(data[(byte)0] is int))
                 || (!data.ContainsKey((byte)1) || !(data[(byte)1] is object[])))
             {
-                Mod.Logger.Error($"E(201/206) Malformed serialization from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                GuardianClient.Logger.Error($"E(201/206) Malformed serialization from #{(sender == null ? "?" : sender.Id.ToString())}.");
                 if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -79,7 +79,7 @@ namespace Guardian.AntiAbuse.Validators
                 || (rpcData.ContainsKey((byte)4) && !(rpcData[(byte)4] is object[])) // Invalid RPC Data
                 || (rpcData.ContainsKey((byte)5) && (!(rpcData[(byte)5] is byte) || rpcData.ContainsKey((byte)3)))) // Invalid RPC Index or Name is also present
             {
-                Mod.Logger.Error($"E(200) Malformed RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                GuardianClient.Logger.Error($"E(200) Malformed RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
                 if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -95,7 +95,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (views != null && views.Length > 0 && views[0].ownerId != sender.Id && !sender.isMasterClient)
             {
-                Mod.Logger.Error($"E(204) Object.Destroy from #{sender.Id}.");
+                GuardianClient.Logger.Error($"E(204) Object.Destroy from #{sender.Id}.");
                 if (!FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                 {
                     FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -111,7 +111,7 @@ namespace Guardian.AntiAbuse.Validators
         {
             if (sender == null) return true;
 
-            Mod.Logger.Error($"E(228) State Change from #{sender.Id}.");
+            GuardianClient.Logger.Error($"E(228) State Change from #{sender.Id}.");
             if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
             {
                 FengGameManagerMKII.IgnoreList.Add(sender.Id);
@@ -137,9 +137,9 @@ namespace Guardian.AntiAbuse.Validators
 
             if (keys.Count < 1) return;
 
-            Mod.Logger.Error($"#{(sender == null ? "?" : sender.Id.ToString())} applied foreign properties to you.");
+            GuardianClient.Logger.Error($"#{(sender == null ? "?" : sender.Id.ToString())} applied foreign properties to you.");
             string propertiesModified = string.Join(", ", keys.Select(k => $"{{{k}={properties[k]}}}").ToArray());
-            Mod.Logger.Error($"Properties: {propertiesModified}");
+            GuardianClient.Logger.Error($"Properties: {propertiesModified}");
 
             ExitGames.Client.Photon.Hashtable nullified = new ExitGames.Client.Photon.Hashtable();
             keys.ForEach(v => nullified.Add(v, null));
@@ -166,9 +166,9 @@ namespace Guardian.AntiAbuse.Validators
 
             if (keys.Count > 0)
             {
-                Mod.Logger.Error($"#{sender.Id} applied foreign properties to the room.");
+                GuardianClient.Logger.Error($"#{sender.Id} applied foreign properties to the room.");
                 string propertiesModified = string.Join(", ", keys.Select(k => $"{{{k}={propertiesThatChanged[k]}}}").ToArray());
-                Mod.Logger.Error($"Properties: {propertiesModified}");
+                GuardianClient.Logger.Error($"Properties: {propertiesModified}");
 
                 ExitGames.Client.Photon.Hashtable nullified = new ExitGames.Client.Photon.Hashtable();
                 keys.ForEach(v => nullified.Add(v, null));
