@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "05-30-2022";
+        public static readonly string Build = "06152022";
         public static readonly string RootDir = Application.dataPath + "\\..";
         public static readonly string CustomPropertyName = "GuardianMod";
 
@@ -59,6 +59,9 @@ namespace Guardian
 
             UI.WindowManager.SetWindowTitle(UI.WindowManager.GetActiveWindow(), "Guardian Mod - Attack on Titan Tribute Game");
 
+            // Load network validation service
+            NetworkChecker.Init();
+
             // Load skin validation service
             SkinChecker.Init();
 
@@ -74,9 +77,6 @@ namespace Guardian
             Commands.Load();
             Gamemodes.Load();
             Properties.Load();
-
-            // Load network validation service
-            NetworkChecker.Init();
 
             DiscordRPC.StartTime = GameHelper.CurrentTimeMillis();
             DiscordRPC.Initialize();

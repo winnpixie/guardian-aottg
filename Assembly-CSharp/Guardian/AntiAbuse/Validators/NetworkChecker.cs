@@ -91,6 +91,7 @@ namespace Guardian.AntiAbuse.Validators
             return true;
         }
 
+        // NetworkingPeer.OnEvent (Code 204)
         public static bool IsPVDestroyValid(PhotonView[] views, PhotonPlayer sender)
         {
             if (views != null && views.Length > 0 && views[0].ownerId != sender.Id && !sender.isMasterClient)
@@ -107,6 +108,7 @@ namespace Guardian.AntiAbuse.Validators
             return true;
         }
 
+        // NetworkingPeer.OnEvent (Code 228)
         public static bool IsStateChangeValid(PhotonPlayer sender)
         {
             if (sender == null) return true;

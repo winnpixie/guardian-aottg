@@ -67,7 +67,7 @@ namespace Guardian.Features.Properties
         // Visual [Render]
         public Property<int> DrawDistance = new Property<int>("Visual_DrawDistance", new string[0], 1500);
         public Property<int> FieldOfView = new Property<int>("Visual_FieldOfView", new string[0], 50);
-        public Property<bool> Blur = new Property<bool>("Visual_Blur", new string[0], true);
+        public Property<bool> Blur = new Property<bool>("Visual_Blur", new string[0], false);
         public Property<bool> UseMainLightColor = new Property<bool>("Visual_CustomMainLightColor", new string[0], true);
         public Property<string> MainLightColor = new Property<string>("Visual_MainLightColor", new string[0], "FFFFFFFF");
         public Property<bool> Fog = new Property<bool>("Visual_Fog", new string[0], true);
@@ -209,7 +209,11 @@ namespace Guardian.Features.Properties
             {
                 if (Camera.main != null)
                 {
-                    Camera.main.GetComponent<TiltShift>().enabled = Blur.Value && !FengGameManagerMKII.Level.Name.StartsWith("Custom");
+                    TiltShift tiltShift = Camera.main.GetComponent<TiltShift>();
+                    if (tiltShift != null)
+                    {
+                        tiltShift.enabled = Blur.Value && (FengGameManagerMKII.Level != null && !FengGameManagerMKII.Level.Name.StartsWith("Custom"));
+                    }
                 }
             };
             base.Add(Blur);
@@ -224,10 +228,14 @@ namespace Guardian.Features.Properties
             {
                 if (UseMainLightColor.Value)
                 {
-                    GameObject mainLightSource = GameObject.Find("mainLight");
-                    if (mainLightSource != null)
+                    GameObject mainLight = GameObject.Find("mainLight");
+                    if (mainLight != null)
                     {
-                        mainLightSource.GetComponent<Light>().color = MainLightColor.Value.ToColor();
+                        Light light = mainLight.GetComponent<Light>();
+                        if (mainLight != null)
+                        {
+                            light.color = MainLightColor.Value.ToColor();
+                        }
                     }
                 }
             };
@@ -255,22 +263,24 @@ namespace Guardian.Features.Properties
 
             SoftShadows.OnValueChanged = () =>
             {
-                GameObject mainLightSource = GameObject.Find("mainLight");
-                if (mainLightSource != null)
+                GameObject mainLight = GameObject.Find("mainLight");
+                if (mainLight != null)
                 {
-                    Light mainLight = mainLightSource.GetComponent<Light>();
-
-                    if (SoftShadows.Value)
+                    Light light = mainLight.GetComponent<Light>();
+                    if (light != null)
                     {
-                        QualitySettings.shadowCascades = 5;
-                        mainLight.shadowBias = 0.04f;
-                        mainLight.shadowSoftness = 32f;
-                    }
-                    else
-                    {
-                        QualitySettings.shadowCascades = 4;
-                        mainLight.shadowBias = 0.15f;
-                        mainLight.shadowSoftness = 4f;
+                        if (SoftShadows.Value)
+                        {
+                            QualitySettings.shadowCascades = 5;
+                            light.shadowBias = 0.04f;
+                            light.shadowSoftness = 32f;
+                        }
+                        else
+                        {
+                            QualitySettings.shadowCascades = 4;
+                            light.shadowBias = 0.15f;
+                            light.shadowSoftness = 4f;
+                        }
                     }
                 }
             };

@@ -5425,49 +5425,40 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             float bombRangeStat = (float)FengGameManagerMKII.Settings[251];
             float bombSpeedStat = (float)FengGameManagerMKII.Settings[252];
             float bombCdStat = (float)FengGameManagerMKII.Settings[253];
-            if (bombRadiusStat < 0 || bombRadiusStat > 10)
+            if (bombRadiusStat < 0f || bombRadiusStat > 10f)
             {
-                bombRadiusStat = 5;
-                FengGameManagerMKII.Settings[250] = 5;
-            }
-            if (bombRangeStat < 0 || bombRangeStat > 10)
-            {
-                bombRangeStat = 5;
-                FengGameManagerMKII.Settings[251] = 5;
-            }
-            if (bombSpeedStat < 0 || bombSpeedStat > 10)
-            {
-                bombSpeedStat = 5;
-                FengGameManagerMKII.Settings[252] = 5;
-            }
-            if (bombCdStat < 0 || bombCdStat > 10)
-            {
-                bombCdStat = 5;
-                FengGameManagerMKII.Settings[253] = 5;
+                bombRadiusStat = 5f;
+                FengGameManagerMKII.Settings[250] = 5f;
             }
 
-            // Syal's new bomb stat limitations
-            if (bombRangeStat > 3)
+            if (bombRangeStat < 0f || bombRangeStat > 3f)
             {
-                bombRangeStat = 3;
-                Guardian.GuardianClient.Logger.Warn("Bomb Range was greater than 3, adjustments have been made.");
-            }
-            if (bombCdStat < 4)
-            {
-                bombCdStat = 4;
-                Guardian.GuardianClient.Logger.Warn("Bomb CD was lower than 4, adjustments have been made.");
+                bombRangeStat = 3f;
+                FengGameManagerMKII.Settings[251] = 3f;
             }
 
-            if (bombRadiusStat + bombRangeStat + bombSpeedStat + bombCdStat > 20)
+            if (bombSpeedStat < 0f || bombSpeedStat > 10f)
             {
-                bombRadiusStat = 5;
-                bombRangeStat = 5;
-                bombSpeedStat = 5;
-                bombCdStat = 5;
-                FengGameManagerMKII.Settings[250] = 5;
-                FengGameManagerMKII.Settings[251] = 5;
-                FengGameManagerMKII.Settings[252] = 5;
-                FengGameManagerMKII.Settings[253] = 5;
+                bombSpeedStat = 5f;
+                FengGameManagerMKII.Settings[252] = 5f;
+            }
+
+            if (bombCdStat < 4f || bombCdStat > 10f)
+            {
+                bombCdStat = 5f;
+                FengGameManagerMKII.Settings[253] = 5f;
+            }
+
+            if (bombRadiusStat + bombRangeStat + bombSpeedStat + bombCdStat > 20f)
+            {
+                bombRadiusStat = 5f;
+                bombRangeStat = 3f;
+                bombSpeedStat = 5f;
+                bombCdStat = 5f;
+                FengGameManagerMKII.Settings[250] = 5f;
+                FengGameManagerMKII.Settings[251] = 3f;
+                FengGameManagerMKII.Settings[252] = 5f;
+                FengGameManagerMKII.Settings[253] = 5f;
             }
 
             bombTimeMax = (bombRangeStat * 60f + 200f) / (bombSpeedStat * 60f + 200f);

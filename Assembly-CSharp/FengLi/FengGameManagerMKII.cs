@@ -6373,10 +6373,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             PlayerPrefs.GetFloat("bombG", 1f),
             PlayerPrefs.GetFloat("bombB", 1f),
             PlayerPrefs.GetFloat("bombA", 1f),
-            PlayerPrefs.GetFloat("bombRadius", 5),
-            PlayerPrefs.GetFloat("bombRange", 5),
-            PlayerPrefs.GetFloat("bombSpeed", 5),
-            PlayerPrefs.GetFloat("bombCD", 5),
+            PlayerPrefs.GetFloat("bombRadius", 5f),
+            PlayerPrefs.GetFloat("bombRange", 3f),
+            PlayerPrefs.GetFloat("bombSpeed", 5f),
+            PlayerPrefs.GetFloat("bombCD", 7f),
             PlayerPrefs.GetString("cannonUp", "W"),
             PlayerPrefs.GetString("cannonDown", "S"),
             PlayerPrefs.GetString("cannonLeft", "A"),
@@ -11135,50 +11135,66 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 310f, 20f, 22f), ((float)Settings[253]).ToString(), "Label");
                         float unusedBombPoints = 20 - (float)Settings[250] - (float)Settings[251] - (float)Settings[252] - (float)Settings[253];
                         GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 335f, 20f, 22f), unusedBombPoints.ToString(), "Label");
+                        /* Syal's bomb stat limitations
+                         * Range <= 3
+                         * CD >= 4
+                         */
+
+                        // BOMB RAD
                         if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 235f, 20f, 20f), "-"))
                         {
-                            if ((float)Settings[250] > 0)
+                            if ((float)Settings[250] > 0f)
                             {
-                                Settings[250] = (float)Settings[250] - 0.5f;
+                                Settings[250] = (float)Settings[250] - 1f;
                             }
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 235f, 20f, 20f), "+") && (float)Settings[250] < 10 && unusedBombPoints > 0)
+                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 235f, 20f, 20f), "+") && (float)Settings[250] < 10f && unusedBombPoints > 0f)
                         {
-                            Settings[250] = (float)Settings[250] + 0.5f;
+                            Settings[250] = (float)Settings[250] + 1f;
                         }
+                        // BOMB RAD
+
+                        // BOMB RANGE
                         if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 260f, 20f, 20f), "-"))
                         {
-                            if ((float)Settings[251] > 0)
+                            if ((float)Settings[251] > 0f)
                             {
-                                Settings[251] = (float)Settings[251] - 0.5f;
+                                Settings[251] = (float)Settings[251] - 1f;
                             }
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 260f, 20f, 20f), "+") && (float)Settings[251] < 10 && unusedBombPoints > 0)
+                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 260f, 20f, 20f), "+") && (float)Settings[251] < 3f && unusedBombPoints > 0f)
                         {
-                            Settings[251] = (float)Settings[251] + 0.5f;
+                            Settings[251] = (float)Settings[251] + 1f;
                         }
+                        // BOMB RANGE
+
+                        // BOMB SPEED
                         if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 285f, 20f, 20f), "-"))
                         {
-                            if ((float)Settings[252] > 0)
+                            if ((float)Settings[252] > 0f)
                             {
-                                Settings[252] = (float)Settings[252] - 0.5f;
+                                Settings[252] = (float)Settings[252] - 1f;
                             }
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 285f, 20f, 20f), "+") && (float)Settings[252] < 10 && unusedBombPoints > 0)
+                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 285f, 20f, 20f), "+") && (float)Settings[252] < 10f && unusedBombPoints > 0f)
                         {
-                            Settings[252] = (float)Settings[252] + 0.5f;
+                            Settings[252] = (float)Settings[252] + 1f;
                         }
+                        // BOMB SPEED
+
+                        // BOMB CD
                         if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 310f, 20f, 20f), "-"))
                         {
-                            if ((float)Settings[253] > 0)
+                            if ((float)Settings[253] > 4f)
                             {
-                                Settings[253] = (float)Settings[253] - 0.5f;
+                                Settings[253] = (float)Settings[253] - 1f;
                             }
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 310f, 20f, 20f), "+") && (float)Settings[253] < 10 && unusedBombPoints > 0)
+                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 310f, 20f, 20f), "+") && (float)Settings[253] < 10f && unusedBombPoints > 0f)
                         {
-                            Settings[253] = (float)Settings[253] + 0.5f;
+                            Settings[253] = (float)Settings[253] + 1f;
                         }
+                        // BOMB CD
                         break;
                 }
                 if (GUI.Button(new Rect(halfMenuWidth + 416f, halfMenuHeight + 468f, 42f, 25f), "Save"))
