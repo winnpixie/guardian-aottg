@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BTN_ServerUS : MonoBehaviour
+public class BTN_Server_EU : MonoBehaviour
 {
     private void OnClick()
     {
@@ -9,12 +9,12 @@ public class BTN_ServerUS : MonoBehaviour
 
         if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.AoTTG2)
         {
-            PhotonNetwork.ConnectToMaster("us.aottg.tk", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
+            PhotonNetwork.ConnectToMaster("135.125.239.180", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
             Guardian.Networking.NetworkHelper.IsCloud = false;
         }
         else
         {
-            PhotonNetwork.ConnectToMaster("app-us.exitgamescloud.com", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
+            PhotonNetwork.ConnectToMaster("app-eu.exitgamescloud.com", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
             Guardian.Networking.NetworkHelper.IsCloud = true;
         }
     }

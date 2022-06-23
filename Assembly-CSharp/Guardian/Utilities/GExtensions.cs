@@ -33,7 +33,7 @@ public static class GExtensions
         return sorted;
     }
 
-    // Converts a NGUI colored string to be usable in Unity Text
+    // Converts a NGUI formatted string to Unity Rich Text
     public static string NGUIToUnity(this string str)
     {
         string output = string.Empty;
@@ -106,36 +106,36 @@ public static class GExtensions
 
     public static Color ToColor(this string str)
     {
-        float r = 0;
-        float g = 0;
-        float b = 0;
-        float a = 1f;
+        float red = 0;
+        float green = 0;
+        float blue = 0;
+        float alpha = 1f;
 
         // Red
-        if (int.TryParse(str.Substr(0, 1), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int ri))
+        if (int.TryParse(str.Substr(0, 1), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int r))
         {
-            r = ri / 255F;
+            red = r / 255F;
         }
 
         // Green
-        if (int.TryParse(str.Substr(2, 3), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int gi))
+        if (int.TryParse(str.Substr(2, 3), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int g))
         {
-            g = gi / 255F;
+            green = g / 255F;
         }
 
         // Blue
-        if (int.TryParse(str.Substr(4, 5), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int bi))
+        if (int.TryParse(str.Substr(4, 5), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int b))
         {
-            b = bi / 255F;
+            blue = b / 255F;
         }
 
         // Alpha
-        if (str.Length == 8 && int.TryParse(str.Substr(6, 7), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int ai))
+        if (str.Length == 8 && int.TryParse(str.Substr(6, 7), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int a))
         {
-            a = ai / 255F;
+            alpha = a / 255F;
         }
 
-        return new Color(r, g, b, a);
+        return new Color(red, green, blue, alpha);
     }
 
     public static string AsBold(this string str)

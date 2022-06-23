@@ -7,7 +7,8 @@ namespace Guardian.Utilities
 {
     class Translator
     {
-        private static readonly string ApiUrl = "https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl={0}&tl={1}&dt=t&q={2}"; // "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={0}&tl={1}&q={2}";
+        // private static readonly string ApiUrl = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={0}&tl={1}&q={2}"; // Alt-URL
+        private static readonly string ApiUrl = "https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl={0}&tl={1}&dt=t&q={2}";
 
         public static IEnumerator Translate(string text, string langFrom, string langTo, Action<string[]> callback)
         {

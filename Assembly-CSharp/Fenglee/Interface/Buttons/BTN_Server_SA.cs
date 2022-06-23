@@ -9,7 +9,7 @@ public class BTN_Server_SA : MonoBehaviour
 
         if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.AoTTG2)
         {
-            PhotonNetwork.ConnectToMaster("sa.aottg.tk", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
+            PhotonNetwork.ConnectToMaster("172.107.193.233", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
             Guardian.Networking.NetworkHelper.IsCloud = false;
         }
         else

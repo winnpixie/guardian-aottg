@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "06152022";
+        public static readonly string Build = "06232022";
         public static readonly string RootDir = Application.dataPath + "\\..";
         public static readonly string CustomPropertyName = "GuardianMod";
 
@@ -90,7 +90,7 @@ namespace Guardian
             Logger.Info("Checking for update...");
             Logger.Info($"Installed: {Build}");
 
-            using WWW www = new WWW("http://www.aottg.tk/mods/guardian/versions.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
+            using WWW www = new WWW("http://aottg.undo.it/clients/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
             yield return www;
 
             if (www.error != null)
