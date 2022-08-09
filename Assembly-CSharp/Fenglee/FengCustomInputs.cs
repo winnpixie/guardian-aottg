@@ -148,15 +148,15 @@ public class FengCustomInputs : MonoBehaviour
 
     private void loadConfig()
     {
-        string @string = PlayerPrefs.GetString("KeyCodes");
-        string string2 = PlayerPrefs.GetString("Joystick_input");
-        string string3 = PlayerPrefs.GetString("Names_input");
-        string[] array = @string.Split('*');
-        joystickString = string2.Split('*');
-        inputString = string3.Split('*');
+        string keyCodes = PlayerPrefs.GetString("KeyCodes");
+        string joystickInput = PlayerPrefs.GetString("Joystick_input");
+        string namesInput = PlayerPrefs.GetString("Names_input");
+        string[] keyCodeArray = keyCodes.Split('*');
+        joystickString = joystickInput.Split('*');
+        inputString = namesInput.Split('*');
         for (int i = 0; i < DescriptionString.Length; i++)
         {
-            int.TryParse(array[i], out int result);
+            int.TryParse(keyCodeArray[i], out int result);
             inputKey[i] = (KeyCode)result;
             if (joystickString[i] == "#")
             {

@@ -108,7 +108,7 @@ namespace Launcher
             this.Controls.Add(this.MainGroup);
             this.DoubleBuffered = true;
             this.Name = "MainWindow";
-            this.Text = "Guardian Mod Launcher";
+            this.Text = "Guardian Launcher";
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.MainGroup.ResumeLayout(false);
             this.MainGroup.PerformLayout();

@@ -362,12 +362,19 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         GameObject result = null;
         float num = closestDistance = float.PositiveInfinity;
         Vector3 position = main_object.transform.position;
-        foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
+        foreach (GameObject titanObj in FengGameManagerMKII.Instance.AllTitans)
         {
-            float magnitude = (titan.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck").position - position).magnitude;
-            if (magnitude < num && !titan.hasDie)
+            float magnitude = (titanObj.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck").position - position).magnitude;
+
+            FEMALE_TITAN ft = titanObj.GetComponent<FEMALE_TITAN>();
+            if (ft != null && ft.hasDie) continue;
+
+            TITAN titan = titanObj.GetComponent<TITAN>();
+            if (titan != null && titan.hasDie) continue;
+
+            if (magnitude < num)
             {
-                result = titan.gameObject;
+                result = titanObj.gameObject;
                 num = (closestDistance = magnitude);
             }
         }

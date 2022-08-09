@@ -1249,7 +1249,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         UnityEngine.MonoBehaviour.print("OnJoinedRoom " + PhotonNetwork.room.name + " >>>> " + levelInfo.Map);
         gameTimesUp = false;
 
-        difficulty = roomInfo[2] switch
+        difficulty = roomInfo[2].ToLower() switch
         {
             "normal" => 0,
             "hard" => 1,
@@ -3573,6 +3573,23 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             gameSettings.Add("bomb", (int)Settings[192]);
         }
+
+        // BEGIN Guardian
+        if (Guardian.GuardianClient.Properties.UseSkyBarrier.Value)
+        {
+            gameSettings.Add("bombCeiling", 1);
+        }
+        else
+        {
+            gameSettings.Add("bombCeiling", 0);
+        }
+
+        if (Guardian.GuardianClient.Properties.HideNames.Value)
+        {
+            gameSettings.Add("globalHideNames", 1);
+        }
+        // END Guardian
+
         if ((int)Settings[235] > 0)
         {
             gameSettings.Add("globalDisableMinimap", (int)Settings[235]);
@@ -10457,10 +10474,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                         break;
                     case 4:
-                        GUI.TextArea(new Rect(halfMenuWidth + 80f, halfMenuHeight + 57f, 270f, 30f), "Settings saved to PlayerPrefs!", 100, "Label");
+                        GUI.TextArea(new Rect(halfMenuWidth + 80f, halfMenuHeight + 57f, 270f, 30f), "Saved settings to PlayerPrefs!", 100, "Label");
                         break;
                     case 5:
-                        GUI.TextArea(new Rect(halfMenuWidth + 80f, halfMenuHeight + 57f, 270f, 30f), "Settings reloaded from PlayerPrefs!", 100, "Label");
+                        GUI.TextArea(new Rect(halfMenuWidth + 80f, halfMenuHeight + 57f, 270f, 30f), "Loaded settings from PlayerPrefs!", 100, "Label");
                         break;
                     case 6:
                         // ?
@@ -11116,30 +11133,30 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         texture2D.Apply();
                         GUI.DrawTexture(new Rect(halfMenuWidth + 120f, halfMenuHeight + 113f, 40f, 15f), texture2D, ScaleMode.StretchToFill);
                         UnityEngine.Object.Destroy(texture2D);
+
                         GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 135f, 20f, 22f), "R:", "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 160f, 20f, 22f), "G:", "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 185f, 20f, 22f), "B:", "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 210f, 20f, 22f), "A:", "Label");
                         Settings[246] = GUI.HorizontalSlider(new Rect(halfMenuWidth + 92f, halfMenuHeight + 138f, 100f, 20f), (float)Settings[246], 0f, 1f);
+                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 160f, 20f, 22f), "G:", "Label");
                         Settings[247] = GUI.HorizontalSlider(new Rect(halfMenuWidth + 92f, halfMenuHeight + 163f, 100f, 20f), (float)Settings[247], 0f, 1f);
+                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 185f, 20f, 22f), "B:", "Label");
                         Settings[248] = GUI.HorizontalSlider(new Rect(halfMenuWidth + 92f, halfMenuHeight + 188f, 100f, 20f), (float)Settings[248], 0f, 1f);
+                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 210f, 20f, 22f), "A:", "Label");
                         Settings[249] = GUI.HorizontalSlider(new Rect(halfMenuWidth + 92f, halfMenuHeight + 213f, 100f, 20f), (float)Settings[249], 0.5f, 1f);
+
                         GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 235f, 95f, 22f), "Bomb Radius:", "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 260f, 95f, 22f), "Bomb Range:", "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 285f, 95f, 22f), "Bomb Speed:", "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 310f, 95f, 22f), "Bomb CD:", "Label");
-                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 335f, 95f, 22f), "Unused Points:", "Label");
                         GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 235f, 20f, 22f), ((float)Settings[250]).ToString(), "Label");
+                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 260f, 95f, 22f), "Bomb Range:", "Label");
                         GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 260f, 20f, 22f), ((float)Settings[251]).ToString(), "Label");
+                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 285f, 95f, 22f), "Bomb Speed:", "Label");
                         GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 285f, 20f, 22f), ((float)Settings[252]).ToString(), "Label");
+                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 310f, 95f, 22f), "Bomb CD:", "Label");
                         GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 310f, 20f, 22f), ((float)Settings[253]).ToString(), "Label");
+
                         float unusedBombPoints = 20 - (float)Settings[250] - (float)Settings[251] - (float)Settings[252] - (float)Settings[253];
-                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 335f, 20f, 22f), unusedBombPoints.ToString(), "Label");
                         /* Syal's bomb stat limitations
                          * Range <= 3
                          * CD >= 4
                          */
-
                         // BOMB RAD
                         if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 235f, 20f, 20f), "-"))
                         {
@@ -11195,6 +11212,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             Settings[253] = (float)Settings[253] + 1f;
                         }
                         // BOMB CD
+
+                        GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 335f, 95f, 22f), "Unused Points:", "Label");
+                        GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 335f, 20f, 22f), unusedBombPoints.ToString(), "Label");
+
+                        // Reset Button
+                        if (GUI.Button(new Rect(halfMenuWidth + 72f, halfMenuHeight + 360f, 163f, 20f), "Reset Points"))
+                        {
+                            Settings[250] = 0f;
+                            Settings[251] = 0f;
+                            Settings[252] = 0f;
+                            Settings[253] = 4f;
+                        }
                         break;
                 }
                 if (GUI.Button(new Rect(halfMenuWidth + 416f, halfMenuHeight + 468f, 42f, 25f), "Save"))
@@ -11905,6 +11934,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 restartingBomb = true;
             }
         }
+
+        // Bomb Ceiling
+        RCSettings.BombCeiling = false;
+        if (RCSettings.BombMode != 0 && (!settings.ContainsKey("bombCeiling") || (int)settings["bombCeiling"] == 1))
+        {
+            RCSettings.BombCeiling = true;
+        }
+
+        // Global Hide Names
+        RCSettings.HideNames = settings.ContainsKey("globalHideNames");
 
         // Global Minimap Disable
         if (settings.ContainsKey("globalDisableMinimap"))

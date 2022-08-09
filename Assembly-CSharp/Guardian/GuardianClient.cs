@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "06232022";
+        public static readonly string Build = "1.0.0";
         public static readonly string RootDir = Application.dataPath + "\\..";
         public static readonly string CustomPropertyName = "GuardianMod";
 
@@ -57,8 +57,6 @@ namespace Guardian
             if (!IsFirstInit) return;
             IsFirstInit = false;
 
-            UI.WindowManager.SetWindowTitle(UI.WindowManager.GetActiveWindow(), "Guardian Mod - Attack on Titan Tribute Game");
-
             // Load network validation service
             NetworkChecker.Init();
 
@@ -90,7 +88,7 @@ namespace Guardian
             Logger.Info("Checking for update...");
             Logger.Info($"Installed: {Build}");
 
-            using WWW www = new WWW("http://aottg.undo.it/clients/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
+            using WWW www = new WWW("http://aottg.winnpixie.xyz/clients/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
             yield return www;
 
             if (www.error != null)
@@ -113,10 +111,9 @@ namespace Guardian
                 foreach (string buildData in www.text.Split('\n'))
                 {
                     string[] buildInfo = buildData.Split(new char[] { '=' }, 2);
-                    if (buildInfo[0].Equals("MOD"))
-                    {
-                        latestBuild = buildInfo[1].Trim();
-                    }
+                    if (!buildInfo[0].Equals("MOD")) continue;
+
+                    latestBuild = buildInfo[1].Trim();
                 }
                 Logger.Info("Latest: " + latestBuild);
 
@@ -133,10 +130,6 @@ namespace Guardian
                         GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]OUT OF DATE![-] Please update from the launcher @ [0099FF]https://cb.run/GuardianAoT[-]!";
                     }
                     catch { }
-                }
-                else
-                {
-                    Logger.Info($"Your copy of Guardian is {"UP TO DATE".AsBold().AsItalic().AsColor("AAFF00")}!");
                 }
             }
         }
@@ -214,10 +207,11 @@ namespace Guardian
             {
                 string difficulty = IN_GAME_MAIN_CAMERA.Difficulty switch
                 {
+                    -1 => "Training",
                     0 => "Normal",
                     1 => "Hard",
                     2 => "Abnormal",
-                    _ => "Training"
+                    _ => "Unknown"
                 };
 
                 DiscordRPC.SetPresence(new Discord.Activity

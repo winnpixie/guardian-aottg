@@ -48,14 +48,8 @@ public class PanelMultiJoin : MonoBehaviour
             }
         }
 
-        if (currentPage < 1)
-        {
-            currentPage = totalPage;
-        }
-        if (currentPage > totalPage)
-        {
-            currentPage = 1;
-        }
+        if (currentPage < 1) currentPage = totalPage;
+        if (currentPage > totalPage) currentPage = 1;
 
         ShowServerList();
     }
@@ -63,47 +57,33 @@ public class PanelMultiJoin : MonoBehaviour
     private string GetServerDataString(RoomInfo room)
     {
         string[] info = room.name.Split('`');
-        if (info.Length < 7)
-        {
-            return "[FF0000]Invalid room.";
-        }
+        if (info.Length < 7) return "[FF0000]Invalid Room.";
 
-        string difficulty = info[2];
-        switch (difficulty.ToLower())
+        string difficulty = info[2].ToLower() switch
         {
-            case "normal":
-                difficulty = $"[00FF00]Normal[-]";
-                break;
-            case "hard":
-                difficulty = $"[FFFF00]Hard[-]";
-                break;
-            case "abnormal":
-                difficulty = $"[FF0000]Abnormal[-]";
-                break;
-        }
+            "normal" => "[00FF00]Normal[-]",
+            "hard" => "[FFFF00]Hard[-]",
+            "abnormal" => "[FF0000]Abnormal[-]",
+            _ => info[2]
+        };
 
-        string daylight = info[4];
-        switch (daylight.ToLower())
+        string daylight = info[4].ToLower() switch
         {
-            case "day":
-                daylight = $"[FFFF00]Day[-]";
-                break;
-            case "dawn":
-                daylight = $"[FF6600]Dawn[-]";
-                break;
-            case "night":
-                daylight = $"[000000]Night[-]";
-                break;
-        }
+            "day" => "[FFFF00]Day[-]",
+            "dawn" => "[FF6600]Dawn[-]",
+            "night" => "[000000]Night[-]",
+            _ => info[4]
+        };
 
         string roomMeta = string.Empty;
-        if (!room.open || (room.maxPlayers != 0 && room.playerCount >= room.maxPlayers))
+        if (!room.open || (room.maxPlayers > 0 && room.playerCount >= room.maxPlayers))
         {
-            roomMeta = "[FF4444]";
+            roomMeta = "[FF0000]";
         }
+
         roomMeta += $"({room.playerCount}/{room.maxPlayers})";
 
-        string pwd = info[5].Length == 0 ? string.Empty : "[FF4444](Pwd)[-] ";
+        string pwd = info[5].Length == 0 ? string.Empty : "[FF0000](Pwd)[-] ";
         return $"{pwd}{info[0]}[-] [AAAAAA]:: [FFFFFF]{info[1]}[AAAAAA] / {difficulty} / {daylight}[-] {roomMeta}";
     }
 

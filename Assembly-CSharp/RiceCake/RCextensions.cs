@@ -4,69 +4,77 @@ using Guardian.Utilities;
 
 public static class RCextensions
 {
-    public static Texture2D LoadImage(WWW link, bool mipmap, int maxFileSize)
+    public static Texture2D LoadImage(WWW link, bool mipmapEnabled, int maxFileSize)
     {
-        Texture2D output = new Texture2D(4, 4, TextureFormat.DXT1, mipmap);
-
         if (link.size < maxFileSize)
         {
             Texture2D texture = link.texture;
             int width = texture.width;
             int height = texture.height;
-            int imgSize = 0;
 
+            int resizedSize = 0;
             if (width < 4 || !MathHelper.IsPowerOf2(width))
             {
-                imgSize = 4;
+                resizedSize = 4;
                 width = Math.Min(width, 2047);
 
-                if (imgSize < width)
+                if (resizedSize < width)
                 {
-                    imgSize = MathHelper.NextPowerOf2(width);
+                    resizedSize = MathHelper.NextPowerOf2(width);
                 }
             }
             else if (height < 4 || !MathHelper.IsPowerOf2(height))
             {
-                imgSize = 4;
+                resizedSize = 4;
                 height = Math.Min(height, 2047);
 
-                if (imgSize < height)
+                if (resizedSize < height)
                 {
-                    imgSize = MathHelper.NextPowerOf2(height);
+                    resizedSize = MathHelper.NextPowerOf2(height);
                 }
             }
 
-            if (imgSize == 0)
+            if (resizedSize == 0)
             {
+                Texture2D output = new Texture2D(4, 4, texture.format, mipmapEnabled);
+
                 try
                 {
                     link.LoadImageIntoTexture(output);
                 }
                 catch
                 {
-                    output = new Texture2D(4, 4, TextureFormat.DXT1, mipmap: false);
+                    output = new Texture2D(4, 4, texture.format, false);
                     link.LoadImageIntoTexture(output);
                 }
+
+                output.Compress(true);
+                return output;
             }
-            else if (imgSize >= 4)
+            else
             {
-                Texture2D resized = new Texture2D(4, 4, TextureFormat.DXT1, mipmap);
+                TextureFormat compressionFormat = texture.format == TextureFormat.RGB24
+                    ? TextureFormat.DXT1
+                    : TextureFormat.DXT5;
+
+                Texture2D resized = new Texture2D(4, 4, compressionFormat, false);
                 link.LoadImageIntoTexture(resized);
 
                 try
                 {
-                    resized.Resize(imgSize, imgSize, TextureFormat.DXT1, mipmap);
+                    resized.Resize(resizedSize, resizedSize, compressionFormat, mipmapEnabled);
                 }
                 catch
                 {
-                    resized.Resize(imgSize, imgSize, TextureFormat.DXT1, hasMipMap: false);
+                    resized.Resize(resizedSize, resizedSize, compressionFormat, false);
                 }
+
                 resized.Apply();
-                output = resized;
+                return resized;
             }
         }
 
-        return output;
+        return new Texture2D(2, 2, TextureFormat.DXT1, false);
     }
 
     public static void Add<T>(ref T[] source, T value)

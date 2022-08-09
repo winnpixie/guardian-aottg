@@ -38,6 +38,9 @@ public static class RCSettings
     public static int AsoPreserveKDR;
     public static int RacingStatic;
 
+    public static bool BombCeiling;
+    public static bool HideNames;
+
     public static int GetMaxWave()
     {
         return MaxWave == 0 ? 20 : MaxWave;

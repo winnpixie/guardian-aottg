@@ -53,9 +53,8 @@ namespace Guardian.Utilities
             n |= n >> 4;
             n |= n >> 8;
             n |= n >> 16;
-            n++;
 
-            return n;
+            return n + 1;
         }
 
         // Yeah, I took this from RCextensions

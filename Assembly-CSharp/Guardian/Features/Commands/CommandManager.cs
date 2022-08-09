@@ -82,7 +82,7 @@ namespace Guardian.Features.Commands
             }
             else if (args[0].Length > 0)
             {
-                irc.AddLine($"Command '{args[0]}' not found.".AsColor("FF4444"));
+                irc.AddLine($"Command '{args[0]}' not found.".AsColor("FF0000"));
             }
         }
     }

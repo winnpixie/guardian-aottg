@@ -7,58 +7,59 @@ namespace Guardian.AntiAbuse.Validators
 {
     class SkinChecker
     {
-        public static string HostWhitelistPath = GuardianClient.RootDir + "\\Hosts.txt";
-        public static List<string> HostWhitelist = new List<string>();
+        public static string AllowedHostsPath = GuardianClient.RootDir + "\\Hosts.txt";
+        public static List<string> AllowedHosts = new List<string>();
 
         public static void Init()
         {
-            if (!File.Exists(HostWhitelistPath))
+            if (!File.Exists(AllowedHostsPath))
             {
-                HostWhitelist.Add("i.imgur.com");
-                HostWhitelist.Add("imgur.com");
-                HostWhitelist.Add("cdn.discordapp.com");
-                HostWhitelist.Add("cdn.discord.com");
-                HostWhitelist.Add("media.discordapp.net");
-                HostWhitelist.Add("i.gyazo.com");
+                AllowedHosts.Add("i.imgur.com");
+                AllowedHosts.Add("imgur.com");
+                AllowedHosts.Add("cdn.discordapp.com");
+                AllowedHosts.Add("cdn.discord.com");
+                AllowedHosts.Add("media.discordapp.net");
+                AllowedHosts.Add("i.gyazo.com");
 
-                File.WriteAllLines(HostWhitelistPath, HostWhitelist.ToArray());
+                File.WriteAllLines(AllowedHostsPath, AllowedHosts.ToArray());
             }
-            HostWhitelist = new List<string>(File.ReadAllLines(HostWhitelistPath));
+            AllowedHosts = new List<string>(File.ReadAllLines(AllowedHostsPath));
 
-            if (HostWhitelist.Count < 1)
+            if (AllowedHosts.Count < 1)
             {
-                GuardianClient.Logger.Warn("Accepting ALL hosts for skins.");
-                GuardianClient.Logger.Warn("\tThis leaves you at risk of being IP-logged!".AsColor("FF4444"));
+                GuardianClient.Logger.Warn("Allowing ALL hosts for skins.");
+                GuardianClient.Logger.Warn("\tThis leaves you at risk of being IP-logged!".AsColor("FF0000"));
             }
             else
             {
-                GuardianClient.Logger.Debug($"Accepting {HostWhitelist.Count} host(s) for the skin whitelist.");
+                GuardianClient.Logger.Debug($"Allowing {AllowedHosts.Count} host(s) for skins.");
             }
         }
 
         public static WWW CreateWWW(string url)
         {
-            if (url.ToLower().StartsWith("file://") || HostWhitelist.Count < 1)
-            {
-                return new WWW(url);
-            }
-
+            if (url.ToLower().StartsWith("file://")) return new WWW(url);
+            if (AllowedHosts.Count < 1) return new WWW(url);
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri)) return null;
 
             string textureHost = uri.Authority;
-            textureHost = textureHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? textureHost.Substring(4) : textureHost;
+            if (textureHost.StartsWith("www.", StringComparison.OrdinalIgnoreCase)) textureHost = textureHost.Substring(4);
 
-            foreach (string hostEntry in HostWhitelist)
+            foreach (string hostEntry in AllowedHosts)
             {
-                string host = hostEntry.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? hostEntry.Substring(4) : hostEntry;
+                string host = hostEntry;
+                if (host.StartsWith("www.", StringComparison.OrdinalIgnoreCase)) host = host.Substring(4);
+
                 if (!textureHost.Equals(host, StringComparison.OrdinalIgnoreCase)) continue;
 
                 return new WWW(url);
             }
 
-            if (textureHost.Length < 1) return null;
+            if (textureHost.Length > 0)
+            {
+                GuardianClient.Logger.Warn($"Denied skin host: {textureHost}");
+            }
 
-            GuardianClient.Logger.Warn($"Unwhitelisted host: {textureHost}");
             return null;
         }
     }

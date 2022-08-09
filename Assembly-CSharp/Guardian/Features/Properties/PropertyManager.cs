@@ -20,6 +20,7 @@ namespace Guardian.Features.Properties
         public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], true);
         public Property<bool> OGPunkHair = new Property<bool>("MC_OGPunkHair", new string[0], true);
         public Property<bool> DeadlyHooks = new Property<bool>("MC_DeadlyHooks", new string[0], false);
+        public Property<bool> HideNames = new Property<bool>("MC_DisableNames", new string[0], false);
 
         // Assets
         public Property<string> ThunderSpearSkin = new Property<string>("Assets_ThunderSpearSkin", new string[0], string.Empty);
@@ -109,6 +110,7 @@ namespace Guardian.Features.Properties
             base.Add(InfiniteRoom);
             base.Add(OGPunkHair);
             base.Add(DeadlyHooks);
+            base.Add(HideNames);
 
             // Assets
             base.Add(ThunderSpearSkin);

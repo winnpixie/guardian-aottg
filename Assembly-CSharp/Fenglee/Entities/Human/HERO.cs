@@ -2067,6 +2067,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             GameObject gameObject = GameObject.Find("UI_IN_GAME");
             myNetWorkName = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("UI/LabelNameOverHead"));
+
+            // Guardian
+            if (RCSettings.HideNames && !base.photonView.isMine)
+            {
+                myNetWorkName.GetComponent<UILabel>().enabled = false;
+            }
+
             myNetWorkName.name = "LabelNameOverHead";
             myNetWorkName.transform.parent = gameObject.GetComponent<UIReferArray>().panels[0].transform;
             myNetWorkName.transform.localScale = new Vector3(14f, 14f, 14f);
@@ -2174,19 +2181,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             hasspawn = true;
 
             // Initialize Syal's bomb sky barrier
-            if (RCSettings.BombMode > 0)
+            if (RCSettings.BombCeiling)
             {
-                if (!PhotonNetwork.isMasterClient || Guardian.GuardianClient.Properties.UseSkyBarrier.Value)
-                {
-                    float y = FengGameManagerMKII.Level.Name.Contains("City") ? 210
-                        : FengGameManagerMKII.Level.Name.Contains("Forest") ? 280 : -1;
+                float y = FengGameManagerMKII.Level.Name.Contains("City") ? 210
+                    : FengGameManagerMKII.Level.Name.Contains("Forest") ? 280 : -1;
 
-                    if (y > 0)
-                    {
-                        _skyBarrier = (GameObject)UnityEngine.Object.Instantiate(FengGameManagerMKII.RCAssets.Load("killCuboid"), new Vector3(0, y, 0), Quaternion.identity);
-                        _skyBarrier.GetComponent<Collider>().gameObject.AddComponent<RacingKillTrigger>();
-                        _skyBarrier.transform.localScale = new Vector3(1600, 20, 1600);
-                    }
+                if (y > 0)
+                {
+                    _skyBarrier = (GameObject)UnityEngine.Object.Instantiate(FengGameManagerMKII.RCAssets.Load("killCuboid"), new Vector3(0, y, 0), Quaternion.identity);
+                    _skyBarrier.GetComponent<Collider>().gameObject.AddComponent<RacingKillTrigger>();
+                    _skyBarrier.transform.localScale = new Vector3(1600, 20, 1600);
                 }
             }
         }
