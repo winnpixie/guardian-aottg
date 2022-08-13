@@ -193,7 +193,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     // END: Guardian
 
     // BEGIN TLW/RRC
-    [RPC]
+    [Guardian.Networking.RPC]
     public void TheirPing(int ping, PhotonMessageInfo info)
     {
         info.sender.Ping = ping;
@@ -303,19 +303,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             foreach (HERO hero in heroes)
             {
-                hero.lateUpdate2();
+                hero.LateUpdate2();
             }
             foreach (TITAN_EREN eren in eT)
             {
-                eren.lateUpdate();
+                eren.LateUpdate1();
             }
             foreach (TITAN titan in titans)
             {
-                titan.lateUpdate2();
+                titan.LateUpdate2();
             }
             foreach (FEMALE_TITAN annie in fT)
             {
-                annie.lateUpdate2();
+                annie.LateUpdate2();
             }
             Core2();
         }
@@ -344,11 +344,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             foreach (HERO hero in heroes)
             {
-                hero.update2();
+                hero.Update2();
             }
             foreach (Bullet hook in hooks)
             {
-                hook.update();
+                hook.Update1();
             }
             if (mainCamera != null)
             {
@@ -356,23 +356,23 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
             foreach (TITAN_EREN eren in eT)
             {
-                eren.update();
+                eren.Update1();
             }
             foreach (TITAN titan in titans)
             {
-                titan.update();
+                titan.Update1();
             }
             foreach (FEMALE_TITAN annie in fT)
             {
-                annie.update();
+                annie.Update1();
             }
             foreach (COLOSSAL_TITAN colossal in cT)
             {
-                colossal.update();
+                colossal.Update1();
             }
             if (mainCamera != null)
             {
-                mainCamera.update2();
+                mainCamera.Update2();
             }
         }
     }
@@ -438,7 +438,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         gameObject2.GetComponent<TITAN_CONTROLLER>().enabled = true;
         if (id == "RANDOM" && UnityEngine.Random.Range(0, 100) < 7)
         {
-            gameObject2.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
+            gameObject2.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: true);
         }
         mainCamera.enabled = true;
         GameObject mainCam = GameObject.Find("MainCamera");
@@ -487,7 +487,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         GameObject.Find("LabelDisconnectInfo").GetComponent<UILabel>().text = "OnConnectionFail: " + cause.ToString();
     }
 
-    [RPC]
+    [Guardian.Networking.RPC]
     private void RequireStatus(PhotonMessageInfo info = null)
     {
         if (Guardian.AntiAbuse.Validators.FGMChecker.IsStatusRequestValid(info))
@@ -498,8 +498,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void refreshStatus(int score1, int score2, int theWave, int theHighestWave, float time1, float time2, bool startRacin, bool shouldEndRacing, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "refreshStatus")]
+    private void RefreshStatus(int score1, int score2, int theWave, int theHighestWave, float time1, float time2, bool startRacin, bool shouldEndRacing, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.FGMChecker.IsStatusRefreshValid(info))
         {
@@ -519,8 +519,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void refreshPVPStatus(int score1, int score2, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "refreshPVPStatus")]
+    private void RefreshPVPStatus(int score1, int score2, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.FGMChecker.IsPVPStatusRefreshValid(info))
         {
@@ -529,8 +529,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void refreshPVPStatus_AHSS(int[] score1, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "refreshPVPStatus_AHSS")]
+    private void RefreshPVPStatusAHSS(int[] score1, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.FGMChecker.IsAHSSStatusRefreshValid(info))
         {
@@ -538,8 +538,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    public void someOneIsDead(int id = -1)
+    [Guardian.Networking.RPC(Name = "someOneIsDead")]
+    public void SomeoneIsDead(int id = -1)
     {
         switch (IN_GAME_MAIN_CAMERA.Gamemode)
         {
@@ -609,7 +609,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         float num = roundTime - 20f;
         if (PhotonNetwork.isMasterClient)
         {
-            getRacingResult(LoginFengKAI.Player.Name, num);
+            GetRacingResult(LoginFengKAI.Player.Name, num);
         }
         else
         {
@@ -618,18 +618,20 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         FinishGame();
     }
 
-    [RPC]
-    private void getRacingResult(string player, float time)
+    [Guardian.Networking.RPC(Name = "getRacingResult")]
+    private void GetRacingResult(string player, float time)
     {
-        RacingResult racingResult = new RacingResult();
-        racingResult.name = player;
-        racingResult.time = time;
+        RacingResult racingResult = new RacingResult()
+        {
+            name = player,
+            time = time
+        };
         this.racingResult.Add(racingResult);
         RefreshRacingResult();
     }
 
-    [RPC]
-    private void netRefreshRacingResult(string result)
+    [Guardian.Networking.RPC(Name = "netRefreshRacingResult")]
+    private void NetRefreshRacingResult(string result)
     {
         localRacingResult = result;
     }
@@ -662,7 +664,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         GameObject gameObject = SpawnTitanRaw(position, rotation);
         if (punk)
         {
-            gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
+            gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Punk, forceCrawler: false);
         }
         else if (UnityEngine.Random.Range(0, 100) < rate)
         {
@@ -670,11 +672,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 if (UnityEngine.Random.Range(0f, 1f) < 0.7f || Level.NoCrawlers)
                 {
-                    gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
+                    gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                 }
                 else
                 {
-                    gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: false);
+                    gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: false);
                 }
             }
         }
@@ -682,39 +684,39 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             if (UnityEngine.Random.Range(0f, 1f) < 0.7f || Level.NoCrawlers)
             {
-                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
+                gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
             }
             else
             {
-                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: false);
+                gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: false);
             }
         }
         else if (UnityEngine.Random.Range(0, 100) < rate)
         {
             if (UnityEngine.Random.Range(0f, 1f) < 0.8f || Level.NoCrawlers)
             {
-                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
+                gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
             }
             else
             {
-                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: false);
+                gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: false);
             }
         }
         else if (UnityEngine.Random.Range(0f, 1f) < 0.8f || Level.NoCrawlers)
         {
-            gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
+            gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
         }
         else
         {
-            gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: false);
+            gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: false);
         }
         GameObject gameObject2 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer) ? PhotonNetwork.Instantiate("FX/FXtitanSpawn", gameObject.transform.position, Quaternion.Euler(-90f, 0f, 0f), 0) : ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/FXtitanSpawn"), gameObject.transform.position, Quaternion.Euler(-90f, 0f, 0f)));
         gameObject2.transform.localScale = gameObject.transform.localScale;
         return gameObject;
     }
 
-    [RPC]
-    public void titanGetKill(PhotonPlayer player, int damage, string name, PhotonMessageInfo info = null)
+    [Guardian.Networking.RPC(Name = "titanGetKill")]
+    public void TitanGetKill(PhotonPlayer player, int damage, string name, PhotonMessageInfo info = null)
     {
         if (Guardian.AntiAbuse.Validators.FGMChecker.IsTitanKillValid(info))
         {
@@ -745,8 +747,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    public void oneTitanDown(string titanName, bool onPlayerLeave)
+    [Guardian.Networking.RPC(Name = "oneTitanDown")]
+    public void OneTitanDown(string titanName, bool onPlayerLeave)
     {
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !PhotonNetwork.isMasterClient)
         {
@@ -869,8 +871,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void respawnHeroInNewRound(PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "respawnHeroInNewRound")]
+    private void RespawnHeroInNewRound(PhotonMessageInfo info)
     {
         if (!info.sender.isMasterClient)
         {
@@ -898,8 +900,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         return fT.Count == 0;
     }
 
-    [RPC]
-    public void netShowDamage(int speed, PhotonMessageInfo info = null)
+    [Guardian.Networking.RPC(Name = "netShowDamage")]
+    public void NetShowDamage(int speed, PhotonMessageInfo info = null)
     {
         if (!Guardian.AntiAbuse.Validators.FGMChecker.IsNetShowDamageValid(info))
         {
@@ -932,8 +934,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         base.photonView.RPC("updateKillInfo", PhotonTargets.All, isKillerTitan, killer, isVictimTitan, victim, damage);
     }
 
-    [RPC]
-    private void showChatContent(string content, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "showChatContent")]
+    private void ShowChatContent(string content, PhotonMessageInfo info)
     {
         if (!Guardian.AntiAbuse.Validators.FGMChecker.IsChatContentShowValid(info))
         {
@@ -1137,8 +1139,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         List<string> list = new List<string>
         {
             "PanelLogin",
-            "LOGIN"
+            "LOGIN",
         };
+
         foreach (GameObject go in UnityEngine.Object.FindObjectsOfType(typeof(GameObject)))
         {
             foreach (string item in list)
@@ -1150,6 +1153,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
 
+        // SetBackground();
         ChangeQuality.SetCurrentQuality();
 
         // Register our Mod as a component
@@ -1173,7 +1177,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     }
     // END: Anarchy
 
-    [RPC]
+    [Guardian.Networking.RPC]
     private void Chat(string message, string sender, PhotonMessageInfo info)
     {
         // BEGIN Guardian
@@ -1388,7 +1392,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         NoRestart = false;
     }
 
-    [RPC]
+    [Guardian.Networking.RPC]
     private void RPCLoadLevel(PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
@@ -1592,7 +1596,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     {
                         foreach (GameObject respawnPoint in GameObject.FindGameObjectsWithTag("titanRespawn"))
                         {
-                            SpawnTitanRaw(respawnPoint.transform.position, respawnPoint.transform.rotation).GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
+                            SpawnTitanRaw(respawnPoint.transform.position, respawnPoint.transform.rotation).GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                         }
                     }
                     break;
@@ -1790,8 +1794,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         if (!gameTimesUp)
         {
-            oneTitanDown(string.Empty, onPlayerLeave: true);
-            someOneIsDead(0);
+            OneTitanDown(string.Empty, onPlayerLeave: true);
+            SomeoneIsDead(0);
         }
         if (IgnoreList.Contains(player.Id))
         {
@@ -1882,8 +1886,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         PhotonNetwork.room.expectedVisibility = PhotonNetwork.room.visible;
     }
 
-    [RPC]
-    private void showResult(string players, string kills, string deaths, string maxDamage, string totalDamage, string gameResult, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "showResult")]
+    private void ShowResult(string players, string kills, string deaths, string maxDamage, string totalDamage, string gameResult, PhotonMessageInfo info)
     {
         if (!gameTimesUp && info.sender.isMasterClient)
         {
@@ -1909,14 +1913,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void restartGameByClient()
+    [Guardian.Networking.RPC(Name = "restartGameByClient")]
+    private void RestartGameByClient()
     {
         // RestartGame();
     }
 
-    [RPC]
-    private void updateKillInfo(bool isKillerTitan, string killer, bool isVictimTitan, string victim, int damage, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "updateKillInfo")]
+    private void UpdateKillInfo(bool isKillerTitan, string killer, bool isVictimTitan, string victim, int damage, PhotonMessageInfo info)
     {
         if (!Guardian.AntiAbuse.Validators.FGMChecker.IsKillInfoUpdateValid(isKillerTitan, isVictimTitan, damage, info)) return;
 
@@ -1949,8 +1953,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void netGameLose(int score, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netGameLose")]
+    private void NetGameLose(int score, PhotonMessageInfo info)
     {
         isLosing = true;
         titanScore = score;
@@ -1965,8 +1969,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void netGameWin(int score, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netGameWin")]
+    private void NetGameWin(int score, PhotonMessageInfo info)
     {
         humanScore = score;
         isWinning = true;
@@ -2674,9 +2678,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     mainCamera.main_object.transform.position += new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20));
                 }
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                hashtable.Add("dead", false);
-                hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
+                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                {
+                    { PhotonPlayerProperty.IsDead, false },
+                    { PhotonPlayerProperty.IsTitan, 1 }
+                };
                 PhotonNetwork.player.SetCustomProperties(hashtable);
             }
             mainCamera.enabled = true;
@@ -2714,7 +2720,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             gameObject2.GetComponent<TITAN_CONTROLLER>().enabled = true;
             if (id == "RANDOM" && UnityEngine.Random.Range(0, 100) < 7)
             {
-                gameObject2.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
+                gameObject2.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: true);
             }
             mainCamera.enabled = true;
             GameObject mainCam = GameObject.Find("MainCamera");
@@ -2906,11 +2912,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             int[] array = PreservedPlayerKDR[name];
             PreservedPlayerKDR.Remove(name);
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add(PhotonPlayerProperty.Kills, array[0]);
-            hashtable.Add(PhotonPlayerProperty.Deaths, array[1]);
-            hashtable.Add(PhotonPlayerProperty.MaxDamage, array[2]);
-            hashtable.Add(PhotonPlayerProperty.TotalDamage, array[3]);
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+            {
+                { PhotonPlayerProperty.Kills, array[0] },
+                { PhotonPlayerProperty.Deaths, array[1] },
+                { PhotonPlayerProperty.MaxDamage, array[2] },
+                { PhotonPlayerProperty.TotalDamage, array[3] },
+            };
             player.SetCustomProperties(hashtable);
         }
     }
@@ -3299,8 +3307,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             {
                                 ImATitan.Add(player.Id, 2);
                             }
-                            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                            hashtable.Add(PhotonPlayerProperty.IsTitan, 2);
+                            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                            {
+                                { PhotonPlayerProperty.IsTitan, 2 }
+                            };
                             player.SetCustomProperties(hashtable);
                             base.photonView.RPC("spawnTitanRPC", player);
                         }
@@ -3471,8 +3481,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         return texture2D;
     }
 
-    [RPC]
-    public void verifyPlayerHasLeft(int id, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "verifyPlayerHasLeft")]
+    public void VerifyPlayerLeft(int id, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {
@@ -3489,8 +3499,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         if (!string.IsNullOrEmpty(authPassword))
         {
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable[(byte)0] = authPassword;
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+            {
+                { (byte)0, authPassword }
+            };
             PhotonNetwork.RaiseEvent(198, hashtable, sendReliable: true, new RaiseEventOptions());
         }
     }
@@ -3503,8 +3515,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         };
         if (requestIpBan)
         {
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable[(byte)0] = true;
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+            {
+                { (byte)0, true }
+            };
             if (inGameName != null && inGameName.Length > 0)
             {
                 hashtable[(byte)1] = inGameName;
@@ -3521,8 +3535,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         if (!string.IsNullOrEmpty(bannedAddress))
         {
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable[(byte)0] = bannedAddress;
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+            {
+                { (byte)0, bannedAddress }
+            };
             PhotonNetwork.RaiseEvent(199, hashtable, sendReliable: true, new RaiseEventOptions());
         }
     }
@@ -3548,8 +3564,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
                 {
                     PhotonPlayer photonPlayer = PhotonNetwork.playerList[i];
-                    ExitGames.Client.Photon.Hashtable hashtable2 = new ExitGames.Client.Photon.Hashtable();
-                    hashtable2.Add(PhotonPlayerProperty.IsTitan, 1);
+                    ExitGames.Client.Photon.Hashtable hashtable2 = new ExitGames.Client.Photon.Hashtable()
+                    {
+                        { PhotonPlayerProperty.IsTitan, 1 }
+                    };
                     photonPlayer.SetCustomProperties(hashtable2);
                 }
                 int num = PhotonNetwork.playerList.Length;
@@ -3559,12 +3577,15 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     PhotonPlayer photonPlayer2 = PhotonNetwork.playerList[i];
                     if (num > 0 && UnityEngine.Random.Range(0f, 1f) <= (float)num2 / (float)num)
                     {
-                        ExitGames.Client.Photon.Hashtable hashtable3 = new ExitGames.Client.Photon.Hashtable();
-                        hashtable3.Add(PhotonPlayerProperty.IsTitan, 2);
+                        ExitGames.Client.Photon.Hashtable hashtable3 = new ExitGames.Client.Photon.Hashtable()
+                        {
+                            { PhotonPlayerProperty.IsTitan, 2 }
+                        };
                         photonPlayer2.SetCustomProperties(hashtable3);
                         ImATitan.Add(photonPlayer2.Id, 2);
                         num2--;
                     }
+
                     num--;
                 }
             }
@@ -3810,20 +3831,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         myForm.AddField("userid", UsernameField);
         myForm.AddField("password", PasswordField);
 
-        using (WWW www = new WWW("http://fenglee.com/game/aog/require_user_info.php", myForm))
+        using WWW www = new WWW("http://fenglee.com/game/aog/require_user_info.php", myForm);
+        yield return www;
+        if (www.error == null && !www.text.Contains("Error,please sign in again."))
         {
-            yield return www;
-            if (www.error == null && !www.text.Contains("Error,please sign in again."))
-            {
-                string[] array = www.text.Split('|');
-                LoginFengKAI.Player.Name = UsernameField;
-                LoginFengKAI.Player.Guild = array[0];
-                LoginFengKAI.LoginState = LoginState.LoggedIn;
-            }
-            else
-            {
-                LoginFengKAI.LoginState = LoginState.Failed;
-            }
+            string[] array = www.text.Split('|');
+            LoginFengKAI.Player.Name = UsernameField;
+            LoginFengKAI.Player.Guild = array[0];
+            LoginFengKAI.LoginState = LoginState.LoggedIn;
+        }
+        else
+        {
+            LoginFengKAI.LoginState = LoginState.Failed;
         }
     }
 
@@ -3833,14 +3852,20 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         myForm.AddField("name", LoginFengKAI.Player.Name);
         myForm.AddField("guildname", LoginFengKAI.Player.Guild);
 
-        using (WWW www = new WWW("http://fenglee.com/game/aog/change_guild_name.php", myForm))
+        using WWW www = new WWW("http://fenglee.com/game/aog/change_guild_name.php", myForm);
+        yield return www;
+        if (www.error != null)
         {
-            yield return www;
-            if (www.error != null)
-            {
-                print(www.error);
-            }
+            print(www.error);
         }
+    }
+
+    // RC background (unused for Guardian)
+    public void SetBackground()
+    {
+        if (!IsAssetLoaded) return;
+
+        UnityEngine.Object.Instantiate(RCAssets.Load("backgroundCamera"));
     }
 
     public void CompileScript(string str)
@@ -3964,9 +3989,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                         else
                         {
-                            RegionTrigger regionTrigger = new RegionTrigger();
-                            regionTrigger.playerEventEnter = rCEvent;
-                            regionTrigger.myName = text3;
+                            RegionTrigger regionTrigger = new RegionTrigger()
+                            {
+                                playerEventEnter = rCEvent,
+                                myName = text3
+                            };
                             RCRegionTriggers.Add(text3, regionTrigger);
                         }
                         RCVariableNames.Add("OnPlayerEnterRegion[" + text3 + "]", value);
@@ -3988,9 +4015,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                         else
                         {
-                            RegionTrigger regionTrigger = new RegionTrigger();
-                            regionTrigger.playerEventExit = rCEvent;
-                            regionTrigger.myName = text3;
+                            RegionTrigger regionTrigger = new RegionTrigger()
+                            {
+                                playerEventExit = rCEvent,
+                                myName = text3
+                            };
                             RCRegionTriggers.Add(text3, regionTrigger);
                         }
                         RCVariableNames.Add("OnPlayerExitRegion[" + text3 + "]", value);
@@ -4012,9 +4041,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                         else
                         {
-                            RegionTrigger regionTrigger = new RegionTrigger();
-                            regionTrigger.titanEventEnter = rCEvent;
-                            regionTrigger.myName = text3;
+                            RegionTrigger regionTrigger = new RegionTrigger()
+                            {
+                                titanEventEnter = rCEvent,
+                                myName = text3
+                            };
                             RCRegionTriggers.Add(text3, regionTrigger);
                         }
                         RCVariableNames.Add("OnTitanEnterRegion[" + text3 + "]", value);
@@ -4036,9 +4067,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         }
                         else
                         {
-                            RegionTrigger regionTrigger = new RegionTrigger();
-                            regionTrigger.titanEventExit = rCEvent;
-                            regionTrigger.myName = text3;
+                            RegionTrigger regionTrigger = new RegionTrigger()
+                            {
+                                titanEventExit = rCEvent,
+                                myName = text3
+                            };
                             RCRegionTriggers.Add(text3, regionTrigger);
                         }
                         RCVariableNames.Add("OnTitanExitRegion[" + text3 + "]", value);
@@ -5453,8 +5486,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    public void spawnPlayerAtRPC(float posX, float posY, float posZ, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "spawnPlayerAtRPC")]
+    public void SpawnPlayerAtRPC(float posX, float posY, float posZ, PhotonMessageInfo info)
     {
         if (!info.sender.isMasterClient || !LogicLoaded || !CustomLevelLoaded || needChooseSide || !mainCamera.gameOver)
         {
@@ -5516,9 +5549,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             mainCamera.main_object.transform.position += new Vector3(UnityEngine.Random.Range(-20, 20), 2f, UnityEngine.Random.Range(-20, 20));
         }
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add("dead", false);
-        hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
+        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+        {
+            { PhotonPlayerProperty.IsDead, false },
+            { PhotonPlayerProperty.IsTitan, 1 }
+        };
         PhotonNetwork.player.SetCustomProperties(hashtable);
         mainCamera.enabled = true;
         GameObject mainCam = GameObject.Find("MainCamera");
@@ -5532,7 +5567,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         SetTextCenter(string.Empty);
     }
 
-    private void spawnPlayerCustomMap()
+    private void SpawnPlayerCustomMap()
     {
         if (!needChooseSide && mainCamera.gameOver)
         {
@@ -5552,9 +5587,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public void NOTSpawnPlayerRC(string id)
     {
         myLastHero = id.ToUpper();
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add("dead", true);
-        hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
+        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+        {
+            { PhotonPlayerProperty.IsDead, true },
+            { PhotonPlayerProperty.IsTitan, 1 },
+        };
         PhotonNetwork.player.SetCustomProperties(hashtable);
         Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
         Screen.showCursor = false;
@@ -5610,11 +5647,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
             {
                 PhotonPlayer photonPlayer = PhotonNetwork.playerList[i];
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                hashtable.Add(PhotonPlayerProperty.Kills, 0);
-                hashtable.Add(PhotonPlayerProperty.Deaths, 0);
-                hashtable.Add(PhotonPlayerProperty.MaxDamage, 0);
-                hashtable.Add(PhotonPlayerProperty.TotalDamage, 0);
+                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                {
+                    { PhotonPlayerProperty.Kills, 0 },
+                    { PhotonPlayerProperty.Deaths, 0 },
+                    { PhotonPlayerProperty.MaxDamage, 0 },
+                    { PhotonPlayerProperty.TotalDamage, 0 }
+                };
                 photonPlayer.SetCustomProperties(hashtable);
             }
         }
@@ -5626,8 +5665,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         ImATitan.Clear();
 
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
+        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+        {
+            { PhotonPlayerProperty.IsTitan, 1 }
+        };
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
             PhotonPlayer photonPlayer = PhotonNetwork.playerList[i];
@@ -5637,8 +5678,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         int num = PhotonNetwork.playerList.Length;
         int num2 = RCSettings.InfectionMode;
 
-        ExitGames.Client.Photon.Hashtable hashtable2 = new ExitGames.Client.Photon.Hashtable();
-        hashtable2.Add(PhotonPlayerProperty.IsTitan, 2);
+        ExitGames.Client.Photon.Hashtable hashtable2 = new ExitGames.Client.Photon.Hashtable()
+        {
+            { PhotonPlayerProperty.IsTitan, 2 }
+        };
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
             PhotonPlayer photonPlayer2 = PhotonNetwork.playerList[i];
@@ -5687,8 +5730,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         RecompilePlayerList(0.1f);
     }
 
-    [RPC]
-    private void ignorePlayer(int id, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "ignorePlayer")]
+    private void IgnorePlayer(int id, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {
@@ -5706,8 +5749,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         RecompilePlayerList(0.1f);
     }
 
-    [RPC]
-    private void ignorePlayerArray(int[] ids, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "ignorePlayerArray")]
+    private void IgnorePlayerArray(int[] ids, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {
@@ -5730,8 +5773,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     private void ResetSettings(bool isLeave)
     {
         MasterRC = false;
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add(PhotonPlayerProperty.RCTeam, 0);
+        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+        {
+            { PhotonPlayerProperty.RCTeam, 0 }
+        };
+
         if (isLeave)
         {
             CurrentLevel = string.Empty;
@@ -5818,14 +5864,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     }
 
     [Obsolete("Use FengGameManagerMKII.Chat instead.")]
-    [RPC]
+    [Guardian.Networking.RPC]
     private void ChatPM(string sender, string content, PhotonMessageInfo info)
     {
         Chat(content, $"=> You".AsColor("FFCC00"), info);
     }
 
-    [RPC]
-    private void pauseRPC(bool paused, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "pauseRPC")]
+    private void PauseRPC(bool paused, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.FGMChecker.IsPauseStateChangeValid(info))
         {
@@ -5851,40 +5897,40 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 for (int i = 0; i < titanSpawners.Count; i++)
                 {
                     TitanSpawner titanSpawner = titanSpawners[i];
-                    titanSpawner.time -= Time.deltaTime;
-                    if (!(titanSpawner.time <= 0f) || titans.Count + fT.Count >= Math.Min(RCSettings.TitanCap, 80))
+                    titanSpawner.Time -= Time.deltaTime;
+                    if (!(titanSpawner.Time <= 0f) || titans.Count + fT.Count >= Math.Min(RCSettings.TitanCap, 80))
                     {
                         continue;
                     }
 
-                    if (titanSpawner.name == "spawnAnnie")
+                    if (titanSpawner.Name == "spawnAnnie")
                     {
-                        PhotonNetwork.Instantiate("FEMALE_TITAN", titanSpawner.location, new Quaternion(0f, 0f, 0f, 1f), 0);
+                        PhotonNetwork.Instantiate("FEMALE_TITAN", titanSpawner.Location, new Quaternion(0f, 0f, 0f, 1f), 0);
                     }
                     else
                     {
-                        GameObject gameObject = PhotonNetwork.Instantiate("TITAN_VER3.1", titanSpawner.location, new Quaternion(0f, 0f, 0f, 1f), 0);
+                        GameObject gameObject = PhotonNetwork.Instantiate("TITAN_VER3.1", titanSpawner.Location, new Quaternion(0f, 0f, 0f, 1f), 0);
 
-                        switch (titanSpawner.name)
+                        switch (titanSpawner.Name)
                         {
                             case "spawnAbnormal":
-                                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
+                                gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
                                 break;
                             case "spawnJumper":
-                                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
+                                gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                                 break;
                             case "spawnCrawler":
-                                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
+                                gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                                 break;
                             case "spawnPunk":
-                                gameObject.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
+                                gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Punk, forceCrawler: false);
                                 break;
                         }
                     }
 
-                    if (titanSpawner.endless)
+                    if (titanSpawner.Endless)
                     {
-                        titanSpawner.time = titanSpawner.delay;
+                        titanSpawner.Time = titanSpawner.Delay;
                     }
                     else
                     {
@@ -5980,67 +6026,67 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         if (selectedObj != null)
         {
             float d = 0.2f;
-            if (InputRC.isInputLevel(InputCodeRC.LevelSlow))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelSlow))
             {
                 d = 0.04f;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.LevelFast))
+            else if (InputRC.IsInputLevel(InputCodeRC.LevelFast))
             {
                 d = 0.6f;
             }
-            if (InputRC.isInputLevel(InputCodeRC.LevelForward))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelForward))
             {
                 selectedObj.transform.position += d * new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z);
             }
-            else if (InputRC.isInputLevel(InputCodeRC.LevelBack))
+            else if (InputRC.IsInputLevel(InputCodeRC.LevelBack))
             {
                 selectedObj.transform.position -= d * new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z);
             }
-            if (InputRC.isInputLevel(InputCodeRC.LevelLeft))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelLeft))
             {
                 selectedObj.transform.position -= d * new Vector3(Camera.main.transform.right.x, 0f, Camera.main.transform.right.z);
             }
-            else if (InputRC.isInputLevel(InputCodeRC.LevelRight))
+            else if (InputRC.IsInputLevel(InputCodeRC.LevelRight))
             {
                 selectedObj.transform.position += d * new Vector3(Camera.main.transform.right.x, 0f, Camera.main.transform.right.z);
             }
-            if (InputRC.isInputLevel(InputCodeRC.LevelDown))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelDown))
             {
                 selectedObj.transform.position -= Vector3.up * d;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.LevelUp))
+            else if (InputRC.IsInputLevel(InputCodeRC.LevelUp))
             {
                 selectedObj.transform.position += Vector3.up * d;
             }
             if (!selectedObj.name.StartsWith("misc,region"))
             {
-                if (InputRC.isInputLevel(InputCodeRC.LevelRRight))
+                if (InputRC.IsInputLevel(InputCodeRC.LevelRRight))
                 {
                     selectedObj.transform.Rotate(Vector3.up * d);
                 }
-                else if (InputRC.isInputLevel(InputCodeRC.LevelRLeft))
+                else if (InputRC.IsInputLevel(InputCodeRC.LevelRLeft))
                 {
                     selectedObj.transform.Rotate(Vector3.down * d);
                 }
-                if (InputRC.isInputLevel(InputCodeRC.LevelRCCW))
+                if (InputRC.IsInputLevel(InputCodeRC.LevelRCCW))
                 {
                     selectedObj.transform.Rotate(Vector3.forward * d);
                 }
-                else if (InputRC.isInputLevel(InputCodeRC.LevelRCW))
+                else if (InputRC.IsInputLevel(InputCodeRC.LevelRCW))
                 {
                     selectedObj.transform.Rotate(Vector3.back * d);
                 }
-                if (InputRC.isInputLevel(InputCodeRC.LevelRBack))
+                if (InputRC.IsInputLevel(InputCodeRC.LevelRBack))
                 {
                     selectedObj.transform.Rotate(Vector3.left * d);
                 }
-                else if (InputRC.isInputLevel(InputCodeRC.LevelRForward))
+                else if (InputRC.IsInputLevel(InputCodeRC.LevelRForward))
                 {
                     selectedObj.transform.Rotate(Vector3.right * d);
                 }
             }
 
-            if (InputRC.isInputLevel(InputCodeRC.LevelPlace))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelPlace))
             {
                 LinkHash[3].Add(selectedObj.GetInstanceID(), selectedObj.name + "," + Convert.ToString(selectedObj.transform.position.x) + "," + Convert.ToString(selectedObj.transform.position.y) + "," + Convert.ToString(selectedObj.transform.position.z) + "," + Convert.ToString(selectedObj.transform.rotation.x) + "," + Convert.ToString(selectedObj.transform.rotation.y) + "," + Convert.ToString(selectedObj.transform.rotation.z) + "," + Convert.ToString(selectedObj.transform.rotation.w));
                 selectedObj = null;
@@ -6048,7 +6094,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 Screen.lockCursor = true;
             }
 
-            if (InputRC.isInputLevel(InputCodeRC.LevelDelete))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelDelete))
             {
                 UnityEngine.Object.Destroy(selectedObj);
                 selectedObj = null;
@@ -6062,42 +6108,42 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         if (Screen.lockCursor)
         {
             float d2 = 100f;
-            if (InputRC.isInputLevel(InputCodeRC.LevelSlow))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelSlow))
             {
                 d2 = 20f;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.LevelFast))
+            else if (InputRC.IsInputLevel(InputCodeRC.LevelFast))
             {
                 d2 = 400f;
             }
             Transform transform = Camera.main.transform;
-            if (InputRC.isInputLevel(InputCodeRC.LevelForward))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelForward))
             {
                 transform.position += transform.forward * d2 * Time.deltaTime;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.LevelBack))
+            else if (InputRC.IsInputLevel(InputCodeRC.LevelBack))
             {
                 transform.position -= transform.forward * d2 * Time.deltaTime;
             }
-            if (InputRC.isInputLevel(InputCodeRC.LevelLeft))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelLeft))
             {
                 transform.position -= transform.right * d2 * Time.deltaTime;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.LevelRight))
+            else if (InputRC.IsInputLevel(InputCodeRC.LevelRight))
             {
                 transform.position += transform.right * d2 * Time.deltaTime;
             }
-            if (InputRC.isInputLevel(InputCodeRC.LevelUp))
+            if (InputRC.IsInputLevel(InputCodeRC.LevelUp))
             {
                 transform.position += transform.up * d2 * Time.deltaTime;
             }
-            else if (InputRC.isInputLevel(InputCodeRC.LevelDown))
+            else if (InputRC.IsInputLevel(InputCodeRC.LevelDown))
             {
                 transform.position -= transform.up * d2 * Time.deltaTime;
             }
         }
 
-        if (InputRC.isInputLevelDown(InputCodeRC.LevelCursor))
+        if (InputRC.IsInputLevelDown(InputCodeRC.LevelCursor))
         {
             if (Screen.lockCursor)
             {
@@ -6412,14 +6458,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             null
         };
         InputRC = new InputManagerRC();
-        InputRC.setInputHuman(InputCodeRC.ReelIn, (string)configArray[98]);
-        InputRC.setInputHuman(InputCodeRC.ReelOut, (string)configArray[99]);
-        InputRC.setInputHuman(InputCodeRC.Dash, (string)configArray[182]);
-        InputRC.setInputHuman(InputCodeRC.MapMaximize, (string)configArray[232]);
-        InputRC.setInputHuman(InputCodeRC.MapToggle, (string)configArray[233]);
-        InputRC.setInputHuman(InputCodeRC.MapReset, (string)configArray[234]);
-        InputRC.setInputHuman(InputCodeRC.Chat, (string)configArray[236]);
-        InputRC.setInputHuman(InputCodeRC.LiveCamera, (string)configArray[262]);
+        InputRC.SetInputHuman(InputCodeRC.ReelIn, (string)configArray[98]);
+        InputRC.SetInputHuman(InputCodeRC.ReelOut, (string)configArray[99]);
+        InputRC.SetInputHuman(InputCodeRC.Dash, (string)configArray[182]);
+        InputRC.SetInputHuman(InputCodeRC.MapMaximize, (string)configArray[232]);
+        InputRC.SetInputHuman(InputCodeRC.MapToggle, (string)configArray[233]);
+        InputRC.SetInputHuman(InputCodeRC.MapReset, (string)configArray[234]);
+        InputRC.SetInputHuman(InputCodeRC.Chat, (string)configArray[236]);
+        InputRC.SetInputHuman(InputCodeRC.LiveCamera, (string)configArray[262]);
         if (!Enum.IsDefined(typeof(KeyCode), (string)configArray[232]))
         {
             configArray[232] = "None";
@@ -6434,21 +6480,21 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         for (int i = 0; i < 15; i++)
         {
-            InputRC.setInputTitan(i, (string)configArray[101 + i]);
+            InputRC.SetInputTitan(i, (string)configArray[101 + i]);
         }
         for (int i = 0; i < 16; i++)
         {
-            InputRC.setInputLevel(i, (string)configArray[117 + i]);
+            InputRC.SetInputLevel(i, (string)configArray[117 + i]);
         }
         for (int i = 0; i < 7; i++)
         {
-            InputRC.setInputHorse(i, (string)configArray[237 + i]);
+            InputRC.SetInputHorse(i, (string)configArray[237 + i]);
         }
         for (int i = 0; i < 7; i++)
         {
-            InputRC.setInputCannon(i, (string)configArray[254 + i]);
+            InputRC.SetInputCannon(i, (string)configArray[254 + i]);
         }
-        InputRC.setInputLevel(InputCodeRC.LevelFast, (string)configArray[161]);
+        InputRC.SetInputLevel(InputCodeRC.LevelFast, (string)configArray[161]);
         Application.targetFrameRate = -1;
         if (int.TryParse((string)configArray[184], out int result) && result > 0)
         {
@@ -6656,8 +6702,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 CurrentLevel = string.Empty;
                 if (CurrentScript == string.Empty)
                 {
-                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                    hashtable.Add(PhotonPlayerProperty.CurrentLevel, CurrentLevel);
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                    {
+                        { PhotonPlayerProperty.CurrentLevel, CurrentLevel }
+                    };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
                     OldScript = CurrentScript;
                 }
@@ -6749,8 +6797,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     string text7 = "z" + UnityEngine.Random.Range(10000, 99999).ToString();
                     levelCache.Add(new string[1] { text7 });
                     CurrentLevel += text7;
-                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                    hashtable.Add(PhotonPlayerProperty.CurrentLevel, CurrentLevel);
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                    {
+                        { PhotonPlayerProperty.CurrentLevel, CurrentLevel }
+                    };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
                     OldScript = CurrentScript;
                 }
@@ -6783,7 +6833,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             flag2 = true;
             CustomLevelLoaded = true;
-            this.spawnPlayerCustomMap();
+            this.SpawnPlayerCustomMap();
             Minimap.TryRecaptureInstance();
             this.UnloadAssets();
         }
@@ -6813,12 +6863,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         this.playerSpawnsM.Add(new Vector3(Convert.ToSingle(strArray[1]), Convert.ToSingle(strArray[2]), Convert.ToSingle(strArray[3])));
                     }
                 }
-                this.spawnPlayerCustomMap();
+                this.SpawnPlayerCustomMap();
             }
-            CurrentLevel = CurrentLevel + content[content.Length - 1];
+            CurrentLevel += content[content.Length - 1];
             this.levelCache.Add(content);
-            ExitGames.Client.Photon.Hashtable propertiesToSet = new ExitGames.Client.Photon.Hashtable();
-            propertiesToSet.Add(PhotonPlayerProperty.CurrentLevel, CurrentLevel);
+            ExitGames.Client.Photon.Hashtable propertiesToSet = new ExitGames.Client.Photon.Hashtable()
+            {
+                { PhotonPlayerProperty.CurrentLevel, CurrentLevel }
+            };
             PhotonNetwork.player.SetCustomProperties(propertiesToSet);
         }
 
@@ -6842,7 +6894,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 if (strArray[0].StartsWith("custom"))
                 {
                     num2 = 1f;
-                    obj2 = null;
                     obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[12]), Convert.ToSingle(strArray[13]), Convert.ToSingle(strArray[14])), new Quaternion(Convert.ToSingle(strArray[15]), Convert.ToSingle(strArray[0x10]), Convert.ToSingle(strArray[0x11]), Convert.ToSingle(strArray[0x12])));
                     if (strArray[2] != "default")
                     {
@@ -6905,7 +6956,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     else
                     {
                         num2 = 1f;
-                        obj2 = null;
                         obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)Resources.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[12]), Convert.ToSingle(strArray[13]), Convert.ToSingle(strArray[14])), new Quaternion(Convert.ToSingle(strArray[15]), Convert.ToSingle(strArray[0x10]), Convert.ToSingle(strArray[0x11]), Convert.ToSingle(strArray[0x12])));
                         if (strArray[2] != "default")
                         {
@@ -6965,7 +7015,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     if (strArray[1].StartsWith("barrier"))
                     {
-                        obj2 = null;
                         obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
                         num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
                         num5 -= 0.001f;
@@ -6976,7 +7025,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                     else if (strArray[1].StartsWith("racingStart"))
                     {
-                        obj2 = null;
                         obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
                         num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
                         num5 -= 0.001f;
@@ -6991,7 +7039,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                     else if (strArray[1].StartsWith("racingEnd"))
                     {
-                        obj2 = null;
                         obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
                         num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
                         num5 -= 0.001f;
@@ -7026,7 +7073,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     if (strArray[1].StartsWith("start"))
                     {
-                        obj2 = null;
                         obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
                         num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
                         num5 -= 0.001f;
@@ -7041,7 +7087,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                     else if (strArray[1].StartsWith("end"))
                     {
-                        obj2 = null;
                         obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
                         num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
                         num5 -= 0.001f;
@@ -7053,7 +7098,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                     else if (strArray[1].StartsWith("kill"))
                     {
-                        obj2 = null;
                         obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
                         num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
                         num5 -= 0.001f;
@@ -7065,7 +7109,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                     else if (strArray[1].StartsWith("checkpoint"))
                     {
-                        obj2 = null;
                         obj2 = (GameObject)UnityEngine.Object.Instantiate((GameObject)RCAssets.Load(strArray[1]), new Vector3(Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]), Convert.ToSingle(strArray[7])), new Quaternion(Convert.ToSingle(strArray[8]), Convert.ToSingle(strArray[9]), Convert.ToSingle(strArray[10]), Convert.ToSingle(strArray[11])));
                         num5 = obj2.transform.localScale.x * Convert.ToSingle(strArray[2]);
                         num5 -= 0.001f;
@@ -7107,18 +7150,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             num5 = Mathf.Max(Convert.ToSingle(strArray[2]), 1f);
                         }
-                        item.time = num5;
-                        item.delay = num5;
-                        item.name = strArray[1];
+                        item.Time = num5;
+                        item.Delay = num5;
+                        item.Name = strArray[1];
                         if (strArray[3] == "1")
                         {
-                            item.endless = true;
+                            item.Endless = true;
                         }
                         else
                         {
-                            item.endless = false;
+                            item.Endless = false;
                         }
-                        item.location = new Vector3(Convert.ToSingle(strArray[4]), Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]));
+                        item.Location = new Vector3(Convert.ToSingle(strArray[4]), Convert.ToSingle(strArray[5]), Convert.ToSingle(strArray[6]));
                         this.titanSpawners.Add(item);
                     }
                 }
@@ -7363,8 +7406,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void customlevelRPC(string[] content, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "customlevelRPC")]
+    private void CustomLevelRPC(string[] content, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {
@@ -7379,11 +7422,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 titanSpawns.Clear();
                 playerSpawnsC.Clear();
                 playerSpawnsM.Clear();
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                hashtable.Add(PhotonPlayerProperty.CurrentLevel, CurrentLevel);
+                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                {
+                    { PhotonPlayerProperty.CurrentLevel, CurrentLevel }
+                };
                 PhotonNetwork.player.SetCustomProperties(hashtable);
                 CustomLevelLoaded = true;
-                spawnPlayerCustomMap();
+                SpawnPlayerCustomMap();
             }
             else
             {
@@ -7392,8 +7437,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void clearlevel(string[] link, int gametype, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "clearlevel")]
+    private void ClearLevel(string[] link, int gametype, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {
@@ -7423,8 +7468,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void loadskinRPC(string n, string url, string url2, string[] skybox, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "loadskinRPC")]
+    private void LoadSkinRPC(string n, string url, string url2, string[] skybox, PhotonMessageInfo info)
     {
         if ((int)Settings[2] == 1 && info.sender.isMasterClient)
         {
@@ -8302,8 +8347,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             num13++;
                             text2 = text2 + value + ";\n";
                         }
-                        TextEditor textEditor = new TextEditor();
-                        textEditor.content = new GUIContent(text2);
+                        TextEditor textEditor = new TextEditor()
+                        {
+                            content = new GUIContent(text2)
+                        };
                         textEditor.SelectAll();
                         textEditor.Copy();
                     }
@@ -8325,8 +8372,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         GUI.Box(new Rect(num14, num15, 221f, 500f), string.Empty);
                         if (GUI.Button(new Rect(num14 + 10f, num15 + 460f, 60f, 30f), "Copy"))
                         {
-                            TextEditor textEditor = new TextEditor();
-                            textEditor.content = new GUIContent(text2);
+                            TextEditor textEditor = new TextEditor()
+                            {
+                                content = new GUIContent(text2)
+                            };
                             textEditor.SelectAll();
                             textEditor.Copy();
                         }
@@ -8429,7 +8478,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 {
                                     Settings[num16] = text3;
                                     Settings[100] = 0;
-                                    InputRC.setInputLevel(j, text3);
+                                    InputRC.SetInputLevel(j, text3);
                                 }
                             }
                         }
@@ -8550,15 +8599,17 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 "empty"
                             };
                             string[] array5 = new string[0];
-                            List<string[]> list = new List<string[]>();
-                            list.Add(item);
-                            list.Add(item2);
-                            list.Add(item3);
-                            list.Add(item4);
-                            list.Add(item5);
-                            list.Add(item6);
-                            list.Add(item7);
-                            list.Add(item8);
+                            List<string[]> list = new List<string[]>()
+                            {
+                                item,
+                                item2,
+                                item3,
+                                item4,
+                                item5,
+                                item6,
+                                item7,
+                                item8,
+                            };
                             List<string[]> list2 = list;
                             string[] array6 = new string[9]
                             {
@@ -8768,9 +8819,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         break;
                     case 103:
                         {
-                            List<string> list3 = new List<string>();
-                            list3.Add("arch1");
-                            list3.Add("house1");
+                            List<string> list3 = new List<string>()
+                            {
+                                "arch1", "house1"
+                            };
                             List<string> list4 = list3;
                             string[] array7 = new string[44]
                             {
@@ -8846,8 +8898,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         break;
                     case 104:
                         {
-                            List<string> list5 = new List<string>();
-                            list5.Add("tree0");
+                            List<string> list5 = new List<string>() { "tree0" };
                             List<string> list4 = list5;
                             string[] array7 = new string[23]
                             {
@@ -9721,37 +9772,40 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             }
                             if ((int)Settings[190] == 0)
                             {
-                                List<string> list6 = new List<string>();
-                                list6.Add("Forward:");
-                                list6.Add("Backward:");
-                                list6.Add("Left:");
-                                list6.Add("Right:");
-                                list6.Add("Jump:");
-                                list6.Add("Dodge:");
-                                list6.Add("Left Hook:");
-                                list6.Add("Right Hook:");
-                                list6.Add("Both Hooks:");
-                                list6.Add("Lock:");
-                                list6.Add("Attack:");
-                                list6.Add("Special:");
-                                list6.Add("Salute:");
-                                list6.Add("Change Camera:");
-                                list6.Add("Reset:");
-                                list6.Add("Pause:");
-                                list6.Add("Show/Hide Cursor:");
-                                list6.Add("Fullscreen:");
-                                list6.Add("Change Blade:");
-                                list6.Add("Flare Green:");
-                                list6.Add("Flare Red:");
-                                list6.Add("Flare Black:");
-                                list6.Add("Reel in:");
-                                list6.Add("Reel out:");
-                                list6.Add("Gas Burst:");
-                                list6.Add("Minimap Max:");
-                                list6.Add("Minimap Toggle:");
-                                list6.Add("Minimap Reset:");
-                                list6.Add("Open Chat:");
-                                list6.Add("Live Spectate");
+                                List<string> list6 = new List<string>
+                                {
+                                    "Forward:",
+                                    "Backward:",
+                                    "Left:",
+                                    "Right:",
+                                    "Jump:",
+                                    "Dodge:",
+                                    "Left Hook:",
+                                    "Right Hook:",
+                                    "Both Hooks:",
+                                    "Lock:",
+                                    "Attack:",
+                                    "Special:",
+                                    "Salute:",
+                                    "Change Camera:",
+                                    "Reset:",
+                                    "Pause:",
+                                    "Show/Hide Cursor:",
+                                    "Fullscreen:",
+                                    "Change Blade:",
+                                    "Flare Green:",
+                                    "Flare Red:",
+                                    "Flare Black:",
+                                    "Reel in:",
+                                    "Reel out:",
+                                    "Gas Burst:",
+                                    "Minimap Max:",
+                                    "Minimap Toggle:",
+                                    "Minimap Reset:",
+                                    "Open Chat:",
+                                    "Live Spectate"
+                                };
+
                                 for (int j = 0; j < list6.Count; j++)
                                 {
                                     int k = j;
@@ -9823,10 +9877,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                         num31 = 500f;
                                         k -= 15;
                                     }
-                                    if (GUI.Button(new Rect(halfMenuWidth + num31, halfMenuHeight + 86f + (float)k * 25f, 120f, 20f), inputManager.getKeyRC(j)))
+                                    if (GUI.Button(new Rect(halfMenuWidth + num31, halfMenuHeight + 86f + (float)k * 25f, 120f, 20f), inputManager.GetKeyRC(j)))
                                     {
                                         Settings[100] = j + 1;
-                                        inputManager.setNameRC(j, "waiting...");
+                                        inputManager.SetNameRC(j, "waiting...");
                                     }
                                 }
                                 if (GUI.Button(new Rect(halfMenuWidth + 500f, halfMenuHeight + 261f, 120f, 20f), (string)Settings[98]))
@@ -9919,49 +9973,49 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                         {
                                             Settings[98] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.ReelIn, text3);
+                                            InputRC.SetInputHuman(InputCodeRC.ReelIn, text3);
                                         }
                                         else if ((int)Settings[100] == 99)
                                         {
                                             Settings[99] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.ReelOut, text3);
+                                            InputRC.SetInputHuman(InputCodeRC.ReelOut, text3);
                                         }
                                         else if ((int)Settings[100] == 182)
                                         {
                                             Settings[182] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.Dash, text3);
+                                            InputRC.SetInputHuman(InputCodeRC.Dash, text3);
                                         }
                                         else if ((int)Settings[100] == 232)
                                         {
                                             Settings[232] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.MapMaximize, text3);
+                                            InputRC.SetInputHuman(InputCodeRC.MapMaximize, text3);
                                         }
                                         else if ((int)Settings[100] == 233)
                                         {
                                             Settings[233] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.MapToggle, text3);
+                                            InputRC.SetInputHuman(InputCodeRC.MapToggle, text3);
                                         }
                                         else if ((int)Settings[100] == 234)
                                         {
                                             Settings[234] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.MapReset, text3);
+                                            InputRC.SetInputHuman(InputCodeRC.MapReset, text3);
                                         }
                                         else if ((int)Settings[100] == 236)
                                         {
                                             Settings[236] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.Chat, text3);
+                                            InputRC.SetInputHuman(InputCodeRC.Chat, text3);
                                         }
                                         else if ((int)Settings[100] == 262)
                                         {
                                             Settings[262] = text3;
                                             Settings[100] = 0;
-                                            InputRC.setInputHuman(InputCodeRC.LiveCamera, text3);
+                                            InputRC.SetInputHuman(InputCodeRC.LiveCamera, text3);
                                         }
                                         else
                                         {
@@ -9970,7 +10024,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                                 int num16 = j + 1;
                                                 if ((int)Settings[100] == num16)
                                                 {
-                                                    inputManager.setKeyRC(j, text3);
+                                                    inputManager.SetKeyRC(j, text3);
                                                     Settings[100] = 0;
                                                 }
                                             }
@@ -9980,23 +10034,25 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             }
                             else if ((int)Settings[190] == 1)
                             {
-                                List<string> list8 = new List<string>();
-                                list8.Add("Forward:");
-                                list8.Add("Back:");
-                                list8.Add("Left:");
-                                list8.Add("Right:");
-                                list8.Add("Walk:");
-                                list8.Add("Jump:");
-                                list8.Add("Punch:");
-                                list8.Add("Slam:");
-                                list8.Add("Grab (front):");
-                                list8.Add("Grab (back):");
-                                list8.Add("Grab (nape):");
-                                list8.Add("Slap:");
-                                list8.Add("Bite:");
-                                list8.Add("Cover Nape:");
-                                List<string> list7 = list8;
-                                for (int j = 0; j < list7.Count; j++)
+                                List<string> list8 = new List<string>
+                                {
+                                    "Forward:",
+                                    "Back:",
+                                    "Left:",
+                                    "Right:",
+                                    "Walk:",
+                                    "Jump:",
+                                    "Punch:",
+                                    "Slam:",
+                                    "Grab (front):",
+                                    "Grab (back):",
+                                    "Grab (nape):",
+                                    "Slap:",
+                                    "Bite:",
+                                    "Cover Nape:"
+                                };
+
+                                for (int j = 0; j < list8.Count; j++)
                                 {
                                     int k = j;
                                     float num31 = 80f;
@@ -10005,7 +10061,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                         num31 = 390f;
                                         k -= 7;
                                     }
-                                    GUI.Label(new Rect(halfMenuWidth + num31, halfMenuHeight + 86f + (float)k * 25f, 145f, 22f), list7[j], "Label");
+                                    GUI.Label(new Rect(halfMenuWidth + num31, halfMenuHeight + 86f + (float)k * 25f, 145f, 22f), list8[j], "Label");
                                 }
                                 for (int j = 0; j < 14; j++)
                                 {
@@ -10076,7 +10132,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                             {
                                                 Settings[num16] = text3;
                                                 Settings[100] = 0;
-                                                InputRC.setInputTitan(j, text3);
+                                                InputRC.SetInputTitan(j, text3);
                                             }
                                         }
                                     }
@@ -10084,16 +10140,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             }
                             else if ((int)Settings[190] == 2)
                             {
-                                List<string> list9 = new List<string>();
-                                list9.Add("Forward:");
-                                list9.Add("Back:");
-                                list9.Add("Left:");
-                                list9.Add("Right:");
-                                list9.Add("Walk:");
-                                list9.Add("Jump:");
-                                list9.Add("Mount:");
-                                List<string> list7 = list9;
-                                for (int j = 0; j < list7.Count; j++)
+                                List<string> list9 = new List<string>
+                                {
+                                    "Forward:",
+                                    "Back:",
+                                    "Left:",
+                                    "Right:",
+                                    "Walk:",
+                                    "Jump:",
+                                    "Mount:"
+                                };
+
+                                for (int j = 0; j < list9.Count; j++)
                                 {
                                     int k = j;
                                     float num31 = 80f;
@@ -10102,7 +10160,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                         num31 = 390f;
                                         k -= 4;
                                     }
-                                    GUI.Label(new Rect(halfMenuWidth + num31, halfMenuHeight + 86f + (float)k * 25f, 145f, 22f), list7[j], "Label");
+                                    GUI.Label(new Rect(halfMenuWidth + num31, halfMenuHeight + 86f + (float)k * 25f, 145f, 22f), list9[j], "Label");
                                 }
                                 for (int j = 0; j < 7; j++)
                                 {
@@ -10173,7 +10231,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                             {
                                                 Settings[num16] = text3;
                                                 Settings[100] = 0;
-                                                InputRC.setInputHorse(j, text3);
+                                                InputRC.SetInputHorse(j, text3);
                                             }
                                         }
                                     }
@@ -10181,16 +10239,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             }
                             else if ((int)Settings[190] == 3)
                             {
-                                List<string> list10 = new List<string>();
-                                list10.Add("Rotate Up:");
-                                list10.Add("Rotate Down:");
-                                list10.Add("Rotate Left:");
-                                list10.Add("Rotate Right:");
-                                list10.Add("Fire:");
-                                list10.Add("Mount:");
-                                list10.Add("Slow Rotate:");
-                                List<string> list7 = list10;
-                                for (int j = 0; j < list7.Count; j++)
+                                List<string> list10 = new List<string>
+                                {
+                                    "Rotate Up:",
+                                    "Rotate Down:",
+                                    "Rotate Left:",
+                                    "Rotate Right:",
+                                    "Fire:",
+                                    "Mount:",
+                                    "Slow Rotate:"
+                                };
+
+                                for (int j = 0; j < list10.Count; j++)
                                 {
                                     int k = j;
                                     float num31 = 80f;
@@ -10199,7 +10259,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                         num31 = 390f;
                                         k -= 4;
                                     }
-                                    GUI.Label(new Rect(halfMenuWidth + num31, halfMenuHeight + 86f + (float)k * 25f, 145f, 22f), list7[j], "Label");
+                                    GUI.Label(new Rect(halfMenuWidth + num31, halfMenuHeight + 86f + (float)k * 25f, 145f, 22f), list10[j], "Label");
                                 }
                                 for (int j = 0; j < 7; j++)
                                 {
@@ -10270,7 +10330,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                             {
                                                 Settings[num16] = text3;
                                                 Settings[100] = 0;
-                                                InputRC.setInputCannon(j, text3);
+                                                InputRC.SetInputCannon(j, text3);
                                             }
                                         }
                                     }
@@ -10616,8 +10676,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             CurrentScript = GUI.TextField(new Rect(halfMenuWidth + 50f, halfMenuHeight + 180f, 275f, 220f), CurrentScript);
                             if (GUI.Button(new Rect(halfMenuWidth + 100f, halfMenuHeight + 410f, 50f, 25f), "Copy"))
                             {
-                                TextEditor textEditor = new TextEditor();
-                                textEditor.content = new GUIContent(CurrentScript);
+                                TextEditor textEditor = new TextEditor()
+                                {
+                                    content = new GUIContent(CurrentScript)
+                                };
                                 textEditor.SelectAll();
                                 textEditor.Copy();
                             }
@@ -10646,8 +10708,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         CurrentScriptLogic = GUI.TextField(new Rect(halfMenuWidth + 50f, halfMenuHeight + 82f, 600f, 270f), CurrentScriptLogic);
                         if (GUI.Button(new Rect(halfMenuWidth + 250f, halfMenuHeight + 365f, 50f, 20f), "Copy"))
                         {
-                            TextEditor textEditor = new TextEditor();
-                            textEditor.content = new GUIContent(CurrentScriptLogic);
+                            TextEditor textEditor = new TextEditor()
+                            {
+                                content = new GUIContent(CurrentScriptLogic)
+                            };
                             textEditor.SelectAll();
                             textEditor.Copy();
                         }
@@ -11457,7 +11521,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 else if (GUI.Button(new Rect(halfMenuWidth + 508f, halfMenuHeight + 468f, 60f, 25f), "Default"))
                 {
-                    GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().setToDefault();
+                    GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().SetToDefault();
                 }
                 else if (GUI.Button(new Rect(halfMenuWidth + 573f, halfMenuHeight + 468f, 75f, 25f), "Continue"))
                 {
@@ -11486,7 +11550,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         Screen.lockCursor = false;
                     }
                     GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = false;
-                    GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().justUPDATEME();
+                    GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().JustUpdate();
                 }
                 else if (GUI.Button(new Rect(halfMenuWidth + 653f, halfMenuHeight + 468f, 40f, 25f), "Quit"))
                 {
@@ -11652,27 +11716,27 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     GameObject titan = SpawnTitanRaw(position, rotation);
                     if (rngRate < normalRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Normal, forceCrawler: false);
+                        titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Normal, forceCrawler: false);
                     }
                     else if (rngRate >= normalRate && rngRate < normalRate + abbyRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
+                        titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
                     }
                     else if (rngRate >= normalRate + abbyRate && rngRate < normalRate + abbyRate + jumperRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
+                        titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                     }
                     else if (rngRate >= normalRate + abbyRate + jumperRate && rngRate < normalRate + abbyRate + jumperRate + crawlerRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
+                        titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                     }
                     else if (rngRate >= normalRate + abbyRate + jumperRate + crawlerRate && rngRate < normalRate + abbyRate + jumperRate + crawlerRate + punkRate)
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
+                        titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Punk, forceCrawler: false);
                     }
                     else
                     {
-                        titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Normal, forceCrawler: false);
+                        titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Normal, forceCrawler: false);
                     }
                 }
                 else
@@ -11758,19 +11822,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             switch (type)
             {
                 case 0:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Normal, forceCrawler: false);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Normal, forceCrawler: false);
                     break;
                 case 1:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
                     break;
                 case 2:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                     break;
                 case 3:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                     break;
                 case 4:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Punk, forceCrawler: false);
                     break;
             }
         }
@@ -11793,26 +11857,26 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             switch (type)
             {
                 case 0:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Normal, forceCrawler: false);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Normal, forceCrawler: false);
                     break;
                 case 1:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
                     break;
                 case 2:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Jumper, forceCrawler: false);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                     break;
                 case 3:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Crawler, forceCrawler: true);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: true);
                     break;
                 case 4:
-                    titan.GetComponent<TITAN>().setAbnormalType2(TitanClass.Punk, forceCrawler: false);
+                    titan.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Punk, forceCrawler: false);
                     break;
             }
         }
     }
 
-    [RPC]
-    private void spawnTitanRPC(PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "spawnTitanRPC")]
+    private void SpawnTitanRPC(PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {
@@ -11828,8 +11892,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void setTeamRPC(int newTeam, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "setTeamRPC")]
+    private void SetTeamRPC(int newTeam, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient || info.sender.isLocal)
         {
@@ -11843,25 +11907,31 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             case 0: // Individual
                 {
-                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                    hashtable.Add(PhotonPlayerProperty.RCTeam, 0);
-                    hashtable.Add(PhotonPlayerProperty.Name, LoginFengKAI.Player.Name);
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                    {
+                        { PhotonPlayerProperty.RCTeam, 0 },
+                        { PhotonPlayerProperty.Name, LoginFengKAI.Player.Name }
+                    };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
                     break;
                 }
             case 1: // Cyan
                 {
-                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                    hashtable.Add(PhotonPlayerProperty.RCTeam, 1);
-                    hashtable.Add(PhotonPlayerProperty.Name, "[00FFFF]" + LoginFengKAI.Player.Name.StripNGUI());
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                    {
+                        { PhotonPlayerProperty.RCTeam, 1 },
+                        { PhotonPlayerProperty.Name, "[00FFFF]" + LoginFengKAI.Player.Name.StripNGUI() },
+                    };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
                     break;
                 }
             case 2: // Magenta
                 {
-                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                    hashtable.Add(PhotonPlayerProperty.RCTeam, 2);
-                    hashtable.Add(PhotonPlayerProperty.Name, "[FF00FF]" + LoginFengKAI.Player.Name.StripNGUI());
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                    {
+                        { PhotonPlayerProperty.RCTeam, 2 },
+                        { PhotonPlayerProperty.Name, "[FF00FF]" + LoginFengKAI.Player.Name.StripNGUI() }
+                    };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
                     break;
                 }
@@ -11900,8 +11970,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void settingRPC(ExitGames.Client.Photon.Hashtable settings, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "settingRPC")]
+    private void SettingRPC(ExitGames.Client.Photon.Hashtable settings, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {
@@ -12119,8 +12189,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             if (RCSettings.InfectionMode != (int)settings["infection"])
             {
                 RCSettings.InfectionMode = (int)settings["infection"];
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                hashtable.Add(PhotonPlayerProperty.RCTeam, 0);
+                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                {
+                    { PhotonPlayerProperty.RCTeam, 0 }
+                };
                 PhotonNetwork.player.SetCustomProperties(hashtable);
                 InRoomChat.Instance.AddLine("Infection mode (".AsColor("FFCC00") + RCSettings.InfectionMode + ") enabled. Make sure your first character is human.".AsColor("FFCC00"));
             }
@@ -12128,8 +12200,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         else if (RCSettings.InfectionMode != 0)
         {
             RCSettings.InfectionMode = 0;
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add(PhotonPlayerProperty.IsTitan, 1);
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+            {
+                { PhotonPlayerProperty.IsTitan, 1 }
+            };
             PhotonNetwork.player.SetCustomProperties(hashtable);
             InRoomChat.Instance.AddLine("Infection Mode disabled.".AsColor("FFCC00"));
             if (PhotonNetwork.isMasterClient)
@@ -12377,8 +12451,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void labelRPC(int viewId, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "labelRPC")]
+    private void LabelRPC(int viewId, PhotonMessageInfo info)
     {
         // Anarchy detection
         // https://github.com/aelariane/Anarchy/blob/master/Anarchy/Assembly/AoTTG/FengRPCs.cs
@@ -12410,8 +12484,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    [RPC]
-    private void setMasterRC(PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "setMasterRC")]
+    private void SetMasterRC(PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {

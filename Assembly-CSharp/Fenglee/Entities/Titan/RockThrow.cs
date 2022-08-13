@@ -48,7 +48,7 @@ public class RockThrow : Photon.MonoBehaviour
                             titan.photonView.RPC("hitAnkleRPC", PhotonTargets.Others, titan.photonView.ownerId);
                         }
                     }
-                    explode();
+                    Explode();
                     break;
                 case "Players":
                     GameObject gameObject2 = raycastHit.collider.gameObject.transform.root.gameObject;
@@ -86,14 +86,14 @@ public class RockThrow : Photon.MonoBehaviour
                     }
                     break;
                 case "Ground":
-                    explode();
+                    Explode();
                     break;
             }
         }
         oldP = base.transform.position;
     }
 
-    private void explode()
+    private void Explode()
     {
         GameObject gameObject;
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && PhotonNetwork.isMasterClient)
@@ -123,7 +123,7 @@ public class RockThrow : Photon.MonoBehaviour
         }
     }
 
-    public void launch(Vector3 v1)
+    public void Launch(Vector3 v1)
     {
         launched = true;
         oldP = base.transform.position;
@@ -134,18 +134,18 @@ public class RockThrow : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
-    private void launchRPC(Vector3 v, Vector3 p)
+    [Guardian.Networking.RPC(Name = "launchRPC")]
+    private void LaunchRPC(Vector3 v, Vector3 p)
     {
         launched = true;
         base.transform.position = p;
         oldP = p;
         base.transform.parent = null;
-        launch(v);
+        Launch(v);
     }
 
-    [RPC]
-    private void initRPC(int viewID, Vector3 scale, Vector3 pos, float level)
+    [Guardian.Networking.RPC(Name = "initRPC")]
+    private void InitRPC(int viewID, Vector3 scale, Vector3 pos, float level)
     {
         GameObject gameObject = PhotonView.Find(viewID).gameObject;
         Transform parent = gameObject.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R/hand_R/hand_R_001");

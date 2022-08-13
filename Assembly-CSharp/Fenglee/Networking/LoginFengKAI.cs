@@ -86,29 +86,27 @@ public class LoginFengKAI : MonoBehaviour
         form.AddField("userid", Name);
         form.AddField("password", Password);
 
-        using (WWW www = new WWW(GetInfoURL, form))
+        using WWW www = new WWW(GetInfoURL, form);
+        yield return www;
+        if (www.error != null)
         {
-            yield return www;
-            if (www.error != null)
-            {
-                print(www.error);
-            }
-            if (www.text.Contains("Error,please sign in again."))
-            {
-                NGUITools.SetActive(panelLogin, state: true);
-                NGUITools.SetActive(panelStatus, state: false);
-                output.GetComponent<UILabel>().text = www.text;
-                Name = string.Empty;
-                Password = string.Empty;
-            }
-            else
-            {
-                string[] result = www.text.Split('|');
-                Guild = result[0];
-                output2.GetComponent<UILabel>().text = result[1];
-                Player.Name = Name;
-                Player.Guild = Guild;
-            }
+            print(www.error);
+        }
+        if (www.text.Contains("Error,please sign in again."))
+        {
+            NGUITools.SetActive(panelLogin, state: true);
+            NGUITools.SetActive(panelStatus, state: false);
+            output.GetComponent<UILabel>().text = www.text;
+            Name = string.Empty;
+            Password = string.Empty;
+        }
+        else
+        {
+            string[] result = www.text.Split('|');
+            Guild = result[0];
+            output2.GetComponent<UILabel>().text = result[1];
+            Player.Name = Name;
+            Player.Guild = Guild;
         }
     }
 
@@ -125,23 +123,22 @@ public class LoginFengKAI : MonoBehaviour
         form.AddField("password2", password2);
         form.AddField("email", email);
 
-        using (WWW www = new WWW(RegisterURL, form))
+        using WWW www = new WWW(RegisterURL, form);
+        yield return www;
+        if (www.error != null)
         {
-            yield return www;
-            if (www.error != null)
+            print(www.error);
+        }
+        else
+        {
+            output.GetComponent<UILabel>().text = www.text;
+            if (www.text.Contains("Final step,to activate your account, please click the link in the activation email"))
             {
-                print(www.error);
-            }
-            else
-            {
-                output.GetComponent<UILabel>().text = www.text;
-                if (www.text.Contains("Final step,to activate your account, please click the link in the activation email"))
-                {
-                    NGUITools.SetActive(panelRegister, state: false);
-                    NGUITools.SetActive(panelLogin, state: true);
-                }
+                NGUITools.SetActive(panelRegister, state: false);
+                NGUITools.SetActive(panelLogin, state: true);
             }
         }
+
 
         ClearCookies();
     }
@@ -204,20 +201,18 @@ public class LoginFengKAI : MonoBehaviour
         form.AddField("name", Name);
         form.AddField("guildname", name);
 
-        using (WWW www = new WWW(ChangeGuildURL, form))
+        using WWW www = new WWW(ChangeGuildURL, form);
+        yield return www;
+        if (www.error != null)
         {
-            yield return www;
-            if (www.error != null)
-            {
-                print(www.error);
-            }
-            output.GetComponent<UILabel>().text = www.text;
-            if (www.text.Contains("Guild name set."))
-            {
-                NGUITools.SetActive(panelChangeGUILDNAME, state: false);
-                NGUITools.SetActive(panelStatus, state: true);
-                StartCoroutine(CoGetInfo());
-            }
+            print(www.error);
+        }
+        output.GetComponent<UILabel>().text = www.text;
+        if (www.text.Contains("Guild name set."))
+        {
+            NGUITools.SetActive(panelChangeGUILDNAME, state: false);
+            NGUITools.SetActive(panelStatus, state: true);
+            StartCoroutine(CoGetInfo());
         }
     }
 

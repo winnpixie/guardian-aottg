@@ -1,7 +1,7 @@
 ﻿class SynchronizedList<T> : System.Collections.Generic.IList<T>
 {
-    private System.Collections.Generic.List<T> RealList = new System.Collections.Generic.List<T>();
-    private object AccessLock = new object();
+    private readonly System.Collections.Generic.List<T> RealList = new System.Collections.Generic.List<T>();
+    private readonly object AccessLock = new object();
 
     public T this[int index]
     {

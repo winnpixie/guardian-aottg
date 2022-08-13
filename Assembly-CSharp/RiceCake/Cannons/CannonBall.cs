@@ -110,7 +110,7 @@ public class CannonBall : Photon.MonoBehaviour
                 {
                     component2.HitRight(base.transform.position, 0.05f);
                 }
-                destroyMe();
+                DestroyMe();
             }
             else if (gameObject.layer == 9 && (gameObject.transform.root.name.Contains("CannonWall") || gameObject.transform.root.name.Contains("CannonGround")))
             {
@@ -128,17 +128,17 @@ public class CannonBall : Photon.MonoBehaviour
     {
         if (base.photonView.isMine)
         {
-            destroyMe();
+            DestroyMe();
         }
     }
 
     public IEnumerator CoWaitAndDestroy(float time)
     {
         yield return new WaitForSeconds(time);
-        destroyMe();
+        DestroyMe();
     }
 
-    public void destroyMe()
+    public void DestroyMe()
     {
         if (disabled)
         {

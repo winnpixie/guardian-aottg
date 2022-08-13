@@ -2,31 +2,31 @@ using UnityEngine;
 
 public class TitanSpawner
 {
-    public float delay
+    public float Delay
     {
         get;
         set;
     }
 
-    public string name
+    public string Name
     {
         get;
         set;
     }
 
-    public Vector3 location
+    public Vector3 Location
     {
         get;
         set;
     }
 
-    public float time
+    public float Time
     {
         get;
         set;
     }
 
-    public bool endless
+    public bool Endless
     {
         get;
         set;
@@ -34,15 +34,15 @@ public class TitanSpawner
 
     public TitanSpawner()
     {
-        name = string.Empty;
-        location = new Vector3(0f, 0f, 0f);
-        time = 30f;
-        endless = false;
-        delay = 30f;
+        Name = string.Empty;
+        Location = new Vector3(0f, 0f, 0f);
+        Time = 30f;
+        Endless = false;
+        Delay = 30f;
     }
 
-    public void resetTime()
+    public void ResetTime()
     {
-        time = delay;
+        Time = Delay;
     }
 }

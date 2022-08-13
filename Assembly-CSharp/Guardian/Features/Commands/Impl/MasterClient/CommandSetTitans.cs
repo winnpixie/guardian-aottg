@@ -26,7 +26,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
             {
                 if (!titan.photonView.isMine || newTitanType.Equals(titan.abnormalType)) continue;
 
-                titan.setAbnormalType2(newTitanType ?? titan.abnormalType, newTitanType == TitanClass.Crawler);
+                titan.SetAbnormalType2(newTitanType ?? titan.abnormalType, newTitanType == TitanClass.Crawler);
             }
 
             GameHelper.Broadcast($"All non-player titans are now of type {newTitanType.Value}!");

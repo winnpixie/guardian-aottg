@@ -29,8 +29,8 @@ public class MovementUpdate1 : MonoBehaviour
         }
     }
 
-    [RPC]
-    private void updateMovement1(Vector3 newPosition, Quaternion newRotation, Vector3 newScale)
+    [Guardian.Networking.RPC(Name = "updateMovement1")]
+    private void UpdateMovement1(Vector3 newPosition, Quaternion newRotation, Vector3 newScale)
     {
         base.transform.position = newPosition;
         base.transform.rotation = newRotation;

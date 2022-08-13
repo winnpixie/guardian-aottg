@@ -73,7 +73,7 @@ public class RCActionHelper
 
     public int helperClass;
     public int helperType;
-    private object parameters;
+    private readonly object parameters;
     private RCActionHelper nextHelper;
 
     public RCActionHelper(int sentClass, int sentType, object options)
@@ -121,7 +121,6 @@ public class RCActionHelper
                         }
                     case 2:
                         {
-                            string text = (string)obj;
                             if (int.TryParse((string)obj, out int result))
                             {
                                 return result;
@@ -650,7 +649,6 @@ public class RCActionHelper
                         return (float)obj;
                     case 2:
                         {
-                            string text = (string)obj;
                             if (float.TryParse((string)obj, out float result))
                             {
                                 return result;

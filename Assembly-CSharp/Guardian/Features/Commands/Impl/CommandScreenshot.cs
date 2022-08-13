@@ -7,7 +7,7 @@ namespace Guardian.Features.Commands.Impl
 {
     class CommandScreenshot : Command
     {
-        private string SaveDir = GuardianClient.RootDir + "\\Screenshots";
+        private readonly string SaveDir = GuardianClient.RootDir + "\\Screenshots";
 
         public CommandScreenshot() : base("screenshot", new string[] { "ss" }, "[scale]", false) { }
 

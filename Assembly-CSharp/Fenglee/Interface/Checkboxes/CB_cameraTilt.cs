@@ -11,7 +11,7 @@ public class CB_cameraTilt : MonoBehaviour
             init = true;
             if (PlayerPrefs.HasKey("cameraTilt"))
             {
-                base.gameObject.GetComponent<UICheckbox>().isChecked = ((PlayerPrefs.GetInt("cameraTilt") == 1) ? true : false);
+                base.gameObject.GetComponent<UICheckbox>().isChecked = PlayerPrefs.GetInt("cameraTilt") == 1;
             }
             else
             {

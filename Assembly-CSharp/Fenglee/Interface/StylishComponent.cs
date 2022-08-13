@@ -114,8 +114,8 @@ public class StylishComponent : MonoBehaviour
             stylePoints += 1f;
             SetRank();
         }
-        startShake(5, 0.3f);
-        setPosition();
+        StartShake(5, 0.3f);
+        SetPosition();
         labelTotal.GetComponent<UILabel>().text = ((int)stylePoints).ToString();
         labelHits.GetComponent<UILabel>().text = styleHits + ((styleHits <= 1) ? "Hit" : "Hits");
         if (chainKillRank == 0)
@@ -163,7 +163,7 @@ public class StylishComponent : MonoBehaviour
         }
     }
 
-    private void setRankText()
+    private void SetRankText()
     {
         labelS.GetComponent<UILabel>().text = styleRankText[styleRank, 0];
         if (styleRank != 5)
@@ -207,7 +207,7 @@ public class StylishComponent : MonoBehaviour
         labelsub.GetComponent<UILabel>().text = styleRankText[styleRank, 1];
     }
 
-    public void reset()
+    public void Reset()
     {
         styleTotalDamage = 0;
         chainKillRank = 0;
@@ -237,11 +237,11 @@ public class StylishComponent : MonoBehaviour
 
     private void Start()
     {
-        setPosition();
+        SetPosition();
         base.transform.localPosition = exitPosition;
     }
 
-    private void setPosition()
+    private void SetPosition()
     {
         originalPosition = new Vector3((int)((float)Screen.width * 0.5f - 2f), (int)((float)Screen.height * 0.5f - 150f), 0f);
         exitPosition = new Vector3(Screen.width, originalPosition.y, originalPosition.z);
@@ -253,7 +253,7 @@ public class StylishComponent : MonoBehaviour
         {
             if (stylePoints > 0f)
             {
-                setRankText();
+                SetRankText();
                 bar.GetComponent<UISprite>().fillAmount = (float)GetRankPercentage() * 0.01f;
                 stylePoints -= (float)GetStyleDepletionRate() * Time.deltaTime * 10f;
                 SetRank();
@@ -271,11 +271,11 @@ public class StylishComponent : MonoBehaviour
                 chainTime = 0f;
                 chainKillRank = 0;
             }
-            shakeUpdate();
+            UpdateShake();
         }
     }
 
-    private void shakeUpdate()
+    private void UpdateShake()
     {
         if (duration > 0f)
         {
@@ -296,7 +296,7 @@ public class StylishComponent : MonoBehaviour
         }
     }
 
-    public void startShake(int R, float duration)
+    public void StartShake(int R, float duration)
     {
         if (this.duration < duration)
         {

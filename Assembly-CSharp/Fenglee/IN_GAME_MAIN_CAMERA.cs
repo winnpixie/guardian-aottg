@@ -630,7 +630,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         }
     }
 
-    public void update2()
+    public void Update2()
     {
         // Colossal Titan flash
         if (flashDuration > 0f)
@@ -713,8 +713,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             {
                 if (main_object != null)
                 {
-                    Vector3 position = base.transform.position;
-                    position = ((head == null) ? main_object.transform.position : head.transform.position);
+                    Vector3 position = ((head == null) ? main_object.transform.position : head.transform.position);
                     position += Vector3.up * heightMulti;
                     base.transform.position = Vector3.Lerp(base.transform.position, position - base.transform.forward * 5f, 0.2f);
                 }
@@ -820,7 +819,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
         if (gameOver)
         {
-            if (FengGameManagerMKII.InputRC.isInputHumanDown(InputCodeRC.LiveCamera))
+            if (FengGameManagerMKII.InputRC.IsInputHumanDown(InputCodeRC.LiveCamera))
             {
                 if ((int)FengGameManagerMKII.Settings[263] == 0)
                 {
@@ -919,7 +918,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 Minimap.Instance.myCam.nearClipPlane = 0.3f;
                 Minimap.Instance.myCam.farClipPlane = 1000f;
                 Minimap.Instance.myCam.enabled = false;
-                gameObject = (GameObject)UnityEngine.Object.Instantiate(gameObject, Vector3.zero, Quaternion.identity);
+                UnityEngine.Object.Instantiate(gameObject, Vector3.zero, Quaternion.identity);
             }
             minimap.CreateMinimap(Minimap.Instance.myCam, 512, 0.3f, FengGameManagerMKII.Level.MinimapPreset);
             if ((int)FengGameManagerMKII.Settings[231] == 0 || RCSettings.GlobalDisableMinimap == 1)

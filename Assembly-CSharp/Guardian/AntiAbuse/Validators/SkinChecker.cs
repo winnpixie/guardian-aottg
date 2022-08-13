@@ -7,7 +7,7 @@ namespace Guardian.AntiAbuse.Validators
 {
     class SkinChecker
     {
-        public static string AllowedHostsPath = GuardianClient.RootDir + "\\Hosts.txt";
+        public static readonly string AllowedHostsPath = GuardianClient.RootDir + "\\Hosts.txt";
         public static List<string> AllowedHosts = new List<string>();
 
         public static void Init()

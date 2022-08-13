@@ -462,78 +462,100 @@ public class RCAction
                             }
                         case 4:
                             {
-                                Hashtable hashtable11 = new Hashtable();
-                                hashtable11.Add(PhotonPlayerProperty.Kills, parameters[1].ReturnInt(null));
+                                Hashtable hashtable11 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.Kills, parameters[1].ReturnInt(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable11);
                                 break;
                             }
                         case 5:
                             {
-                                Hashtable hashtable10 = new Hashtable();
-                                hashtable10.Add(PhotonPlayerProperty.Deaths, parameters[1].ReturnInt(null));
+                                Hashtable hashtable10 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.Deaths, parameters[1].ReturnInt(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable10);
                                 break;
                             }
                         case 6:
                             {
-                                Hashtable hashtable9 = new Hashtable();
-                                hashtable9.Add(PhotonPlayerProperty.MaxDamage, parameters[1].ReturnInt(null));
+                                Hashtable hashtable9 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.MaxDamage, parameters[1].ReturnInt(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable9);
                                 break;
                             }
                         case 7:
                             {
-                                Hashtable hashtable8 = new Hashtable();
-                                hashtable8.Add(PhotonPlayerProperty.TotalDamage, parameters[1].ReturnInt(null));
+                                Hashtable hashtable8 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.TotalDamage, parameters[1].ReturnInt(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable8);
                                 break;
                             }
                         case 8:
                             {
-                                Hashtable hashtable7 = new Hashtable();
-                                hashtable7.Add(PhotonPlayerProperty.Name, parameters[1].ReturnString(null));
+                                Hashtable hashtable7 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.Name, parameters[1].ReturnString(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable7);
                                 break;
                             }
                         case 9:
                             {
-                                Hashtable hashtable6 = new Hashtable();
-                                hashtable6.Add(PhotonPlayerProperty.Guild, parameters[1].ReturnString(null));
+                                Hashtable hashtable6 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.Guild, parameters[1].ReturnString(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable6);
                                 break;
                             }
                         case 10:
                             {
-                                Hashtable hashtable5 = new Hashtable();
-                                hashtable5.Add(PhotonPlayerProperty.RCTeam, parameters[1].ReturnInt(null));
+                                Hashtable hashtable5 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.RCTeam, parameters[1].ReturnInt(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable5);
                                 break;
                             }
                         case 11:
                             {
-                                Hashtable hashtable4 = new Hashtable();
-                                hashtable4.Add(PhotonPlayerProperty.CustomInt, parameters[1].ReturnInt(null));
+                                Hashtable hashtable4 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.CustomInt, parameters[1].ReturnInt(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable4);
                                 break;
                             }
                         case 12:
                             {
-                                Hashtable hashtable3 = new Hashtable();
-                                hashtable3.Add(PhotonPlayerProperty.CustomBool, parameters[1].ReturnBool(null));
+                                Hashtable hashtable3 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.CustomBool, parameters[1].ReturnBool(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable3);
                                 break;
                             }
                         case 13:
                             {
-                                Hashtable hashtable2 = new Hashtable();
-                                hashtable2.Add(PhotonPlayerProperty.CustomString, parameters[1].ReturnString(null));
+                                Hashtable hashtable2 = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.CustomString, parameters[1].ReturnString(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable2);
                                 break;
                             }
                         case 14:
                             {
-                                Hashtable hashtable = new Hashtable();
-                                hashtable.Add(PhotonPlayerProperty.RCTeam, parameters[1].ReturnFloat(null));
+                                Hashtable hashtable = new Hashtable()
+                                {
+                                    { PhotonPlayerProperty.CustomFloat, parameters[1].ReturnFloat(null) }
+                                };
                                 photonPlayer.SetCustomProperties(hashtable);
                                 break;
                             }

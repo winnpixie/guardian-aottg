@@ -43,6 +43,6 @@ public class BTN_PAUSE_MENU_CONTINUE : MonoBehaviour
             Screen.lockCursor = false;
         }
         inputs.menuOn = false;
-        inputs.justUPDATEME();
+        inputs.JustUpdate();
     }
 }

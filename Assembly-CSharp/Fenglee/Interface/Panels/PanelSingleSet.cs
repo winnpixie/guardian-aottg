@@ -18,7 +18,7 @@ public class PanelSingleSet : MonoBehaviour
 
     private void OnEnable()
     {
-        UIPopupList list = GameObject.Find("PopupListMap").GetComponent<UIPopupList>();
+        // UIPopupList list = GameObject.Find("PopupListMap").GetComponent<UIPopupList>();
     }
 
     private void Update()

@@ -1388,7 +1388,6 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             }
             argsAsString += type == null ? "null" : type.Name;
         }
-        bool isKnown = false;
 
         PhotonView photonView = this.GetPhotonView(viewId);
         if (photonView == null)
@@ -1412,171 +1411,184 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             return;
         }
 
-        if (photonView != null && rpcName.Length != 0 && photonView.prefix == viewPrefix)
+        if (photonView == null) return;
+        if (rpcName.Length < 1) return;
+        if (photonView.prefix != viewPrefix) return;
+
+        bool isKnown = false;
+        if (photonView.group == 0 || this.allowedReceivingGroups.Contains(photonView.group))
         {
-            if (photonView.group == 0 || this.allowedReceivingGroups.Contains(photonView.group))
+            List<MonoBehaviour> behaviours = null;
+            if (this.monoRPCBehavioursCache.ContainsKey(photonView))
             {
-                List<MonoBehaviour> behaviours = null;
-                if (this.monoRPCBehavioursCache.ContainsKey(photonView))
-                {
-                    behaviours = this.monoRPCBehavioursCache[photonView];
-                }
-                if (behaviours == null)
-                {
-                    behaviours = this.monoRPCBehavioursCache[photonView] = photonView.GetComponents<MonoBehaviour>().Where(b => b != null).ToList();
-                }
-                foreach (MonoBehaviour behaviour in behaviours)
-                {
-                    System.Type keyType = behaviour.GetType();
-                    List<MethodInfo> methods = null;
-                    if (this.monoRPCMethodsCache.ContainsKey(keyType))
-                    {
-                        methods = this.monoRPCMethodsCache[keyType];
-                    }
+                behaviours = this.monoRPCBehavioursCache[photonView];
+            }
+            else
+            {
+                behaviours = this.monoRPCBehavioursCache[photonView] = photonView.GetComponents<MonoBehaviour>().Where(b => b != null).ToList();
+            }
 
-                    if (methods == null)
-                    {
-                        methods = this.monoRPCMethodsCache[keyType] = SupportClass.GetMethods(keyType, typeof(RPC));
-                    }
+            foreach (MonoBehaviour behaviour in behaviours)
+            {
+                System.Type keyType = behaviour.GetType();
+                List<MethodInfo> methods = null;
+                if (this.monoRPCMethodsCache.ContainsKey(keyType))
+                {
+                    methods = this.monoRPCMethodsCache[keyType];
+                }
+                else
+                {
+                    // methods = this.monoRPCMethodsCache[keyType] = SupportClass.GetMethods(keyType, typeof(RPC));
+                    methods = this.monoRPCMethodsCache[keyType] = SupportClass.GetMethods(keyType, typeof(Guardian.Networking.RPC));
+                }
 
-                    if (methods != null)
+                if (methods == null) return;
+
+                foreach (MethodInfo method in methods)
+                {
+                    if (!GetRPCName(method).Equals(rpcName)) continue;
+
+                    isKnown = true;
+                    ParameterInfo[] methodParameters = method.GetParameters();
+                    if (this.CheckTypeMatch(methodParameters, callParameterTypes))
                     {
-                        foreach (MethodInfo method in methods)
+                        if (methodParameters.Length > 0 && methodParameters[methodParameters.Length - 1].ParameterType == typeof(PhotonMessageInfo))
                         {
-                            if (method.Name.Equals(rpcName))
+                            if (callParameterTypes.Length == methodParameters.Length)
                             {
-                                isKnown = true;
-                                ParameterInfo[] methodParameters = method.GetParameters();
-                                if (this.CheckTypeMatch(methodParameters, callParameterTypes))
+                                Guardian.GuardianClient.Logger.Error($"Spoofed '{rpcName}({argsAsString})' RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
+                                if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
                                 {
-                                    if (methodParameters.Length > 0 && methodParameters[methodParameters.Length - 1].ParameterType == typeof(PhotonMessageInfo))
-                                    {
-                                        if (callParameterTypes.Length == methodParameters.Length)
-                                        {
-                                            Guardian.GuardianClient.Logger.Error($"Spoofed '{rpcName}({argsAsString})' RPC from #{(sender == null ? "?" : sender.Id.ToString())}.");
-                                            if (sender != null && !FengGameManagerMKII.IgnoreList.Contains(sender.Id))
-                                            {
-                                                FengGameManagerMKII.IgnoreList.Add(sender.Id);
-                                            }
-                                            break;
-                                        }
-
-                                        object[] tmp = new object[parameters.Length + 1];
-                                        Array.Resize(ref parameters, parameters.Length + 1);
-                                        parameters[parameters.Length - 1] = new PhotonMessageInfo(sender, timestamp, photonView);
-                                    }
-
-                                    object returnVal = method.Invoke(behaviour, parameters);
-                                    if (method.ReturnType == typeof(IEnumerator))
-                                    {
-                                        behaviour.StartCoroutine((IEnumerator)returnVal);
-                                    }
+                                    FengGameManagerMKII.IgnoreList.Add(sender.Id);
                                 }
-                                else if (methodParameters.Length == 1 && methodParameters[0].ParameterType.IsArray)
-                                {
-                                    object returnVal = method.Invoke(behaviour, new object[] { parameters });
-                                    if (method.ReturnType == typeof(IEnumerator))
-                                    {
-                                        behaviour.StartCoroutine((IEnumerator)returnVal);
-                                    }
-                                }
-                                else
-                                {
-                                    Guardian.GuardianClient.Logger.Warn($"Invalid '{rpcName}' RPC from #{(sender == null ? "?" : sender.Id.ToString())}, parameters: {argsAsString}.");
-                                }
+                                break;
                             }
+
+                            object[] tmp = new object[parameters.Length + 1];
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new PhotonMessageInfo(sender, timestamp, photonView);
+                        }
+
+                        object returnVal = method.Invoke(behaviour, parameters);
+                        if (method.ReturnType == typeof(IEnumerator))
+                        {
+                            behaviour.StartCoroutine((IEnumerator)returnVal);
                         }
                     }
+                    else if (methodParameters.Length == 1 && methodParameters[0].ParameterType.IsArray)
+                    {
+                        object returnVal = method.Invoke(behaviour, new object[] { parameters });
+                        if (method.ReturnType == typeof(IEnumerator))
+                        {
+                            behaviour.StartCoroutine((IEnumerator)returnVal);
+                        }
+                    }
+                    else
+                    {
+                        Guardian.GuardianClient.Logger.Warn($"Invalid '{rpcName}' RPC from #{(sender == null ? "?" : sender.Id.ToString())}, parameters: {argsAsString}.");
+                    }
                 }
             }
         }
-        if (sender != null && photonView != null)
+
+        // TODO: Jesus christ.
+        if (sender == null) return;
+        if (isKnown) return;
+
+        switch (rpcName)
         {
-            if (!isKnown)
-            {
-                switch (rpcName)
-                {
-                    case "FlareColour":
-                        sender.IsAnarchyExpMod = true;
-                        break;
-                    case "SetupThunderSpearsRPC": // Updated RC
-                    case "SetThunderSpearsRPC":
-                    case "EmoteEmojiRPC":
-                    case "EmoteTextRPC":
-                    case "SetWeatherRPC":
-                    case "IsUpdatedRPC":
-                    case "DisableRPC":
-                        sender.IsNewRCMod = true;
-                        break;
-                    case "pedoModUser": // PedoBear
-                    case "NetThrowBlade":
-                    case "FireSingleTS":
-                    case "dropObj":
-                    case "GravityChange":
-                    case "dropPicked":
-                        sender.IsPBMod = true;
-                        break;
-                    case "whoIsMyReinerTitan": // Universe
-                    case "whoIsMyAnnieTitan":
-                    case "backToAnnieHumanRPC":
-                    case "whoIsMyColossalTitan":
-                    case "SetAnimationSpeed":
-                    case "GoBerserk":
-                    case "SetBerserkTexture":
-                    case "CrownRPC":
-                        sender.IsUniverseMod = true;
-                        break;
-                    case "Cyan_modRPC": // Cyan Mod
-                    case "LoadObjects":
-                    case "newObject":
-                        sender.IsCyanMod = true;
-                        break;
-                    case "RPC_Ball":
-                        sender.IsKNKMod = true;
-                        break;
-                    case "NRCRPC":
-                        sender.IsNRCMod = true;
-                        break;
-                    case "RecompilePlayerRPC": // I'll never know
-                    case "NekoEarsRPC":
-                    case "FoxTailRPC":
-                    case "WingsRPC":
-                    case "HornsRPC":
-                    case "NekoRPC":
-                        break;
-                    case "receiveSatanPlayers": // RC83
-                        sender.IsRC83Mod = true;
-                        break;
-                    case "AddMeToCEList": // Cyrus Essentials
-                        sender.IsCyrusMod = true;
-                        break;
-                    case "ResetRPCMgr": // ExpMod
-                    case "HookDMRPC":
-                    case "GetDownRPC":
-                    case "pairRPC": // ExpMod?
-                    case "flareColorRPC":
-                    case "EMCustomMapRPC":
-                    case "viceRequest":
-                    case "setSup":
-                    case "setSup2":
-                    case "setGun":
-                    case "setBuilder":
-                    case "SelfRevivePermissionRPC":
-                    case "AniSpeed":
-                        sender.IsExpeditionMod = true;
-                        break;
-                    case "TrapJoin": // TRAP
-                        sender.IsTRAPMod = true;
-                        break;
-                    case "team_winner_popup": // Ranked RC
-                        sender.IsRRCMod = true;
-                        break;
-                    default:
-                        Guardian.GuardianClient.Logger.Warn($"No '{rpcName}({argsAsString})' from #{sender.Id} in PV {viewId}.");
-                        break;
-                }
-            }
+            case "FlareColour":
+                sender.IsAnarchyExpMod = true;
+                break;
+            case "SetupThunderSpearsRPC": // Updated RC
+            case "SetThunderSpearsRPC":
+            case "EmoteEmojiRPC":
+            case "EmoteTextRPC":
+            case "SetWeatherRPC":
+            case "IsUpdatedRPC":
+            case "DisableRPC":
+                sender.IsNewRCMod = true;
+                break;
+            case "pedoModUser": // PedoBear
+            case "NetThrowBlade":
+            case "FireSingleTS":
+            case "dropObj":
+            case "GravityChange":
+            case "dropPicked":
+                sender.IsPBMod = true;
+                break;
+            case "whoIsMyReinerTitan": // Universe
+            case "whoIsMyAnnieTitan":
+            case "backToAnnieHumanRPC":
+            case "whoIsMyColossalTitan":
+            case "SetAnimationSpeed":
+            case "GoBerserk":
+            case "SetBerserkTexture":
+            case "CrownRPC":
+                sender.IsUniverseMod = true;
+                break;
+            case "Cyan_modRPC": // Cyan Mod
+            case "LoadObjects":
+            case "newObject":
+                sender.IsCyanMod = true;
+                break;
+            case "RPC_Ball":
+                sender.IsKNKMod = true;
+                break;
+            case "NRCRPC":
+                sender.IsNRCMod = true;
+                break;
+            case "RecompilePlayerRPC": // I'll never know
+            case "NekoEarsRPC":
+            case "FoxTailRPC":
+            case "WingsRPC":
+            case "HornsRPC":
+            case "NekoRPC":
+                break;
+            case "receiveSatanPlayers": // RC83
+                sender.IsRC83Mod = true;
+                break;
+            case "AddMeToCEList": // Cyrus Essentials
+                sender.IsCyrusMod = true;
+                break;
+            case "ResetRPCMgr": // ExpMod
+            case "HookDMRPC":
+            case "GetDownRPC":
+            case "pairRPC": // ExpMod?
+            case "flareColorRPC":
+            case "EMCustomMapRPC":
+            case "viceRequest":
+            case "setSup":
+            case "setSup2":
+            case "setGun":
+            case "setBuilder":
+            case "SelfRevivePermissionRPC":
+            case "AniSpeed":
+                sender.IsExpeditionMod = true;
+                break;
+            case "TrapJoin": // TRAP
+                sender.IsTRAPMod = true;
+                break;
+            case "team_winner_popup": // Ranked RC
+                sender.IsRRCMod = true;
+                break;
+            default:
+                Guardian.GuardianClient.Logger.Warn($"No '{rpcName}({argsAsString})' from #{sender.Id} in PV {viewId}.");
+                break;
         }
+    }
+
+    private string GetRPCName(MethodInfo method)
+    {
+        foreach (Attribute attr in method.GetCustomAttributes(false))
+        {
+            if (!(attr is Guardian.Networking.RPC rpc)) continue;
+            if (rpc.Name.Length < 1) continue;
+
+            return rpc.Name;
+        }
+
+        return method.Name;
     }
 
     private bool CheckTypeMatch(ParameterInfo[] methodParameters, Type[] callParameterTypes)

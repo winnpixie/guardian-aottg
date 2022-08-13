@@ -228,99 +228,57 @@ public class Language
 
     public static int GetLangIndex(string lang)
     {
-        switch (lang)
+        return lang switch
         {
-            case "ENGLISH":
-                return 0;
-            case "简体中文":
-                return 1;
-            case "SPANISH":
-                return 2;
-            case "POLSKI":
-                return 3;
-            case "ITALIANO":
-                return 4;
-            case "NORWEGIAN":
-                return 5;
-            case "PORTUGUESE":
-                return 6;
-            case "PORTUGUESE_BR":
-                return 7;
-            case "繁體中文_台":
-                return 8;
-            case "繁體中文_港":
-                return 9;
-            case "SLOVAK":
-                return 10;
-            case "GERMAN":
-                return 11;
-            case "FRANCAIS":
-                return 12;
-            case "TÜRKÇE":
-                return 13;
-            case "ARABIC":
-                return 14;
-            case "Thai":
-                return 15;
-            case "Русский":
-                return 16;
-            case "NEDERLANDS":
-                return 17;
-            case "Hebrew":
-                return 18;
-            case "DANSK":
-                return 19;
-        }
-
-        return 0;
+            "ENGLISH" => 0,
+            "简体中文" => 1,
+            "SPANISH" => 2,
+            "POLSKI" => 3,
+            "ITALIANO" => 4,
+            "NORWEGIAN" => 5,
+            "PORTUGUESE" => 6,
+            "PORTUGUESE_BR" => 7,
+            "繁體中文_台" => 8,
+            "繁體中文_港" => 9,
+            "SLOVAK" => 10,
+            "GERMAN" => 11,
+            "FRANCAIS" => 12,
+            "TÜRKÇE" => 13,
+            "ARABIC" => 14,
+            "Thai" => 15,
+            "Русский" => 16,
+            "NEDERLANDS" => 17,
+            "Hebrew" => 18,
+            "DANSK" => 19,
+            _ => 0
+        };
     }
 
     public static string GetLang(int id)
     {
-        switch (id)
+        return id switch
         {
-            case 0:
-                return "ENGLISH";
-            case 1:
-                return "简体中文";
-            case 2:
-                return "SPANISH";
-            case 3:
-                return "POLSKI";
-            case 4:
-                return "ITALIANO";
-            case 5:
-                return "NORWEGIAN";
-            case 6:
-                return "PORTUGUESE";
-            case 7:
-                return "PORTUGUESE_BR";
-            case 8:
-                return "繁體中文_台";
-            case 9:
-                return "繁體中文_港";
-            case 10:
-                return "SLOVAK";
-            case 11:
-                return "GERMAN";
-            case 12:
-                return "FRANCAIS";
-            case 13:
-                return "TÜRKÇE";
-            case 14:
-                return "ARABIC";
-            case 15:
-                return "Thai";
-            case 16:
-                return "Русский";
-            case 17:
-                return "NEDERLANDS";
-            case 18:
-                return "Hebrew";
-            case 19:
-                return "DANSK";
-            default:
-                return "ENGLISH";
-        }
+            0 => "ENGLISH",
+            1 => "简体中文",
+            2 => "SPANISH",
+            3 => "POLSKI",
+            4 => "ITALIANO",
+            5 => "NORWEGIAN",
+            6 => "PORTUGUESE",
+            7 => "PORTUGUESE_BR",
+            8 => "繁體中文_台",
+            9 => "繁體中文_港",
+            10 => "SLOVAK",
+            11 => "GERMAN",
+            12 => "FRANCAIS",
+            13 => "TÜRKÇE",
+            14 => "ARABIC",
+            15 => "Thai",
+            16 => "Русский",
+            17 => "NEDERLANDS",
+            18 => "Hebrew",
+            19 => "DANSK",
+            _ => "ENGLISH"
+        };
     }
 }

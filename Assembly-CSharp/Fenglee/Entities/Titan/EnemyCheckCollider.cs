@@ -63,7 +63,7 @@ public class EnemyCheckCollider : Photon.MonoBehaviour
                     }
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                     {
-                        component.transform.root.GetComponent<HERO>().blowAway(vector.normalized * d + Vector3.up * 1f);
+                        component.transform.root.GetComponent<HERO>().BlowAway(vector.normalized * d + Vector3.up * 1f);
                     }
                     else if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                     {

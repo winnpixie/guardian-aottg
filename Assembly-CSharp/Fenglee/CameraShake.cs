@@ -7,7 +7,7 @@ public class CameraShake : MonoBehaviour
     private float decay;
     private bool flip;
 
-    private void shakeUpdate()
+    private void UpdateShake()
     {
         if (duration > 0f)
         {
@@ -25,7 +25,7 @@ public class CameraShake : MonoBehaviour
         }
     }
 
-    public void startShake(float R, float duration, float decay = 0.95f)
+    public void StartShake(float R, float duration, float decay = 0.95f)
     {
         if (this.duration < duration)
         {

@@ -8,7 +8,7 @@ namespace Guardian.UI
     {
         public Gui CurrentScreen;
 
-        private GuiDebug DebugScreen = new GuiDebug();
+        private readonly GuiDebug DebugScreen = new GuiDebug();
 
         public void OpenScreen(Gui screen)
         {

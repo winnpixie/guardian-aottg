@@ -86,7 +86,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
                     return;
                 }
                 Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
-                setHairPRC(hairIndex, eyeIndex, hair_color.r, hair_color.g, hair_color.b);
+                SetHairRPC(hairIndex, eyeIndex, hair_color.r, hair_color.g, hair_color.b);
             }
         }
         else
@@ -94,14 +94,14 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             Object.Destroy(part_hair);
             hair = CostumeHair.MaleHairs[3];
             hairType = 3;
-            GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.hair));
+            GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.Hair));
             gameObject.transform.parent = hair_go_ref.transform.parent;
             gameObject.transform.position = hair_go_ref.transform.position;
             gameObject.transform.rotation = hair_go_ref.transform.rotation;
             gameObject.transform.localScale = hair_go_ref.transform.localScale;
-            gameObject.renderer.material = CharacterMaterials.materials[hair.texture];
+            gameObject.renderer.material = CharacterMaterials.materials[hair.Texture];
             int hairColorIndex = Random.Range(1, 4);
-            switch(hairColorIndex)
+            switch (hairColorIndex)
             {
                 case 1:
                     gameObject.renderer.material.color = FengColor.PunkHair1;
@@ -123,20 +123,20 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
-    private void setHairPRC(int hairIndex, int eyeIndex, float hairR, float hairG, float hairB)
+    [Guardian.Networking.RPC(Name = "setHairPRC")]
+    private void SetHairRPC(int hairIndex, int eyeIndex, float hairR, float hairG, float hairB)
     {
         Object.Destroy(part_hair);
         hair = CostumeHair.MaleHairs[hairIndex];
         this.hairType = hairIndex;
-        if (hair.hair.Length > 0)
+        if (hair.Hair.Length > 0)
         {
-            GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.hair));
+            GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.Hair));
             gameObject.transform.parent = hair_go_ref.transform.parent;
             gameObject.transform.position = hair_go_ref.transform.position;
             gameObject.transform.rotation = hair_go_ref.transform.rotation;
             gameObject.transform.localScale = hair_go_ref.transform.localScale;
-            gameObject.renderer.material = CharacterMaterials.materials[hair.texture];
+            gameObject.renderer.material = CharacterMaterials.materials[hair.Texture];
             gameObject.renderer.material.color = new Color(hairR, hairG, hairB);
             part_hair = gameObject;
         }
@@ -192,7 +192,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
                     return;
                 }
                 Color hair_color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
-                setHairPRC(hairIndex, eyeIndex, hair_color.r, hair_color.g, hair_color.b);
+                SetHairRPC(hairIndex, eyeIndex, hair_color.r, hair_color.g, hair_color.b);
             }
         }
         else
@@ -205,17 +205,17 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             Object.Destroy(part_hair);
             this.hairType = hairIndex;
             hair = CostumeHair.MaleHairs[hairIndex];
-            if (hair.hair == string.Empty)
+            if (hair.Hair == string.Empty)
             {
                 hair = CostumeHair.MaleHairs[9];
                 this.hairType = 9;
             }
-            part_hair = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.hair));
+            part_hair = (GameObject)Object.Instantiate(Resources.Load("Character/" + hair.Hair));
             part_hair.transform.parent = hair_go_ref.transform.parent;
             part_hair.transform.position = hair_go_ref.transform.position;
             part_hair.transform.rotation = hair_go_ref.transform.rotation;
             part_hair.transform.localScale = hair_go_ref.transform.localScale;
-            part_hair.renderer.material = CharacterMaterials.materials[hair.texture];
+            part_hair.renderer.material = CharacterMaterials.materials[hair.Texture];
             part_hair.renderer.material.color = HeroCostume.Costumes[Random.Range(0, HeroCostume.Costumes.Length - 5)].hair_color;
             int eyeIndex = Random.Range(1, 8);
             SetEyeTexture(eye, eyeIndex);
@@ -234,8 +234,8 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
-    public void setHairRPC2(int hair, int eye, string hairlink)
+    [Guardian.Networking.RPC(Name = "setHairRPC2")]
+    public void SetHairRPC2(int hair, int eye, string hairlink)
     {
         if ((int)FengGameManagerMKII.Settings[1] == 1)
         {
@@ -249,14 +249,14 @@ public class TITAN_SETUP : Photon.MonoBehaviour
         Object.Destroy(part_hair);
         this.hair = CostumeHair.MaleHairs[hairIndex];
         hairType = hairIndex;
-        if (this.hair.hair.Length > 0)
+        if (this.hair.Hair.Length > 0)
         {
-            GameObject obj2 = (GameObject)Object.Instantiate(Resources.Load("Character/" + this.hair.hair));
+            GameObject obj2 = (GameObject)Object.Instantiate(Resources.Load("Character/" + this.hair.Hair));
             obj2.transform.parent = hair_go_ref.transform.parent;
             obj2.transform.position = hair_go_ref.transform.position;
             obj2.transform.rotation = hair_go_ref.transform.rotation;
             obj2.transform.localScale = hair_go_ref.transform.localScale;
-            obj2.renderer.material = CharacterMaterials.materials[this.hair.texture];
+            obj2.renderer.material = CharacterMaterials.materials[this.hair.Texture];
             bool flag = true;
             if ((int)FengGameManagerMKII.Settings[63] == 1)
             {

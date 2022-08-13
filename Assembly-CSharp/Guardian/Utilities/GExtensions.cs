@@ -91,7 +91,7 @@ public static class GExtensions
 
     public static bool IsHex(this string str)
     {
-        return (str.Length == 6 || str.Length == 8) && int.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out int v);
+        return (str.Length == 6 || str.Length == 8) && int.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _);
     }
 
     public static string ToHex(this Color color)
@@ -160,46 +160,27 @@ public static class GExtensions
 
     public static string AsString(object obj)
     {
-        if (obj != null && obj is string)
-        {
-            return (string)obj;
-        }
-
-        return string.Empty;
+        return obj != null && obj is string str ? str : string.Empty;
     }
 
     public static int AsInt(object obj)
     {
-        if (obj != null && obj is int)
-        {
-            return (int)obj;
-        }
-        return 0;
+        return obj != null && obj is int i ? i : 0;
     }
 
     public static float AsFloat(object obj)
     {
-        if (obj != null && obj is float)
-        {
-            return (float)obj;
-        }
-
-        return 0f;
+        return obj != null && obj is float f ? f : 0;
     }
 
     public static bool AsBool(object obj)
     {
-        if (obj != null && obj is bool)
-        {
-            return (bool)obj;
-        }
-
-        return false;
+        return obj != null && obj is bool b && b;
     }
 
     public static bool TryParseEnum<T>(string input, out T value) where T : Enum
     {
-        value = default(T);
+        value = default;
         try
         {
             Type enumType = typeof(T);

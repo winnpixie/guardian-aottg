@@ -2,7 +2,7 @@
 {
     class CommandHelp : Command
     {
-        private int CommandsPerPage = 7;
+        private readonly int CommandsPerPage = 7;
 
         public CommandHelp() : base("help", new string[] { "?", "commands" }, "[page/command]", false) { }
 

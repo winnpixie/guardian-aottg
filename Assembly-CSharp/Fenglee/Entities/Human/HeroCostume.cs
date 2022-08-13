@@ -62,7 +62,7 @@ public class HeroCostume
     public HeroStat stat;
     public int costumeId;
 
-    public void setCape()
+    public void SetCape()
     {
         if (cape)
         {
@@ -74,7 +74,7 @@ public class HeroCostume
         }
     }
 
-    public void setBodyByCostumeId(int id = -1)
+    public void SetBodyByCostumeId(int id = -1)
     {
         if (id == -1)
         {
@@ -94,7 +94,7 @@ public class HeroCostume
         part_chest_skinned_cloth_texture = CostumeOptions[id].part_chest_skinned_cloth_texture;
     }
 
-    public void setTexture()
+    public void SetTextures()
     {
         if (uniform_type == UNIFORM_TYPE.CasualAHSS)
         {
@@ -805,7 +805,7 @@ public class HeroCostume
                 Costumes[i].stat = HeroStat.GetInfo("CUSTOM_DEFAULT");
                 Costumes[i].id = i;
                 Costumes[i].SetMesh();
-                Costumes[i].setTexture();
+                Costumes[i].SetTextures();
             }
             CostumeOptions = new HeroCostume[27]
             {
@@ -939,13 +939,13 @@ public class HeroCostume
                 body_mesh = "character_body_casual_MB";
             }
         }
-        if (hairInfo.hair.Length > 0)
+        if (hairInfo.Hair.Length > 0)
         {
-            hair_mesh = hairInfo.hair;
+            hair_mesh = hairInfo.Hair;
         }
-        if (hairInfo.hasCloth)
+        if (hairInfo.HasCloth)
         {
-            hair_1_mesh = hairInfo.hair_1;
+            hair_1_mesh = hairInfo.Hair1;
         }
         if (eye_texture_id >= 0)
         {
@@ -967,6 +967,6 @@ public class HeroCostume
         {
             glass_mesh = string.Empty;
         }
-        setCape();
+        SetCape();
     }
 }

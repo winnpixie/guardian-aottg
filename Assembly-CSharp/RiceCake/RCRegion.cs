@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class RCRegion
 {
-    public Vector3 location;
-    private float dimX;
-    private float dimY;
-    private float dimZ;
+    public readonly Vector3 location;
+    private readonly float dimX;
+    private readonly float dimY;
+    private readonly float dimZ;
     public GameObject myBox;
 
     public RCRegion(Vector3 loc, float x, float y, float z)

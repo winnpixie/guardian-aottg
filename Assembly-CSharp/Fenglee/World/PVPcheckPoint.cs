@@ -165,28 +165,28 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             case CheckPointState.None:
                 if (playerOn && !titanOn)
                 {
-                    humanGetsPoint();
-                    titanLosePoint();
+                    AddHumanPoint();
+                    LoseTitanPoint();
                 }
                 else if (titanOn && !playerOn)
                 {
-                    titanGetsPoint();
-                    humanLosePoint();
+                    AddTitanPoint();
+                    LoseHumanPoint();
                 }
                 else
                 {
-                    humanLosePoint();
-                    titanLosePoint();
+                    LoseHumanPoint();
+                    LoseTitanPoint();
                 }
                 break;
             case CheckPointState.Human:
                 if (titanOn && !playerOn)
                 {
-                    titanGetsPoint();
+                    AddTitanPoint();
                 }
                 else
                 {
-                    titanLosePoint();
+                    LoseTitanPoint();
                 }
                 getPtsTimer += Time.deltaTime;
                 if (getPtsTimer > getPtsInterval)
@@ -202,11 +202,11 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             case CheckPointState.Titan:
                 if (playerOn && !titanOn)
                 {
-                    humanGetsPoint();
+                    AddHumanPoint();
                 }
                 else
                 {
-                    humanLosePoint();
+                    LoseHumanPoint();
                 }
                 getPtsTimer += Time.deltaTime;
                 if (getPtsTimer > getPtsInterval)
@@ -295,7 +295,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         }
     }
 
-    private void humanGetsPoint()
+    private void AddHumanPoint()
     {
         if (humanPt >= humanPtMax)
         {
@@ -323,7 +323,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         }
     }
 
-    private void titanGetsPoint()
+    private void AddTitanPoint()
     {
         if (titanPt >= titanPtMax)
         {
@@ -367,7 +367,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         }
     }
 
-    private void titanLosePoint()
+    private void LoseTitanPoint()
     {
         if (!(titanPt > 0f))
         {
@@ -384,7 +384,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         }
     }
 
-    private void humanLosePoint()
+    private void LoseHumanPoint()
     {
         if (!(humanPt > 0f))
         {
@@ -403,15 +403,13 @@ public class PVPcheckPoint : Photon.MonoBehaviour
 
     public string GetState()
     {
-        switch (state)
+        return state switch
         {
-            case CheckPointState.Human:
-                return "[" + ColorSet.Human + "]H[-]";
-            case CheckPointState.Titan:
-                return "[" + ColorSet.TitanPlayer + "]T[-]";
-            default:
-                return "[FFFFFF]_[-]";
-        }
+            CheckPointState.Human => "[" + ColorSet.Human + "]H[-]",
+            CheckPointState.Titan => "[" + ColorSet.TitanPlayer + "]T[-]",
+            CheckPointState.None => "[FFFFFF]_[-]",
+            _ => "[FFFFFF]?[-]"
+        };
     }
 
     private bool HasTeamWon(CheckPointState state)
@@ -427,20 +425,20 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         return true;
     }
 
-    [RPC]
-    private void changeHumanPt(float points)
+    [Guardian.Networking.RPC(Name = "changeHumanPt")]
+    private void ChangeHumanPt(float points)
     {
         humanPt = points;
     }
 
-    [RPC]
-    private void changeTitanPt(float points)
+    [Guardian.Networking.RPC(Name = "changeTitanPt")]
+    private void ChangeTitanPt(float points)
     {
         titanPt = points;
     }
 
-    [RPC]
-    private void changeState(int num)
+    [Guardian.Networking.RPC(Name = "changeState")]
+    private void ChangeState(int num)
     {
         state = (CheckPointState)num;
     }

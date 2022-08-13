@@ -7,7 +7,7 @@ namespace Guardian.Features.Properties
 {
     class PropertyManager : FeatureManager<Property>
     {
-        private string _dataPath = GuardianClient.RootDir + "\\GameSettings.txt";
+        private readonly string _dataPath = GuardianClient.RootDir + "\\GameSettings.txt";
 
         // Gamemodes
         public Property<bool> BombsKillTitans = new Property<bool>("Gamemodes_Bomb:BombsKillTitans", new string[0], true);

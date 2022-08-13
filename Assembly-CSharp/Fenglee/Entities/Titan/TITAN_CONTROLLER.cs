@@ -46,8 +46,8 @@ public class TITAN_CONTROLLER : MonoBehaviour
         // Horse Controls
         if (isHorse)
         {
-            forward = (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseForward) ? 1 : (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseBack) ? (-1) : 0));
-            strafe = (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseLeft) ? (-1) : (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseRight) ? 1 : 0));
+            forward = (FengGameManagerMKII.InputRC.IsInputHorse(InputCodeRC.HorseForward) ? 1 : (FengGameManagerMKII.InputRC.IsInputHorse(InputCodeRC.HorseBack) ? (-1) : 0));
+            strafe = (FengGameManagerMKII.InputRC.IsInputHorse(InputCodeRC.HorseLeft) ? (-1) : (FengGameManagerMKII.InputRC.IsInputHorse(InputCodeRC.HorseRight) ? 1 : 0));
             if (strafe != 0 || forward != 0)
             {
                 float currentYaw = currentCamera.transform.rotation.eulerAngles.y;
@@ -66,17 +66,17 @@ public class TITAN_CONTROLLER : MonoBehaviour
                 currentDirection = targetDirection;
             }
 
-            if (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseJump))
+            if (FengGameManagerMKII.InputRC.IsInputHorse(InputCodeRC.HorseJump))
             {
                 isAttackDown = true;
             }
-            isWALKDown = FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseWalk);
+            isWALKDown = FengGameManagerMKII.InputRC.IsInputHorse(InputCodeRC.HorseWalk);
             return;
         }
 
         // Titan Controls
-        forward = (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanForward) ? 1 : (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanBack) ? (-1) : 0));
-        strafe = (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanLeft) ? (-1) : (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanRight) ? 1 : 0));
+        forward = (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanForward) ? 1 : (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanBack) ? (-1) : 0));
+        strafe = (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanLeft) ? (-1) : (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanRight) ? 1 : 0));
         if (strafe != 0 || forward != 0)
         {
             float currentYaw = currentCamera.transform.rotation.eulerAngles.y;
@@ -121,17 +121,17 @@ public class TITAN_CONTROLLER : MonoBehaviour
             cameraSideToBody -= 360f;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanPunch))
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanPunch))
         {
             isAttackDown = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanSlam))
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanSlam))
         {
             isAttackIIDown = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanJump))
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanJump))
         {
             isJumpDown = true;
         }
@@ -141,71 +141,71 @@ public class TITAN_CONTROLLER : MonoBehaviour
             isSuicide = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanCover))
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanCover))
         {
             cover = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanSit))
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanSit))
         {
             sit = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabFront) && cameraSideToBody >= 0f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanGrabFront) && cameraSideToBody >= 0f)
         {
             grabfrontr = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabFront) && cameraSideToBody < 0f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanGrabFront) && cameraSideToBody < 0f)
         {
             grabfrontl = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabBack) && cameraSideToBody >= 0f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanGrabBack) && cameraSideToBody >= 0f)
         {
             grabbackr = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabBack) && cameraSideToBody < 0f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanGrabBack) && cameraSideToBody < 0f)
         {
             grabbackl = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabNape) && cameraSideToBody >= 0f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanGrabNape) && cameraSideToBody >= 0f)
         {
             grabnaper = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanGrabNape) && cameraSideToBody < 0f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanGrabNape) && cameraSideToBody < 0f)
         {
             grabnapel = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanAntiAE) && cameraSideToBody >= 0f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.titanAntiAE) && cameraSideToBody >= 0f)
         {
             choptr = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.titanAntiAE) && cameraSideToBody < 0f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.titanAntiAE) && cameraSideToBody < 0f)
         {
             choptl = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanBite) && cameraSideToBody > 7.5f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanBite) && cameraSideToBody > 7.5f)
         {
             biter = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanBite) && cameraSideToBody < -7.5f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanBite) && cameraSideToBody < -7.5f)
         {
             bitel = true;
         }
 
-        if (FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanBite) && cameraSideToBody >= -7.5f && cameraSideToBody <= 7.5f)
+        if (FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanBite) && cameraSideToBody >= -7.5f && cameraSideToBody <= 7.5f)
         {
             bite = true;
         }
 
-        isWALKDown = FengGameManagerMKII.InputRC.isInputTitan(InputCodeRC.TitanWalk);
+        isWALKDown = FengGameManagerMKII.InputRC.IsInputTitan(InputCodeRC.TitanWalk);
     }
 }

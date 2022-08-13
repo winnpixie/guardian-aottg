@@ -22,7 +22,6 @@ public class UIMainReferences : MonoBehaviour
     public GameObject PanelMultiPWD;
     public GameObject PanelSnapShot;
 
-
     private void Start()
     {
         string rcBuild = "8/12/2015";

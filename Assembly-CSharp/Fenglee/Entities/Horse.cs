@@ -344,8 +344,8 @@ public class Horse : Photon.MonoBehaviour
         // base.rigidbody.AddForce(-base.rigidbody.velocity, ForceMode.VelocityChange);
     }
 
-    [RPC]
-    private void setDust(bool state)
+    [Guardian.Networking.RPC(Name = "setDust")]
+    private void SetDust(bool state)
     {
         dust.GetComponent<ParticleSystem>().enableEmission = state;
     }
@@ -396,8 +396,8 @@ public class Horse : Photon.MonoBehaviour
         base.animation.CrossFade(aniName, time);
     }
 
-    [RPC]
-    private void netPlayAnimation(string aniName, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netPlayAnimation")]
+    private void NetPlayAnimation(string aniName, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HorseChecker.IsAnimationPlayValid(this, info))
         {
@@ -405,8 +405,8 @@ public class Horse : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
-    private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netPlayAnimationAt")]
+    private void NetPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HorseChecker.IsAnimationSeekedPlayValid(this, info))
         {
@@ -414,8 +414,8 @@ public class Horse : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
-    private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netCrossFade")]
+    private void NetCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HorseChecker.IsCrossFadeValid(this, info))
         {

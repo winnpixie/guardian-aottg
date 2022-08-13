@@ -26,7 +26,10 @@ namespace Guardian.Features.Commands.Impl
                     && IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop
                     && !GuardianClient.WasQuitRequested) { }
                 PhotonNetwork.JoinRoom(lastRoomName);
-            }).Start();
+            })
+            {
+                Name = "guardian_rejoin_thread"
+            }.Start();
         }
     }
 }

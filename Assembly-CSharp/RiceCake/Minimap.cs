@@ -26,9 +26,9 @@ public class Minimap : MonoBehaviour
 
     public class MinimapIcon
     {
-        private Transform obj;
-        private RectTransform uiRect;
-        private RectTransform pointerRect;
+        private readonly Transform obj;
+        private readonly RectTransform uiRect;
+        private readonly RectTransform pointerRect;
         public readonly bool rotation;
         public readonly IconStyle style;
 
@@ -235,28 +235,22 @@ public class Minimap : MonoBehaviour
 
     private static UnityEngine.Sprite GetSpriteForStyle(IconStyle style)
     {
-        switch (style)
+        return style switch
         {
-            case IconStyle.CIRCLE:
-                return whiteIconSprite;
-            case IconStyle.SUPPLY:
-                return supplySprite;
-            default:
-                return null;
-        }
+            IconStyle.CIRCLE => whiteIconSprite,
+            IconStyle.SUPPLY => supplySprite,
+            _ => null
+        };
     }
 
     private Vector2 GetSizeForStyle(IconStyle style)
     {
-        switch (style)
+        return style switch
         {
-            case IconStyle.CIRCLE:
-                return MINIMAP_ICON_SIZE;
-            case IconStyle.SUPPLY:
-                return MINIMAP_SUPPLY_SIZE;
-            default:
-                return Vector2.zero;
-        }
+            IconStyle.CIRCLE => MINIMAP_ICON_SIZE,
+            IconStyle.SUPPLY => MINIMAP_SUPPLY_SIZE,
+            _ => Vector2.zero
+        };
     }
 
     public void TrackGameObjectOnMinimap(GameObject objToTrack, Color iconColor, bool trackOrientation, bool depthAboveAll = false, IconStyle iconStyle = IconStyle.CIRCLE)
@@ -398,8 +392,10 @@ public class Minimap : MonoBehaviour
         RenderTexture active = RenderTexture.active;
         RenderTexture.active = cam.targetTexture;
         cam.Render();
-        Texture2D texture2D = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGB24, mipmap: false);
-        texture2D.filterMode = FilterMode.Bilinear;
+        Texture2D texture2D = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGB24, mipmap: false)
+        {
+            filterMode = FilterMode.Bilinear
+        };
         texture2D.ReadPixels(new Rect(0f, 0f, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         texture2D.Apply();
         RenderTexture.active = active;
@@ -751,7 +747,7 @@ public class Minimap : MonoBehaviour
             {
                 return;
             }
-            if (FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.MapMaximize))
+            if (FengGameManagerMKII.InputRC.IsInputHuman(InputCodeRC.MapMaximize))
             {
                 if (!maximized)
                 {
@@ -762,7 +758,7 @@ public class Minimap : MonoBehaviour
             {
                 Minimize();
             }
-            if (FengGameManagerMKII.InputRC.isInputHumanDown(InputCodeRC.MapToggle))
+            if (FengGameManagerMKII.InputRC.IsInputHumanDown(InputCodeRC.MapToggle))
             {
                 SetEnabled(!isEnabled);
             }
@@ -771,7 +767,7 @@ public class Minimap : MonoBehaviour
                 return;
             }
             bool flag = false;
-            if (FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.MapReset))
+            if (FengGameManagerMKII.InputRC.IsInputHuman(InputCodeRC.MapReset))
             {
                 if (initialPreset != null)
                 {

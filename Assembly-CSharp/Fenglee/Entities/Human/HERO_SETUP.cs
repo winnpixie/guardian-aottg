@@ -316,13 +316,13 @@ public class HERO_SETUP : MonoBehaviour
             part_hair.transform.position = part_head.transform.position;
             part_hair.transform.rotation = part_head.transform.rotation;
             part_hair.transform.parent = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck/head").transform;
-            part_hair.renderer.material = CharacterMaterials.materials[myCostume.hairInfo.texture];
+            part_hair.renderer.material = CharacterMaterials.materials[myCostume.hairInfo.Texture];
             part_hair.renderer.material.color = myCostume.hair_color;
         }
         if (myCostume.hair_1_mesh.Length > 0 && !isDeadBody)
         {
             string name = "Character/" + myCostume.hair_1_mesh;
-            Material material = CharacterMaterials.materials[myCostume.hairInfo.texture];
+            Material material = CharacterMaterials.materials[myCostume.hairInfo.Texture];
             part_hair_1 = ClothFactory.GetHair(reference, name, material, myCostume.hair_color);
         }
     }

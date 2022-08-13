@@ -244,7 +244,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private System.Diagnostics.Stopwatch _lastGasBurst = new System.Diagnostics.Stopwatch();
 
-    [RPC]
+    [Guardian.Networking.RPC]
     private void SetupThunderSpearsRPC(PhotonMessageInfo info)
     {
         if (info.sender == base.photonView.owner)
@@ -293,11 +293,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             reelOutAxis = 0f;
         }
 
-        if (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelIn)) || (scrollDir < 0f))
+        if (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.IsInputHuman(InputCodeRC.ReelIn)) || (scrollDir < 0f))
         {
             reelInAxis = -1f;
         }
-        if (((int)FengGameManagerMKII.Settings[116] == 1 && FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.ReelOut)) || scrollDir > 0f)
+        if (((int)FengGameManagerMKII.Settings[116] == 1 && FengGameManagerMKII.InputRC.IsInputHuman(InputCodeRC.ReelOut)) || scrollDir > 0f)
         {
             reelOutAxis = 1f;
 
@@ -322,8 +322,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         return invincible > 0f;
     }
 
-    [RPC]
-    private void setMyTeam(int teamId)
+    [Guardian.Networking.RPC(Name = "setMyTeam")]
+    private void SetMyTeam(int teamId)
     {
         myTeam = teamId;
         checkBoxLeft.GetComponent<TriggerColliderWeapon>().myTeam = teamId;
@@ -422,7 +422,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
         state = HeroState.Grabbed;
         GetComponent<CapsuleCollider>().isTrigger = true;
-        falseAttack();
+        FalseAttack();
         titanWhoGrabMe = titan;
         if (titanForm && eren_titan != null)
         {
@@ -439,8 +439,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         sparks.enableEmission = false;
     }
 
-    [RPC]
-    private void netGrabbed(int id, bool leftHand, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netGrabbed")]
+    private void NetGrabbed(int id, bool leftHand, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HeroChecker.IsGrabValid(id, info))
         {
@@ -458,18 +458,18 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         state = HeroState.Idle;
     }
 
-    [RPC]
-    private void netSetIsGrabbedFalse()
+    [Guardian.Networking.RPC(Name = "netSetIsGrabbedFalse")]
+    private void NetSetIsGrabbedFalse()
     {
         state = HeroState.Idle;
     }
 
-    [RPC]
-    private void netUngrabbed()
+    [Guardian.Networking.RPC(Name = "netUngrabbed")]
+    private void NetUngrabbed()
     {
         Ungrab();
-        netPlayAnimation(standAnimation);
-        falseAttack();
+        NetPlayAnimation(standAnimation);
+        FalseAttack();
     }
 
     public void AttackAccordingToMouse()
@@ -569,8 +569,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void netPlayAnimation(string aniName, PhotonMessageInfo info = null)
+    [Guardian.Networking.RPC(Name = "netPlayAnimation")]
+    private void NetPlayAnimation(string aniName, PhotonMessageInfo info = null)
     {
         if (Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationPlayValid(this, info))
         {
@@ -578,8 +578,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netPlayAnimationAt")]
+    private void NetPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationSeekedPlayValid(this, info))
         {
@@ -587,8 +587,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netCrossFade")]
+    private void NetCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HeroChecker.IsCrossFadeValid(this, info))
         {
@@ -635,7 +635,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         eren_titan.GetComponent<TITAN_EREN>().realBody = base.gameObject;
         maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().Flash();
         maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(eren_titan);
-        eren_titan.GetComponent<TITAN_EREN>().born();
+        eren_titan.GetComponent<TITAN_EREN>().Born();
         eren_titan.rigidbody.velocity = base.rigidbody.velocity;
         base.rigidbody.velocity = Vector3.zero;
         base.transform.position = eren_titan.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck").position;
@@ -651,13 +651,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         smoke_3dmg.enableEmission = false;
     }
 
-    public void backToHuman()
+    public void ReturnToHuman()
     {
         base.gameObject.GetComponent<SmoothSyncMovement>().disabled = false;
         base.rigidbody.velocity = Vector3.zero;
         titanForm = false;
         Ungrab();
-        falseAttack();
+        FalseAttack();
         skillCDDuration = skillCDLast;
         maincamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(base.gameObject);
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
@@ -666,16 +666,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void backToHumanRPC()
+    [Guardian.Networking.RPC(Name = "backToHumanRPC")]
+    private void BackToHumanRPC()
     {
         titanForm = false;
         eren_titan = null;
         base.gameObject.GetComponent<SmoothSyncMovement>().disabled = false;
     }
 
-    [RPC]
-    private void whoIsMyErenTitan(int id, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "whoIsMyErenTitan")]
+    private void WhoIsMyErenTitan(int id, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HeroChecker.IsErenTitanDeclarationValid(id, info))
         {
@@ -764,7 +764,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    private float getLeanAngle(Vector3 p, bool left)
+    private float GetLeanAngle(Vector3 p, bool left)
     {
         if (!useGun && state == HeroState.Attack)
         {
@@ -798,8 +798,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return num3 * (float)((!(num4 < 0f)) ? 1 : (-1));
         }
-        float num5 = 0f;
-        num5 = (((!left || !(num4 < 0f)) && (left || !(num4 > 0f))) ? 0.5f : 0.1f);
+        float num5 = (((!left || !(num4 < 0f)) && (left || !(num4 > 0f))) ? 0.5f : 0.1f);
         return num3 * ((!(num4 < 0f)) ? num5 : (0f - num5));
     }
 
@@ -831,18 +830,18 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             if (almostSingleHook)
             {
                 needLean = true;
-                z = getLeanAngle(bulletRight.transform.position, left: true);
+                z = GetLeanAngle(bulletRight.transform.position, left: true);
             }
         }
         else if (isLeftHandHooked && bulletLeft != null)
         {
             needLean = true;
-            z = getLeanAngle(bulletLeft.transform.position, left: true);
+            z = GetLeanAngle(bulletLeft.transform.position, left: true);
         }
         else if (isRightHandHooked && bulletRight != null)
         {
             needLean = true;
-            z = getLeanAngle(bulletRight.transform.position, left: false);
+            z = GetLeanAngle(bulletRight.transform.position, left: false);
         }
         if (needLean)
         {
@@ -911,7 +910,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             return;
         }
         almostSingleHook = true;
-        Vector3 zero = Vector3.zero;
+        Vector3 zero;
         if (isRightHandHooked && bulletRight != null)
         {
             zero = bulletRight.transform.position - base.transform.position;
@@ -922,6 +921,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 return;
             }
+
             zero = bulletLeft.transform.position - base.transform.position;
         }
         facingDirection = Mathf.Atan2(zero.x, zero.z) * 57.29578f;
@@ -938,8 +938,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 facingDirection += num3;
                 return;
             }
-            float num4 = 0f;
-            num4 = (((!isLeftHandHooked || !(num3 < 0f)) && (!isRightHandHooked || !(num3 > 0f))) ? 0.1f : (-0.1f));
+            float num4 = (((!isLeftHandHooked || !(num3 < 0f)) && (!isRightHandHooked || !(num3 > 0f))) ? 0.1f : (-0.1f));
             facingDirection += num3 * num4;
         }
     }
@@ -948,7 +947,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if (state == HeroState.Attack)
         {
-            falseAttack();
+            FalseAttack();
         }
         state = HeroState.Idle;
         CrossFade(standAnimation, 0.1f);
@@ -1103,7 +1102,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             CrossFade("dash", 0.1f);
             base.animation["dash"].time = 0.1f;
             state = HeroState.Dashing;
-            falseAttack();
+            FalseAttack();
             base.rigidbody.AddForce(dashV * 40f, ForceMode.VelocityChange);
 
             if (_burstSound != null)
@@ -1250,7 +1249,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         if (state == HeroState.Attack)
         {
-            falseAttack();
+            FalseAttack();
         }
     }
 
@@ -1304,7 +1303,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public void falseAttack()
+    public void FalseAttack()
     {
         attackMove = false;
         if (useGun)
@@ -1335,7 +1334,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    private bool isPressDirectionTowardsHero(float h, float v)
+    private bool IsPressDirectionTowardsHero(float h, float v)
     {
         if (h == 0f && v == 0f)
         {
@@ -1408,8 +1407,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void netPauseAnimation(PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netPauseAnimation")]
+    private void NetPauseAnimation(PhotonMessageInfo info)
     {
         if (!Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationPauseValid(this, info))
         {
@@ -1421,8 +1420,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void netContinueAnimation(PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netContinueAnimation")]
+    private void NetContinueAnimation(PhotonMessageInfo info)
     {
         if (!Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationResumeValid(this, info))
         {
@@ -1474,7 +1473,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         base.photonView.RPC("RPCHookedByHuman", base.photonView.owner, hooker, hookPosition);
     }
 
-    [RPC]
+    [Guardian.Networking.RPC]
     private void RPCHookedByHuman(int hooker, Vector3 hookPosition)
     {
         hookBySomeOne = true;
@@ -1496,7 +1495,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 CrossFade("dash", 0.05f);
                 base.animation["dash"].time = 0.1f;
                 state = HeroState.Dashing;
-                falseAttack();
+                FalseAttack();
                 facingDirection = Mathf.Atan2(launchForce.x, launchForce.z) * 57.29578f;
                 Quaternion quaternion = Quaternion.Euler(0f, facingDirection, 0f);
                 base.gameObject.transform.rotation = quaternion;
@@ -1512,15 +1511,15 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    public void hookFail()
+    [Guardian.Networking.RPC(Name = "hookFail")]
+    public void FailHook()
     {
         hookTarget = null;
         hookSomeOne = false;
     }
 
-    [RPC]
-    public void badGuyReleaseMe()
+    [Guardian.Networking.RPC(Name = "badGuyReleaseMe")]
+    public void BadGuyReleaseMe()
     {
         hookBySomeOne = false;
         badGuy = null;
@@ -1566,10 +1565,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             vector *= 0.8f;
         }
-        leviMode = ((base.animation.IsPlaying("attack5") || base.animation.IsPlaying("special_petra")) ? true : false);
+        leviMode = base.animation.IsPlaying("attack5") || base.animation.IsPlaying("special_petra");
         if (!leviMode)
         {
-            falseAttack();
+            FalseAttack();
             Idle();
             if (useGun)
             {
@@ -1805,7 +1804,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             BreakApart2(v, isBite);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             FengGameManagerMKII.Instance.FinishGame(true);
-            falseAttack();
+            FalseAttack();
             hasDied = true;
             Transform transform = base.transform.Find("audio_die");
             transform.parent = null;
@@ -1847,7 +1846,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetMainObject(null);
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             FengGameManagerMKII.Instance.FinishGame(true);
-            falseAttack();
+            FalseAttack();
             hasDied = true;
             GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("hitMeat2"));
             gameObject.transform.position = base.transform.position;
@@ -1855,32 +1854,32 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void netTauntAttack(float tauntTime, float distance = 100f)
+    [Guardian.Networking.RPC(Name = "netTauntAttack")]
+    private void NetTauntAttack(float tauntTime, float distance = 100f)
     {
         foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
         {
             if (Vector3.Distance(titan.transform.position, base.transform.position) < distance)
             {
-                titan.beTauntedBy(base.gameObject, tauntTime);
+                titan.BeTauntedBy(base.gameObject, tauntTime);
             }
         }
     }
 
-    [RPC]
-    private void netlaughAttack()
+    [Guardian.Networking.RPC(Name = "netlaughAttack")]
+    private void NetLaughAttack()
     {
         foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
         {
             if (Vector3.Distance(titan.transform.position, base.transform.position) < 50f && Vector3.Angle(titan.transform.forward, base.transform.position - titan.transform.position) < 90f)
             {
-                titan.beLaughAttacked();
+                titan.BeLaughAttacked();
             }
         }
     }
 
-    [RPC]
-    private void net3DMGSMOKE(bool state)
+    [Guardian.Networking.RPC(Name = "net3DMGSMOKE")]
+    private void Net3DMGSmoke(bool state)
     {
         if (smoke_3dmg != null)
         {
@@ -1888,8 +1887,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void showHitDamage(PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "showHitDamage")]
+    private void ShowHitDamage(PhotonMessageInfo info)
     {
         if (!Guardian.AntiAbuse.Validators.HeroChecker.IsHitDamageShowValid(info))
         {
@@ -1909,8 +1908,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    public void blowAway(Vector3 force, PhotonMessageInfo info = null)
+    [Guardian.Networking.RPC(Name = "blowAway")]
+    public void BlowAway(Vector3 force, PhotonMessageInfo info = null)
     {
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
@@ -1922,8 +1921,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void killObject(PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "killObject")]
+    private void KillObject(PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HeroChecker.IsKillObjectValid(info))
         {
@@ -2318,8 +2317,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             num = (inputManager.isInput[InputCode.Left] ? (-1f) : ((!inputManager.isInput[InputCode.Right]) ? 0f : 1f));
         }
         bool flag = false;
-        bool flag2 = false;
-        bool flag3 = false;
+        bool canReelHookLeft = false;
+        bool canReelHookRight = false;
         isLeftHandHooked = false;
         isRightHandHooked = false;
         if (isLaunchLeft)
@@ -2336,10 +2335,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
                 if (Vector3.Angle(baseRigidBody.velocity, vector3) > 90f && inputManager.isInput[InputCode.Jump])
                 {
-                    flag2 = true;
+                    canReelHookLeft = true;
                     flag = true;
                 }
-                if (!flag2)
+                if (!canReelHookLeft)
                 {
                     baseRigidBody.AddForce(vector3);
                     if (Vector3.Angle(baseRigidBody.velocity, vector3) > 90f)
@@ -2361,7 +2360,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     bulletLeft.GetComponent<Bullet>().Disable();
                     ReleaseHookedTarget();
                     bulletLeft = null;
-                    flag2 = false;
+                    canReelHookLeft = false;
                 }
             }
         }
@@ -2379,10 +2378,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
                 if (Vector3.Angle(baseRigidBody.velocity, vector4) > 90f && inputManager.isInput[InputCode.Jump])
                 {
-                    flag3 = true;
+                    canReelHookRight = true;
                     flag = true;
                 }
-                if (!flag3)
+                if (!canReelHookRight)
                 {
                     baseRigidBody.AddForce(vector4);
                     if (Vector3.Angle(baseRigidBody.velocity, vector4) > 90f)
@@ -2404,7 +2403,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     bulletRight.GetComponent<Bullet>().Disable();
                     ReleaseHookedTarget();
                     bulletRight = null;
-                    flag3 = false;
+                    canReelHookRight = false;
                 }
             }
         }
@@ -2705,7 +2704,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     PlayAnimation("air_rise");
                 }
             }
-            else if (state == HeroState.Idle && isPressDirectionTowardsHero(num, num2) && !inputManager.isInput[InputCode.Jump] && !inputManager.isInput[InputCode.HookLeft] && !inputManager.isInput[InputCode.HookRight] && !inputManager.isInput[InputCode.HookBoth] && IsFrontGrounded() && !baseAnimation.IsPlaying("wallrun") && !baseAnimation.IsPlaying("dodge"))
+            else if (state == HeroState.Idle && IsPressDirectionTowardsHero(num, num2) && !inputManager.isInput[InputCode.Jump] && !inputManager.isInput[InputCode.HookLeft] && !inputManager.isInput[InputCode.HookRight] && !inputManager.isInput[InputCode.HookBoth] && IsFrontGrounded() && !baseAnimation.IsPlaying("wallrun") && !baseAnimation.IsPlaying("dodge"))
             {
                 CrossFade("wallrun", 0.1f);
                 wallRunTime = 0f;
@@ -2750,7 +2749,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     facingDirection = num8;
                     targetRotation = Quaternion.Euler(0f, facingDirection, 0f);
                 }
-                if (!flag2 && !flag3 && !isMounted && inputManager.isInput[InputCode.Jump] && currentGas > 0f)
+                if (!canReelHookLeft && !canReelHookRight && !isMounted && inputManager.isInput[InputCode.Jump] && currentGas > 0f)
                 {
                     if (num != 0f || num2 != 0f)
                     {
@@ -2768,7 +2767,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 CrossFade("onWall", 0.3f);
             }
         }
-        if (flag2 && flag3)
+        if (canReelHookLeft && canReelHookRight)
         {
             float d2 = currentSpeed + 0.1f;
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
@@ -2780,7 +2779,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             a2.Normalize();
             baseRigidBody.velocity = a2 * d2;
         }
-        else if (flag2)
+        else if (canReelHookLeft)
         {
             float d3 = currentSpeed + 0.1f;
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
@@ -2792,7 +2791,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             a3.Normalize();
             baseRigidBody.velocity = a3 * d3;
         }
-        else if (flag3)
+        else if (canReelHookRight)
         {
             float d4 = currentSpeed + 0.1f;
             baseRigidBody.AddForce(-baseRigidBody.velocity, ForceMode.VelocityChange);
@@ -3218,7 +3217,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public void lateUpdate2()
+    public void LateUpdate2()
     {
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && myNetWorkName != null)
         {
@@ -3342,7 +3341,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public void update2()
+    public void Update2()
     {
         if (IN_GAME_MAIN_CAMERA.IsPausing)
         {
@@ -3363,7 +3362,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         else if (isCannon && myCannon != null)
         {
-            updateCannon();
+            UpdateCannon();
             base.gameObject.GetComponent<SmoothSyncMovement>().disabled = true;
         }
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !base.photonView.isMine)
@@ -3376,7 +3375,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (myCannonRegion != null)
         {
             FengGameManagerMKII.Instance.SetTextCenter("Press 'Cannon Mount' key to use Cannon.");
-            if (FengGameManagerMKII.InputRC.isInputCannonDown(InputCodeRC.CannonMount))
+            if (FengGameManagerMKII.InputRC.IsInputCannonDown(InputCodeRC.CannonMount))
             {
                 myCannonRegion.photonView.RPC("RequestControlRPC", PhotonTargets.MasterClient, base.photonView.viewID);
             }
@@ -3399,13 +3398,13 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 baseRigidBody.velocity = Vector3.up * 30f;
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
-                    titanWhoGrabMe.GetComponent<TITAN>().grabbedTargetEscape();
+                    titanWhoGrabMe.GetComponent<TITAN>().GrabbedTargetEscape();
                     return;
                 }
                 base.photonView.RPC("netSetIsGrabbedFalse", PhotonTargets.All);
                 if (PhotonNetwork.isMasterClient)
                 {
-                    titanWhoGrabMe.GetComponent<TITAN>().grabbedTargetEscape();
+                    titanWhoGrabMe.GetComponent<TITAN>().GrabbedTargetEscape();
                 }
                 else
                 {
@@ -3441,14 +3440,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 Ungrab();
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
                 {
-                    titanObj.grabbedTargetEscape();
+                    titanObj.GrabbedTargetEscape();
                 }
                 else
                 {
                     base.photonView.RPC("netSetIsGrabbedFalse", PhotonTargets.All);
                     if (PhotonNetwork.isMasterClient)
                     {
-                        titanObj.grabbedTargetEscape();
+                        titanObj.GrabbedTargetEscape();
                     }
                     else
                     {
@@ -3507,7 +3506,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     CrossFade("jump", 0.1f);
                     sparks.enableEmission = false;
                 }
-                if (FengGameManagerMKII.InputRC.isInputHorseDown(InputCodeRC.HorseMount) && !baseAnimation.IsPlaying("jump") && !baseAnimation.IsPlaying("horse_geton") && myHorse != null && !isMounted && Vector3.Distance(myHorse.transform.position, base.transform.position) < 15f)
+                if (FengGameManagerMKII.InputRC.IsInputHorseDown(InputCodeRC.HorseMount) && !baseAnimation.IsPlaying("jump") && !baseAnimation.IsPlaying("horse_geton") && myHorse != null && !isMounted && Vector3.Distance(myHorse.transform.position, base.transform.position) < 15f)
                 {
                     GetOnHorse();
                 }
@@ -3536,7 +3535,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         Suicide();
                     }
-                    if (myHorse != null && isMounted && FengGameManagerMKII.InputRC.isInputHorseDown(InputCodeRC.HorseMount))
+                    if (myHorse != null && isMounted && FengGameManagerMKII.InputRC.IsInputHorseDown(InputCodeRC.HorseMount))
                     {
                         GetOffHorse();
                     }
@@ -4081,14 +4080,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                         }
                                         else
                                         {
-                                            netTauntAttack(5f);
+                                            NetTauntAttack(5f);
                                         }
                                     }
                                     else
                                     {
-                                        netTauntAttack(5f);
+                                        NetTauntAttack(5f);
                                     }
-                                    falseAttack();
+                                    FalseAttack();
                                     Idle();
                                     break;
                                 case "special_armin":
@@ -4100,7 +4099,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                         }
                                         else
                                         {
-                                            netlaughAttack();
+                                            NetLaughAttack();
                                         }
                                     }
                                     else
@@ -4109,25 +4108,25 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                         {
                                             if (Vector3.Distance(titan.transform.position, baseTransform.position) < 50f && Vector3.Angle(titan.transform.forward, baseTransform.position - titan.transform.position) < 90f)
                                             {
-                                                titan.beLaughAttacked();
+                                                titan.BeLaughAttacked();
                                             }
                                         }
                                     }
-                                    falseAttack();
+                                    FalseAttack();
                                     Idle();
                                     break;
                                 case "attack3_1":
                                     baseRigidBody.velocity -= Vector3.up * Time.deltaTime * 30f;
                                     break;
                                 default:
-                                    falseAttack();
+                                    FalseAttack();
                                     Idle();
                                     break;
                             }
                         }
                         if (baseAnimation.IsPlaying("attack3_2") && baseAnimation["attack3_2"].normalizedTime >= 1f)
                         {
-                            falseAttack();
+                            FalseAttack();
                             Idle();
                         }
                     }
@@ -4175,7 +4174,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
                         if (!baseAnimation.IsPlaying(attackAnimation) || baseAnimation[attackAnimation].normalizedTime >= 1f)
                         {
-                            falseAttack();
+                            FalseAttack();
                             Idle();
                         }
                     }
@@ -4553,8 +4552,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             standAnimation = "AHSS_stand_gun";
             useGun = true;
-            gunDummy = new GameObject();
-            gunDummy.name = "gunDummy";
+            gunDummy = new GameObject
+            {
+                name = "gunDummy"
+            };
             gunDummy.transform.position = baseTransform.position;
             gunDummy.transform.rotation = baseTransform.rotation;
             myGroup = GroupType.AHSS;
@@ -4656,7 +4657,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             leftbladetrail2.Deactivate();
             rightbladetrail2.Deactivate();
         }
-        falseAttack();
+        FalseAttack();
         BreakApart2(v, isBite);
 
         currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().SetSpectorMode(val: false);
@@ -4670,9 +4671,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         base.gameObject.GetComponent<SmoothSyncMovement>().disabled = true;
 
         PhotonNetwork.RemoveRPCs(base.photonView);
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-        hashtable.Add(PhotonPlayerProperty.IsDead, true);
-        hashtable.Add(PhotonPlayerProperty.Deaths, GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths]) + 1);
+        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+        {
+            { PhotonPlayerProperty.IsDead, true },
+            { PhotonPlayerProperty.Deaths, GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths]) + 1 }
+        };
         PhotonNetwork.player.SetCustomProperties(hashtable);
         FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, 0);
 
@@ -4696,7 +4699,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void Dodge2(bool offTheWall = false)
     {
-        if (FengGameManagerMKII.InputRC.isInputHorse(InputCodeRC.HorseMount) && myHorse != null && !isMounted && Vector3.Distance(myHorse.transform.position, base.transform.position) < 15f)
+        if (FengGameManagerMKII.InputRC.IsInputHorse(InputCodeRC.HorseMount) && myHorse != null && !isMounted && Vector3.Distance(myHorse.transform.position, base.transform.position) < 15f)
         {
             return;
         }
@@ -4789,8 +4792,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         ApplyForce(gameObject9, v);
     }
 
-    [RPC]
-    public void netDie(Vector3 v, bool isBite, int viewId = -1, string titanName = "", bool killByTitan = true, PhotonMessageInfo info = null)
+    [Guardian.Networking.RPC(Name = "netDie")]
+    public void NetDie(Vector3 v, bool isBite, int viewId = -1, string titanName = "", bool killByTitan = true, PhotonMessageInfo info = null)
     {
         if (base.photonView.isMine && info != null && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal)
         {
@@ -4884,7 +4887,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             leftbladetrail2.Deactivate();
             rightbladetrail2.Deactivate();
         }
-        falseAttack();
+        FalseAttack();
         BreakApart2(v, isBite);
         if (base.photonView.isMine)
         {
@@ -4903,9 +4906,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (base.photonView.isMine)
         {
             PhotonNetwork.RemoveRPCs(base.photonView);
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add(PhotonPlayerProperty.IsDead, true);
-            hashtable.Add(PhotonPlayerProperty.Deaths, GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths]) + 1);
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+            {
+                { PhotonPlayerProperty.IsDead, true },
+                { PhotonPlayerProperty.Deaths, GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths]) + 1 }
+            };
             PhotonNetwork.player.SetCustomProperties(hashtable);
             FengGameManagerMKII.Instance.photonView.RPC("someOneIsDead", PhotonTargets.MasterClient, (!(titanName == string.Empty)) ? 1 : 0);
             if (viewId != -1)
@@ -4914,8 +4919,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 if (photonView2 != null)
                 {
                     FengGameManagerMKII.Instance.SendKillInfo(killByTitan, "[FFCC00][" + info.sender.Id.ToString() + "][-] " + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
-                    hashtable = new ExitGames.Client.Photon.Hashtable();
-                    hashtable.Add(PhotonPlayerProperty.Kills, GExtensions.AsInt(photonView2.owner.customProperties[PhotonPlayerProperty.Kills]) + 1);
+                    hashtable = new ExitGames.Client.Photon.Hashtable()
+                    {
+                        { PhotonPlayerProperty.Kills, GExtensions.AsInt(photonView2.owner.customProperties[PhotonPlayerProperty.Kills]) + 1 }
+                    };
                     photonView2.owner.SetCustomProperties(hashtable);
                 }
             }
@@ -4930,8 +4937,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    private void netDie2(int viewId = -1, string titanName = "", PhotonMessageInfo info = null)
+    [Guardian.Networking.RPC(Name = "netDie2")]
+    private void NetDie2(int viewId = -1, string titanName = "", PhotonMessageInfo info = null)
     {
         if (base.photonView.isMine && info != null && IN_GAME_MAIN_CAMERA.Gamemode != GameMode.Colossal)
         {
@@ -5011,15 +5018,17 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().gameOver = true;
             FengGameManagerMKII.Instance.myRespawnTime = 0f;
         }
-        falseAttack();
+        FalseAttack();
         hasDied = true;
         base.gameObject.GetComponent<SmoothSyncMovement>().disabled = true;
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             PhotonNetwork.RemoveRPCs(base.photonView);
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add(PhotonPlayerProperty.IsDead, true);
-            hashtable.Add(PhotonPlayerProperty.Deaths, (int)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths] + 1);
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+            {
+                { PhotonPlayerProperty.IsDead, true },
+                { PhotonPlayerProperty.Deaths, (int)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Deaths] + 1 }
+            };
             PhotonNetwork.player.SetCustomProperties(hashtable);
             if (viewId != -1)
             {
@@ -5027,8 +5036,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 if (photonView2 != null)
                 {
                     FengGameManagerMKII.Instance.SendKillInfo(isKillerTitan: true, "[FFCC00][" + info.sender.Id + "][-] " + GExtensions.AsString(photonView2.owner.customProperties[PhotonPlayerProperty.Name]), isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
-                    hashtable = new ExitGames.Client.Photon.Hashtable();
-                    hashtable.Add(PhotonPlayerProperty.Kills, GExtensions.AsInt(photonView2.owner.customProperties[PhotonPlayerProperty.Kills]) + 1);
+                    hashtable = new ExitGames.Client.Photon.Hashtable()
+                    {
+                        { PhotonPlayerProperty.Kills, GExtensions.AsInt(photonView2.owner.customProperties[PhotonPlayerProperty.Kills]) + 1 }
+                    };
                     photonView2.owner.SetCustomProperties(hashtable);
                 }
             }
@@ -5059,7 +5070,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
+    [Guardian.Networking.RPC]
     public void SetMyPhotonCamera(float offset, PhotonMessageInfo info)
     {
         if (base.photonView.owner == info.sender)
@@ -5070,7 +5081,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
+    [Guardian.Networking.RPC]
     public void SetMyCannon(int viewID, PhotonMessageInfo info)
     {
         if (info.sender != base.photonView.owner)
@@ -5094,7 +5105,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
+    [Guardian.Networking.RPC]
     public void ReturnFromCannon(PhotonMessageInfo info)
     {
         if (info.sender == base.photonView.owner)
@@ -5109,7 +5120,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         FengGameManagerMKII.Instance.SetTextCenter(string.Empty);
     }
 
-    [RPC]
+    [Guardian.Networking.RPC]
     public void SpawnCannonRPC(string settings, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient && base.photonView.isMine && myCannon == null)
@@ -5156,7 +5167,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    public void updateCannon()
+    public void UpdateCannon()
     {
         baseTransform.position = myCannonPlayer.position;
         baseTransform.rotation = myCannonBase.rotation;
@@ -5219,8 +5230,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
-    [RPC]
-    public void moveToRPC(float posX, float posY, float posZ, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "moveToRPC")]
+    public void MoveToRPC(float posX, float posY, float posZ, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {
@@ -5233,13 +5244,15 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
         {
             base.photonView.RPC("setMyTeam", PhotonTargets.AllBuffered, team);
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            hashtable.Add(PhotonPlayerProperty.Team, team);
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+            {
+                { PhotonPlayerProperty.Team, team }
+            };
             PhotonNetwork.player.SetCustomProperties(hashtable);
         }
         else
         {
-            setMyTeam(team);
+            SetMyTeam(team);
         }
     }
 
@@ -5334,7 +5347,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void CheckDashRebind()
     {
-        if (FengGameManagerMKII.InputRC.isInputHuman(InputCodeRC.Dash))
+        if (FengGameManagerMKII.InputRC.IsInputHuman(InputCodeRC.Dash))
         {
             if (inputManager.isInput[InputCode.Up])
             {
@@ -5603,8 +5616,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         base.photonView.RPC("loadskinRPC", PhotonTargets.AllBuffered, horseId, string.Join(",", skinData));
     }
 
-    [RPC]
-    public void loadskinRPC(int horse, string url, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "loadskinRPC")]
+    public void LoadSkinRPC(int horse, string url, PhotonMessageInfo info)
     {
         if ((int)FengGameManagerMKII.Settings[0] == 1)
         {
@@ -5659,9 +5672,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                         {
                             unload = true;
-                            if (setup.myCostume.hairInfo.id >= 0)
+                            if (setup.myCostume.hairInfo.Id >= 0)
                             {
-                                renderer.material = CharacterMaterials.materials[setup.myCostume.hairInfo.texture];
+                                renderer.material = CharacterMaterials.materials[setup.myCostume.hairInfo.Texture];
                             }
                             renderer.material.mainTexture = tex3;
                             FengGameManagerMKII.LinkHash[0].Add(strArray[1], renderer.material);
@@ -5776,9 +5789,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                                 {
                                     unload = true;
-                                    if (setup.myCostume.hairInfo.id >= 0)
+                                    if (setup.myCostume.hairInfo.Id >= 0)
                                     {
-                                        renderer4.material = CharacterMaterials.materials[setup.myCostume.hairInfo.texture];
+                                        renderer4.material = CharacterMaterials.materials[setup.myCostume.hairInfo.Texture];
                                     }
                                     renderer4.material.mainTexture = tex6;
                                     FengGameManagerMKII.LinkHash[0].Add(strArray[1], renderer4.material);
@@ -6357,8 +6370,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[15]))
                             {
                                 unload = true;
-                                _leftRopeMat = new Material(Shader.Find("Transparent/Diffuse"));
-                                _leftRopeMat.mainTexture = ropeTex;
+                                _leftRopeMat = new Material(Shader.Find("Transparent/Diffuse"))
+                                {
+                                    mainTexture = ropeTex
+                                };
                                 FengGameManagerMKII.LinkHash[0].Add(strArray[15], _leftRopeMat);
                                 _leftRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
                             }
@@ -6392,8 +6407,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[17]))
                             {
                                 unload = true;
-                                _rightRopeMat = new Material(Shader.Find("Transparent/Diffuse"));
-                                _rightRopeMat.mainTexture = ropeTex;
+                                _rightRopeMat = new Material(Shader.Find("Transparent/Diffuse"))
+                                {
+                                    mainTexture = ropeTex
+                                };
                                 FengGameManagerMKII.LinkHash[0].Add(strArray[17], _rightRopeMat);
                                 _rightRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
                             }

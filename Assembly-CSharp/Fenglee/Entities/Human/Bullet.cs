@@ -37,7 +37,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     {
         get
         {
-            return master == null ? null : master.GetComponent<HERO>();
+            return master?.GetComponent<HERO>();
         }
     }
 
@@ -89,8 +89,8 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         }
     }
 
-    [RPC]
-    private void myMasterIs(int viewId, string launcherRef, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "myMasterIs")]
+    private void MyMasterIs(int viewId, string launcherRef, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HookChecker.IsHookMasterSetValid(this, viewId, info))
         {
@@ -107,18 +107,17 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         }
     }
 
-    [RPC]
-    private void netLaunch(Vector3 newPosition, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netLaunch")]
+    private void NetLaunch(Vector3 newPosition, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HookChecker.IsLaunchValid(info))
         {
-            nodes = new ArrayList();
-            nodes.Add(newPosition);
+            nodes = new ArrayList() { newPosition };
         }
     }
 
-    [RPC]
-    private void netUpdatePhase1(Vector3 newPosition, Vector3 masterPosition, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netUpdatePhase1")]
+    private void NetUpdatePhase1(Vector3 newPosition, Vector3 masterPosition, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HookChecker.IsPhaseUpdateValid(info))
         {
@@ -129,8 +128,8 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         }
     }
 
-    [RPC]
-    private void netUpdateLeviSpiral(Vector3 newPosition, Vector3 masterPosition, Vector3 masterrotation, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netUpdateLeviSpiral")]
+    private void NetUpdateLeviSpiral(Vector3 newPosition, Vector3 masterPosition, Vector3 masterrotation, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HookChecker.IsLeviSpiralValid(info))
         {
@@ -163,12 +162,10 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
 
     private void GetSpiral(Vector3 masterposition, Vector3 masterrotation)
     {
-        float num = 1.2f;
         float num2 = 30f;
-        float num3 = 2f;
         float num4 = 0.5f;
-        num = 30f;
-        num3 = 0.05f + (float)spiralcount * 0.03f;
+        float num;
+        float num3 = 0.05f + (float)spiralcount * 0.03f;
         if (spiralcount < 5)
         {
             Vector2 a = new Vector2(masterposition.x, masterposition.z);
@@ -198,7 +195,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         }
     }
 
-    private void setLinePhase0()
+    private void SetLinePhase0()
     {
         if (master == null)
         {
@@ -220,14 +217,14 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         }
     }
 
-    [RPC]
-    private void setPhase(int value)
+    [Guardian.Networking.RPC(Name = "setPhase")]
+    private void SetPhase(int value)
     {
         phase = value;
     }
 
-    [RPC]
-    private void setVelocityAndLeft(Vector3 value, Vector3 v2, bool l)
+    [Guardian.Networking.RPC(Name = "setVelocityAndLeft")]
+    private void SetVelocityAndLeft(Vector3 value, Vector3 v2, bool l)
     {
         velocity = value;
         velocity2 = v2;
@@ -235,8 +232,8 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         base.transform.rotation = Quaternion.LookRotation(value.normalized);
     }
 
-    [RPC]
-    private void tieMeTo(Vector3 p)
+    [Guardian.Networking.RPC(Name = "tieMeTo")]
+    private void TieMeTo(Vector3 p)
     {
         base.transform.position = p;
     }
@@ -261,8 +258,8 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         hero.photonView.RPC("netDie2", pv.owner, -1, $"{killer}'s hook");
     }
 
-    [RPC]
-    private void tieMeToOBJ(int id, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "tieMeToOBJ")]
+    private void TieMeToObject(int id, PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HookChecker.IsHookTieValid(this, id, info))
         {
@@ -273,7 +270,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         }
     }
 
-    public void update()
+    public void Update1()
     {
         if (master == null)
         {
@@ -294,11 +291,10 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
             switch (phase)
             {
                 case 0:
-                    setLinePhase0();
+                    SetLinePhase0();
                     break;
                 case 1:
                     Vector3 a = base.transform.position - myRef.transform.position;
-                    Vector3 vector = base.transform.position + myRef.transform.position;
                     Vector3 a2 = master.rigidbody.velocity;
                     float magnitude = a2.magnitude;
                     float magnitude2 = a.magnitude;
@@ -424,8 +420,8 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         }
     }
 
-    [RPC]
-    private void killObject(PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "killObject")]
+    private void KillObject(PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.HookChecker.IsKillObjectValid(info))
         {

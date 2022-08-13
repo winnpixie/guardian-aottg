@@ -11,10 +11,10 @@ public class CharacterCreateAnimationControl : MonoBehaviour
     {
         setup = base.gameObject.GetComponent<HERO_SETUP>();
         currentAnimation = "stand_levi";
-        play(currentAnimation);
+        PlayAnimation(currentAnimation);
     }
 
-    public void playAttack(string id)
+    public void PlayAttack(string id)
     {
         switch (id)
         {
@@ -43,7 +43,7 @@ public class CharacterCreateAnimationControl : MonoBehaviour
         base.animation.Play(currentAnimation);
     }
 
-    public void toStand()
+    public void Stand()
     {
         if (setup.myCostume.sex == Sex.Female)
         {
@@ -57,7 +57,7 @@ public class CharacterCreateAnimationControl : MonoBehaviour
         timeElapsed = 0f;
     }
 
-    private void play(string id)
+    private void PlayAnimation(string id)
     {
         currentAnimation = id;
         base.animation.Play(id);
@@ -73,15 +73,15 @@ public class CharacterCreateAnimationControl : MonoBehaviour
                 timeElapsed = 0f;
                 if (Random.Range(1, 1000) < 350)
                 {
-                    play("salute");
+                    PlayAnimation("salute");
                 }
                 else if (Random.Range(1, 1000) < 350)
                 {
-                    play("supply");
+                    PlayAnimation("supply");
                 }
                 else
                 {
-                    play("dodge");
+                    PlayAnimation("dodge");
                 }
             }
         }
@@ -89,15 +89,15 @@ public class CharacterCreateAnimationControl : MonoBehaviour
         {
             if (currentAnimation == "attack3_1")
             {
-                play("attack3_2");
+                PlayAnimation("attack3_2");
             }
             else if (currentAnimation == "special_sasha")
             {
-                play("run_sasha");
+                PlayAnimation("run_sasha");
             }
             else
             {
-                toStand();
+                Stand();
             }
         }
     }

@@ -51,7 +51,7 @@ public class CannonPropRegion : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
+    [Guardian.Networking.RPC]
     public void RequestControlRPC(int viewID, PhotonMessageInfo info)
     {
         if (base.photonView.isMine && PhotonNetwork.isMasterClient && !disabled)
@@ -67,7 +67,7 @@ public class CannonPropRegion : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
+    [Guardian.Networking.RPC]
     public void SetSize(string settings, PhotonMessageInfo info)
     {
         if (!info.sender.isMasterClient)

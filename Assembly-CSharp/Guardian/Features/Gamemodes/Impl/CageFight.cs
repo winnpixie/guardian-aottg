@@ -179,11 +179,11 @@ namespace Guardian.Features.Gamemodes.Impl
             if (originalTitan != null)
             {
                 TitanClass type = originalTitan.abnormalType;
-                go.GetComponent<TITAN>().setAbnormalType2(type, type.Equals(TitanClass.Crawler));
+                go.GetComponent<TITAN>().SetAbnormalType2(type, type.Equals(TitanClass.Crawler));
             }
             else
             {
-                go.GetComponent<TITAN>().setAbnormalType2(TitanClass.Normal, false);
+                go.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Normal, false);
             }
 
             return go.GetComponent<TITAN>();

@@ -26,8 +26,10 @@ public class PanelLoginGroupManager : MonoBehaviour
 
     private void Start()
     {
-        pgm = new PanelGroupManager();
-        pgm.panelGroup = panels;
+        pgm = new PanelGroupManager()
+        {
+            panelGroup = panels
+        };
     }
 
     public void toLoginPanel()

@@ -109,32 +109,32 @@ public class TITAN_EREN : Photon.MonoBehaviour
         base.animation.CrossFade(aniName, time);
     }
 
-    [RPC]
-    private void netPlayAnimation(string aniName, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netPlayAnimation")]
+    private void NetPlayAnimation(string aniName, PhotonMessageInfo info)
     {
         if (!Guardian.AntiAbuse.Validators.ErenChecker.IsAnimationPlayValid(this, info)) return;
 
         LocalPlayAnimation(aniName);
     }
 
-    [RPC]
-    private void netPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netPlayAnimationAt")]
+    private void NetPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
         if (!Guardian.AntiAbuse.Validators.ErenChecker.IsAnimationSeekedPlayValid(this, info)) return;
 
         LocalPlayAnimationAt(aniName, normalizedTime);
     }
 
-    [RPC]
-    private void netCrossFade(string aniName, float time, PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "netCrossFade")]
+    private void NetCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
         if (!Guardian.AntiAbuse.Validators.ErenChecker.IsCrossFadeValid(this, info)) return;
 
         LocalCrossFade(aniName, time);
     }
 
-    [RPC]
-    private void removeMe(PhotonMessageInfo info)
+    [Guardian.Networking.RPC(Name = "removeMe")]
+    private void RemoveMe(PhotonMessageInfo info)
     {
         if (Guardian.AntiAbuse.Validators.ErenChecker.IsRemovalValid(info))
         {
@@ -143,7 +143,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
     }
 
-    public void update()
+    public void Update1()
     {
         if ((IN_GAME_MAIN_CAMERA.IsPausing && IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) || rockLift)
         {
@@ -180,7 +180,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             }
             if (realBody != null)
             {
-                realBody.GetComponent<HERO>().backToHuman();
+                realBody.GetComponent<HERO>().ReturnToHuman();
                 realBody.transform.position = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck").position + Vector3.up * 2f;
                 realBody = null;
             }
@@ -229,7 +229,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             if (base.animation[hitAnimation].normalizedTime >= 1f)
             {
                 isHit = false;
-                falseAttack();
+                FalseAttack();
                 PlayAnimation("idle");
             }
             return;
@@ -305,8 +305,8 @@ public class TITAN_EREN : Photon.MonoBehaviour
             {
                 isNextAttack = true;
             }
-            float num = 0f;
-            float num2 = 0f;
+            float num;
+            float num2;
             float num3 = 0f;
             string text = string.Empty;
 
@@ -362,7 +362,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
                         facingDirection = eulerAngles2.y;
                     }
                 }
-                falseAttack();
+                FalseAttack();
                 attackAnimation = text;
                 CrossFade(attackAnimation, 0.1f);
                 base.animation[attackAnimation].time = 0f;
@@ -386,13 +386,13 @@ public class TITAN_EREN : Photon.MonoBehaviour
                     switch (attackAnimation)
                     {
                         case "attack_combo_001":
-                            playSound("snd_eren_swing1");
+                            PlaySound("snd_eren_swing1");
                             break;
                         case "attack_combo_002":
-                            playSound("snd_eren_swing2");
+                            PlaySound("snd_eren_swing2");
                             break;
                         case "attack_combo_003":
-                            playSound("snd_eren_swing3");
+                            PlaySound("snd_eren_swing3");
                             break;
                     }
                     attackChkOnce = true;
@@ -471,7 +471,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             }
             if (base.animation[attackAnimation].normalizedTime >= 1f)
             {
-                falseAttack();
+                FalseAttack();
                 PlayAnimation("idle");
             }
         }
@@ -484,7 +484,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             if (base.animation["born"].normalizedTime >= 0.28f && !isPlayRoar)
             {
                 isPlayRoar = true;
-                playSound("snd_eren_roar");
+                PlaySound("snd_eren_roar");
             }
             if (base.animation["born"].normalizedTime >= 0.5f && base.animation["born"].normalizedTime <= 0.7f)
             {
@@ -501,41 +501,41 @@ public class TITAN_EREN : Photon.MonoBehaviour
                     }
                     else
                     {
-                        netTauntAttack(10f, 500f);
+                        NetTauntAttack(10f, 500f);
                     }
                 }
                 else
                 {
-                    netTauntAttack(10f, 500f);
+                    NetTauntAttack(10f, 500f);
                 }
             }
         }
-        showAimUI();
-        showSkillCD();
+        ShowAimUI();
+        ShowSkillCD();
     }
 
-    private void showSkillCD()
+    private void ShowSkillCD()
     {
         GameObject.Find("skill_cd_eren").GetComponent<UISprite>().fillAmount = lifeTime / lifeTimeMax;
     }
 
-    private void playSound(string sndname)
+    private void PlaySound(string sndname)
     {
-        playsoundRPC(sndname);
+        PlaySoundRPC(sndname);
         if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
         {
             base.photonView.RPC("playsoundRPC", PhotonTargets.Others, sndname);
         }
     }
 
-    [RPC]
-    private void playsoundRPC(string sndname)
+    [Guardian.Networking.RPC(Name = "playSoundRPC")]
+    private void PlaySoundRPC(string sndname)
     {
         Transform transform = base.transform.Find(sndname);
         transform.GetComponent<AudioSource>().Play();
     }
 
-    private void showAimUI()
+    private void ShowAimUI()
     {
         GameObject gameObject = GameObject.Find("cross1");
         GameObject gameObject2 = GameObject.Find("cross2");
@@ -555,7 +555,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
         transform.localPosition = vector;
     }
 
-    public void lateUpdate()
+    public void LateUpdate1()
     {
         if ((!IN_GAME_MAIN_CAMERA.IsPausing || IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer) && !rockLift && (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine))
         {
@@ -565,23 +565,23 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
-    private void netTauntAttack(float tauntTime, float distance = 100f)
+    [Guardian.Networking.RPC(Name = "netTauntAttack")]
+    private void NetTauntAttack(float tauntTime, float distance = 100f)
     {
         foreach (GameObject gameObject in FengGameManagerMKII.Instance.AllTitans)
         {
             if (Vector3.Distance(gameObject.transform.position, base.transform.position) < distance && (bool)gameObject.GetComponent<TITAN>())
             {
-                gameObject.GetComponent<TITAN>().beTauntedBy(base.gameObject, tauntTime);
+                gameObject.GetComponent<TITAN>().BeTauntedBy(base.gameObject, tauntTime);
             }
             if ((bool)gameObject.GetComponent<FEMALE_TITAN>())
             {
-                gameObject.GetComponent<FEMALE_TITAN>().erenIsHere(base.gameObject);
+                gameObject.GetComponent<FEMALE_TITAN>().SetEren(base.gameObject);
             }
         }
     }
 
-    private void falseAttack()
+    private void FalseAttack()
     {
         isAttack = false;
         isNextAttack = false;
@@ -793,11 +793,11 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
     }
 
-    public void born()
+    public void Born()
     {
         foreach (FEMALE_TITAN annie in FengGameManagerMKII.Instance.Annies)
         {
-            annie.erenIsHere(base.gameObject);
+            annie.SetEren(base.gameObject);
         }
 
         if (!bottomObject.GetComponent<CheckHitGround>().isGrounded)
@@ -811,7 +811,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             PlayAnimation("born");
             isPlayRoar = false;
         }
-        playSound("snd_eren_shift");
+        PlaySound("snd_eren_shift");
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
             UnityEngine.Object.Instantiate(Resources.Load("FX/Thunder"), base.transform.position + Vector3.up * 23f, Quaternion.Euler(270f, 0f, 0f));
@@ -838,14 +838,14 @@ public class TITAN_EREN : Photon.MonoBehaviour
             {
                 isHit = true;
                 hitAnimation = "hit_titan";
-                falseAttack();
+                FalseAttack();
                 PlayAnimation(hitAnimation);
                 needFreshCorePosition = true;
             }
         }
     }
 
-    public void hitByFT(int phase)
+    public void HitByFT(int phase)
     {
         if (hasDied)
         {
@@ -853,7 +853,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
         isHit = true;
         hitAnimation = "hit_annie_" + phase;
-        falseAttack();
+        FalseAttack();
         PlayAnimation(hitAnimation);
         needFreshCorePosition = true;
         if (phase == 3)
@@ -890,27 +890,27 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
     }
 
-    public void hitByFTByServer(int phase)
+    public void HitByServerFT(int phase)
     {
         base.photonView.RPC("hitByFTRPC", PhotonTargets.All, phase);
     }
 
-    [RPC]
-    private void hitByFTRPC(int phase)
+    [Guardian.Networking.RPC(Name = "hitByFTRPC")]
+    private void HitByFTRPC(int phase)
     {
         if (base.photonView.isMine)
         {
-            hitByFT(phase);
+            HitByFT(phase);
         }
     }
 
-    public void hitByTitanByServer()
+    public void HitByServerTitan()
     {
         base.photonView.RPC("hitByTitanRPC", PhotonTargets.All);
     }
 
-    [RPC]
-    private void hitByTitanRPC()
+    [Guardian.Networking.RPC(Name = "hitByTitanRPC")]
+    private void HitByTitanRPC()
     {
         if (base.photonView.isMine)
         {
@@ -944,7 +944,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
                     rockPhase++;
                     CrossFade("idle", 1f);
                     waitCounter = 0f;
-                    setRoute();
+                    SetRoute();
                 }
                 break;
             case 1:
@@ -1107,26 +1107,26 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
-    private void rockPlayAnimation(string anim)
+    [Guardian.Networking.RPC(Name = "rockPlayAnimation")]
+    private void RockPlayAnimation(string anim)
     {
         rock.animation.Play(anim);
         rock.animation[anim].speed = 1f;
     }
 
-    [RPC]
-    private void startMovingRock()
+    [Guardian.Networking.RPC(Name = "startMovingRock")]
+    private void StartMovingRock()
     {
         isROCKMOVE = true;
     }
 
-    [RPC]
-    private void endMovingRock()
+    [Guardian.Networking.RPC(Name = "endMovingRock")]
+    private void EndMovingRock()
     {
         isROCKMOVE = false;
     }
 
-    public void setRoute()
+    public void SetRoute()
     {
         GameObject gameObject = GameObject.Find("routeTrost");
         checkPoints = new ArrayList();
@@ -1139,7 +1139,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
 
     private void Start()
     {
-        loadskin();
+        LoadSkin();
 
         FengGameManagerMKII.Instance.AddEren(this);
         if (rockLift)
@@ -1160,7 +1160,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
         hasSpawn = true;
     }
 
-    public void loadskin()
+    public void LoadSkin()
     {
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
@@ -1176,8 +1176,8 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
     }
 
-    [RPC]
-    public void loadskinRPC(string url)
+    [Guardian.Networking.RPC(Name = "loadskinRPC")]
+    public void LoadSkinRPC(string url)
     {
         if ((int)FengGameManagerMKII.Settings[1] == 1 && (url.EndsWith(".jpg") || url.EndsWith(".png") || url.EndsWith(".jpeg")))
         {

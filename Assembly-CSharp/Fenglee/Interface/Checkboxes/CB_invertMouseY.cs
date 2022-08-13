@@ -11,7 +11,7 @@ public class CB_invertMouseY : MonoBehaviour
             init = true;
             if (PlayerPrefs.HasKey("invertMouseY"))
             {
-                base.gameObject.GetComponent<UICheckbox>().isChecked = ((PlayerPrefs.GetInt("invertMouseY") == -1) ? true : false);
+                base.gameObject.GetComponent<UICheckbox>().isChecked = PlayerPrefs.GetInt("invertMouseY") == -1;
             }
             else
             {

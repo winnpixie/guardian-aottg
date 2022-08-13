@@ -28,13 +28,13 @@ namespace Guardian.Utilities
                 return true;
             }
 
-            value = default(T);
+            value = default;
             return false;
         }
 
         public static bool TryGetRaw<T>(string path, out T value)
         {
-            value = default(T);
+            value = default;
             using WWW www = new WWW(path);
             while (!www.isDone) { }
 

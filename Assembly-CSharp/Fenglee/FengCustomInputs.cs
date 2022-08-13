@@ -39,7 +39,7 @@ public class FengCustomInputs : MonoBehaviour
     public float analogFeel_sensitivity = 0.8f;
     private int tempLength;
 
-    public void justUPDATEME()
+    public void JustUpdate()
     {
         Update();
     }
@@ -48,7 +48,7 @@ public class FengCustomInputs : MonoBehaviour
     {
         if (!menuOn)
         {
-            inputSetBools();
+            SetInputBools();
         }
     }
 
@@ -56,11 +56,11 @@ public class FengCustomInputs : MonoBehaviour
     {
         if (menuOn)
         {
-            drawButtons1();
+            DrawButtons1();
         }
     }
 
-    private void inputSetBools()
+    private void SetInputBools()
     {
         for (int i = 0; i < DescriptionString.Length; i++)
         {
@@ -108,7 +108,7 @@ public class FengCustomInputs : MonoBehaviour
         }
     }
 
-    private void saveInputs()
+    private void SaveInputs()
     {
         string text = string.Empty;
         string text2 = string.Empty;
@@ -125,7 +125,7 @@ public class FengCustomInputs : MonoBehaviour
         PlayerPrefs.SetInt("KeyLength", DescriptionString.Length);
     }
 
-    private void reset2defaults()
+    private void ResetAll()
     {
         if (default_inputKeys.Length != DescriptionString.Length)
         {
@@ -146,7 +146,7 @@ public class FengCustomInputs : MonoBehaviour
         }
     }
 
-    private void loadConfig()
+    private void LoadConfig()
     {
         string keyCodes = PlayerPrefs.GetString("KeyCodes");
         string joystickInput = PlayerPrefs.GetString("Joystick_input");
@@ -169,17 +169,17 @@ public class FengCustomInputs : MonoBehaviour
         }
     }
 
-    public void startListening(int n)
+    public void StartListening(int n)
     {
         inputBool[n] = true;
         lastInterval = Time.realtimeSinceStartup;
     }
 
-    public void setToDefault()
+    public void SetToDefault()
     {
-        reset2defaults();
-        loadConfig();
-        saveInputs();
+        ResetAll();
+        LoadConfig();
+        SaveInputs();
         PlayerPrefs.SetFloat("MouseSensitivity", 0.5f);
         PlayerPrefs.SetString("version", UIMainReferences.Version);
         PlayerPrefs.SetInt("invertMouseY", 1);
@@ -187,7 +187,7 @@ public class FengCustomInputs : MonoBehaviour
         PlayerPrefs.SetFloat("GameQuality", 0.9f);
     }
 
-    public void showKeyMap()
+    public void ShowKeyMap()
     {
         for (int i = 0; i < DescriptionString.Length; i++)
         {
@@ -206,15 +206,15 @@ public class FengCustomInputs : MonoBehaviour
         }
         if ((bool)GameObject.Find("CheckboxSettings"))
         {
-            GameObject.Find("CheckboxSettings").GetComponent<UICheckbox>().isChecked = ((PlayerPrefs.GetInt("invertMouseY") != 1) ? true : false);
+            GameObject.Find("CheckboxSettings").GetComponent<UICheckbox>().isChecked = PlayerPrefs.GetInt("invertMouseY") != 1;
         }
         if ((bool)GameObject.Find("CheckboxCameraTilt"))
         {
-            GameObject.Find("CheckboxCameraTilt").GetComponent<UICheckbox>().isChecked = ((PlayerPrefs.GetInt("cameraTilt") == 1) ? true : false);
+            GameObject.Find("CheckboxCameraTilt").GetComponent<UICheckbox>().isChecked = PlayerPrefs.GetInt("cameraTilt") == 1;
         }
     }
 
-    private void drawButtons1()
+    private void DrawButtons1()
     {
         bool flag = false;
         for (int i = 0; i < DescriptionString.Length; i++)
@@ -231,8 +231,8 @@ public class FengCustomInputs : MonoBehaviour
                 inputString[i] = inputKey[i].ToString();
                 joystickActive[i] = false;
                 joystickString[i] = "#";
-                saveInputs();
-                checDoubles(inputKey[i], i, 1);
+                SaveInputs();
+                CheckDoubles(inputKey[i], i, 1);
             }
             if (mouseButtonsOn)
             {
@@ -247,8 +247,8 @@ public class FengCustomInputs : MonoBehaviour
                         inputString[i] = inputKey[i].ToString();
                         joystickActive[i] = false;
                         joystickString[i] = "#";
-                        saveInputs();
-                        checDoubles(inputKey[i], i, 1);
+                        SaveInputs();
+                        CheckDoubles(inputKey[i], i, 1);
                     }
                 }
             }
@@ -261,8 +261,8 @@ public class FengCustomInputs : MonoBehaviour
                     inputString[i] = inputKey[i].ToString();
                     joystickActive[i] = false;
                     joystickString[i] = "#";
-                    saveInputs();
-                    checDoubles(inputKey[i], i, 1);
+                    SaveInputs();
+                    CheckDoubles(inputKey[i], i, 1);
                 }
             }
             if (mouseAxisOn)
@@ -274,8 +274,8 @@ public class FengCustomInputs : MonoBehaviour
                     joystickActive[i] = true;
                     joystickString[i] = "MouseUp";
                     inputString[i] = "Mouse Up";
-                    saveInputs();
-                    checDoubleAxis(joystickString[i], i, 1);
+                    SaveInputs();
+                    CheckDoubleAxis(joystickString[i], i, 1);
                 }
                 if (Input.GetAxis("MouseDown") == 1f && inputBool[i])
                 {
@@ -284,8 +284,8 @@ public class FengCustomInputs : MonoBehaviour
                     joystickActive[i] = true;
                     joystickString[i] = "MouseDown";
                     inputString[i] = "Mouse Down";
-                    saveInputs();
-                    checDoubleAxis(joystickString[i], i, 1);
+                    SaveInputs();
+                    CheckDoubleAxis(joystickString[i], i, 1);
                 }
                 if (Input.GetAxis("MouseLeft") == 1f && inputBool[i])
                 {
@@ -295,8 +295,8 @@ public class FengCustomInputs : MonoBehaviour
                     joystickString[i] = "MouseLeft";
                     inputBool[i] = false;
                     inputString[i] = "Mouse Left";
-                    saveInputs();
-                    checDoubleAxis(joystickString[i], i, 1);
+                    SaveInputs();
+                    CheckDoubleAxis(joystickString[i], i, 1);
                 }
                 if (Input.GetAxis("MouseRight") == 1f && inputBool[i])
                 {
@@ -305,8 +305,8 @@ public class FengCustomInputs : MonoBehaviour
                     joystickActive[i] = true;
                     joystickString[i] = "MouseRight";
                     inputString[i] = "Mouse Right";
-                    saveInputs();
-                    checDoubleAxis(joystickString[i], i, 1);
+                    SaveInputs();
+                    CheckDoubleAxis(joystickString[i], i, 1);
                 }
             }
             if (mouseButtonsOn)
@@ -319,8 +319,8 @@ public class FengCustomInputs : MonoBehaviour
                     joystickString[i] = "MouseScrollUp";
                     inputBool[i] = false;
                     inputString[i] = "Mouse scroll Up";
-                    saveInputs();
-                    checDoubleAxis(joystickString[i], i, 1);
+                    SaveInputs();
+                    CheckDoubleAxis(joystickString[i], i, 1);
                 }
                 if (Input.GetAxis("MouseScrollDown") > 0f && inputBool[i])
                 {
@@ -330,8 +330,8 @@ public class FengCustomInputs : MonoBehaviour
                     joystickString[i] = "MouseScrollDown";
                     inputBool[i] = false;
                     inputString[i] = "Mouse scroll Down";
-                    saveInputs();
-                    checDoubleAxis(joystickString[i], i, 1);
+                    SaveInputs();
+                    CheckDoubleAxis(joystickString[i], i, 1);
                 }
             }
             if (Input.GetAxis("JoystickUp") > 0.5f && inputBool[i])
@@ -341,8 +341,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "JoystickUp";
                 inputString[i] = "Joystick Up";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("JoystickDown") > 0.5f && inputBool[i])
             {
@@ -351,8 +351,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "JoystickDown";
                 inputString[i] = "Joystick Down";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("JoystickLeft") > 0.5f && inputBool[i])
             {
@@ -361,8 +361,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "JoystickLeft";
                 inputString[i] = "Joystick Left";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("JoystickRight") > 0.5f && inputBool[i])
             {
@@ -371,8 +371,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "JoystickRight";
                 inputString[i] = "Joystick Right";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_3a") > 0.8f && inputBool[i])
             {
@@ -381,8 +381,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_3a";
                 inputString[i] = "Joystick Axis 3 +";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_3b") > 0.8f && inputBool[i])
             {
@@ -391,8 +391,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_3b";
                 inputString[i] = "Joystick Axis 3 -";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_4a") > 0.8f && inputBool[i])
             {
@@ -401,8 +401,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_4a";
                 inputString[i] = "Joystick Axis 4 +";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_4b") > 0.8f && inputBool[i])
             {
@@ -411,8 +411,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_4b";
                 inputString[i] = "Joystick Axis 4 -";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_5b") > 0.8f && inputBool[i])
             {
@@ -421,8 +421,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_5b";
                 inputString[i] = "Joystick Axis 5 -";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_6b") > 0.8f && inputBool[i])
             {
@@ -431,8 +431,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_6b";
                 inputString[i] = "Joystick Axis 6 -";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_7a") > 0.8f && inputBool[i])
             {
@@ -441,8 +441,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_7a";
                 inputString[i] = "Joystick Axis 7 +";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_7b") > 0.8f && inputBool[i])
             {
@@ -451,8 +451,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_7b";
                 inputString[i] = "Joystick Axis 7 -";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_8a") > 0.8f && inputBool[i])
             {
@@ -461,8 +461,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_8a";
                 inputString[i] = "Joystick Axis 8 +";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (Input.GetAxis("Joystick_8b") > 0.8f && inputBool[i])
             {
@@ -471,8 +471,8 @@ public class FengCustomInputs : MonoBehaviour
                 joystickActive[i] = true;
                 joystickString[i] = "Joystick_8b";
                 inputString[i] = "Joystick Axis 8 -";
-                saveInputs();
-                checDoubleAxis(joystickString[i], i, 1);
+                SaveInputs();
+                CheckDoubleAxis(joystickString[i], i, 1);
             }
             if (flag2 != inputBool[i])
             {
@@ -481,11 +481,11 @@ public class FengCustomInputs : MonoBehaviour
         }
         if (flag)
         {
-            showKeyMap();
+            ShowKeyMap();
         }
     }
 
-    private void checDoubles(KeyCode testkey, int o, int p)
+    private void CheckDoubles(KeyCode testkey, int o, int p)
     {
         if (allowDuplicates)
         {
@@ -500,12 +500,12 @@ public class FengCustomInputs : MonoBehaviour
                 inputString[i] = inputKey[i].ToString();
                 joystickActive[i] = false;
                 joystickString[i] = "#";
-                saveInputs();
+                SaveInputs();
             }
         }
     }
 
-    private void checDoubleAxis(string testAxisString, int o, int p)
+    private void CheckDoubleAxis(string testAxisString, int o, int p)
     {
         if (allowDuplicates)
         {
@@ -520,12 +520,12 @@ public class FengCustomInputs : MonoBehaviour
                 inputString[i] = inputKey[i].ToString();
                 joystickActive[i] = false;
                 joystickString[i] = "#";
-                saveInputs();
+                SaveInputs();
             }
         }
     }
 
-    public void setKeyRC(int i, string setting)
+    public void SetKeyRC(int i, string setting)
     {
         if (setting == "Scroll Up" || setting == "Scroll Down")
         {
@@ -543,8 +543,8 @@ public class FengCustomInputs : MonoBehaviour
             inputBool[i] = false;
             joystickActive[i] = true;
             inputBool[i] = false;
-            saveInputs();
-            checDoubleAxis(joystickString[i], i, 1);
+            SaveInputs();
+            CheckDoubleAxis(joystickString[i], i, 1);
         }
         else
         {
@@ -554,17 +554,17 @@ public class FengCustomInputs : MonoBehaviour
             inputString[i] = inputKey[i].ToString();
             joystickActive[i] = false;
             joystickString[i] = "#";
-            saveInputs();
-            checDoubles(inputKey[i], i, 1);
+            SaveInputs();
+            CheckDoubles(inputKey[i], i, 1);
         }
     }
 
-    public void setNameRC(int i, string str)
+    public void SetNameRC(int i, string str)
     {
         inputString[i] = str;
     }
 
-    public string getKeyRC(int i)
+    public string GetKeyRC(int i)
     {
         return inputString[i];
     }
@@ -583,16 +583,16 @@ public class FengCustomInputs : MonoBehaviour
         tempjoy1 = new bool[DescriptionString.Length];
         if (!PlayerPrefs.HasKey("version"))
         {
-            setToDefault();
+            SetToDefault();
         }
         tempLength = PlayerPrefs.GetInt("KeyLength");
         if (PlayerPrefs.HasKey("KeyCodes") && tempLength == DescriptionString.Length)
         {
-            loadConfig();
+            LoadConfig();
         }
         else
         {
-            setToDefault();
+            SetToDefault();
         }
         for (int i = 0; i < DescriptionString.Length; i++)
         {

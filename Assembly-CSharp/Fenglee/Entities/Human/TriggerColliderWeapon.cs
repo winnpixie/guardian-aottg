@@ -25,7 +25,7 @@ public class TriggerColliderWeapon : MonoBehaviour
         currentCamera = GameObject.Find("MainCamera");
     }
 
-    private bool checkIfBehind(GameObject titan)
+    private bool CheckIfBehind(GameObject titan)
     {
         Transform transform = titan.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck/head");
         Vector3 to = base.transform.position - transform.transform.position;
@@ -104,7 +104,7 @@ public class TriggerColliderWeapon : MonoBehaviour
             case "titanneck": // Normal/Female/Colossal Titan nape
                 {
                     HitBox hitbox = other.gameObject.GetComponent<HitBox>();
-                    if (hitbox == null || !checkIfBehind(hitbox.transform.root.gameObject) || currentHits.Contains(hitbox))
+                    if (hitbox == null || !CheckIfBehind(hitbox.transform.root.gameObject) || currentHits.Contains(hitbox))
                     {
                         return;
                     }
@@ -134,7 +134,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                             titan.Die();
                             SpawnNapeMeat(currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity, hitbox.transform.root);
                             FengGameManagerMKII fengGame = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>();
-                            fengGame.netShowDamage(damage);
+                            fengGame.NetShowDamage(damage);
                             fengGame.UpdatePlayerKillInfo(damage);
                         }
 
@@ -193,7 +193,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     {
                         if (!gameObject2.GetComponent<FEMALE_TITAN>().hasDie)
                         {
-                            gameObject2.GetComponent<FEMALE_TITAN>().hitEye();
+                            gameObject2.GetComponent<FEMALE_TITAN>().GetHitEye();
                         }
 
                         return;
@@ -270,12 +270,12 @@ public class TriggerColliderWeapon : MonoBehaviour
                             {
                                 if ((bool)gameObject3.GetComponent<FEMALE_TITAN>() && !gameObject3.GetComponent<FEMALE_TITAN>().hasDie)
                                 {
-                                    gameObject3.GetComponent<FEMALE_TITAN>().hitAnkleR(damage);
+                                    gameObject3.GetComponent<FEMALE_TITAN>().GetHitAnkleR(damage);
                                 }
                             }
                             else if ((bool)gameObject3.GetComponent<FEMALE_TITAN>() && !gameObject3.GetComponent<FEMALE_TITAN>().hasDie)
                             {
-                                gameObject3.GetComponent<FEMALE_TITAN>().hitAnkleL(damage);
+                                gameObject3.GetComponent<FEMALE_TITAN>().GetHitAnkleL(damage);
                             }
 
                             return;

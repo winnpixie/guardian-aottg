@@ -5,7 +5,7 @@ using System.Text;
 
 public class SimpleAES
 {
-    private static byte[] key = new byte[32]
+    private static readonly byte[] key = new byte[32]
     {
         123,
         217,
@@ -41,7 +41,7 @@ public class SimpleAES
         209
     };
 
-    private static byte[] vector = new byte[16]
+    private static readonly byte[] vector = new byte[16]
     {
         146,
         64,
@@ -61,9 +61,9 @@ public class SimpleAES
         156
     };
 
-    private ICryptoTransform encryptor;
-    private ICryptoTransform decryptor;
-    private UTF8Encoding encoder;
+    private readonly ICryptoTransform encryptor;
+    private readonly ICryptoTransform decryptor;
+    private readonly UTF8Encoding encoder;
 
     public SimpleAES()
     {

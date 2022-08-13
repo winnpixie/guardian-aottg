@@ -156,7 +156,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                         if (titan != null && !titan.hasDie)
                         {
                             FengGameManagerMKII fgmkii = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>();
-                            fgmkii.netShowDamage(damage);
+                            fgmkii.NetShowDamage(damage);
 
                             if ((float)damage > titan.myLevel * 100f)
                             {
@@ -215,7 +215,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     {
                         if (!gameObject.GetComponent<FEMALE_TITAN>().hasDie)
                         {
-                            gameObject.GetComponent<FEMALE_TITAN>().hitEye();
+                            gameObject.GetComponent<FEMALE_TITAN>().GetHitEye();
                         }
 
                         return;
@@ -292,12 +292,12 @@ public class AHSSShotGunCollider : MonoBehaviour
                             {
                                 if ((bool)gameObject2.GetComponent<FEMALE_TITAN>() && !gameObject2.GetComponent<FEMALE_TITAN>().hasDie)
                                 {
-                                    gameObject2.GetComponent<FEMALE_TITAN>().hitAnkleR(damage);
+                                    gameObject2.GetComponent<FEMALE_TITAN>().GetHitAnkleR(damage);
                                 }
                             }
                             else if ((bool)gameObject2.GetComponent<FEMALE_TITAN>() && !gameObject2.GetComponent<FEMALE_TITAN>().hasDie)
                             {
-                                gameObject2.GetComponent<FEMALE_TITAN>().hitAnkleL(damage);
+                                gameObject2.GetComponent<FEMALE_TITAN>().GetHitAnkleL(damage);
                             }
 
                             return;
