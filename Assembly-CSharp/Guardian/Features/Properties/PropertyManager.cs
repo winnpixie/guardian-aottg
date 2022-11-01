@@ -67,7 +67,7 @@ namespace Guardian.Features.Properties
 
         // Visual [Render]
         public Property<int> DrawDistance = new Property<int>("Visual_DrawDistance", new string[0], 1500);
-        public Property<int> FieldOfView = new Property<int>("Visual_FieldOfView", new string[0], 50);
+        public Property<int> FieldOfView = new Property<int>("Visual_FieldOfView", new string[0], 50); // TODO: Re-work
         public Property<bool> Blur = new Property<bool>("Visual_Blur", new string[0], false);
         public Property<bool> UseMainLightColor = new Property<bool>("Visual_CustomMainLightColor", new string[0], true);
         public Property<string> MainLightColor = new Property<string>("Visual_MainLightColor", new string[0], "FFFFFFFF");

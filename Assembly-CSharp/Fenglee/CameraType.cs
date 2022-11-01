@@ -1,6 +1,6 @@
 public enum CameraType
 {
 	Original,
-	WOW,
+	WoW,
 	TPS
 }

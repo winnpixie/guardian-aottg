@@ -121,7 +121,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netPlayAnimation")]
     private void NetPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.AnnieChecker.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.FTValidator.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -130,7 +130,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netPlayAnimationAt")]
     private void NetPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.AnnieChecker.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.FTValidator.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -139,7 +139,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netCrossFade")]
     private void NetCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.AnnieChecker.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.FTValidator.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -147,9 +147,10 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
 
     private void OnDestroy()
     {
-        if (GameObject.Find("MultiplayerManager") != null)
+        GameObject mm = GameObject.Find("MultiplayerManager");
+        if (mm != null)
         {
-            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().RemoveAnnie(this);
+            mm.GetComponent<FengGameManagerMKII>().RemoveAnnie(this);
         }
     }
 
@@ -1652,7 +1653,7 @@ public class FEMALE_TITAN : Photon.MonoBehaviour
         {
             if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
             {
-                WWW link = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(url);
+                WWW link = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(url);
                 if (link != null)
                 {
                     yield return link;

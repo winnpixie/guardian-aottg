@@ -1,6 +1,6 @@
 ﻿namespace Guardian.AntiAbuse.Validators
 {
-    class AnnieChecker
+    class FTValidator
     {
         // FEMALE_TITAN.netPlayAnimation
         public static bool IsAnimationPlayValid(FEMALE_TITAN annie, PhotonMessageInfo info)

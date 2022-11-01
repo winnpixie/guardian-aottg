@@ -18,7 +18,7 @@ public class BTN_START_MULTI_SERVER : MonoBehaviour
             {
                 password = new SimpleAES().Encrypt(password);
             }
-            name += "`" + map + "`" + difficulty + "`" + time + "`" + daylight + "`" + password + "`" + Guardian.Utilities.MathHelper.RandomInt(int.MinValue, int.MaxValue);
+            name += "`" + map + "`" + difficulty + "`" + time + "`" + daylight + "`" + password + "`" + Guardian.Utilities.MathHelper.RandInt(int.MinValue, int.MaxValue);
             PhotonNetwork.CreateRoom(name, new RoomOptions
             {
                 maxPlayers = max,

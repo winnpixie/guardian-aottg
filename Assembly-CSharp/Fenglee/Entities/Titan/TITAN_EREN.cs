@@ -51,7 +51,6 @@ public class TITAN_EREN : Photon.MonoBehaviour
     private void OnDestroy()
     {
         GameObject mm = GameObject.Find("MultiplayerManager");
-
         if (mm != null)
         {
             mm.GetComponent<FengGameManagerMKII>().RemoveEren(this);
@@ -112,7 +111,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netPlayAnimation")]
     private void NetPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.ErenChecker.IsAnimationPlayValid(this, info)) return;
+        if (!Guardian.AntiAbuse.Validators.ETValidator.IsAnimationPlayValid(this, info)) return;
 
         LocalPlayAnimation(aniName);
     }
@@ -120,7 +119,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netPlayAnimationAt")]
     private void NetPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.ErenChecker.IsAnimationSeekedPlayValid(this, info)) return;
+        if (!Guardian.AntiAbuse.Validators.ETValidator.IsAnimationSeekedPlayValid(this, info)) return;
 
         LocalPlayAnimationAt(aniName, normalizedTime);
     }
@@ -128,7 +127,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netCrossFade")]
     private void NetCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.ErenChecker.IsCrossFadeValid(this, info)) return;
+        if (!Guardian.AntiAbuse.Validators.ETValidator.IsCrossFadeValid(this, info)) return;
 
         LocalCrossFade(aniName, time);
     }
@@ -136,7 +135,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "removeMe")]
     private void RemoveMe(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.ErenChecker.IsRemovalValid(info))
+        if (Guardian.AntiAbuse.Validators.ETValidator.IsRemovalValid(info))
         {
             PhotonNetwork.RemoveRPCs(base.photonView);
             UnityEngine.Object.Destroy(base.gameObject);
@@ -249,9 +248,9 @@ public class TITAN_EREN : Photon.MonoBehaviour
             if (inputManager.isInputDown[InputCode.Attack0] || inputManager.isInputDown[InputCode.Attack1])
             {
                 bool flag = false;
-                if ((IN_GAME_MAIN_CAMERA.CameraMode == CameraType.WOW && inputManager.isInput[InputCode.Down]) || inputManager.isInputDown[InputCode.Attack1])
+                if ((IN_GAME_MAIN_CAMERA.CameraMode == CameraType.WoW && inputManager.isInput[InputCode.Down]) || inputManager.isInputDown[InputCode.Attack1])
                 {
-                    if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.WOW && inputManager.isInputDown[InputCode.Attack1] && inputManager.inputKey[11] == KeyCode.Mouse1)
+                    if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.WoW && inputManager.isInputDown[InputCode.Attack1] && inputManager.inputKey[11] == KeyCode.Mouse1)
                     {
                         flag = true;
                     }
@@ -1205,7 +1204,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
             {
                 if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
                 {
-                    WWW link = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(url);
+                    WWW link = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(url);
                     if (link != null)
                     {
                         yield return link;

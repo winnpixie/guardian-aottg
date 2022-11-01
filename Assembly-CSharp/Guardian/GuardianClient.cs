@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.0.0";
+        public static readonly string Build = "1.1.0";
         public static readonly string RootDir = Application.dataPath + "\\..";
         public static readonly string CustomPropertyName = "GuardianMod";
 
@@ -58,10 +58,10 @@ namespace Guardian
             IsFirstInit = false;
 
             // Load network validation service
-            NetworkChecker.Init();
+            NetworkValidator.Init();
 
             // Load skin validation service
-            SkinChecker.Init();
+            SkinValidator.Init();
 
             // Load name and guild (if possible)
             FengGameManagerMKII.NameField = PlayerPrefs.GetString("name", string.Empty);
@@ -246,7 +246,6 @@ namespace Guardian
                 Gamemodes.CurrentMode.OnPlayerJoin(player);
             }
 
-            Toasts.Add(new Toast("PLAYER CONNECTED".AsColor("00FF00"), $"({player.Id}) {player.Username.NGUIToUnity()} connected.", 15));
             Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() + " connected.".AsColor("00FF00"));
         }
 
@@ -257,20 +256,19 @@ namespace Guardian
                 Gamemodes.CurrentMode.OnPlayerLeave(player);
             }
 
-            Toasts.Add(new Toast("PLAYER DISCONNECTED".AsColor("FF0000"), $"({player.Id}) {player.Username.NGUIToUnity()} disconnected.", 15));
             Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() + " disconnected.".AsColor("FF0000"));
         }
 
         private void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
         {
-            NetworkChecker.OnPlayerPropertyModification(playerAndUpdatedProps);
+            NetworkValidator.OnPlayerPropertyModification(playerAndUpdatedProps);
 
             ModDetector.OnPlayerPropertyModification(playerAndUpdatedProps);
         }
 
         private void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
-            NetworkChecker.OnRoomPropertyModification(propertiesThatChanged);
+            NetworkValidator.OnRoomPropertyModification(propertiesThatChanged);
 
             PhotonPlayer sender = null;
             if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer player)

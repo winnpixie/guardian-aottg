@@ -6,6 +6,7 @@ namespace Guardian.Networking
     {
         public static PhotonConnection TCP = new PhotonConnection("TCP", 4530, ConnectionProtocol.Tcp);
         public static PhotonConnection UDP = new PhotonConnection("UDP", 5055, ConnectionProtocol.Udp);
+        public static PhotonConnection RHttp = new PhotonConnection("RHttp", 6063, ConnectionProtocol.RHttp);
 
         public string Name;
         public int Port;

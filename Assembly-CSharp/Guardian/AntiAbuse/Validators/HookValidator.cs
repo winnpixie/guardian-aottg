@@ -1,6 +1,6 @@
 ﻿namespace Guardian.AntiAbuse.Validators
 {
-    class HookChecker
+    class HookValidator
     {
         // Bullet.killObject
         public static bool IsKillObjectValid(PhotonMessageInfo info)

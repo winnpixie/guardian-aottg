@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Guardian.AntiAbuse.Validators
 {
-    class NetworkChecker
+    class NetworkValidator
     {
         public static readonly List<object> PropertyWhitelist = new List<object>(new object[] {
             (byte)255, "sender"

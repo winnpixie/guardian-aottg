@@ -13,6 +13,8 @@ public class AHSSShotGunCollider : MonoBehaviour
     private int viewID = -1;
     private string ownerName = string.Empty;
 
+    private FengGameManagerMKII fengGame;
+
     private AudioSource hitSound;
 
     private void Start()
@@ -26,6 +28,8 @@ public class AHSSShotGunCollider : MonoBehaviour
                 hitSound.clip = deathClip;
             }
         }
+
+        fengGame = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>();
 
         currentCamera = GameObject.Find("MainCamera");
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
@@ -146,7 +150,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     // Local minimum damage
                     if (damage < Guardian.GuardianClient.Properties.LocalMinDamage.Value)
                     {
-                        GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
+                        fengGame.ShowDamage(damage);
                         return;
                     }
 
@@ -155,8 +159,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     {
                         if (titan != null && !titan.hasDie)
                         {
-                            FengGameManagerMKII fgmkii = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>();
-                            fgmkii.NetShowDamage(damage);
+                            fengGame.NetShowDamage(damage);
 
                             if ((float)damage > titan.myLevel * 100f)
                             {
@@ -165,7 +168,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                                 {
                                     currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartSnapshot2(hitbox.transform.position, damage, hitbox.transform.root.gameObject, 0.02f);
                                 }
-                                fgmkii.UpdatePlayerKillInfo(damage);
+                                fengGame.UpdatePlayerKillInfo(damage);
                             }
                         }
 
@@ -282,7 +285,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                         // Local minimum damage
                         if (damage < Guardian.GuardianClient.Properties.LocalMinDamage.Value)
                         {
-                            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
+                            fengGame.ShowDamage(damage);
                             return;
                         }
 

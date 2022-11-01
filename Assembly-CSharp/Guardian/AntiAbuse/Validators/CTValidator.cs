@@ -1,6 +1,6 @@
 ﻿namespace Guardian.AntiAbuse.Validators
 {
-    class ColossalChecker
+    class CTValidator
     {
         // COLOSSAL_TITAN.removeMe
         public static bool IsRemovalValid(PhotonMessageInfo info)

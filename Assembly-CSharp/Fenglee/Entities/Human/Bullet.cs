@@ -92,7 +92,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [Guardian.Networking.RPC(Name = "myMasterIs")]
     private void MyMasterIs(int viewId, string launcherRef, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HookChecker.IsHookMasterSetValid(this, viewId, info))
+        if (Guardian.AntiAbuse.Validators.HookValidator.IsHookMasterSetValid(this, viewId, info))
         {
             master = PhotonView.Find(viewId).gameObject;
 
@@ -110,7 +110,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [Guardian.Networking.RPC(Name = "netLaunch")]
     private void NetLaunch(Vector3 newPosition, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HookChecker.IsLaunchValid(info))
+        if (Guardian.AntiAbuse.Validators.HookValidator.IsLaunchValid(info))
         {
             nodes = new ArrayList() { newPosition };
         }
@@ -119,7 +119,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [Guardian.Networking.RPC(Name = "netUpdatePhase1")]
     private void NetUpdatePhase1(Vector3 newPosition, Vector3 masterPosition, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HookChecker.IsPhaseUpdateValid(info))
+        if (Guardian.AntiAbuse.Validators.HookValidator.IsPhaseUpdateValid(info))
         {
             lineRenderer.SetVertexCount(2);
             lineRenderer.SetPosition(0, newPosition);
@@ -131,7 +131,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [Guardian.Networking.RPC(Name = "netUpdateLeviSpiral")]
     private void NetUpdateLeviSpiral(Vector3 newPosition, Vector3 masterPosition, Vector3 masterrotation, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HookChecker.IsLeviSpiralValid(info))
+        if (Guardian.AntiAbuse.Validators.HookValidator.IsLeviSpiralValid(info))
         {
             phase = 2;
             leviMode = true;
@@ -261,7 +261,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [Guardian.Networking.RPC(Name = "tieMeToOBJ")]
     private void TieMeToObject(int id, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HookChecker.IsHookTieValid(this, id, info))
+        if (Guardian.AntiAbuse.Validators.HookValidator.IsHookTieValid(this, id, info))
         {
             base.transform.parent = PhotonView.Find(id).gameObject.transform;
 
@@ -423,7 +423,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     [Guardian.Networking.RPC(Name = "killObject")]
     private void KillObject(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HookChecker.IsKillObjectValid(info))
+        if (Guardian.AntiAbuse.Validators.HookValidator.IsKillObjectValid(info))
         {
             UnityEngine.Object.Destroy(rope);
             UnityEngine.Object.Destroy(base.gameObject);

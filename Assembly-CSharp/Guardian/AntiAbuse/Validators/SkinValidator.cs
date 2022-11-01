@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Guardian.AntiAbuse.Validators
 {
-    class SkinChecker
+    class SkinValidator
     {
         public static readonly string AllowedHostsPath = GuardianClient.RootDir + "\\Hosts.txt";
         public static List<string> AllowedHosts = new List<string>();

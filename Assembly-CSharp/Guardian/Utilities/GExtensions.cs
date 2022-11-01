@@ -37,8 +37,8 @@ public static class GExtensions
     public static string NGUIToUnity(this string str)
     {
         string output = string.Empty;
-        Stack<string> colorStack = new Stack<string>(); // Kudos to Kevin, using a Stack makes this a helluva lot simpler
-        bool needsClosingTag = false;
+        Stack<string> colorHistory = new Stack<string>(); // Kudos to Kevin, using a Stack makes this a helluva lot simpler
+        bool isTagOpen = false;
 
         for (int i = 0; i < str.Length; i++)
         {
@@ -48,26 +48,26 @@ public static class GExtensions
             {
                 if (str[i + 1].Equals('-') && str[i + 2].Equals(']')) // [-], aka return to previous color in the stack
                 {
-                    if (colorStack.Count > 0)
+                    if (colorHistory.Count > 0)
                     {
-                        colorStack.Pop();
+                        colorHistory.Pop();
                     }
-                    if (colorStack.Count < 1)
+                    if (colorHistory.Count < 1)
                     {
-                        colorStack.Push("FFFFFF"); // No color history, add FFFFFF as the default
+                        colorHistory.Push("FFFFFF"); // No color history, add FFFFFF as the default
                     }
 
-                    output += needsClosingTag ? $"</color><color=#{colorStack.Peek()}>" : $"<color=#{colorStack.Peek()}>";
-                    needsClosingTag = true;
+                    output += isTagOpen ? $"</color><color=#{colorHistory.Peek()}>" : $"<color=#{colorHistory.Peek()}>";
+                    isTagOpen = true;
                     i += 2;
                     continue;
                 }
                 else if (i + 7 < str.Length && str[i + 7].Equals(']') && str.Substring(i + 1, 6).IsHex()) // [RRGGBB], aka use the color supplied by RRGGBB
                 {
                     string color = str.Substring(i + 1, 6).ToUpper();
-                    colorStack.Push(color);
-                    output += needsClosingTag ? $"</color><color=#{color}>" : $"<color=#{color}>";
-                    needsClosingTag = true;
+                    colorHistory.Push(color);
+                    output += isTagOpen ? $"</color><color=#{color}>" : $"<color=#{color}>";
+                    isTagOpen = true;
                     i += 7;
                     continue;
                 }
@@ -76,7 +76,7 @@ public static class GExtensions
             output += c;
         }
 
-        return output + (needsClosingTag ? "</color>" : string.Empty);
+        return output + (isTagOpen ? "</color>" : string.Empty);
     }
 
     public static string StripNGUI(this string str)
@@ -114,25 +114,25 @@ public static class GExtensions
         // Red
         if (int.TryParse(str.Substr(0, 1), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int r))
         {
-            red = r / 255F;
+            red = r / 255f;
         }
 
         // Green
         if (int.TryParse(str.Substr(2, 3), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int g))
         {
-            green = g / 255F;
+            green = g / 255f;
         }
 
         // Blue
         if (int.TryParse(str.Substr(4, 5), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int b))
         {
-            blue = b / 255F;
+            blue = b / 255f;
         }
 
         // Alpha
         if (str.Length == 8 && int.TryParse(str.Substr(6, 7), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int a))
         {
-            alpha = a / 255F;
+            alpha = a / 255f;
         }
 
         return new Color(red, green, blue, alpha);

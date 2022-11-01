@@ -75,10 +75,10 @@ namespace Guardian.Features.Gamemodes.Impl
 
             RoundStartTime = -1;
 
-            PlayerOne = PhotonNetwork.playerList[MathHelper.RandomInt(0, PhotonNetwork.playerList.Length)];
+            PlayerOne = PhotonNetwork.playerList[MathHelper.RandInt(0, PhotonNetwork.playerList.Length)];
             do
             {
-                PlayerTwo = PhotonNetwork.playerList[MathHelper.RandomInt(0, PhotonNetwork.playerList.Length)];
+                PlayerTwo = PhotonNetwork.playerList[MathHelper.RandInt(0, PhotonNetwork.playerList.Length)];
             } while (PlayerOne == PlayerTwo);
 
             HERO playerOneHero = PlayerOne.GetHero();
@@ -162,10 +162,10 @@ namespace Guardian.Features.Gamemodes.Impl
             switch (side)
             {
                 case 0:
-                    position = new Vector3(MathHelper.RandomInt(LeftMinX.Value, LeftMaxX.Value), GroundLevel.Value, MathHelper.RandomInt(LeftMinZ.Value, LeftMaxZ.Value));
+                    position = new Vector3(MathHelper.RandInt(LeftMinX.Value, LeftMaxX.Value), GroundLevel.Value, MathHelper.RandInt(LeftMinZ.Value, LeftMaxZ.Value));
                     break;
                 case 1:
-                    position = new Vector3(MathHelper.RandomInt(RightMinX.Value, RightMaxX.Value), GroundLevel.Value, MathHelper.RandomInt(RightMinZ.Value, RightMaxZ.Value));
+                    position = new Vector3(MathHelper.RandInt(RightMinX.Value, RightMaxX.Value), GroundLevel.Value, MathHelper.RandInt(RightMinZ.Value, RightMaxZ.Value));
                     break;
             }
 

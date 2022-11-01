@@ -1,6 +1,6 @@
 ﻿namespace Guardian.AntiAbuse.Validators
 {
-    class ErenChecker
+    class ETValidator
     {
         // TITAN_EREN.netPlayAnimation
         public static bool IsAnimationPlayValid(TITAN_EREN eren, PhotonMessageInfo info)

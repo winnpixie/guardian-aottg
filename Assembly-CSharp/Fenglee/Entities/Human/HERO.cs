@@ -442,7 +442,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [Guardian.Networking.RPC(Name = "netGrabbed")]
     private void NetGrabbed(int id, bool leftHand, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HeroChecker.IsGrabValid(id, info))
+        if (Guardian.AntiAbuse.Validators.HeroValidator.IsGrabValid(id, info))
         {
             titanWhoGrabMeID = id;
             GetGrabbed(PhotonView.Find(id).gameObject, leftHand);
@@ -572,7 +572,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [Guardian.Networking.RPC(Name = "netPlayAnimation")]
     private void NetPlayAnimation(string aniName, PhotonMessageInfo info = null)
     {
-        if (Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.HeroValidator.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -581,7 +581,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [Guardian.Networking.RPC(Name = "netPlayAnimationAt")]
     private void NetPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.HeroValidator.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -590,7 +590,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [Guardian.Networking.RPC(Name = "netCrossFade")]
     private void NetCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HeroChecker.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.HeroValidator.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -677,7 +677,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [Guardian.Networking.RPC(Name = "whoIsMyErenTitan")]
     private void WhoIsMyErenTitan(int id, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HeroChecker.IsErenTitanDeclarationValid(id, info))
+        if (Guardian.AntiAbuse.Validators.HeroValidator.IsErenTitanDeclarationValid(id, info))
         {
             eren_titan = PhotonView.Find(id).gameObject;
             titanForm = true;
@@ -1045,6 +1045,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 reloadAnimation = "changeBlade";
             }
             CrossFade(reloadAnimation, 0.1f);
+
+            currentBladeNum--;
+            if (currentBladeNum == 0)
+            {
+                currentBladeSta = 0f;
+            }
         }
     }
 
@@ -1222,6 +1228,17 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
+    private void UseBullet(int amount, bool left)
+    {
+        if (left)
+        {
+            leftBulletLeft -= amount;
+        } else
+        {
+            rightBulletLeft -= amount;
+        }
+    }
+
     private void ThrowBlades()
     {
         Transform transform = setup.part_blade_l.transform;
@@ -1240,13 +1257,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         torque = new Vector3(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100));
         torque.Normalize();
         gameObject2.rigidbody.AddTorque(torque);
+
         setup.part_blade_l.SetActive(value: false);
         setup.part_blade_r.SetActive(value: false);
-        currentBladeNum--;
-        if (currentBladeNum == 0)
-        {
-            currentBladeSta = 0f;
-        }
+
         if (state == HeroState.Attack)
         {
             FalseAttack();
@@ -1410,7 +1424,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [Guardian.Networking.RPC(Name = "netPauseAnimation")]
     private void NetPauseAnimation(PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationPauseValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.HeroValidator.IsAnimationPauseValid(this, info))
         {
             return;
         }
@@ -1423,7 +1437,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [Guardian.Networking.RPC(Name = "netContinueAnimation")]
     private void NetContinueAnimation(PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.HeroChecker.IsAnimationResumeValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.HeroValidator.IsAnimationResumeValid(this, info))
         {
             return;
         }
@@ -1890,7 +1904,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [Guardian.Networking.RPC(Name = "showHitDamage")]
     private void ShowHitDamage(PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.HeroChecker.IsHitDamageShowValid(info))
+        if (!Guardian.AntiAbuse.Validators.HeroValidator.IsHitDamageShowValid(info))
         {
             return;
         }
@@ -1913,7 +1927,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
-            if (Guardian.AntiAbuse.Validators.HeroChecker.IsBlowAwayValid(info))
+            if (Guardian.AntiAbuse.Validators.HeroValidator.IsBlowAwayValid(info))
             {
                 base.rigidbody.AddForce(force, ForceMode.Impulse);
                 base.transform.LookAt(base.transform.position);
@@ -1924,7 +1938,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     [Guardian.Networking.RPC(Name = "killObject")]
     private void KillObject(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.HeroChecker.IsKillObjectValid(info))
+        if (Guardian.AntiAbuse.Validators.HeroValidator.IsKillObjectValid(info))
         {
             UnityEngine.Object.Destroy(base.gameObject);
         }
@@ -2959,6 +2973,20 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 cachedSprites["blader1"].color = Color.white;
             }
 
+            for (int i = 1; i < 6; i++)
+            {
+                if (i > currentBladeNum)
+                {
+                    cachedSprites["bladel" + i].enabled = false;
+                    cachedSprites["blader" + i].enabled = false;
+                }
+                else
+                {
+                    cachedSprites["bladel" + i].enabled = true;
+                    cachedSprites["blader" + i].enabled = true;
+                }
+            }
+            /*
             if (currentBladeNum <= 4)
             {
                 cachedSprites["bladel5"].enabled = false;
@@ -3012,7 +3040,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 cachedSprites["bladel1"].enabled = true;
                 cachedSprites["blader1"].enabled = true;
-            }
+            }*/
         }
         else
         {
@@ -4210,21 +4238,25 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         if (baseAnimation[reloadAnimation].normalizedTime > 0.62f && !throwedBlades)
                         {
                             throwedBlades = true;
+
                             if (leftBulletLeft > 0 && !leftGunHasBullet)
                             {
-                                leftBulletLeft--;
+                                UseBullet(1, true);
                                 setup.part_blade_l.SetActive(value: true);
                                 leftGunHasBullet = true;
                             }
+
                             if (rightBulletLeft > 0 && !rightGunHasBullet)
                             {
+                                UseBullet(1, false);
                                 setup.part_blade_r.SetActive(value: true);
-                                rightBulletLeft--;
                                 rightGunHasBullet = true;
                             }
+
                             UpdateRightMagUI();
                             UpdateLeftMagUI();
                         }
+
                         if (baseAnimation[reloadAnimation].normalizedTime > 1f)
                         {
                             Idle();
@@ -4807,25 +4839,21 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 if (info.sender.customProperties[PhotonPlayerProperty.Name] == null || info.sender.customProperties[PhotonPlayerProperty.IsTitan] == null)
                 {
                     InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
-                    return;
                 }
                 else if (viewId < 0)
                 {
                     if (titanName == string.Empty)
                     {
                         InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString() + " (possibly valid).");
-                        return;
                     }
                     else
                     {
                         InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
-                        return;
                     }
                 }
                 else if (PhotonView.Find(viewId) == null)
                 {
                     InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
-                    return;
                 }
                 else
                 {
@@ -4833,7 +4861,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     if (photonView.owner.Id != info.sender.Id)
                     {
                         InRoomChat.Instance.AddLine("Unusual Kill from ID ".AsColor("FFCC00") + info.sender.Id.ToString());
-                        return;
                     }
                 }
             }
@@ -5088,7 +5115,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
-        if (!Guardian.AntiAbuse.Validators.HeroChecker.IsCannonSetValid(viewID, info))
+        if (!Guardian.AntiAbuse.Validators.HeroValidator.IsCannonSetValid(viewID, info))
         {
             return;
         }
@@ -5621,7 +5648,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if ((int)FengGameManagerMKII.Settings[0] == 1)
         {
-            if (Guardian.AntiAbuse.Validators.HeroChecker.IsSkinLoadValid(this, info))
+            if (Guardian.AntiAbuse.Validators.HeroValidator.IsSkinLoadValid(this, info))
             {
                 StartCoroutine(CoLoadSkin(horse, url));
             }
@@ -5663,7 +5690,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[1]);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[1]);
                     if (www != null)
                     {
                         yield return www;
@@ -5703,7 +5730,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[7]);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[7]);
                     if (www != null)
                     {
                         yield return www;
@@ -5739,7 +5766,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[6]);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[6]);
                     if (www != null)
                     {
                         yield return www;
@@ -5778,7 +5805,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[1]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[1]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[1]);
                             if (www != null)
                             {
                                 yield return www;
@@ -5819,7 +5846,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[2]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[2]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[2]);
                             if (www != null)
                             {
                                 yield return www;
@@ -5854,7 +5881,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[3]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[3]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[3]);
                             if (www != null)
                             {
                                 yield return www;
@@ -5889,7 +5916,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[4]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[4]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[4]);
                             if (www != null)
                             {
                                 yield return www;
@@ -5928,7 +5955,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[5]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[5]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[5]);
                             if (www != null)
                             {
                                 yield return www;
@@ -5965,7 +5992,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[6]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[6]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[6]);
                             if (www != null)
                             {
                                 yield return www;
@@ -6002,7 +6029,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[7]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[7]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[7]);
                             if (www != null)
                             {
                                 yield return www;
@@ -6039,7 +6066,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[8]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[8]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[8]);
                             if (www != null)
                             {
                                 yield return www;
@@ -6076,7 +6103,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[9]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[9]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[9]);
                             if (www != null)
                             {
                                 yield return www;
@@ -6113,7 +6140,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[10]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[10]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[10]);
                             if (www != null)
                             {
                                 yield return www;
@@ -6151,7 +6178,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[11]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[11]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[11]);
                             if (www != null)
                             {
                                 yield return www;
@@ -6188,7 +6215,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[12]))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[12]);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[12]);
                     if (www != null)
                     {
                         yield return www;
@@ -6232,7 +6259,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             {
                                 if (!FengGameManagerMKII.LinkHash[1].ContainsKey(strArray[0]))
                                 {
-                                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[0]);
+                                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[0]);
                                     if (www != null)
                                     {
                                         yield return www;
@@ -6280,7 +6307,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[13]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[13]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[13]);
                             if (www != null)
                             {
                                 yield return www;
@@ -6320,7 +6347,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[14]))
                         {
-                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[14]);
+                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[14]);
                             if (www != null)
                             {
                                 yield return www;
@@ -6360,7 +6387,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 {
                     if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[15]))
                     {
-                        WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[15]);
+                        WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[15]);
                         if (www != null)
                         {
                             yield return www;
@@ -6397,7 +6424,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 {
                     if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[17]))
                     {
-                        WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(strArray[17]);
+                        WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(strArray[17]);
                         if (www != null)
                         {
                             yield return www;

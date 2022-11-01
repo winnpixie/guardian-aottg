@@ -45,7 +45,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 return "http://ns.exitgamescloud.com:80/photon/n";
             }
 
-            return "ns.exitgamescloud.com";
+            return "ns.exitgames.com";
         }
     }
 
@@ -2735,6 +2735,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         return OpCustom(219, dictionary, sendReliable: true);
     }
 
+    // PUE = Potentially Unwanted Event
     public void OnEvent(EventData eventData)
     {
         int actorNr = -1;
@@ -2761,7 +2762,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         {
             return;
         }
-        // Byte arrays never get sent, except by Elite Future/kevin's voice chat mod
+        // Byte arrays never get sent, except by Elite Future/Kevin's voice chat mod
         if (eventData[245] is byte[] && eventData.Code != 173)
         {
             Guardian.GuardianClient.Logger.Error($"E({eventData.Code}) byte[] ({((byte[])eventData[245]).Length} bytes, {base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
@@ -2769,6 +2770,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             {
                 FengGameManagerMKII.IgnoreList.Add(sender.Id);
             }
+
             return;
         }
 
@@ -2778,7 +2780,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsRPCValid(payload, sender))
+                        if (!Guardian.AntiAbuse.Validators.NetworkValidator.IsRPCValid(payload, sender))
                         {
                             return;
                         }
@@ -2791,11 +2793,10 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        if (!(payload[(byte)0] is int))
+                        if (!(payload[(byte)0] is int networkTime))
                         {
                             return;
                         }
-                        int networkTime = (int)payload[(byte)0];
                         short correctPrefix = -1;
                         short num4 = 1;
                         if (payload.ContainsKey((byte)1))
@@ -2807,10 +2808,10 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                             correctPrefix = (short)payload[(byte)1];
                             num4 = 2;
                         }
-                        for (short num5 = num4; num5 < payload.Count; num5 = (short)(num5 + 1))
+                        for (short i = num4; i < payload.Count; i = (short)(i + 1))
                         {
-                            ExitGames.Client.Photon.Hashtable hashtable = payload[num5] as ExitGames.Client.Photon.Hashtable;
-                            if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsSerializeReadValid(hashtable, sender))
+                            ExitGames.Client.Photon.Hashtable hashtable = payload[i] as ExitGames.Client.Photon.Hashtable;
+                            if (!Guardian.AntiAbuse.Validators.NetworkValidator.IsSerializeReadValid(hashtable, sender))
                             {
                                 return;
                             }
@@ -2828,7 +2829,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                             string resourceName = (string)payload[(byte)0];
                             if (resourceName != null)
                             {
-                                if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsInstantiatePacketValid(payload, sender))
+                                if (!Guardian.AntiAbuse.Validators.NetworkValidator.IsInstantiatePacketValid(payload, sender))
                                 {
                                     return;
                                 }
@@ -2848,20 +2849,17 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        if (payload[(byte)0] is int)
+                        if (!(payload[(byte)0] is int key)) return;
+
+                        if (instantiatedObjects.TryGetValue(key, out GameObject value))
                         {
-                            int key = (int)payload[(byte)0];
-                            if (instantiatedObjects.TryGetValue(key, out GameObject value))
+                            if (value == null || sender == null) return;
+
+                            if (!Guardian.AntiAbuse.Validators.NetworkValidator.IsPVDestroyValid(value.GetPhotonViewsInChildren(), sender))
                             {
-                                if (value != null && sender != null)
-                                {
-                                    if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsPVDestroyValid(value.GetPhotonViewsInChildren(), sender))
-                                    {
-                                        return;
-                                    }
-                                    RemoveInstantiatedGO(value, localOnly: true);
-                                }
+                                return;
                             }
+                            RemoveInstantiatedGO(value, localOnly: true);
                         }
                     }
                     break;
@@ -2870,9 +2868,8 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        if (payload[(byte)0] is int)
+                        if (payload[(byte)0] is int playerId)
                         {
-                            int playerId = (int)payload[(byte)0];
                             if (playerId < 0 && sender != null && (sender.isMasterClient || sender.isLocal))
                             {
                                 DestroyAll(localOnly: true);
@@ -2889,15 +2886,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 {
                     if (eventData[245] is ExitGames.Client.Photon.Hashtable payload)
                     {
-                        if (!(payload[(byte)1] is int))
-                        {
-                            return;
-                        }
-                        int masterId = (int)payload[(byte)1];
-                        if (sender != null && sender.isMasterClient && masterId == sender.Id)
-                        {
-                            return;
-                        }
+                        if (!(payload[(byte)1] is int masterId)) return;
+                        if (sender != null && sender.isMasterClient && masterId == sender.Id) return;
+
                         if (sender != null && !sender.isMasterClient && !sender.isLocal)
                         {
                             if (PhotonNetwork.isMasterClient)
@@ -2933,7 +2924,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     break;
                 }
             case EventCode.QueueState:
-                if (!Guardian.AntiAbuse.Validators.NetworkChecker.IsStateChangeValid(sender))
+                if (!Guardian.AntiAbuse.Validators.NetworkValidator.IsStateChangeValid(sender))
                 {
                     return;
                 }
@@ -3250,11 +3241,11 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                 }
                 else if (actorNr == -1) // -1 = Server
                 {
-                    Guardian.GuardianClient.Logger.Warn($"E({eventData.Code}) Unknown ({base.ByteCountCurrentDispatch} total bytes) from SERVER.");
+                    Guardian.GuardianClient.Logger.Warn($"E({eventData.Code}) Strange ({base.ByteCountCurrentDispatch} total bytes) from SERVER.");
                 }
                 else
                 {
-                    Guardian.GuardianClient.Logger.Error($"E({eventData.Code}) Unknown/PUE ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
+                    Guardian.GuardianClient.Logger.Error($"E({eventData.Code}) Strange/PUE ({base.ByteCountCurrentDispatch} total bytes) from #{actorNr}.");
                     if (!FengGameManagerMKII.IgnoreList.Contains(actorNr))
                     {
                         FengGameManagerMKII.IgnoreList.Add(actorNr);

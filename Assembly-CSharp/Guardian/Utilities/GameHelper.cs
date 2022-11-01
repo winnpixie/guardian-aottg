@@ -16,12 +16,12 @@ namespace Guardian.Utilities
 
         public static object[] GetRandomTitanRespawnPoint()
         {
-            Vector3 position = new Vector3(MathHelper.RandomInt(-400, 401), 0f, MathHelper.RandomInt(-400, 401));
+            Vector3 position = new Vector3(MathHelper.RandInt(-400, 401), 0f, MathHelper.RandInt(-400, 401));
             Quaternion rotation = new Quaternion(0f, 0f, 0f, 1f);
 
             if (FengGameManagerMKII.Instance.titanSpawns.Count > 0)
             {
-                position = FengGameManagerMKII.Instance.titanSpawns[MathHelper.RandomInt(0, FengGameManagerMKII.Instance.titanSpawns.Count)];
+                position = FengGameManagerMKII.Instance.titanSpawns[MathHelper.RandInt(0, FengGameManagerMKII.Instance.titanSpawns.Count)];
             }
             else
             {
@@ -29,12 +29,12 @@ namespace Guardian.Utilities
 
                 if (spawnPoints.Length > 0)
                 {
-                    int index = MathHelper.RandomInt(0, spawnPoints.Length);
+                    int index = MathHelper.RandInt(0, spawnPoints.Length);
                     GameObject spawnPoint = spawnPoints[index];
 
                     while (spawnPoints[index] == null)
                     {
-                        index = MathHelper.RandomInt(0, spawnPoints.Length);
+                        index = MathHelper.RandInt(0, spawnPoints.Length);
                         spawnPoint = spawnPoints[index];
                     }
 

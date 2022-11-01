@@ -180,7 +180,7 @@ public class TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netPlayAnimation")]
     private void NetPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.TitanChecker.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.TitanValidator.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -189,7 +189,7 @@ public class TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netPlayAnimationAt")]
     private void NetPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.TitanChecker.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.TitanValidator.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -199,7 +199,7 @@ public class TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netCrossFade")]
     private void NetCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.TitanChecker.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.TitanValidator.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -207,21 +207,21 @@ public class TITAN : Photon.MonoBehaviour
 
     private int GetPunkNumber()
     {
-        int num = 0;
+        int n = 0;
+
         foreach (TITAN titan in FengGameManagerMKII.Instance.Titans)
         {
-            if (titan.name == "Punk")
-            {
-                num++;
-            }
+            // if (titan.name.equals("Punk")) n++;
+            if (titan.abnormalType == TitanClass.Punk) n++;
         }
-        return num;
+
+        return n;
     }
 
     [Guardian.Networking.RPC(Name = "netSetAbnormalType")]
     private void NetSetAbnormalType(int type, PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsTitanTypeSetValid(this, info) && PhotonNetwork.isMasterClient)
+        if (!Guardian.AntiAbuse.Validators.TitanValidator.IsTitanTypeSetValid(this, info) && PhotonNetwork.isMasterClient)
         {
             this.photonView.RPC("netSetAbnormalType", PhotonTargets.OthersBuffered, (int)abnormalType);
             return;
@@ -363,7 +363,7 @@ public class TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "setMyTarget")]
     private void SetMyTarget(int viewId, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsTargetSetValid(this, info) && PhotonNetwork.isMasterClient)
+        if (!Guardian.AntiAbuse.Validators.TitanValidator.IsTargetSetValid(this, info) && PhotonNetwork.isMasterClient)
         {
             return;
         }
@@ -946,7 +946,7 @@ public class TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "playsoundRPC")]
     private void PlaySoundRPC(string sndname, PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsSoundPlayValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.TitanValidator.IsSoundPlayValid(this, info))
         {
             return;
         }
@@ -1246,7 +1246,7 @@ public class TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "grabToRight")]
     public void GrabToRight(PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsRightGrabValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.TitanValidator.IsRightGrabValid(this, info))
         {
             return;
         }
@@ -1270,7 +1270,7 @@ public class TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "grabToLeft")]
     public void GrabToLeft(PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsRightGrabValid(this, info))
+        if (!Guardian.AntiAbuse.Validators.TitanValidator.IsRightGrabValid(this, info))
         {
             return;
         }
@@ -2186,7 +2186,7 @@ public class TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netSetLevel")]
     private void NetSetLevel(float level, int AI, int skinColor, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.TitanChecker.IsLevelSetValid(this, info) && base.photonView.isMine)
+        if (!Guardian.AntiAbuse.Validators.TitanValidator.IsLevelSetValid(this, info) && base.photonView.isMine)
         {
             base.photonView.RPC("netSetLevel", PhotonTargets.OthersBuffered, this.myLevel, this.myDifficulty, this.skinColor);
             return;
@@ -3777,7 +3777,7 @@ public class TITAN : Photon.MonoBehaviour
                     {
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(eye))
                         {
-                            WWW link2 = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(eye);
+                            WWW link2 = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(eye);
                             if (link2 != null)
                             {
                                 yield return link2;
@@ -3806,7 +3806,7 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     if (!FengGameManagerMKII.LinkHash[2].ContainsKey(body))
                     {
-                        WWW link = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(body);
+                        WWW link = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(body);
                         if (link != null)
                         {
                             yield return link;

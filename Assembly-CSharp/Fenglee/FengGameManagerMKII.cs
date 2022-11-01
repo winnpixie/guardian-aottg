@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IGameManager
 {
-    // Adapt to the new AoTTG2 applicationId
+    // Adapt to the new AoTTG-2 applicationId
     public static string ApplicationId
     {
         get { return Guardian.Networking.NetworkHelper.App.Id; }
@@ -490,7 +490,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [Guardian.Networking.RPC]
     private void RequireStatus(PhotonMessageInfo info = null)
     {
-        if (Guardian.AntiAbuse.Validators.FGMChecker.IsStatusRequestValid(info))
+        if (Guardian.AntiAbuse.Validators.FGMValidator.IsStatusRequestValid(info))
         {
             base.photonView.RPC("refreshStatus", PhotonTargets.Others, humanScore, titanScore, wave, highestWave, roundTime, timeTotalServer, startRacing, endRacing);
             base.photonView.RPC("refreshPVPStatus", PhotonTargets.Others, PVPhumanScore, PVPtitanScore);
@@ -501,7 +501,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [Guardian.Networking.RPC(Name = "refreshStatus")]
     private void RefreshStatus(int score1, int score2, int theWave, int theHighestWave, float time1, float time2, bool startRacin, bool shouldEndRacing, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.FGMChecker.IsStatusRefreshValid(info))
+        if (Guardian.AntiAbuse.Validators.FGMValidator.IsStatusRefreshValid(info))
         {
             humanScore = score1;
             titanScore = score2;
@@ -522,7 +522,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [Guardian.Networking.RPC(Name = "refreshPVPStatus")]
     private void RefreshPVPStatus(int score1, int score2, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.FGMChecker.IsPVPStatusRefreshValid(info))
+        if (Guardian.AntiAbuse.Validators.FGMValidator.IsPVPStatusRefreshValid(info))
         {
             PVPhumanScore = score1;
             PVPtitanScore = score2;
@@ -532,7 +532,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [Guardian.Networking.RPC(Name = "refreshPVPStatus_AHSS")]
     private void RefreshPVPStatusAHSS(int[] score1, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.FGMChecker.IsAHSSStatusRefreshValid(info))
+        if (Guardian.AntiAbuse.Validators.FGMValidator.IsAHSSStatusRefreshValid(info))
         {
             teamScores = score1;
         }
@@ -718,7 +718,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [Guardian.Networking.RPC(Name = "titanGetKill")]
     public void TitanGetKill(PhotonPlayer player, int damage, string name, PhotonMessageInfo info = null)
     {
-        if (Guardian.AntiAbuse.Validators.FGMChecker.IsTitanKillValid(info))
+        if (Guardian.AntiAbuse.Validators.FGMValidator.IsTitanKillValid(info))
         {
             damage = Mathf.Max(10, damage);
             base.photonView.RPC("netShowDamage", player, damage);
@@ -903,7 +903,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [Guardian.Networking.RPC(Name = "netShowDamage")]
     public void NetShowDamage(int speed, PhotonMessageInfo info = null)
     {
-        if (!Guardian.AntiAbuse.Validators.FGMChecker.IsNetShowDamageValid(info))
+        if (!Guardian.AntiAbuse.Validators.FGMValidator.IsNetShowDamageValid(info))
         {
             return;
         }
@@ -937,7 +937,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [Guardian.Networking.RPC(Name = "showChatContent")]
     private void ShowChatContent(string content, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.FGMChecker.IsChatContentShowValid(info))
+        if (!Guardian.AntiAbuse.Validators.FGMValidator.IsChatContentShowValid(info))
         {
             return;
         }
@@ -1922,7 +1922,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [Guardian.Networking.RPC(Name = "updateKillInfo")]
     private void UpdateKillInfo(bool isKillerTitan, string killer, bool isVictimTitan, string victim, int damage, PhotonMessageInfo info)
     {
-        if (!Guardian.AntiAbuse.Validators.FGMChecker.IsKillInfoUpdateValid(isKillerTitan, isVictimTitan, damage, info)) return;
+        if (!Guardian.AntiAbuse.Validators.FGMValidator.IsKillInfoUpdateValid(isKillerTitan, isVictimTitan, damage, info)) return;
 
         GameObject infoObj = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("UI/KillInfo"));
         for (int i = 0; i < killInfoGO.Count; i++)
@@ -5873,7 +5873,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     [Guardian.Networking.RPC(Name = "pauseRPC")]
     private void PauseRPC(bool paused, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.FGMChecker.IsPauseStateChangeValid(info))
+        if (Guardian.AntiAbuse.Validators.FGMValidator.IsPauseStateChangeValid(info))
         {
             if (paused)
             {
@@ -7252,7 +7252,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 // Old limit: 500KB
                 if (skyFront.EndsWith(".jpg") || skyFront.EndsWith(".png") || skyFront.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyFront);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyFront);
                     if (www != null)
                     {
                         using (www)
@@ -7266,7 +7266,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyBack.EndsWith(".jpg") || skyBack.EndsWith(".png") || skyBack.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyBack);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyBack);
                     if (www != null)
                     {
                         using (www)
@@ -7280,7 +7280,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyLeft.EndsWith(".jpg") || skyLeft.EndsWith(".png") || skyLeft.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyLeft);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyLeft);
                     if (www != null)
                     {
                         using (www)
@@ -7294,7 +7294,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyRight.EndsWith(".jpg") || skyRight.EndsWith(".png") || skyRight.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyRight);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyRight);
                     if (www != null)
                     {
                         using (www)
@@ -7308,7 +7308,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyUp.EndsWith(".jpg") || skyUp.EndsWith(".png") || skyUp.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyUp);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyUp);
                     if (www != null)
                     {
                         using (www)
@@ -7322,7 +7322,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyDown.EndsWith(".jpg") || skyDown.EndsWith(".png") || skyDown.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyDown);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyDown);
                     if (www != null)
                     {
                         using (www)
@@ -7358,7 +7358,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             if (!LinkHash[0].ContainsKey(linkGround))
                             {
-                                WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(linkGround);
+                                WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(linkGround);
                                 if (www != null)
                                 {
                                     using (www)
@@ -7505,7 +7505,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 // Old limit: 500KB
                 if (skyFront.EndsWith(".jpg") || skyFront.EndsWith(".png") || skyFront.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyFront);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyFront);
                     if (www != null)
                     {
                         using (www)
@@ -7519,7 +7519,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyBack.EndsWith(".jpg") || skyBack.EndsWith(".png") || skyBack.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyBack);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyBack);
                     if (www != null)
                     {
                         using (www)
@@ -7533,7 +7533,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyLeft.EndsWith(".jpg") || skyLeft.EndsWith(".png") || skyLeft.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyLeft);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyLeft);
                     if (www != null)
                     {
                         using (www)
@@ -7547,7 +7547,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyRight.EndsWith(".jpg") || skyRight.EndsWith(".png") || skyRight.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyRight);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyRight);
                     if (www != null)
                     {
                         using (www)
@@ -7561,7 +7561,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyUp.EndsWith(".jpg") || skyUp.EndsWith(".png") || skyUp.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyUp);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyUp);
                     if (www != null)
                     {
                         using (www)
@@ -7575,7 +7575,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (skyDown.EndsWith(".jpg") || skyDown.EndsWith(".png") || skyDown.EndsWith(".jpeg"))
                 {
-                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(skyDown);
+                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(skyDown);
                     if (www != null)
                     {
                         using (www)
@@ -7627,7 +7627,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                             {
                                                 if (!LinkHash[2].ContainsKey(key2))
                                                 {
-                                                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(key2);
+                                                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(key2);
                                                     if (www != null)
                                                     {
                                                         using (www)
@@ -7658,7 +7658,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                             {
                                                 if (!LinkHash[0].ContainsKey(str10))
                                                 {
-                                                    WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(str10);
+                                                    WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(str10);
                                                     if (www != null)
                                                     {
                                                         using (www)
@@ -7706,7 +7706,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     {
                                         if (!LinkHash[0].ContainsKey(str9))
                                         {
-                                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(str9);
+                                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(str9);
                                             if (www != null)
                                             {
                                                 using (www)
@@ -7770,7 +7770,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     {
                                         if (!LinkHash[0].ContainsKey(str8))
                                         {
-                                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(str8);
+                                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(str8);
                                             if (www != null)
                                             {
                                                 using (www)
@@ -7819,7 +7819,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     {
                                         if (!LinkHash[0].ContainsKey(str7))
                                         {
-                                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(str7);
+                                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(str7);
                                             if (www != null)
                                             {
                                                 using (www)
@@ -7864,7 +7864,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     {
                                         if (!LinkHash[2].ContainsKey(str5))
                                         {
-                                            WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(str5);
+                                            WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(str5);
                                             if (www != null)
                                             {
                                                 using (www)
@@ -7905,7 +7905,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 {
                                     if (!LinkHash[2].ContainsKey(str4))
                                     {
-                                        WWW www = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(str4);
+                                        WWW www = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(str4);
                                         if (www != null)
                                         {
                                             using (www)
@@ -7993,6 +7993,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     {
                         Guardian.Networking.NetworkHelper.App = Guardian.Networking.PhotonApplication.Custom;
                     }
+                    else if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.Custom)
+                    {
+                        Guardian.Networking.NetworkHelper.App = Guardian.Networking.PhotonApplication.Guardian;
+                    }
                     else
                     {
                         Guardian.Networking.NetworkHelper.App = Guardian.Networking.PhotonApplication.AoTTG2;
@@ -8003,11 +8007,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     // Protocol switcher
                     switch (Guardian.Networking.NetworkHelper.Connection.Protocol)
                     {
-                        case ExitGames.Client.Photon.ConnectionProtocol.Tcp:
-                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnection.UDP;
-                            break;
                         case ExitGames.Client.Photon.ConnectionProtocol.Udp:
                             Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnection.TCP;
+                            break;
+                        case ExitGames.Client.Photon.ConnectionProtocol.Tcp:
+                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnection.RHttp;
+                            break;
+                        case ExitGames.Client.Photon.ConnectionProtocol.RHttp:
+                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnection.UDP;
                             break;
                     }
                     PhotonNetwork.SwitchToProtocol(Guardian.Networking.NetworkHelper.Connection.Protocol);
@@ -9492,18 +9499,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 QualitySettings.SetQualityLevel(5, applyExpensiveChanges: true);
                             }
 
-                            bool flag13 = false;
-                            bool flag14 = false;
+                            bool customGas = false;
+                            bool weaponTrails = false;
                             bool showSpeedLines = false;
-                            bool flag16 = false;
+                            bool mipmapping = false;
                             bool vsyncEnabled = false;
                             if ((int)Settings[15] == 1)
                             {
-                                flag13 = true;
+                                customGas = true;
                             }
                             if ((int)Settings[92] == 1)
                             {
-                                flag14 = true;
+                                weaponTrails = true;
                             }
                             if ((int)Settings[93] == 1)
                             {
@@ -9511,16 +9518,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             }
                             if ((int)Settings[63] == 1)
                             {
-                                flag16 = true;
+                                mipmapping = true;
                             }
                             if ((int)Settings[183] == 1)
                             {
                                 vsyncEnabled = true;
                             }
-                            bool flag18 = GUI.Toggle(new Rect(halfMenuWidth + 274f, halfMenuHeight + 81f, 40f, 20f), flag13, "On");
-                            if (flag18 != flag13)
+                            bool toggleCustomGas = GUI.Toggle(new Rect(halfMenuWidth + 274f, halfMenuHeight + 81f, 40f, 20f), customGas, "On");
+                            if (toggleCustomGas != customGas)
                             {
-                                if (flag18)
+                                if (toggleCustomGas)
                                 {
                                     Settings[15] = 1;
                                 }
@@ -9529,10 +9536,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                     Settings[15] = 0;
                                 }
                             }
-                            bool flag9 = GUI.Toggle(new Rect(halfMenuWidth + 274f, halfMenuHeight + 106f, 40f, 20f), flag14, "On");
-                            if (flag9 != flag14)
+                            bool toggleWeaponTrail = GUI.Toggle(new Rect(halfMenuWidth + 274f, halfMenuHeight + 106f, 40f, 20f), weaponTrails, "On");
+                            if (toggleWeaponTrail != weaponTrails)
                             {
-                                if (flag9)
+                                if (toggleWeaponTrail)
                                 {
                                     Settings[92] = 1;
                                 }
@@ -9569,10 +9576,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
                                 Minimap.WaitAndTryRecaptureInstance(0.5f);
                             }
-                            bool flag21 = GUI.Toggle(new Rect(halfMenuWidth + 274f, halfMenuHeight + 272f, 40f, 20f), flag16, "On");
-                            if (flag21 != flag16)
+                            bool toggleMipmaps = GUI.Toggle(new Rect(halfMenuWidth + 274f, halfMenuHeight + 272f, 40f, 20f), mipmapping, "On");
+                            if (toggleMipmaps != mipmapping)
                             {
-                                if (flag21)
+                                if (toggleMipmaps)
                                 {
                                     Settings[63] = 1;
                                 }
@@ -11222,71 +11229,68 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                          * CD >= 4
                          */
                         // BOMB RAD
-                        if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 235f, 20f, 20f), "-"))
+                        float oldRad = (float)Settings[250];
+                        Settings[250] = (float)Guardian.Utilities.MathHelper.Floor(GUI.HorizontalSlider(new Rect(halfMenuWidth + 190f, halfMenuHeight + 235f, 100f, 20f), (float)Settings[250], 0f, 10f));
+                        if ((float)Settings[250] - oldRad > unusedBombPoints)
                         {
-                            if ((float)Settings[250] > 0f)
-                            {
-                                Settings[250] = (float)Settings[250] - 1f;
-                            }
+                            Settings[250] = oldRad;
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 235f, 20f, 20f), "+") && (float)Settings[250] < 10f && unusedBombPoints > 0f)
-                        {
-                            Settings[250] = (float)Settings[250] + 1f;
-                        }
-                        // BOMB RAD
 
                         // BOMB RANGE
-                        if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 260f, 20f, 20f), "-"))
+                        float oldRange = (float)Settings[251];
+                        Settings[251] = (float)Guardian.Utilities.MathHelper.Floor(GUI.HorizontalSlider(new Rect(halfMenuWidth + 190f, halfMenuHeight + 260f, 100f, 20f), (float)Settings[251], 0f, 3f));
+                        if ((float)Settings[251] - oldRange > unusedBombPoints)
                         {
-                            if ((float)Settings[251] > 0f)
-                            {
-                                Settings[251] = (float)Settings[251] - 1f;
-                            }
+                            Settings[251] = oldRange;
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 260f, 20f, 20f), "+") && (float)Settings[251] < 3f && unusedBombPoints > 0f)
-                        {
-                            Settings[251] = (float)Settings[251] + 1f;
-                        }
-                        // BOMB RANGE
 
                         // BOMB SPEED
-                        if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 285f, 20f, 20f), "-"))
+                        float oldSpd = (float)Settings[252];
+                        Settings[252] = (float)Guardian.Utilities.MathHelper.Floor(GUI.HorizontalSlider(new Rect(halfMenuWidth + 190f, halfMenuHeight + 285f, 100f, 20f), (float)Settings[252], 0f, 10f));
+                        if ((float)Settings[252] - oldSpd > unusedBombPoints)
                         {
-                            if ((float)Settings[252] > 0f)
-                            {
-                                Settings[252] = (float)Settings[252] - 1f;
-                            }
+                            Settings[252] = oldSpd;
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 285f, 20f, 20f), "+") && (float)Settings[252] < 10f && unusedBombPoints > 0f)
-                        {
-                            Settings[252] = (float)Settings[252] + 1f;
-                        }
-                        // BOMB SPEED
 
                         // BOMB CD
-                        if (GUI.Button(new Rect(halfMenuWidth + 190f, halfMenuHeight + 310f, 20f, 20f), "-"))
+                        float oldCd = (float)Settings[253];
+                        Settings[253] = (float)Guardian.Utilities.MathHelper.Floor(GUI.HorizontalSlider(new Rect(halfMenuWidth + 190f, halfMenuHeight + 310f, 100f, 20f), (float)Settings[253], 4f, 10f));
+                        if ((float)Settings[253] - oldCd > unusedBombPoints)
                         {
-                            if ((float)Settings[253] > 4f)
-                            {
-                                Settings[253] = (float)Settings[253] - 1f;
-                            }
+                            Settings[253] = oldCd;
                         }
-                        else if (GUI.Button(new Rect(halfMenuWidth + 215f, halfMenuHeight + 310f, 20f, 20f), "+") && (float)Settings[253] < 10f && unusedBombPoints > 0f)
-                        {
-                            Settings[253] = (float)Settings[253] + 1f;
-                        }
-                        // BOMB CD
 
                         GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 335f, 95f, 22f), "Unused Points:", "Label");
                         GUI.Label(new Rect(halfMenuWidth + 168f, halfMenuHeight + 335f, 20f, 22f), unusedBombPoints.ToString(), "Label");
 
                         // Reset Button
-                        if (GUI.Button(new Rect(halfMenuWidth + 72f, halfMenuHeight + 360f, 163f, 20f), "Reset Points"))
+                        if (GUI.Button(new Rect(halfMenuWidth + 72f, halfMenuHeight + 360f, 123f, 20f), "Reset Points"))
                         {
                             Settings[250] = 0f;
                             Settings[251] = 0f;
                             Settings[252] = 0f;
                             Settings[253] = 4f;
+                        }
+
+                        // Reset Button
+                        if (GUI.Button(new Rect(halfMenuWidth + 200f, halfMenuHeight + 360f, 123f, 20f), "Randomize Points"))
+                        {
+                            float maxPoints = 20;
+
+                            float bombRad;
+                            float bombRange;
+                            float bombSpd;
+                            float bombCd;
+
+                            maxPoints -= bombCd = 4 + Mathf.FloorToInt(((float)Guardian.Utilities.MathHelper.Random()) * 7); // CD 4 - 10
+                            maxPoints -= bombRad = Mathf.FloorToInt(((float)Guardian.Utilities.MathHelper.Random()) * (Mathf.Min(10, maxPoints) + 1)); // RAD 0 - 10 (or maxPoints)
+                            maxPoints -= bombRange = Mathf.FloorToInt(((float)Guardian.Utilities.MathHelper.Random()) * (Mathf.Min(3, maxPoints) + 1)); // RNG 0 - 3 (or maxPoints)
+                            bombSpd = Mathf.FloorToInt(((float)Guardian.Utilities.MathHelper.Random()) * (Mathf.Min(10, maxPoints) + 1)); // SPD 0 - 10 (or maxPoints)
+
+                            Settings[250] = bombRad;
+                            Settings[251] = bombRange;
+                            Settings[252] = bombSpd;
+                            Settings[253] = bombCd;
                         }
                         break;
                 }

@@ -11,6 +11,8 @@ public class TriggerColliderWeapon : MonoBehaviour
     public float scoreMulti = 1f;
     public int myTeam = 1;
 
+    private FengGameManagerMKII fengGame;
+
     private void Start()
     {
         {
@@ -21,6 +23,8 @@ public class TriggerColliderWeapon : MonoBehaviour
                 meatDie.clip = deathClip;
             }
         }
+
+        fengGame = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>();
 
         currentCamera = GameObject.Find("MainCamera");
     }
@@ -118,7 +122,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                     // Local minimum damage
                     if (damage < Guardian.GuardianClient.Properties.LocalMinDamage.Value)
                     {
-                        GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
+                        fengGame.ShowDamage(damage);
                         return;
                     }
 
@@ -133,7 +137,6 @@ public class TriggerColliderWeapon : MonoBehaviour
                             }
                             titan.Die();
                             SpawnNapeMeat(currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity, hitbox.transform.root);
-                            FengGameManagerMKII fengGame = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>();
                             fengGame.NetShowDamage(damage);
                             fengGame.UpdatePlayerKillInfo(damage);
                         }
@@ -260,7 +263,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                         // Local minimum damage
                         if (damage < Guardian.GuardianClient.Properties.LocalMinDamage.Value)
                         {
-                            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().ShowDamage(damage);
+                            fengGame.ShowDamage(damage);
                             return;
                         }
 

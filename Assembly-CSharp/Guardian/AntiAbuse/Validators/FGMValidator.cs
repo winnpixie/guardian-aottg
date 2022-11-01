@@ -1,6 +1,6 @@
 ﻿namespace Guardian.AntiAbuse.Validators
 {
-    class FGMChecker
+    class FGMValidator
     {
         // FengGameManagerMKII.pauseRPC
         public static bool IsPauseStateChangeValid(PhotonMessageInfo info)

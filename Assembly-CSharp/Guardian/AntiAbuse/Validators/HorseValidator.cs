@@ -1,6 +1,6 @@
 ﻿namespace Guardian.AntiAbuse.Validators
 {
-    class HorseChecker
+    class HorseValidator
     {
         // Horse.netPlayAnimation
         public static bool IsAnimationPlayValid(Horse horse, PhotonMessageInfo info)

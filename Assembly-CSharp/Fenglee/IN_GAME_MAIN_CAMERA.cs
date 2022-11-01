@@ -263,7 +263,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
         switch (CameraMode)
         {
-            case CameraType.WOW:
+            case CameraType.WoW:
                 {
                     if (Input.GetKey(KeyCode.Mouse1))
                     {
@@ -780,10 +780,10 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     Screen.lockCursor = false;
                     break;
                 case CameraType.Original:
-                    CameraMode = CameraType.WOW;
+                    CameraMode = CameraType.WoW;
                     Screen.lockCursor = false;
                     break;
-                case CameraType.WOW:
+                case CameraType.WoW:
                     CameraMode = CameraType.TPS;
                     Screen.lockCursor = true;
                     break;

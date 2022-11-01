@@ -14,7 +14,8 @@ public class BTN_Server_ASIA : MonoBehaviour
         }
         else
         {
-            PhotonNetwork.ConnectToMaster("app-asia.exitgamescloud.com", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
+            PhotonNetwork.networkingPeer.SetApp(FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
+            PhotonNetwork.networkingPeer.ConnectToRegionMaster(CloudRegionCode.asia);
             Guardian.Networking.NetworkHelper.IsCloud = true;
         }
     }

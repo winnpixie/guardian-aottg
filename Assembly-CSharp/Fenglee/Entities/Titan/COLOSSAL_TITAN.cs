@@ -40,9 +40,10 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
 
     private void OnDestroy()
     {
-        if (GameObject.Find("MultiplayerManager") != null)
+        GameObject mm = GameObject.Find("MultiplayerManager");
+        if (mm != null)
         {
-            GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().RemoveColossal(this);
+            mm.GetComponent<FengGameManagerMKII>().RemoveColossal(this);
         }
     }
 
@@ -150,7 +151,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netPlayAnimation")]
     private void NetPlayAnimation(string aniName, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.ColossalChecker.IsAnimationPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.CTValidator.IsAnimationPlayValid(this, info))
         {
             LocalPlayAnimation(aniName);
         }
@@ -159,7 +160,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netPlayAnimationAt")]
     private void NetPlayAnimationAt(string aniName, float normalizedTime, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.ColossalChecker.IsAnimationSeekedPlayValid(this, info))
+        if (Guardian.AntiAbuse.Validators.CTValidator.IsAnimationSeekedPlayValid(this, info))
         {
             LocalPlayAnimationAt(aniName, normalizedTime);
         }
@@ -168,7 +169,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "netCrossFade")]
     private void NetCrossFade(string aniName, float time, PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.ColossalChecker.IsCrossFadeValid(this, info))
+        if (Guardian.AntiAbuse.Validators.CTValidator.IsCrossFadeValid(this, info))
         {
             LocalCrossFade(aniName, time);
         }
@@ -463,7 +464,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
     [Guardian.Networking.RPC(Name = "removeMe")]
     private void RemoveMe(PhotonMessageInfo info)
     {
-        if (Guardian.AntiAbuse.Validators.ColossalChecker.IsRemovalValid(info))
+        if (Guardian.AntiAbuse.Validators.CTValidator.IsRemovalValid(info))
         {
             UnityEngine.Object.Destroy(base.gameObject);
         }
@@ -923,7 +924,7 @@ public class COLOSSAL_TITAN : Photon.MonoBehaviour
                 {
                     if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
                     {
-                        WWW link = Guardian.AntiAbuse.Validators.SkinChecker.CreateWWW(url);
+                        WWW link = Guardian.AntiAbuse.Validators.SkinValidator.CreateWWW(url);
                         if (link != null)
                         {
                             yield return link;

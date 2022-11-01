@@ -1,4 +1,4 @@
-﻿using SimpleJSON;
+﻿using SimpleJson;
 using System;
 using System.Collections;
 using UnityEngine;

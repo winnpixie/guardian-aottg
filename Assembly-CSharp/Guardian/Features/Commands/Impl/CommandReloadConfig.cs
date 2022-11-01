@@ -10,9 +10,9 @@
             GuardianClient.Properties.LoadFromFile();
             irc.AddLine("Configuration reloaded.");
 
-            irc.AddLine("Reloading skin host whitelist...");
-            AntiAbuse.Validators.SkinChecker.Init();
-            irc.AddLine("Skin host whitelist reloaded.");
+            irc.AddLine("Reloading skin host allowlist...");
+            AntiAbuse.Validators.SkinValidator.Init();
+            irc.AddLine("Skin host allowlist reloaded.");
         }
     }
 }

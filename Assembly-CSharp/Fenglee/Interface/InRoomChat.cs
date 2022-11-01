@@ -238,7 +238,7 @@ public class InRoomChat : Photon.MonoBehaviour
         }
         else
         {
-            // Color and fading
+            // Color
             string chatColor = Guardian.GuardianClient.Properties.TextColor.Value;
             if (chatColor.Length > 0)
             {

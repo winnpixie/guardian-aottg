@@ -4,5 +4,6 @@ public enum CloudRegionCode
     us,
     asia,
     jp,
+    sa,
     none
 }

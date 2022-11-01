@@ -201,6 +201,12 @@ namespace Guardian.AntiAbuse
                 mods.Add($"[000000][Xeres[FFFFFF]({string.Join(",", tags.ToArray())})[-]]");
             }
 
+            // MorningStar
+            if (properties.ContainsKey("Morningstar"))
+            {
+                mods.Add("[FFFFFF][MorningStar]");
+            }
+
             // CatielRC
             if (properties.ContainsKey("CatielRC"))
             {

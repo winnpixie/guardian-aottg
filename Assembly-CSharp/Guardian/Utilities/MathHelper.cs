@@ -29,7 +29,7 @@ namespace Guardian.Utilities
         }
 
         // Min-inclusive, max-exclusive
-        public static int RandomInt(int min, int max)
+        public static int RandInt(int min, int max)
         {
             // Swap min and max values if min > max
             if (min > max)
@@ -40,6 +40,11 @@ namespace Guardian.Utilities
             }
 
             return random.Next(min, max);
+        }
+
+        public static double Random()
+        {
+            return random.NextDouble();
         }
 
         // Thank you, https://stackoverflow.com/a/45859570

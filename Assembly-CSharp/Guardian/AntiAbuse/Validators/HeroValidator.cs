@@ -2,7 +2,7 @@
 
 namespace Guardian.AntiAbuse.Validators
 {
-    class HeroChecker
+    class HeroValidator
     {
         // HERO.killObject
         public static bool IsKillObjectValid(PhotonMessageInfo info)

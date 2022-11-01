@@ -7,10 +7,7 @@ public class SelfDestroy : Photon.MonoBehaviour
     private void Update()
     {
         CountDown -= Time.deltaTime;
-        if (CountDown > 0)
-        {
-            return;
-        }
+        if (CountDown > 0) return;
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView == null || base.photonView.viewID == 0)
         {

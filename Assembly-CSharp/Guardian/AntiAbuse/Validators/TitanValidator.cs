@@ -1,6 +1,6 @@
 ﻿namespace Guardian.AntiAbuse.Validators
 {
-    class TitanChecker
+    class TitanValidator
     {
         // TITAN.netSetAbnormalType
         public static bool IsTitanTypeSetValid(TITAN titan, PhotonMessageInfo info)
