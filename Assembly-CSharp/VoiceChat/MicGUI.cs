@@ -181,7 +181,7 @@ public class MicGUI : MonoBehaviour
                         GUILayout.EndHorizontal();
                         if (player.changingVolume)
                         {
-                            player.volume = GUILayout.HorizontalSlider(player.volume, 0f, 4f, new GUILayoutOption[0]);
+                            player.volume = GUILayout.HorizontalSlider(player.volume, 0f, 4f);
                             if (!player.isMuted && player.volume == 0f)
                             {
                                 player.Mute(true);
@@ -259,7 +259,7 @@ public class MicGUI : MonoBehaviour
                     // Volume
                     GUILayout.Label("Volume Multiplier: " + MicEF.VolumeMultiplier);
                     float oldVol = MicEF.VolumeMultiplier;
-                    MicEF.VolumeMultiplier = GUILayout.HorizontalSlider(MicEF.VolumeMultiplier, 0f, 3f, new GUILayoutOption[0]);
+                    MicEF.VolumeMultiplier = GUILayout.HorizontalSlider(MicEF.VolumeMultiplier, 0f, 3f);
                     if (oldVol != MicEF.VolumeMultiplier)
                     {
                         PlayerPrefs.SetFloat("volumeMultiplier", MicEF.VolumeMultiplier);
@@ -400,7 +400,7 @@ public class MicGUI : MonoBehaviour
                     GUILayout.EndScrollView();
                     break;
                 }
-            case 3: // Credits to Kevin and Sadico
+            case 2: // Credits to Kevin and Sadico
                 GUILayout.Label("Main Developer: Elite Future(Kevin) - Discord:Elite Future#1043");
                 GUILayout.Label("Data Compression: Sadico");
                 break;

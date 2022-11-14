@@ -1233,7 +1233,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (left)
         {
             leftBulletLeft -= amount;
-        } else
+        }
+        else
         {
             rightBulletLeft -= amount;
         }
@@ -2202,7 +2203,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 if (y > 0)
                 {
                     _skyBarrier = (GameObject)UnityEngine.Object.Instantiate(FengGameManagerMKII.RCAssets.Load("killCuboid"), new Vector3(0, y, 0), Quaternion.identity);
-                    _skyBarrier.GetComponent<Collider>().gameObject.AddComponent<RacingKillTrigger>();
+                    _skyBarrier.gameObject.AddComponent<RacingKillTrigger>();
                     _skyBarrier.transform.localScale = new Vector3(1600, 20, 1600);
                 }
             }

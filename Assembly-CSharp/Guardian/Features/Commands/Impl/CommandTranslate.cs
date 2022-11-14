@@ -14,7 +14,7 @@ namespace Guardian.Features.Commands.Impl
             {
                 if (result.Length > 1)
                 {
-                    irc.AddMessage("Translation ".AsColor("FFCC00") + $"({result[0].ToUpper()} -> {args[1].ToUpper()})", result[1]);
+                    irc.AddMessage("Translation ".AsColor("FFCC00") + $"({result[0].ToUpper()}->{args[1].ToUpper()})", result[1]);
                 }
                 else
                 {

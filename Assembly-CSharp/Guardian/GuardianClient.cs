@@ -355,6 +355,10 @@ namespace Guardian
 
             PhotonNetwork.SetPlayerCustomProperties(null);
 
+            // FIXME: Why don't these properly reset?
+            RCSettings.BombCeiling = false;
+            RCSettings.HideNames = false;
+
             DiscordRPC.SetPresence(new Discord.Activity
             {
                 Details = "Idle..."

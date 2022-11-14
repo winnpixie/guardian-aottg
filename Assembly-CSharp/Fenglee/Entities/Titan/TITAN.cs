@@ -3531,6 +3531,7 @@ public class TITAN : Photon.MonoBehaviour
     {
         fengGame = GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>();
         baseAudioSource = base.transform.Find("snd_titan_foot").GetComponent<AudioSource>();
+
         baseAnimation = base.animation;
         baseTransform = base.transform;
         baseRigidBody = base.rigidbody;

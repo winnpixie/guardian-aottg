@@ -1215,7 +1215,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 if (result.Length > 1 && !result[0].Equals(Guardian.GuardianClient.SystemLanguage, StringComparison.OrdinalIgnoreCase))
                 {
-                    message = $"[gt] ".AsColor("0099ff") + result[1];
+                    message = $"[gt({result[0].ToLower()}->{Guardian.GuardianClient.SystemLanguage.ToLower()})] ".AsColor("0099FF") + result[1];
                 }
 
                 if (sender.Length == 0)
@@ -12009,15 +12009,20 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
 
-        // Bomb Ceiling
         RCSettings.BombCeiling = false;
+        // Bomb Ceiling
         if (RCSettings.BombMode != 0 && (!settings.ContainsKey("bombCeiling") || (int)settings["bombCeiling"] == 1))
         {
             RCSettings.BombCeiling = true;
+            InRoomChat.Instance.AddLine("Sky Barrier/Bomb Ceiling is enabled. Don't fly too high!".AsColor("FFCC00"));
         }
 
         // Global Hide Names
         RCSettings.HideNames = settings.ContainsKey("globalHideNames");
+        if (RCSettings.HideNames)
+        {
+            InRoomChat.Instance.AddLine("Player nametags are disabled.".AsColor("FFCC00"));
+        }
 
         // Global Minimap Disable
         if (settings.ContainsKey("globalDisableMinimap"))
