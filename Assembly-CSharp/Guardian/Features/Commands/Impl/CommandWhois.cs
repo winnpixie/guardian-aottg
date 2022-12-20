@@ -13,26 +13,26 @@
 
             irc.AddLine($"Whois Report (#{player.Id})".AsColor("AAFF00").AsBold());
 
-            irc.AddLine("Name: ".AsColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity());
-            irc.AddLine("Guild: ".AsColor("FFCC00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Guild]).NGUIToUnity());
-            irc.AddLine("Status: ".AsColor("FFCC00") + (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.IsDead]) ? "Dead" : "Alive"));
+            irc.AddLine("Name: ".AsColor("AAFF00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity());
+            irc.AddLine("Guild: ".AsColor("AAFF00") + GExtensions.AsString(player.customProperties[PhotonPlayerProperty.Guild]).NGUIToUnity());
+            irc.AddLine("Status: ".AsColor("AAFF00") + (GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.IsDead]) ? "Dead" : "Alive"));
 
             int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
             int deaths = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Deaths]);
             int totalDamage = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.TotalDamage]);
-            irc.AddLine("Kills: ".AsColor("FFCC00") + kills);
-            irc.AddLine("Deaths: ".AsColor("FFCC00") + deaths);
-            irc.AddLine("K/D Ratio: ".AsColor("FFCC00") + (deaths < 2 ? kills : (kills / (double)deaths)).ToString("F2") + $" ({kills}:{deaths})");
+            irc.AddLine("Kills: ".AsColor("AAFF00") + kills);
+            irc.AddLine("Deaths: ".AsColor("AAFF00") + deaths);
+            irc.AddLine("K/D Ratio: ".AsColor("AAFF00") + (deaths < 2 ? kills : (kills / (double)deaths)).ToString("F2") + $" ({kills}:{deaths})");
 
-            irc.AddLine("Max Damage: ".AsColor("FFCC00") + GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.MaxDamage]));
-            irc.AddLine("Total Damage: ".AsColor("FFCC00") + totalDamage);
+            irc.AddLine("Max Damage: ".AsColor("AAFF00") + GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.MaxDamage]));
+            irc.AddLine("Total Damage: ".AsColor("AAFF00") + totalDamage);
 
-            irc.AddLine("Average Damage: ".AsColor("FFCC00") + (kills == 0 ? "n/a" : (totalDamage / kills).ToString()));
+            irc.AddLine("Average Damage: ".AsColor("AAFF00") + (kills == 0 ? "n/a" : (totalDamage / kills).ToString()));
 
             float bombRadius = GExtensions.AsFloat(player.customProperties[PhotonPlayerProperty.RCBombRadius]);
             if (player.customProperties.ContainsKey(PhotonPlayerProperty.RCBombRadius))
             {
-                irc.AddLine("Bomb Radius: ".AsColor("FFCC00") + ((bombRadius - 20f) / 4f));
+                irc.AddLine("Bomb Radius: ".AsColor("AAFF00") + ((bombRadius - 20f) / 4f));
             }
 
             string team = "Human (Blade)";
@@ -44,7 +44,7 @@
             {
                 team = "Player Titan";
             }
-            irc.AddLine("Team: ".AsColor("FFCC00") + team);
+            irc.AddLine("Team: ".AsColor("AAFF00") + team);
         }
     }
 }

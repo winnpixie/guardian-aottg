@@ -1,4 +1,5 @@
-# Guardian [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A577AMK)
+ [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A577AMK)
+# Guardian
 A free, open-source, and feature-rich modification for the Attack on Titan Tribute Game.
 
 ## Where do I get/download Guardian Mod?
@@ -6,7 +7,7 @@ Download "[Launcher.exe](https://aottg.winnpixie.xyz/clients/guardian/Launcher.e
     - If Windows Smart Defender stops the launcher from running, click "More Info" and then click "Run Anyway", this is an issue I can/will not fix as I do not sign the executable.
 
 ## Features
-This mod has everything RiceCake's mod (RC mod) has, and much more!
+This mod has (almost) everything RiceCake's mod (RC mod) has, and much more!
 
 - Improved protection against abusive users!
     - Mod detection could be categorized under this, but I see it as more of a for-fun thing.
@@ -23,7 +24,9 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
         - InfiniteRoom - Stops your room from expiring, thus allowing you to host forever.
         - OGPunkHair - Lets you play like its 2015 again when they still had brightly colored hair.
         - DeadlyHooks - Spice up gameplay by making hooks more 'realistic' by KILLING players instead of grappling to them.
+        - HideNames - Turns off player nametags for everyone in the room with a compatible mod.
         - BombsKillTitans - Expands upon normal Bomb-PVP to work with titans.
+        - UseSkyBarrier - Enables a "limit" of how high players can fly upwards during a Bomb-PVP match. (Insta-death box for your own collision)
     - **Assets**
         - ThunderSpearSkin - ThunderSpear left/right skin url.
         - LeftRopeSkin - Left ODMG rope/wire skin url.
@@ -37,7 +40,6 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
         - CrossBurst - Changes your burst particles from the original poof of gas to two intersecting red beams.
         - HideHookArrows - Hides those pesky double-hook indicators that fly across your screen violently as you pass by objects.
         - HoldForBladeTrails - Allows your blade trail to be seen when you're readying an attack, rather than only once you swing.
-        - Interpolation - Makes maneuvering around maps appear much smoother.
         - ReelOutScrollSmoothing - Makes scroll-wheel reel-out a viable option, it's literally magic and I don't understand how RiceCake did it.
         - OpacityOfOwnName - Change the name-tag opacity of yourself.
         - OpacityOfOtherNames - Change the name-tag opacity of others.
@@ -60,19 +62,30 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
             - OutgoingLanguage - The language all messages sent are to be translated to.
         - JoinMessage - Send a message whenever you join a room.
         - UserName - Let your messages have a different name than your in-game one.
+        - BoldName - Toggles bold chat name.
+        - ItalicName - Toggles italic chat name.
         - TextColor - Color your text however you'd like.
         - TextPrefix - Insert text before your messages.
         - TextSuffix - Append text after your messages.
-        - BoldName - Toggles bold chat name.
-        - ItalicName - Toggles italic chat name.
         - BoldText - Toggles bold messages.
         - ItalicText - Toggles italic messages.
     - **Visual**
         - *Render Settings*
+            - Lerp - Enables visually smoother movement of the player (Rigidbody *Linear* Interpolation).
             - DrawDistance - See more or less of the map at once.
+            - FieldOfView - Change field of view. (***DISABLED**/NEEDS RE-IMPLEMENTATION*)
+            - Blur - Toggle camera blurring effects/depth of field.
+            - UseMainLightColor - Toggle between custom lighting or map-set lighting.
+            - MainLightColor - Set HEX color for custom lighting.
             - Fog - Toggle fog visibility, this can make some maps like City pretty terrifying, or really bad, it's up to interpretation.
+                - FogColor - Set custom fog HEX color.
+                - FogDensity - Set density of map fog.
             - SoftShadows - Toggle between soft/hard shadows (EXPERIMENTAL).
-        - Flare1Color/Flare2Color/Flare3Color - Break free from the original green, red, and black flare colors.
+        - CameraTiltStrength - Change how far the camera tilt should lean when hooked to objects.
+        - Flare1/2/3Color - Break free from the original green, red, and black flare colors (HEX colors).
+        - EmissiveFlares - Toggle flares emitting light.
+        - ShowPlayerMods - Toggles visibility of player mods in playerlist.
+        - ShowPlayerPings - Toggles visibility of player pings in playerlist.
         - FPSCamera - Allows you to play AoTTG from a First-Person View (EXPERIMENTAL).
         - MultiplayerNapeMeat - Adds nape meat slices into multiplayer (BUGGY).
     - **Miscellaneous**
@@ -101,18 +114,16 @@ This mod has everything RiceCake's mod (RC mod) has, and much more!
     - "Quickmatch" button now acts as a way to enter "Offline Mode".
 - Notable and/or more Technical Changes
     - Ability to switch between a UDP or TCP connection to [Photon](https://photonengine.com/)
-- TODO:
-    [ ] Compile 64-bit and 32-bit binaries instead of just 64-bit.
 
 ## In-game Commands
 To view the list of available commands and how to use them, type `/help` in game!
 
 ## Special Thanks
 - [Fenglee](http://fenglee.com/), without you, we wouldn't have the [base game](http://fenglee.com/game/aog/) that we all know and love.
-- RiceCake, this mod probably wouldn't even be a thing if [RC](https://aotrc.weebly.com/) didn't exist either.
-- [Order](https://github.com/aelariane/) ([Anarchy](https://github.com/aelariane/Anarchy)-related features)
-- [Elite Future/Kevin](https://github.com/kkim6109/) ([Voice Chat for PUN](https://github.com/kkim6109/Mic-Integration-Old-Photon-))
+- [RiceCake](https://github.com/rc174945), this mod probably wouldn't even be a thing if [RC](https://aotrc.weebly.com/) didn't exist either.
+- [Order](https://github.com/aelariane) ([Anarchy](https://github.com/aelariane/Anarchy)-related features)
+- [Elite Future/Kevin](https://github.com/kkim6109) ([Voice Chat for PUN](https://github.com/kkim6109/Mic-Integration-Old-Photon-))
 - Fleur/Syal, Esli, Bahaa, Edz, and \[too\] many annoying players for helping me test my anti-abuse code.
-- [Sadico](https://github.com/Mi-Sad/), I've probably asked you for something at some point.
-- [Mr. Lurkin](https://github.com/MrLurkin/), [Zippy](https://github.com/ZippyStew45), [Alice](https://github.com/ExiMichi/), and many more for ideas of what to add.
+- [Sadico](https://github.com/Mi-Sad), I've probably asked you for something at some point.
+- [Mr. Lurkin](https://github.com/MrLurkin), [Zippy](https://github.com/ZippyStew45), [Alice](https://github.com/ExiMichi), and many more for ideas of what to add.
 - Akiroshy, Milk, Lilim, and a multitude of users for giving me motivation to keep the project going.
