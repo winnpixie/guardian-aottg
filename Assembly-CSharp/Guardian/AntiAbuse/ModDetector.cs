@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Guardian.Networking;
+using RC;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -115,21 +117,21 @@ namespace Guardian.AntiAbuse
              *  "GuardianMod" int = legacy Guardian identifier
              *  "Stats" int = legacy Guardian feature
              */
-            if (properties.ContainsKey("GuardianMod"))
+            if (properties.ContainsKey(GuardianPlayerProperty.GuardianMod))
             {
                 List<string> tags = new List<string>();
-                if (properties["GuardianMod"] is string)
+                if (properties[GuardianPlayerProperty.GuardianMod] is string)
                 {
-                    tags.Add(GExtensions.AsString(properties["GuardianMod"]));
+                    tags.Add(GExtensions.AsString(properties[GuardianPlayerProperty.GuardianMod]));
                 }
-                else if (properties["GuardianMod"] is int)
+                else if (properties[GuardianPlayerProperty.GuardianMod] is int)
                 {
                     tags.Add("legacy");
                 }
 
-                if (properties.ContainsKey("Stats") && properties["Stats"] is int)
+                if (properties.ContainsKey(GuardianPlayerProperty.Stats) && properties[GuardianPlayerProperty.Stats] is int)
                 {
-                    List<char> modifications = ModifiedStats.FromInt(GExtensions.AsInt(properties["Stats"]));
+                    List<char> modifications = ModifiedStats.FromInt(GExtensions.AsInt(properties[GuardianPlayerProperty.Stats]));
                     if (modifications.Count > 0)
                     {
                         tags.Add($"inf:{string.Join(",", modifications.Select(c => c.ToString()).ToArray())}");
@@ -415,16 +417,16 @@ namespace Guardian.AntiAbuse
             }
 
             // RC
-            if (properties.ContainsKey(PhotonPlayerProperty.RCTeam)
-                || properties.ContainsKey(PhotonPlayerProperty.RCBombR)
-                || properties.ContainsKey(PhotonPlayerProperty.RCBombG)
-                || properties.ContainsKey(PhotonPlayerProperty.RCBombB)
-                || properties.ContainsKey(PhotonPlayerProperty.RCBombA)
-                || properties.ContainsKey(PhotonPlayerProperty.RCBombRadius)
-                || properties.ContainsKey(PhotonPlayerProperty.CustomBool)
-                || properties.ContainsKey(PhotonPlayerProperty.CustomFloat)
-                || properties.ContainsKey(PhotonPlayerProperty.CustomInt)
-                || properties.ContainsKey(PhotonPlayerProperty.CustomString))
+            if (properties.ContainsKey(RCPlayerProperty.RCTeam)
+                || properties.ContainsKey(RCPlayerProperty.RCBombR)
+                || properties.ContainsKey(RCPlayerProperty.RCBombG)
+                || properties.ContainsKey(RCPlayerProperty.RCBombB)
+                || properties.ContainsKey(RCPlayerProperty.RCBombA)
+                || properties.ContainsKey(RCPlayerProperty.RCBombRadius)
+                || properties.ContainsKey(RCPlayerProperty.CustomBool)
+                || properties.ContainsKey(RCPlayerProperty.CustomFloat)
+                || properties.ContainsKey(RCPlayerProperty.CustomInt)
+                || properties.ContainsKey(RCPlayerProperty.CustomString))
             {
                 List<string> tags = new List<string>();
                 if (player.IsNewRCMod)

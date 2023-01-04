@@ -1,4 +1,6 @@
-﻿namespace Guardian.Features.Commands.Impl
+﻿using RC;
+
+namespace Guardian.Features.Commands.Impl
 {
     class CommandWhois : Command
     {
@@ -29,8 +31,8 @@
 
             irc.AddLine("Average Damage: ".AsColor("AAFF00") + (kills == 0 ? "n/a" : (totalDamage / kills).ToString()));
 
-            float bombRadius = GExtensions.AsFloat(player.customProperties[PhotonPlayerProperty.RCBombRadius]);
-            if (player.customProperties.ContainsKey(PhotonPlayerProperty.RCBombRadius))
+            float bombRadius = GExtensions.AsFloat(player.customProperties[RCPlayerProperty.RCBombRadius]);
+            if (player.customProperties.ContainsKey(RCPlayerProperty.RCBombRadius))
             {
                 irc.AddLine("Bomb Radius: ".AsColor("AAFF00") + ((bombRadius - 20f) / 4f));
             }

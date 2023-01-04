@@ -1,3 +1,4 @@
+using RC;
 using System.Collections;
 using UnityEngine;
 
@@ -12,17 +13,16 @@ public class Bomb : Photon.MonoBehaviour
 
     public void Awake()
     {
-        if (base.photonView == null)
-        {
-            return;
-        }
+        if (base.photonView == null) return;
+
         base.photonView.observed = this;
         correctPlayerPos = base.transform.position;
         correctPlayerRot = Quaternion.identity;
         PhotonPlayer owner = base.photonView.owner;
+
         if (RCSettings.TeamMode > 0)
         {
-            switch (GExtensions.AsInt(owner.customProperties[PhotonPlayerProperty.RCTeam]))
+            switch (GExtensions.AsInt(owner.customProperties[RCPlayerProperty.RCTeam]))
             {
                 case 1:
                     GetComponentInChildren<ParticleSystem>().startColor = Color.cyan;
@@ -31,18 +31,12 @@ public class Bomb : Photon.MonoBehaviour
                     GetComponentInChildren<ParticleSystem>().startColor = Color.magenta;
                     return;
             }
-            float r = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombR]);
-            float g = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombG]);
-            float b = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombB]);
-            GetComponentInChildren<ParticleSystem>().startColor = new Color(r, g, b, 1f);
         }
-        else
-        {
-            float r = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombR]);
-            float g = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombG]);
-            float b = GExtensions.AsFloat(owner.customProperties[PhotonPlayerProperty.RCBombB]);
-            GetComponentInChildren<ParticleSystem>().startColor = new Color(r, g, b, 1f);
-        }
+
+        float r = GExtensions.AsFloat(owner.customProperties[RCPlayerProperty.RCBombR]);
+        float g = GExtensions.AsFloat(owner.customProperties[RCPlayerProperty.RCBombG]);
+        float b = GExtensions.AsFloat(owner.customProperties[RCPlayerProperty.RCBombB]);
+        GetComponentInChildren<ParticleSystem>().startColor = new Color(r, g, b, 1f);
     }
 
     public void Explode(float radius)
@@ -58,10 +52,10 @@ public class Bomb : Photon.MonoBehaviour
             if (Vector3.Distance(gameObject.transform.position, position) < radius && !gameObject.GetPhotonView().isMine && !player.bombImmune)
             {
                 PhotonPlayer owner = gameObject.GetPhotonView().owner;
-                if (RCSettings.TeamMode > 0 && PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam] != null && owner.customProperties[PhotonPlayerProperty.RCTeam] != null)
+                if (RCSettings.TeamMode > 0 && PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam] != null && owner.customProperties[RCPlayerProperty.RCTeam] != null)
                 {
-                    int num = GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam]);
-                    int num2 = GExtensions.AsInt(owner.customProperties[PhotonPlayerProperty.RCTeam]);
+                    int num = GExtensions.AsInt(PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam]);
+                    int num2 = GExtensions.AsInt(owner.customProperties[RCPlayerProperty.RCTeam]);
                     if (num == 0 || num != num2)
                     {
                         gameObject.GetComponent<HERO>().MarkDead();

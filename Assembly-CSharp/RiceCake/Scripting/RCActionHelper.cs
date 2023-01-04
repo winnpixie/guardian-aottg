@@ -1,3 +1,4 @@
+using RC;
 using System;
 
 public class RCActionHelper
@@ -161,7 +162,7 @@ public class RCActionHelper
                             case 0:
                                 return (int)photonPlayer.customProperties[PhotonPlayerProperty.Team];
                             case 1:
-                                return (int)photonPlayer.customProperties[PhotonPlayerProperty.RCTeam];
+                                return (int)photonPlayer.customProperties[RCPlayerProperty.RCTeam];
                             case 2:
                                 return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.IsDead]);
                             case 3:
@@ -175,13 +176,13 @@ public class RCActionHelper
                             case 7:
                                 return (int)photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage];
                             case 8:
-                                return (int)photonPlayer.customProperties[PhotonPlayerProperty.CustomInt];
+                                return (int)photonPlayer.customProperties[RCPlayerProperty.CustomInt];
                             case 9:
-                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomBool]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[RCPlayerProperty.CustomBool]);
                             case 10:
-                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomString]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[RCPlayerProperty.CustomString]);
                             case 11:
-                                return nextHelper.ReturnInt(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
+                                return nextHelper.ReturnInt(photonPlayer.customProperties[RCPlayerProperty.CustomFloat]);
                             case 14:
                                 {
                                     int iD4 = photonPlayer.Id;
@@ -339,7 +340,7 @@ public class RCActionHelper
                             case 0:
                                 return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.Team]);
                             case 1:
-                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[RCPlayerProperty.RCTeam]);
                             case 2:
                                 return !(bool)photonPlayer.customProperties[PhotonPlayerProperty.IsDead];
                             case 3:
@@ -353,13 +354,13 @@ public class RCActionHelper
                             case 7:
                                 return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
                             case 8:
-                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomInt]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[RCPlayerProperty.CustomInt]);
                             case 9:
-                                return (bool)photonPlayer.customProperties[PhotonPlayerProperty.CustomBool];
+                                return (bool)photonPlayer.customProperties[RCPlayerProperty.CustomBool];
                             case 10:
-                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomString]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[RCPlayerProperty.CustomString]);
                             case 11:
-                                return nextHelper.ReturnBool(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
+                                return nextHelper.ReturnBool(photonPlayer.customProperties[RCPlayerProperty.CustomFloat]);
                             case 14:
                                 {
                                     int iD4 = photonPlayer.Id;
@@ -508,7 +509,7 @@ public class RCActionHelper
                             case 0:
                                 return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.Team]);
                             case 1:
-                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[RCPlayerProperty.RCTeam]);
                             case 2:
                                 return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.IsDead]);
                             case 3:
@@ -522,13 +523,13 @@ public class RCActionHelper
                             case 7:
                                 return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
                             case 8:
-                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomInt]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[RCPlayerProperty.CustomInt]);
                             case 9:
-                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomBool]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[RCPlayerProperty.CustomBool]);
                             case 10:
-                                return (string)photonPlayer.customProperties[PhotonPlayerProperty.CustomString];
+                                return (string)photonPlayer.customProperties[RCPlayerProperty.CustomString];
                             case 11:
-                                return nextHelper.ReturnString(photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat]);
+                                return nextHelper.ReturnString(photonPlayer.customProperties[RCPlayerProperty.CustomFloat]);
                             case 14:
                                 {
                                     int iD4 = photonPlayer.Id;
@@ -689,7 +690,7 @@ public class RCActionHelper
                             case 0:
                                 return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.Team]);
                             case 1:
-                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[RCPlayerProperty.RCTeam]);
                             case 2:
                                 return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.IsDead]);
                             case 3:
@@ -703,13 +704,13 @@ public class RCActionHelper
                             case 7:
                                 return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.TotalDamage]);
                             case 8:
-                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.CustomInt]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[RCPlayerProperty.CustomInt]);
                             case 9:
-                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.CustomBool]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[RCPlayerProperty.CustomBool]);
                             case 10:
-                                return nextHelper.ReturnFloat(photonPlayer.customProperties[PhotonPlayerProperty.CustomString]);
+                                return nextHelper.ReturnFloat(photonPlayer.customProperties[RCPlayerProperty.CustomString]);
                             case 11:
-                                return (float)photonPlayer.customProperties[PhotonPlayerProperty.CustomFloat];
+                                return (float)photonPlayer.customProperties[RCPlayerProperty.CustomFloat];
                             case 14:
                                 {
                                     int iD4 = photonPlayer.Id;

@@ -527,7 +527,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
         }
     }
 
-    [Guardian.Networking.RPC(Name = "playSoundRPC")]
+    [Guardian.Networking.RPC(Name = "playsoundRPC")]
     private void PlaySoundRPC(string sndname)
     {
         Transform transform = base.transform.Find(sndname);

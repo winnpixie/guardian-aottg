@@ -1,3 +1,4 @@
+using RC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1303,8 +1304,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         hashtable.Add(PhotonPlayerProperty.Deaths, 0);
         hashtable.Add(PhotonPlayerProperty.IsDead, true);
         hashtable.Add(PhotonPlayerProperty.IsTitan, 0);
-        hashtable.Add(PhotonPlayerProperty.RCTeam, 0);
-        hashtable.Add(PhotonPlayerProperty.CurrentLevel, string.Empty);
+        hashtable.Add(RCPlayerProperty.RCTeam, 0);
+        hashtable.Add(RCPlayerProperty.CurrentLevel, string.Empty);
         PhotonNetwork.player.SetCustomProperties(hashtable);
 
         humanScore = 0;
@@ -2537,7 +2538,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
             else if (Level.Name.StartsWith("Custom"))
             {
-                if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam]) == 0)
+                if (GExtensions.AsInt(PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam]) == 0)
                 {
                     List<Vector3> list = new List<Vector3>();
                     foreach (Vector3 item in playerSpawnsC)
@@ -2553,14 +2554,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         position = list[UnityEngine.Random.Range(0, list.Count)];
                     }
                 }
-                else if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam]) == 1)
+                else if (GExtensions.AsInt(PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam]) == 1)
                 {
                     if (playerSpawnsC.Count > 0)
                     {
                         position = playerSpawnsC[UnityEngine.Random.Range(0, playerSpawnsC.Count)];
                     }
                 }
-                else if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam]) == 2 && playerSpawnsM.Count > 0)
+                else if (GExtensions.AsInt(PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam]) == 2 && playerSpawnsM.Count > 0)
                 {
                     position = playerSpawnsM[UnityEngine.Random.Range(0, playerSpawnsM.Count)];
                 }
@@ -3143,7 +3144,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 if (photonPlayer.customProperties[PhotonPlayerProperty.IsDead] != null && !IgnoreList.Contains(photonPlayer.Id))
                 {
-                    switch (GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]))
+                    switch (GExtensions.AsInt(photonPlayer.customProperties[RCPlayerProperty.RCTeam]))
                     {
                         case 0:
                             individualPlayers.Add(photonPlayer.Id, photonPlayer);
@@ -3209,7 +3210,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     foreach (PhotonPlayer player in array)
                     {
                         int rcTeam = 0;
-                        int team = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.RCTeam]);
+                        int team = GExtensions.AsInt(player.customProperties[RCPlayerProperty.RCTeam]);
                         if (team <= 0)
                         {
                             continue;
@@ -3249,7 +3250,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             content += "[00FFFF]TEAM CYAN[FFFFFF]: " + cyanKills + " [AAAAAA]/[-] " + _cyanDeaths + " [AAAAAA]/[-] " + _cyanMaxDmg + " [AAAAAA]/[-] " + _cyanDmgSum + "\n";
             foreach (PhotonPlayer player in cyanPlayers.Values)
             {
-                int team = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.RCTeam]);
+                int team = GExtensions.AsInt(player.customProperties[RCPlayerProperty.RCTeam]);
                 if (team == 1)
                 {
                     content += GetPlayerTextForList(player);
@@ -3259,7 +3260,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             content += " \n[FF00FF]TEAM MAGENTA[FFFFFF]: " + magentaKills + " [AAAAAA]/[-] " + _magentaDeaths + " [AAAAAA]/[-] " + _magentaMaxDmg + " [AAAAAA]/[-] " + _magentaDmgSum + "\n";
             foreach (PhotonPlayer player in magentaPlayers.Values)
             {
-                int team = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.RCTeam]);
+                int team = GExtensions.AsInt(player.customProperties[RCPlayerProperty.RCTeam]);
                 if (team == 2)
                 {
                     content += GetPlayerTextForList(player);
@@ -3269,7 +3270,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             content += " \n[00FF00]INDIVIDUAL\n";
             foreach (PhotonPlayer player in individualPlayers.Values)
             {
-                int team = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.RCTeam]);
+                int team = GExtensions.AsInt(player.customProperties[RCPlayerProperty.RCTeam]);
                 if (team == 0)
                 {
                     content += GetPlayerTextForList(player);
@@ -3380,11 +3381,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     for (int j = 0; j < PhotonNetwork.playerList.Length; j++)
                     {
                         PhotonPlayer photonPlayer7 = PhotonNetwork.playerList[j];
-                        if (IgnoreList.Contains(photonPlayer7.Id) || photonPlayer7.customProperties[PhotonPlayerProperty.RCTeam] == null || photonPlayer7.customProperties[PhotonPlayerProperty.IsDead] == null)
+                        if (IgnoreList.Contains(photonPlayer7.Id) || photonPlayer7.customProperties[RCPlayerProperty.RCTeam] == null || photonPlayer7.customProperties[PhotonPlayerProperty.IsDead] == null)
                         {
                             continue;
                         }
-                        if (GExtensions.AsInt(photonPlayer7.customProperties[PhotonPlayerProperty.RCTeam]) == 1)
+                        if (GExtensions.AsInt(photonPlayer7.customProperties[RCPlayerProperty.RCTeam]) == 1)
                         {
                             num22++;
                             if (!GExtensions.AsBool(photonPlayer7.customProperties[PhotonPlayerProperty.IsDead]))
@@ -3392,7 +3393,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                                 num20++;
                             }
                         }
-                        else if (GExtensions.AsInt(photonPlayer7.customProperties[PhotonPlayerProperty.RCTeam]) == 2)
+                        else if (GExtensions.AsInt(photonPlayer7.customProperties[RCPlayerProperty.RCTeam]) == 2)
                         {
                             num23++;
                             if (!GExtensions.AsBool(photonPlayer7.customProperties[PhotonPlayerProperty.IsDead]))
@@ -5631,7 +5632,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
-                if (player.customProperties[PhotonPlayerProperty.RCTeam] == null && GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.IsDead]) && GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.IsTitan]) != 2)
+                if (player.customProperties[RCPlayerProperty.RCTeam] == null
+                    && GExtensions.AsBool(player.customProperties[PhotonPlayerProperty.IsDead]) && GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.IsTitan]) != 2)
                 {
                     base.photonView.RPC("respawnHeroInNewRound", player);
                 }
@@ -5775,13 +5777,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         MasterRC = false;
         ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
         {
-            { PhotonPlayerProperty.RCTeam, 0 }
+            { RCPlayerProperty.RCTeam, 0 }
         };
 
         if (isLeave)
         {
             CurrentLevel = string.Empty;
-            hashtable.Add(PhotonPlayerProperty.CurrentLevel, string.Empty);
+            hashtable.Add(RCPlayerProperty.CurrentLevel, string.Empty);
             levelCache = new List<string[]>();
             titanSpawns.Clear();
             playerSpawnsC.Clear();
@@ -6704,7 +6706,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                     {
-                        { PhotonPlayerProperty.CurrentLevel, CurrentLevel }
+                        { RCPlayerProperty.CurrentLevel, CurrentLevel }
                     };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
                     OldScript = CurrentScript;
@@ -6799,7 +6801,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     CurrentLevel += text7;
                     ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                     {
-                        { PhotonPlayerProperty.CurrentLevel, CurrentLevel }
+                        { RCPlayerProperty.CurrentLevel, CurrentLevel }
                     };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
                     OldScript = CurrentScript;
@@ -6869,7 +6871,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             this.levelCache.Add(content);
             ExitGames.Client.Photon.Hashtable propertiesToSet = new ExitGames.Client.Photon.Hashtable()
             {
-                { PhotonPlayerProperty.CurrentLevel, CurrentLevel }
+                { RCPlayerProperty.CurrentLevel, CurrentLevel }
             };
             PhotonNetwork.player.SetCustomProperties(propertiesToSet);
         }
@@ -7199,7 +7201,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             foreach (PhotonPlayer player in players)
             {
-                if (player.customProperties[PhotonPlayerProperty.CurrentLevel] != null && CurrentLevel.Length > 0 && GExtensions.AsString(player.customProperties[PhotonPlayerProperty.CurrentLevel]) == CurrentLevel)
+                if (player.customProperties[RCPlayerProperty.CurrentLevel] != null && CurrentLevel.Length > 0 && GExtensions.AsString(player.customProperties[RCPlayerProperty.CurrentLevel]) == CurrentLevel)
                 {
                     if (i == 0)
                     {
@@ -7424,7 +7426,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 playerSpawnsM.Clear();
                 ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                 {
-                    { PhotonPlayerProperty.CurrentLevel, CurrentLevel }
+                    { RCPlayerProperty.CurrentLevel, CurrentLevel }
                 };
                 PhotonNetwork.player.SetCustomProperties(hashtable);
                 CustomLevelLoaded = true;
@@ -11601,8 +11603,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 else if (!LogicLoaded || !CustomLevelLoaded)
                 {
                     GUI.Box(new Rect(num7 - 100f, num8 - 50f, 200f, 150f), string.Empty);
-                    int ourLength = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.CurrentLevel]).Length;
-                    int masterLength = GExtensions.AsString(PhotonNetwork.masterClient.customProperties[PhotonPlayerProperty.CurrentLevel]).Length;
+                    int ourLength = GExtensions.AsString(PhotonNetwork.player.customProperties[RCPlayerProperty.CurrentLevel]).Length;
+                    int masterLength = GExtensions.AsString(PhotonNetwork.masterClient.customProperties[RCPlayerProperty.CurrentLevel]).Length;
                     GUI.Label(new Rect(num7 - 60f, num8 - 30f, 200f, 22f), "Loading Level (" + ourLength + "/" + masterLength + ")");
                     retryTime += Time.deltaTime;
                     Screen.lockCursor = false;
@@ -11913,7 +11915,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                     {
-                        { PhotonPlayerProperty.RCTeam, 0 },
+                        { RCPlayerProperty.RCTeam, 0 },
                         { PhotonPlayerProperty.Name, LoginFengKAI.Player.Name }
                     };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
@@ -11923,7 +11925,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                     {
-                        { PhotonPlayerProperty.RCTeam, 1 },
+                        { RCPlayerProperty.RCTeam, 1 },
                         { PhotonPlayerProperty.Name, "[00FFFF]" + LoginFengKAI.Player.Name.StripNGUI() },
                     };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
@@ -11933,7 +11935,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 {
                     ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                     {
-                        { PhotonPlayerProperty.RCTeam, 2 },
+                        { RCPlayerProperty.RCTeam, 2 },
                         { PhotonPlayerProperty.Name, "[FF00FF]" + LoginFengKAI.Player.Name.StripNGUI() }
                     };
                     PhotonNetwork.player.SetCustomProperties(hashtable);
@@ -11946,7 +11948,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     int team = 1;
                     foreach (PhotonPlayer photonPlayer in PhotonNetwork.playerList)
                     {
-                        switch (GExtensions.AsInt(photonPlayer.customProperties[PhotonPlayerProperty.RCTeam]))
+                        switch (GExtensions.AsInt(photonPlayer.customProperties[RCPlayerProperty.RCTeam]))
                         {
                             case 1:
                                 cyanCount++;
@@ -12018,10 +12020,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Global Hide Names
-        RCSettings.HideNames = settings.ContainsKey("globalHideNames");
-        if (RCSettings.HideNames)
+        bool hideNames = settings.ContainsKey("globalHideNames");
+        if (RCSettings.HideNames != hideNames)
         {
-            InRoomChat.Instance.AddLine("Player nametags are disabled.".AsColor("FFCC00"));
+            RCSettings.HideNames = hideNames;
+            InRoomChat.Instance.AddLine($"Player nametags are {(RCSettings.HideNames ? "disabled" : "enabled")}.".AsColor("FFCC00"));
         }
 
         // Global Minimap Disable
@@ -12108,7 +12111,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         break;
                 }
                 InRoomChat.Instance.AddLine("Team Mode enabled</color> (".AsColor("FFCC00") + str + ").".AsColor("FFCC00"));
-                if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam]) == 0)
+                if (GExtensions.AsInt(PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam]) == 0)
                 {
                     SetTeam(3);
                 }
@@ -12200,7 +12203,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 RCSettings.InfectionMode = (int)settings["infection"];
                 ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                 {
-                    { PhotonPlayerProperty.RCTeam, 0 }
+                    { RCPlayerProperty.RCTeam, 0 }
                 };
                 PhotonNetwork.player.SetCustomProperties(hashtable);
                 InRoomChat.Instance.AddLine("Infection mode (".AsColor("FFCC00") + RCSettings.InfectionMode + ") enabled. Make sure your first character is human.".AsColor("FFCC00"));

@@ -15,9 +15,8 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.1.0";
+        public static readonly string Build = "1.2.0";
         public static readonly string RootDir = Application.dataPath + "\\..";
-        public static readonly string CustomPropertyName = "GuardianMod";
 
         public static readonly CommandManager Commands = new CommandManager();
         public static readonly GamemodeManager Gamemodes = new GamemodeManager();
@@ -315,7 +314,7 @@ namespace Guardian
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
-                 { CustomPropertyName, Build }
+                 { GuardianPlayerProperty.GuardianMod, Build }
             });
 
             StartCoroutine(CoUpdateMyPing());
@@ -341,7 +340,7 @@ namespace Guardian
                 {
                     PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                     {
-                        { "Ping", newPing }
+                        { GuardianPlayerProperty.Ping, newPing }
                     });
                 }
 

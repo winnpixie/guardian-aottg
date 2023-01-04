@@ -1,3 +1,4 @@
+using RC;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -159,10 +160,10 @@ public class CannonBall : Photon.MonoBehaviour
                 if (hero != null && Vector3.Distance(hero.transform.position, base.transform.position) <= 20f && !hero.photonView.isMine)
                 {
                     PhotonPlayer owner = hero.photonView.owner;
-                    if (RCSettings.TeamMode > 0 && PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam] != null && owner.customProperties[PhotonPlayerProperty.RCTeam] != null)
+                    if (RCSettings.TeamMode > 0 && PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam] != null && owner.customProperties[RCPlayerProperty.RCTeam] != null)
                     {
-                        int num = GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.RCTeam]);
-                        int num2 = GExtensions.AsInt(owner.customProperties[PhotonPlayerProperty.RCTeam]);
+                        int num = GExtensions.AsInt(PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam]);
+                        int num2 = GExtensions.AsInt(owner.customProperties[RCPlayerProperty.RCTeam]);
                         if (num == 0 || num != num2)
                         {
                             hero.MarkDead();

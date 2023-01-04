@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections;
 using Guardian.Utilities;
+using Guardian.AntiAbuse.Validators;
 
 namespace Guardian.Features.Commands.Impl.Debug
 {
@@ -18,15 +18,21 @@ namespace Guardian.Features.Commands.Impl.Debug
             PhotonPlayer player = PhotonPlayer.Find(id);
             if (player == null) return;
 
-            string output = string.Empty;
+            string output = $"RoomName={PhotonNetwork.room.name}\n\n";
             foreach (DictionaryEntry entry in player.customProperties)
             {
-                output = $"{output}({entry.Value.GetType().Name}) {entry.Key}={entry.Value}{Environment.NewLine}";
+                if (!NetworkValidator.PropertyWhitelist.Contains(entry.Key))
+                {
+                    output += "!!! THE FOLLOWING KEY IS NOT A STANDARD PROPERTY !!!\n";
+                }
+                output += $"Type={entry.Value.GetType().Name}\n\tKey={entry.Key}\n\tValue={entry.Value}\n";
             }
 
             GameHelper.TryCreateFile(SaveDir, true);
-            File.WriteAllText($"{SaveDir}\\Properties_{id}.txt", output);
-            irc.AddLine($"Logged properties of {id} to 'Properties\\Properties_{id}.txt'.");
+
+            long time = GameHelper.CurrentTimeMillis();
+            File.WriteAllText($"{SaveDir}\\ID{id}_T{time}.txt", output);
+            irc.AddLine($"Logged properties of {id} to 'Properties\\ID{id}_T{time}.txt'.");
         }
     }
 }

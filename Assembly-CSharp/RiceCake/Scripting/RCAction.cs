@@ -1,4 +1,5 @@
 using ExitGames.Client.Photon;
+using RC;
 using System;
 
 public class RCAction
@@ -518,7 +519,7 @@ public class RCAction
                             {
                                 Hashtable hashtable5 = new Hashtable()
                                 {
-                                    { PhotonPlayerProperty.RCTeam, parameters[1].ReturnInt(null) }
+                                    { RCPlayerProperty.RCTeam, parameters[1].ReturnInt(null) }
                                 };
                                 photonPlayer.SetCustomProperties(hashtable5);
                                 break;
@@ -527,7 +528,7 @@ public class RCAction
                             {
                                 Hashtable hashtable4 = new Hashtable()
                                 {
-                                    { PhotonPlayerProperty.CustomInt, parameters[1].ReturnInt(null) }
+                                    { RCPlayerProperty.CustomInt, parameters[1].ReturnInt(null) }
                                 };
                                 photonPlayer.SetCustomProperties(hashtable4);
                                 break;
@@ -536,7 +537,7 @@ public class RCAction
                             {
                                 Hashtable hashtable3 = new Hashtable()
                                 {
-                                    { PhotonPlayerProperty.CustomBool, parameters[1].ReturnBool(null) }
+                                    { RCPlayerProperty.CustomBool, parameters[1].ReturnBool(null) }
                                 };
                                 photonPlayer.SetCustomProperties(hashtable3);
                                 break;
@@ -545,7 +546,7 @@ public class RCAction
                             {
                                 Hashtable hashtable2 = new Hashtable()
                                 {
-                                    { PhotonPlayerProperty.CustomString, parameters[1].ReturnString(null) }
+                                    { RCPlayerProperty.CustomString, parameters[1].ReturnString(null) }
                                 };
                                 photonPlayer.SetCustomProperties(hashtable2);
                                 break;
@@ -554,7 +555,7 @@ public class RCAction
                             {
                                 Hashtable hashtable = new Hashtable()
                                 {
-                                    { PhotonPlayerProperty.CustomFloat, parameters[1].ReturnFloat(null) }
+                                    { RCPlayerProperty.CustomFloat, parameters[1].ReturnFloat(null) }
                                 };
                                 photonPlayer.SetCustomProperties(hashtable);
                                 break;
