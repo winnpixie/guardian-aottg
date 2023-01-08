@@ -2,7 +2,7 @@
 {
     class CommandKill : Command
     {
-        public CommandKill() : base("kill", new string[0], "<id>", true) { }
+        public CommandKill() : base("kill", new string[0], "<id> [reason]", true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
@@ -16,14 +16,14 @@
                 TITAN titan = player.GetTitan();
                 if (titan == null || titan.hasDie) return;
 
-                titan.photonView.RPC("titanGetHit", player, titan.photonView.viewID, RCSettings.MinimumDamage > 0 ? RCSettings.MinimumDamage : 10);
+                titan.photonView.RPC("titanGetHit", player, titan.photonView.viewID, RCSettings.MinimumDamage > 10 ? RCSettings.MinimumDamage : 10);
             }
             else
             {
                 HERO hero = player.GetHero();
                 if (hero == null || hero.HasDied()) return;
 
-                hero.photonView.RPC("netDie", PhotonTargets.All, hero.transform.position, false, -1, "[FF0000]Server", true);
+                hero.photonView.RPC("netDie", PhotonTargets.All, hero.transform.position, false, -1, "[FF0000]Server", false);
             }
         }
     }

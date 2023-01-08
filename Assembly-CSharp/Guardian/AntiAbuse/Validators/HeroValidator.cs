@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Guardian.Utilities;
+using UnityEngine;
 
 namespace Guardian.AntiAbuse.Validators
 {
@@ -44,12 +45,13 @@ namespace Guardian.AntiAbuse.Validators
             return false;
         }
 
+        // TODO: Retire RPC check?
         // HERO.SetMyCannon
         public static bool IsCannonSetValid(int viewId, PhotonMessageInfo info)
         {
+            // FIXME: No longer checking if PV has a Cannon object, un-tested.
             PhotonView view = PhotonView.Find(viewId);
-            if (info != null && view != null
-                && view.gameObject.GetComponent<Cannon>() != null) return true;
+            if (view != null && view.ownerId == info.sender.Id) return true;
 
             GuardianClient.Logger.Warn($"'HERO.SetMyCannon' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             return false;
@@ -96,12 +98,19 @@ namespace Guardian.AntiAbuse.Validators
             return false;
         }
 
+        // TODO: Retire RPC check?
         // HERO.blowAway
         public static bool IsBlowAwayValid(PhotonMessageInfo info)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || info == null
-                || info.sender.isMasterClient || info.sender.isLocal || info.sender.IsTitan) return true;
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer
+                || info == null
+                || info.sender.isMasterClient
+                || info.sender.isLocal
+                || info.sender.IsTitan) return true;
 
+            // FIXME: Dirty un-tested workaround for issues relating to cannons.
+            HERO hero = info.sender.GetHero();
+            if (hero != null && hero.isCannon) return true;
 
             GuardianClient.Logger.Error($"'HERO.blowAway' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             if (info.sender != null && !FengGameManagerMKII.IgnoreList.Contains(info.sender.Id))

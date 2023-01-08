@@ -43,7 +43,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
 
     void Anarchy.Custom.Interfaces.IAnarchyScriptHook.KillMaster()
     {
-        master.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, new object[] { -1, "Trap" });
+        master.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, "Trap");
     }
     // END: Anarchy
 
@@ -247,15 +247,15 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         HERO hero = pv.gameObject.GetComponent<HERO>();
         if (hero == null || hero.HasDied()) return;
 
-        string killer = GExtensions.AsString(photonView.owner.customProperties[PhotonPlayerProperty.Name]);
+        string killer = GExtensions.AsString(base.photonView.owner.customProperties[PhotonPlayerProperty.Name]);
         if (killer.StripNGUI().Length < 1)
         {
             killer = "Player";
         }
-        killer += $" [FFCC00]({photonView.owner.Id})[FFFFFF]";
+        killer += $" [FFCC00]({base.photonView.owner.Id})[FFFFFF]";
 
         hero.MarkDead();
-        hero.photonView.RPC("netDie2", pv.owner, -1, $"{killer}'s hook");
+        hero.photonView.RPC("netDie", pv.owner, base.transform.position, false, base.photonView.ownerId, $"{killer}'s hook", false);
     }
 
     [Guardian.Networking.RPC(Name = "tieMeToOBJ")]

@@ -243,7 +243,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public GameObject _thunderSpearLeft;
     public GameObject _thunderSpearRight;
 
-    private float lastKnownSpeed;
+    private float previousSpeed;
     // END Guardian
 
     // BEGIN Syal
@@ -1712,30 +1712,32 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private void MoveHead()
     {
         Transform transform = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck/head");
-        Transform transform2 = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck");
-        float x = gunTarget.x;
-        Vector3 position = base.transform.position;
-        float num = x - position.x;
-        float x2 = gunTarget.x;
-        float num2 = num * (x2 - position.x);
-        float z = gunTarget.z;
-        float num3 = z - position.z;
-        float z2 = gunTarget.z;
-        float x3 = Mathf.Sqrt(num2 + num3 * (z2 - position.z));
+        Transform neckTransform = base.transform.Find("Amarture/Controller_Body/hip/spine/chest/neck");
+
+        Vector3 bodyPosition = base.transform.position;
+        Vector3 neckPosition = neckTransform.position;
+
+        Vector3 bodyEuler = base.transform.rotation.eulerAngles;
+        Vector3 headEuler = transform.rotation.eulerAngles;
+
         targetHeadRotation = transform.rotation;
-        Vector3 vector = gunTarget - base.transform.position;
-        float current = (0f - Mathf.Atan2(vector.z, vector.x)) * 57.29578f;
-        Vector3 eulerAngles = base.transform.rotation.eulerAngles;
-        float value = 0f - Mathf.DeltaAngle(current, eulerAngles.y - 90f);
-        value = Mathf.Clamp(value, -40f, 40f);
-        Vector3 position5 = transform2.position;
-        float y = position5.y - gunTarget.y;
-        float value2 = Mathf.Atan2(y, x3) * 57.29578f;
-        value2 = Mathf.Clamp(value2, -40f, 30f);
-        Vector3 eulerAngles2 = transform.rotation.eulerAngles;
-        float x4 = eulerAngles2.x + value2;
-        float y2 = eulerAngles2.y + value;
-        targetHeadRotation = Quaternion.Euler(x4, y2, eulerAngles2.z);
+
+        float dx = gunTarget.x - bodyPosition.x;
+        float dz = gunTarget.z - bodyPosition.z;
+        float xzDist = Mathf.Sqrt(dx * dx + dz * dz);
+
+        float newPitch = (-Mathf.Atan2(dz, dx)) * 57.29578f;
+        float newYaw = -Mathf.DeltaAngle(newPitch, bodyEuler.y - 90f);
+        newYaw = Mathf.Clamp(newYaw, -40f, 40f);
+
+        float dy = gunTarget.y - neckPosition.y;
+        float newPitch2 = Mathf.Atan2(dy, xzDist) * 57.29578f;
+        newPitch2 = Mathf.Clamp(newPitch2, -40f, 30f);
+
+        float nx = headEuler.x + newPitch2;
+        float ny = headEuler.y + newYaw;
+
+        targetHeadRotation = Quaternion.Euler(nx, ny, headEuler.z);
         oldHeadRotation = Quaternion.Lerp(oldHeadRotation, targetHeadRotation, Time.deltaTime * 60f);
         transform.rotation = oldHeadRotation;
     }
@@ -2266,14 +2268,15 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
     }
 
+    // Guardian
     private void HandlePhysicsUpdate()
     {
         if (Guardian.GuardianClient.Properties.FatalCollisions.Value)
         {
-            if (lastKnownSpeed - currentSpeed >= Guardian.GuardianClient.Properties.FatalSpeedDelta.Value)
+            if (previousSpeed - currentSpeed >= Guardian.GuardianClient.Properties.FatalSpeedDelta.Value)
             {
                 this.MarkDead();
-                base.photonView.RPC("netDie2", base.photonView.owner, -1, Guardian.GuardianClient.Properties.CollisionsDeathMessage.Value);
+                base.photonView.RPC("netDie", base.photonView.owner, base.transform.position, false, -1, Guardian.GuardianClient.Properties.CollisionsDeathMessage.Value, false);
             }
         }
     }
@@ -2284,7 +2287,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
-        lastKnownSpeed = currentSpeed;
+        previousSpeed = currentSpeed;
         currentSpeed = baseRigidBody.velocity.magnitude;
 
         // Guardian
@@ -3103,6 +3106,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             // Stop cross-hair freezes, for kind of?
             // return;
         }
+
         cross1.transform.localPosition = Input.mousePosition;
         cross1.transform.localPosition -= new Vector3((float)Screen.width * 0.5f, (float)Screen.height * 0.5f, 0f);
         cross2.transform.localPosition = cross1.transform.localPosition;
@@ -3296,10 +3300,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 myNetWorkName.transform.localPosition = new Vector3((int)(vector2.x - (float)Screen.width * 0.5f), (int)(vector2.y - (float)Screen.height * 0.5f), 0f);
             }
         }
+
         if (titanForm || isCannon)
         {
             return;
         }
+
         if (IN_GAME_MAIN_CAMERA.CameraTilt == 1 && (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine))
         {
             Vector3 vector3 = Vector3.zero;
@@ -3340,6 +3346,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             maincamera.transform.rotation = Quaternion.Lerp(maincamera.transform.rotation, to2, Time.deltaTime * 2f);
         }
+
         if (state == HeroState.Grabbed && titanWhoGrabMe != null)
         {
             TITAN titanObj = titanWhoGrabMe.GetComponent<TITAN>();
@@ -3358,6 +3365,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
             }
         }
+
         if (useGun)
         {
             if (leftArmAim || rightArmAim)
@@ -3855,6 +3863,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             sparks.enableEmission = false;
                         }
                     }
+
                     if (useGun)
                     {
                         if (inputManager.isInput[InputCode.Attack1])
@@ -5137,17 +5146,19 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     }
 
     [Guardian.Networking.RPC]
-    public void SetMyCannon(int viewID, PhotonMessageInfo info)
+    public void SetMyCannon(int viewId, PhotonMessageInfo info)
     {
         if (info.sender != base.photonView.owner)
         {
             return;
         }
-        if (!Guardian.AntiAbuse.Validators.HeroValidator.IsCannonSetValid(viewID, info))
+
+        if (!Guardian.AntiAbuse.Validators.HeroValidator.IsCannonSetValid(viewId, info))
         {
             return;
         }
-        PhotonView photonView = PhotonView.Find(viewID);
+
+        PhotonView photonView = PhotonView.Find(viewId);
         if (photonView != null)
         {
             myCannon = photonView.gameObject;

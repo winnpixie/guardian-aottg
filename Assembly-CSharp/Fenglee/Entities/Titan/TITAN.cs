@@ -3610,6 +3610,7 @@ public class TITAN : Photon.MonoBehaviour
         {
             return;
         }
+
         int num = 0;
         float d = myLevel * 10f;
         if (abnormalType == TitanClass.Crawler)
@@ -3630,32 +3631,32 @@ public class TITAN : Photon.MonoBehaviour
         {
             return;
         }
-        Vector3 vector = baseTransform.position + Vector3.up * d;
+
+        Vector3 explosionPosition = baseTransform.position + Vector3.up * d;
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
         {
-            GameObject.Instantiate(Resources.Load("FX/Thunder"), vector, Quaternion.Euler(270f, 0f, 0f));
-            GameObject.Instantiate(Resources.Load("FX/boom1"), vector, Quaternion.Euler(270f, 0f, 0f));
+            GameObject.Instantiate(Resources.Load("FX/Thunder"), explosionPosition, Quaternion.Euler(270f, 0f, 0f));
+            GameObject.Instantiate(Resources.Load("FX/boom1"), explosionPosition, Quaternion.Euler(270f, 0f, 0f));
         }
         else
         {
-            PhotonNetwork.Instantiate("FX/Thunder", vector, Quaternion.Euler(270f, 0f, 0f), 0);
-            PhotonNetwork.Instantiate("FX/boom1", vector, Quaternion.Euler(270f, 0f, 0f), 0);
+            PhotonNetwork.Instantiate("FX/Thunder", explosionPosition, Quaternion.Euler(270f, 0f, 0f), 0);
+            PhotonNetwork.Instantiate("FX/boom1", explosionPosition, Quaternion.Euler(270f, 0f, 0f), 0);
         }
 
         foreach (HERO hero in FengGameManagerMKII.Instance.Heroes)
         {
-            if ((hero.transform.position - vector).magnitude < (float)RCSettings.ExplodeMode)
-            {
-                hero.MarkDead();
+            if (hero.HasDied()) continue;
+            if ((hero.transform.position - explosionPosition).magnitude > RCSettings.ExplodeMode) continue;
 
-                if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
-                {
-                    hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "[FF4444]Explosion ");
-                }
-                else
-                {
-                    hero.Die2(base.transform);
-                }
+            hero.MarkDead();
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer)
+            {
+                hero.photonView.RPC("netDie2", PhotonTargets.All, -1, "[FF4444]Explosion ");
+            }
+            else
+            {
+                hero.Die2(base.transform);
             }
         }
     }
