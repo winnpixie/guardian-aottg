@@ -16,6 +16,6 @@ public class BTN_START_SINGLE_GAMEPLAY : MonoBehaviour
             IN_GAME_MAIN_CAMERA.Difficulty = -1;
         }
         FengGameManagerMKII.Level = LevelInfo.GetInfo(map);
-        Application.LoadLevel(FengGameManagerMKII.Level.Map);
+        Application.LoadLevel(FengGameManagerMKII.Level.MapName);
     }
 }

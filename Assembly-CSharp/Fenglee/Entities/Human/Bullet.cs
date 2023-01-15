@@ -22,7 +22,10 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     private bool isdestroying;
     public TITAN myTitan;
 
+    // BEGIN Guardian
     public float tileScale = 1f;
+    public bool petraMode;
+    // END Guardian
 
     // BEGIN Anarchy
     public Transform Transform
@@ -47,7 +50,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     }
     // END: Anarchy
 
-    public void Launch(Vector3 v, Vector3 v2, string launcherRef, bool isLeft, GameObject master, bool leviMode = false)
+    public void Launch(Vector3 v, Vector3 v2, string launcherRef, bool isLeft, GameObject master, bool leviMode = false, bool petraMode = false)
     {
         if (phase != 2)
         {
@@ -78,6 +81,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
             };
             phase = 0;
             this.leviMode = leviMode;
+            this.petraMode = petraMode;
             left = isLeft;
             if (IN_GAME_MAIN_CAMERA.Gametype != 0 && base.photonView.isMine)
             {
@@ -255,7 +259,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         killer += $" [FFCC00]({base.photonView.owner.Id})[FFFFFF]";
 
         hero.MarkDead();
-        hero.photonView.RPC("netDie", pv.owner, base.transform.position, false, base.photonView.ownerId, $"{killer}'s hook", false);
+        hero.photonView.RPC("netDie", PhotonTargets.All, base.transform.position, false, -1, $"{killer}'s hook ", false);
     }
 
     [Guardian.Networking.RPC(Name = "tieMeToOBJ")]
@@ -316,7 +320,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                     lineRenderer.SetPosition(value - 1, base.transform.position);
                     break;
                 case 2:
-                    if (leviMode)
+                    if (leviMode && !petraMode)
                     {
                         GetSpiral(master.transform.position, master.transform.rotation.eulerAngles);
                         Vector3 b = myRef.transform.position - (Vector3)spiralNodes[0];

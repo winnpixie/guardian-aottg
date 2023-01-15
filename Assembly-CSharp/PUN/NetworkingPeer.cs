@@ -3284,21 +3284,25 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         int timestamp = (int)evData[(byte)6];
         int instantiationId = (int)evData[(byte)7];
         Vector3 position = (!evData.ContainsKey((byte)1)) ? Vector3.zero : ((Vector3)evData[(byte)1]);
+
         Quaternion rotation = Quaternion.identity;
         if (evData.ContainsKey((byte)2))
         {
             rotation = (Quaternion)evData[(byte)2];
         }
+
         int group = 0;
         if (evData.ContainsKey((byte)3))
         {
             group = (int)evData[(byte)3];
         }
+
         short prefix = 0;
         if (evData.ContainsKey((byte)8))
         {
             prefix = (short)evData[(byte)8];
         }
+
         int[] array = (!evData.ContainsKey((byte)4)) ? new int[1]
         {
             instantiationId
@@ -3307,11 +3311,13 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         {
             return null;
         }
+
         object[] instantiationData = (!evData.ContainsKey((byte)5)) ? null : ((object[])evData[(byte)5]);
         if (group != 0 && !allowedReceivingGroups.Contains(group))
         {
             return null;
         }
+
         if (resourceGameObject == null)
         {
             if (!UsePrefabCache || !PrefabCache.TryGetValue(objectName, out resourceGameObject))
@@ -3322,17 +3328,20 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     PrefabCache.Add(objectName, resourceGameObject);
                 }
             }
+
             if (resourceGameObject == null)
             {
                 Debug.LogError("PhotonNetwork error: Could not Instantiate the prefab [" + objectName + "]. Please verify you have this gameobject in a Resources folder.");
                 return null;
             }
         }
+
         PhotonView[] photonViewsInChildren = resourceGameObject.GetPhotonViewsInChildren();
         if (photonViewsInChildren.Length != array.Length)
         {
             throw new Exception("Error in Instantiation! The resource's PhotonView count is not the same as in incoming data.");
         }
+
         for (int i = 0; i < array.Length; i++)
         {
             photonViewsInChildren[i].viewID = array[i];
@@ -3340,6 +3349,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             photonViewsInChildren[i].instantiationId = instantiationId;
         }
         StoreInstantiationData(instantiationId, instantiationData);
+
         GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(resourceGameObject, position, rotation);
         for (int j = 0; j < array.Length; j++)
         {
@@ -3349,6 +3359,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             photonViewsInChildren[j].instantiationId = -1;
         }
         RemoveInstantiationData(instantiationId);
+
         if (instantiatedObjects.ContainsKey(instantiationId))
         {
             GameObject gameObject2 = instantiatedObjects[instantiationId];
@@ -3364,6 +3375,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     }
                 }
             }
+
             object[] args = new object[8]
             {
                 gameObject,
@@ -3378,6 +3390,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             Debug.LogError(string.Format("DoInstantiate re-defines a GameObject. Destroying old entry! New: '{0}' (instantiationID: {1}) Old: {3}. PhotonViews on old: {4}. instantiatedObjects.Count: {2}. PhotonNetwork.lastUsedViewSubId: {5} PhotonNetwork.lastUsedViewSubIdStatic: {6} this.photonViewList.Count {7}.)", args));
             RemoveInstantiatedGO(gameObject2, localOnly: true);
         }
+
         instantiatedObjects.Add(instantiationId, gameObject);
         gameObject.SendMessage(PhotonNetworkingMessage.OnPhotonInstantiate.ToString(), new PhotonMessageInfo(photonPlayer, timestamp, null), SendMessageOptions.DontRequireReceiver);
         return gameObject;

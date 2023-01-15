@@ -1,25 +1,29 @@
+using Guardian.Features.Gamemodes;
 using UnityEngine;
 
 public class LevelInfo
 {
-    public string Name;
+    public static LevelInfo[] Levels;
+    private static bool Initialized;
+
+    public string DisplayName;
     private string[] Aliases = new string[0];
-    public string Map;
+    public string MapName;
     public string Description;
-    public int Enemies;
-    public bool HasSupply = true;
+    public int EnemyCount;
+    public bool HasReSupply = true;
     public bool PlayerTitans;
     public GameMode Mode;
     public RespawnMode RespawnMode;
-    public bool NoCrawlers;
-    public bool Hints;
+    public bool DisableCrawlers;
+    public bool ShowHints;
     public bool Lava;
-    public bool Horses;
-    public bool Punks = true;
+    public bool SpawnHorses;
+    public bool HasPunks = true;
     public bool PVP;
-    public static LevelInfo[] Levels;
-    private static bool Initialized;
-    public Minimap.Preset MinimapPreset;
+
+    public Minimap.Preset MinimapPreset; // RiceCake
+    public bool IsSelectable = true; // Guardian
 
     public static LevelInfo GetInfo(string name)
     {
@@ -27,7 +31,7 @@ public class LevelInfo
 
         foreach (LevelInfo levelInfo in Levels)
         {
-            if (levelInfo.Name.Equals(name, System.StringComparison.OrdinalIgnoreCase))
+            if (levelInfo.DisplayName.Equals(name, System.StringComparison.OrdinalIgnoreCase))
             {
                 return levelInfo;
             }
@@ -51,225 +55,238 @@ public class LevelInfo
 
             Levels = new LevelInfo[]
             {
+                // Legacy
+                new LevelInfo
+                {
+                    DisplayName = "Cage Fighting",
+                    MapName = "Cage Fighting",
+                    Description = "Two players locked in cages.\nWhen you kill a titan, one or more will spawn in your opponent's cage.",
+                    EnemyCount = 1,
+                    Mode = GameMode.CageFight,
+                    RespawnMode = RespawnMode.Never,
+                    IsSelectable = false
+                },
                 // Singleplayer
                 new LevelInfo
                 {
-                    Name = "[S]Tutorial",
+                    DisplayName = "[S]Tutorial",
                     Aliases = new string[] { "tutorial" },
-                    Map = "tutorial",
-                    Description = "Learn the basic functionality of AoTTG.",
-                    Enemies = 1,
+                    MapName = "tutorial",
+                    Description = "Learn the basic functionality of the Attack on Titan Tribute Game.",
+                    EnemyCount = 1,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
-                    Hints = true,
-                    Punks = false
+                    HasReSupply = true,
+                    ShowHints = true,
+                    HasPunks = false
                 },
                 new LevelInfo
                 {
-                    Name = "[S]Battle training",
+                    DisplayName = "[S]Battle training",
                     Aliases = new string[] { "battle training", "training" },
-                    Map = "tutorial 1",
+                    MapName = "tutorial 1",
                     Description = "Basic offensive training course.",
-                    Enemies = 7,
+                    EnemyCount = 7,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
-                    Punks = false
+                    HasReSupply = true,
+                    HasPunks = false
                 },
                 new LevelInfo
                 {
-                    Name = "[S]City",
-                    Map = "The City I",
+                    DisplayName = "[S]City",
+                    MapName = "The City I",
                     Description = "Kill all 15 titans invading the city!",
-                    Enemies = 15,
+                    EnemyCount = 15,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true
+                    HasReSupply = true
                 },
                 new LevelInfo
                 {
-                    Name = "[S]Forest",
-                    Map = "The Forest",
+                    DisplayName = "[S]Forest",
+                    MapName = "The Forest",
                     Description = "Kill all 15 titans!",
-                    Enemies = 15,
+                    EnemyCount = 15,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true
+                    HasReSupply = true
                 },
                 new LevelInfo
                 {
-                    Name = "[S]Forest Survive(no crawler)",
-                    Map = "The Forest",
+                    DisplayName = "[S]Forest Survive(no crawler)",
+                    MapName = "The Forest",
                     Description = "Survive all 20 waves. (No crawlers)",
-                    Enemies = 3,
+                    EnemyCount = 3,
                     Mode = GameMode.Survival,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
-                    NoCrawlers = true,
+                    HasReSupply = true,
+                    DisableCrawlers = true,
                 },
                 new LevelInfo
                 {
-                    Name = "[S]Forest Survive(no crawler no punk)",
-                    Map = "The Forest",
+                    DisplayName = "[S]Forest Survive(no crawler no punk)",
+                    MapName = "The Forest",
                     Description = "Survive all 20 waves. (No crawlers, no punks)",
-                    Enemies = 3,
+                    EnemyCount = 3,
                     Mode = GameMode.Survival,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
-                    NoCrawlers = true,
-                    Punks = false
+                    HasReSupply = true,
+                    DisableCrawlers = true,
+                    HasPunks = false
                 },
                 new LevelInfo
                 {
-                    Name = "[S]Racing - Akina",
-                    Map = "track - Akina",
+                    DisplayName = "[S]Racing - Akina",
+                    MapName = "track - Akina",
                     Description = "Test your speed!",
-                    Enemies = 0,
+                    EnemyCount = 0,
                     Mode = GameMode.Racing,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = false,
+                    HasReSupply = false,
                     MinimapPreset = new Minimap.Preset(new Vector3(443.2f, 0f, 1912.6f), 1929.042f)
                 },
                 // Multiplayer
                 // City
                 new LevelInfo
                 {
-                    Name = "The City",
+                    DisplayName = "The City",
                     Aliases = new string[] { "city" },
-                    Map = "The City I",
+                    MapName = "The City I",
                     Description = "Kill all 10 titans invading the city! (Player titans, PvP, no respawns)",
-                    Enemies = 10,
+                    EnemyCount = 10,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
+                    HasReSupply = true,
                     PlayerTitans = true,
                     PVP = true,
                     MinimapPreset = new Minimap.Preset(new Vector3(22.6f, 0f, 13f), 731.9738f)
                 },
                 new LevelInfo
                 {
-                    Name = "The City II",
+                    DisplayName = "The City II",
                     Aliases = new string[] { "city 2", "city ii" },
-                    Map = "The City I",
+                    MapName = "The City I",
                     Description = "Kill all 10 titans invading the city! (Player titans, PvP, 10s respawn)",
-                    Enemies = 10,
+                    EnemyCount = 10,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Deathmatch,
-                    HasSupply = true,
+                    HasReSupply = true,
                     PlayerTitans = true,
                     PVP = true
                 },
                 new LevelInfo
                 {
-                    Name = "The City III",
+                    DisplayName = "The City III",
                     Aliases = new string[] { "city 3", "city iii" },
-                    Map = "The City I",
+                    MapName = "The City I",
                     Description = "Capture each checkpoint to win!",
-                    Enemies = 0,
+                    EnemyCount = 0,
                     Mode = GameMode.PvPCapture,
                     RespawnMode = RespawnMode.Deathmatch,
-                    HasSupply = true,
+                    HasReSupply = true,
                     PlayerTitans = true,
                     MinimapPreset = new Minimap.Preset(new Vector3(22.6f, 0f, 13f), 734.9738f)
                 },
                 new LevelInfo
                 {
-                    Name = "The City IV",
+                    DisplayName = "The City IV",
                     Aliases = new string[] { "city 4", "city iv" },
-                    Map = "The City I",
+                    MapName = "The City I",
                     Description = "Survive all 20 waves. (No respawns)",
-                    Enemies = 3,
+                    EnemyCount = 3,
                     Mode = GameMode.Survival,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
+                    HasReSupply = true,
+                    IsSelectable = false
                 },
                 new LevelInfo
                 {
-                    Name = "The City V",
+                    DisplayName = "The City V",
                     Aliases = new string[] { "city 5", "city v" },
-                    Map = "The City I",
+                    MapName = "The City I",
                     Description = "Survive all 20 waves. (Respawn on each new wave)",
-                    Enemies = 3,
+                    EnemyCount = 3,
                     Mode = GameMode.Survival,
                     RespawnMode = RespawnMode.NewRound,
-                    HasSupply = true,
+                    HasReSupply = true,
+                    IsSelectable = false
                 },
                 // Forest
                 new LevelInfo
                 {
-                    Name = "The Forest",
+                    DisplayName = "The Forest",
                     Aliases = new string[] { "forest" },
-                    Map = "The Forest",
+                    MapName = "The Forest",
                     Description = "The Forest of Giant Trees. (Player titans, PvP, no respawns)",
-                    Enemies = 10,
+                    EnemyCount = 10,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
+                    HasReSupply = true,
                     PlayerTitans = true,
                     PVP = true
                 },
                 new LevelInfo
                 {
-                    Name = "The Forest II",
+                    DisplayName = "The Forest II",
                     Aliases = new string[] { "forest 2", "forest ii" },
-                    Map = "The Forest",
+                    MapName = "The Forest",
                     Description = "Survive all 20 waves in The Forest of Giant Trees. (No respawns)",
-                    Enemies = 3,
+                    EnemyCount = 3,
                     Mode = GameMode.Survival,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
+                    HasReSupply = true,
                 },
                 new LevelInfo
                 {
-                    Name = "The Forest III",
+                    DisplayName = "The Forest III",
                     Aliases = new string[] { "forest 3", "forst iii" },
-                    Map = "The Forest",
+                    MapName = "The Forest",
                     Description = "Survive all 20 waves in The Forest of Giant Trees. (Respawn on each new wave)",
-                    Enemies = 3,
+                    EnemyCount = 3,
                     Mode = GameMode.Survival,
                     RespawnMode = RespawnMode.NewRound,
-                    HasSupply = true,
+                    HasReSupply = true,
                 },
                 new LevelInfo
                 {
-                    Name = "The Forest IV  - LAVA",
+                    DisplayName = "The Forest IV  - LAVA",
                     Aliases = new string[] { "the forest iv - lava", "forest 4", "forest iv", "forest 4 lava", "forest iv lava", "forest lava" },
-                    Map = "The Forest",
+                    MapName = "The Forest",
                     Description = "The floor is LAVA!\nSurvive all 20 waves in The Forest of Giant Trees WITHOUT touching the ground. (Respawn on each new wave, no crawlers)",
-                    Enemies = 3,
+                    EnemyCount = 3,
                     Mode = GameMode.Survival,
                     RespawnMode = RespawnMode.NewRound,
-                    HasSupply = true,
-                    NoCrawlers = true,
+                    HasReSupply = true,
+                    DisableCrawlers = true,
                     Lava = true
                 },
                 // Outside the Walls
                 new LevelInfo
                 {
-                    Name = "Outside The Walls",
+                    DisplayName = "Outside The Walls",
                     Aliases = new string[] { "otw" },
-                    Map = "OutSide",
+                    MapName = "OutSide",
                     Description ="Capture each checkpoint to win! (Player titans, 10s respawn)",
-                    Enemies = 0,
+                    EnemyCount = 0,
                     Mode = GameMode.PvPCapture,
                     RespawnMode = RespawnMode.Deathmatch,
-                    HasSupply = true,
-                    Horses = true,
+                    HasReSupply = true,
+                    SpawnHorses = true,
                     PlayerTitans = true,
                     MinimapPreset = new Minimap.Preset(new Vector3(2549.4f, 0f, 3042.4f), 3697.16f)
                 },
                 // Akina
                 new LevelInfo
                 {
-                    Name = "Racing - Akina",
+                    DisplayName = "Racing - Akina",
                     Aliases = new string[] { "akina" },
-                    Map = "track - Akina",
+                    MapName = "track - Akina",
                     Description = "Test your speed!",
-                    Enemies = 0,
+                    EnemyCount = 0,
                     Mode = GameMode.Racing,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = false,
+                    HasReSupply = false,
                     PVP = true,
                     MinimapPreset = new Minimap.Preset(new Vector3(443.2f, 0f, 1912.6f), 1929.042f)
                 },
@@ -277,46 +294,46 @@ public class LevelInfo
                 // Annie
                 new LevelInfo
                 {
-                    Name = "Annie",
-                    Map = "The Forest",
+                    DisplayName = "Annie",
+                    MapName = "The Forest",
                     Description = "You only have 1 life. Be careful soldier!\nNape & Ankle Armor:\nNormal: 1000 / 50\nHard: 2500 / 100\nAbnormal: 4000 / 200",
-                    Enemies = 15,
+                    EnemyCount = 15,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
-                    Punks = false,
+                    HasPunks = false,
                     PVP = true
                 },
                 new LevelInfo
                 {
-                    Name = "Annie II",
+                    DisplayName = "Annie II",
                     Aliases = new string[] { "annie 2" },
-                    Map = "The Forest",
+                    MapName = "The Forest",
                     Description = "Nape & Ankle Armor:\nNormal: 1000 / 50\nHard: 2500 / 100\nAbnormal: 4000 / 200\n(10s respawn)",
-                    Enemies = 15,
+                    EnemyCount = 15,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Deathmatch,
-                    Punks = false,
+                    HasPunks = false,
                     PVP = true
                 },
                 // Colossal
                 new LevelInfo
                 {
-                    Name = "Colossal Titan",
+                    DisplayName = "Colossal Titan",
                     Aliases = new string[] { "ct" },
-                    Map = "Colossal Titan",
+                    MapName = "Colossal Titan",
                     Description = "You only have 1 life. Be careful soldier!\nDefeat the Colossal Titan.\nPrevent the abnormal titan from running to the north gate.\nNape Armor:\nNormal: 2000\nHard: 3500\nAbnormal: 5000",
-                    Enemies = 2,
+                    EnemyCount = 2,
                     Mode = GameMode.Colossal,
                     RespawnMode = RespawnMode.Never,
                     MinimapPreset = new Minimap.Preset(new Vector3(8.8f, 0f, 65f), 765.5751f)
                 },
                 new LevelInfo
                 {
-                    Name = "Colossal Titan II",
+                    DisplayName = "Colossal Titan II",
                     Aliases = new string[] { "ct 2", "ct ii" },
-                    Map = "Colossal Titan",
+                    MapName = "Colossal Titan",
                     Description = "Defeat the Colossal Titan.\nPrevent the abnormal titan from running to the north gate.\nNape Armor:\n Normal: 5000\nHard: 8000\nAbnormal: 12000\n(10s respawn)",
-                    Enemies = 2,
+                    EnemyCount = 2,
                     Mode = GameMode.Colossal,
                     RespawnMode = RespawnMode.Deathmatch,
                     MinimapPreset = new Minimap.Preset(new Vector3(8.8f, 0f, 65f), 765.5751f)
@@ -324,91 +341,91 @@ public class LevelInfo
                 // Trost
                 new LevelInfo
                 {
-                    Name = "Trost",
-                    Map = "Colossal Titan",
+                    DisplayName = "Trost",
+                    MapName = "Colossal Titan",
                     Description = "Escort Titan Eren to seal the hole in Wall Rose! (No respawns)",
-                    Enemies = 2,
+                    EnemyCount = 2,
                     Mode = GameMode.Trost,
                     RespawnMode = RespawnMode.Never,
-                    Punks = false
+                    HasPunks = false
                 },
                 new LevelInfo
                 {
-                    Name = "Trost II",
+                    DisplayName = "Trost II",
                     Aliases = new string[] { "trost 2" },
-                    Map = "Colossal Titan",
+                    MapName = "Colossal Titan",
                     Description = "Escort Titan Eren to seal the hole in Wall Rose! (10s respawn)",
-                    Enemies = 2,
+                    EnemyCount = 2,
                     Mode = GameMode.Trost,
                     RespawnMode = RespawnMode.Deathmatch,
-                    Punks = false
+                    HasPunks = false
                 },
                 // PvP
                 // Cave Fight
                 new LevelInfo
                 {
-                    Name = "Cave Fight",
-                    Map = "CaveFight",
+                    DisplayName = "Cave Fight",
+                    MapName = "CaveFight",
                     Description = "PVP combat in the cavern underneath the Reiss Chapel.",
-                    Enemies = 0,
+                    EnemyCount = 0,
                     Mode = GameMode.TeamDeathmatch,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
+                    HasReSupply = true,
                     PlayerTitans = true,
                     PVP = true
                 },
                 // House Fight
                 new LevelInfo
                 {
-                    Name = "House Fight",
-                    Map = "HouseFight",
+                    DisplayName = "House Fight",
+                    MapName = "HouseFight",
                     Description = "PVP combat.",
-                    Enemies = 0,
+                    EnemyCount = 0,
                     Mode = GameMode.TeamDeathmatch,
                     RespawnMode = RespawnMode.Never,
-                    HasSupply = true,
+                    HasReSupply = true,
                     PlayerTitans = true,
                     PVP = true
                 },
                 // Custom
                 new LevelInfo
                 {
-                    Name = "Custom",
-                    Map = "The Forest",
+                    DisplayName = "Custom",
+                    MapName = "The Forest",
                     Description = "RC Custom Maps (Player titans allowed)",
-                    Enemies = 1,
+                    EnemyCount = 1,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
                     PVP = true,
-                    Punks = true,
-                    HasSupply = true,
+                    HasPunks = true,
+                    HasReSupply = true,
                     PlayerTitans = true
                 },
                 new LevelInfo
                 {
-                    Name = "Custom (No PT)",
-                    Map = "The Forest",
+                    DisplayName = "Custom (No PT)",
+                    MapName = "The Forest",
                     Description = "RC Custom Maps (No Player Titans)",
-                    Enemies = 1,
+                    EnemyCount = 1,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
                     PVP = true,
-                    Punks = true,
-                    HasSupply = true,
+                    HasPunks = true,
+                    HasReSupply = true,
                     PlayerTitans = false
                 },
                 // Anarchy
                 new LevelInfo
                 {
-                    Name = "Custom-Anarchy (No PT)",
+                    DisplayName = "Custom-Anarchy (No PT)",
                     Aliases = new string[] { "anarchy" },
-                    Map = "The Forest",
+                    MapName = "The Forest",
                     Description = "Custom Maps with Anarchy Mod Scripts (No Player Titans)",
-                    Enemies = 1,
+                    EnemyCount = 1,
                     Mode = GameMode.KillTitans,
                     RespawnMode = RespawnMode.Never,
                     PVP = true,
-                    HasSupply = true,
+                    HasReSupply = true,
                     PlayerTitans = false
                 }
             };

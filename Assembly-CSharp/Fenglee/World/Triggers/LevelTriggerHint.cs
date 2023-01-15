@@ -9,7 +9,7 @@ public class LevelTriggerHint : MonoBehaviour
 
     private void Start()
     {
-        if (!FengGameManagerMKII.Level.Hints)
+        if (!FengGameManagerMKII.Level.ShowHints)
         {
             base.enabled = false;
         }

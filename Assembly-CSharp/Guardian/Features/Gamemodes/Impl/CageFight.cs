@@ -52,7 +52,7 @@ namespace Guardian.Features.Gamemodes.Impl
             PlayerOne = null;
             PlayerTwo = null;
 
-            if (!FengGameManagerMKII.Level.Name.StartsWith("Custom"))
+            if (!FengGameManagerMKII.Level.DisplayName.StartsWith("Custom"))
             {
                 InRoomChat.Instance.AddLine("Cage Fight requires either Custom or Custom (No PT) to work!".AsColor("FF0000"));
             }

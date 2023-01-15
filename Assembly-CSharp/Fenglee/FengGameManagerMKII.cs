@@ -671,7 +671,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             if (IN_GAME_MAIN_CAMERA.Difficulty == 2)
             {
-                if (UnityEngine.Random.Range(0f, 1f) < 0.7f || Level.NoCrawlers)
+                if (UnityEngine.Random.Range(0f, 1f) < 0.7f || Level.DisableCrawlers)
                 {
                     gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
                 }
@@ -683,7 +683,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         else if (IN_GAME_MAIN_CAMERA.Difficulty == 2)
         {
-            if (UnityEngine.Random.Range(0f, 1f) < 0.7f || Level.NoCrawlers)
+            if (UnityEngine.Random.Range(0f, 1f) < 0.7f || Level.DisableCrawlers)
             {
                 gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
             }
@@ -694,7 +694,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         else if (UnityEngine.Random.Range(0, 100) < rate)
         {
-            if (UnityEngine.Random.Range(0f, 1f) < 0.8f || Level.NoCrawlers)
+            if (UnityEngine.Random.Range(0f, 1f) < 0.8f || Level.DisableCrawlers)
             {
                 gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Aberrant, forceCrawler: false);
             }
@@ -703,7 +703,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Crawler, forceCrawler: false);
             }
         }
-        else if (UnityEngine.Random.Range(0f, 1f) < 0.8f || Level.NoCrawlers)
+        else if (UnityEngine.Random.Range(0f, 1f) < 0.8f || Level.DisableCrawlers)
         {
             gameObject.GetComponent<TITAN>().SetAbnormalType2(TitanClass.Jumper, forceCrawler: false);
         }
@@ -816,7 +816,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     return;
                 }
 
-                if ((Level.RespawnMode == RespawnMode.NewRound || (Level.Name.StartsWith("Custom") && RCSettings.GameType == 1)) && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
+                if ((Level.RespawnMode == RespawnMode.NewRound || (Level.DisplayName.StartsWith("Custom") && RCSettings.GameType == 1)) && IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
                     foreach (PhotonPlayer photonPlayer in PhotonNetwork.playerList)
                     {
@@ -848,7 +848,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     abnormal = 70;
                 }
 
-                if (!Level.Punks || wave % 5 != 0)
+                if (!Level.HasPunks || wave % 5 != 0)
                 {
                     SpawnTitanCustom("titanRespawn", abnormal, wave + 2, punk: false);
                 }
@@ -1169,7 +1169,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public string GetLevelName()
     {
-        return Level.Name;
+        return Level.DisplayName;
     }
 
     public bool IsCustomMapLoaded()
@@ -1251,7 +1251,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         string[] roomInfo = PhotonNetwork.room.name.Split('`');
         LevelInfo levelInfo = LevelInfo.GetInfo(roomInfo[1]);
         playerList = string.Empty;
-        UnityEngine.MonoBehaviour.print("OnJoinedRoom " + PhotonNetwork.room.name + " >>>> " + levelInfo.Map);
+        UnityEngine.MonoBehaviour.print("OnJoinedRoom " + PhotonNetwork.room.name + " >>>> " + levelInfo.MapName);
         gameTimesUp = false;
 
         difficulty = roomInfo[2].ToLower() switch
@@ -1286,7 +1286,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         Level = levelInfo;
         IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.Mode;
-        PhotonNetwork.LoadLevel(levelInfo.Map);
+        PhotonNetwork.LoadLevel(levelInfo.MapName);
 
         ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
 
@@ -1399,7 +1399,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         if (info.sender.isMasterClient)
         {
             DestroyAllExistingCloths();
-            PhotonNetwork.LoadLevel(Level.Map);
+            PhotonNetwork.LoadLevel(Level.MapName);
         }
         else if (PhotonNetwork.isMasterClient)
         {
@@ -1420,7 +1420,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             if (restartCount.Count < 6)
             {
                 DestroyAllExistingCloths();
-                PhotonNetwork.LoadLevel(Level.Map);
+                PhotonNetwork.LoadLevel(Level.MapName);
             }
         }
     }
@@ -1484,7 +1484,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 abnormal = 70;
             }
-            SpawnTitanCustom("titanRespawn", abnormal, Level.Enemies, punk: false);
+            SpawnTitanCustom("titanRespawn", abnormal, Level.EnemyCount, punk: false);
             return;
         }
 
@@ -1577,7 +1577,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 case GameMode.KillTitans:
                 case GameMode.Endless:
                 case GameMode.Survival:
-                    if (Level.Name == "Annie" || Level.Name == "Annie II")
+                    if (Level.DisplayName == "Annie" || Level.DisplayName == "Annie II")
                     {
                         GameObject titanRespawnPoint = GameObject.Find("titanRespawn");
                         PhotonNetwork.Instantiate("FEMALE_TITAN", titanRespawnPoint.transform.position, titanRespawnPoint.transform.rotation, 0);
@@ -1589,11 +1589,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         {
                             abnormalRate = 70;
                         }
-                        SpawnTitanCustom("titanRespawn", abnormalRate, Level.Enemies, punk: false);
+                        SpawnTitanCustom("titanRespawn", abnormalRate, Level.EnemyCount, punk: false);
                     }
                     break;
                 case GameMode.PvPCapture:
-                    if (Level.Map == "OutSide")
+                    if (Level.MapName == "OutSide")
                     {
                         foreach (GameObject respawnPoint in GameObject.FindGameObjectsWithTag("titanRespawn"))
                         {
@@ -1612,7 +1612,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             base.photonView.RPC("RequireStatus", PhotonTargets.MasterClient);
         }
 
-        if (!Level.HasSupply)
+        if (!Level.HasReSupply)
         {
             UnityEngine.Object.Destroy(GameObject.Find("aot_supply"));
         }
@@ -1657,7 +1657,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     StartCoroutine(CoWaitAndReloadKD(player));
                 }
 
-                if (Level.Name.StartsWith("Custom"))
+                if (Level.DisplayName.StartsWith("Custom"))
                 {
                     StartCoroutine(CoLoadCustomLevel(new List<PhotonPlayer> { player }));
                 }
@@ -2428,7 +2428,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 _ => "[000000]Unknown"
             };
 
-            AddTextTopRight("\n" + Level.Name + "(" + difficultyTxt + "[-])");
+            AddTextTopRight("\n" + Level.DisplayName + "(" + difficultyTxt + "[-])");
             AddTextTopRight("\nCamera([AAFF00]" + IN_GAME_MAIN_CAMERA.CameraMode + "[-])");
 
             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
@@ -2536,7 +2536,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 position = racingSpawnPoint;
             }
-            else if (Level.Name.StartsWith("Custom"))
+            else if (Level.DisplayName.StartsWith("Custom"))
             {
                 if (GExtensions.AsInt(PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam]) == 0)
                 {
@@ -2709,7 +2709,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             GameObject[] array = GameObject.FindGameObjectsWithTag(tag);
             GameObject gameObject = array[UnityEngine.Random.Range(0, array.Length)];
             Vector3 position = gameObject.transform.position;
-            if (Level.Name.StartsWith("Custom") && titanSpawns.Count > 0)
+            if (Level.DisplayName.StartsWith("Custom") && titanSpawns.Count > 0)
             {
                 position = titanSpawns[UnityEngine.Random.Range(0, titanSpawns.Count)];
             }
@@ -5994,7 +5994,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             StartCoroutine(CoWaitAndResetRestarts());
         }
         roundTime = 0f;
-        if (Level.Name.StartsWith("Custom"))
+        if (Level.DisplayName.StartsWith("Custom"))
         {
             CustomLevelLoaded = false;
         }
@@ -6498,9 +6498,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         InputRC.SetInputLevel(InputCodeRC.LevelFast, (string)configArray[161]);
         Application.targetFrameRate = -1;
-        if (int.TryParse((string)configArray[184], out int result) && result > 0)
+        if (int.TryParse((string)configArray[184], out int targetFps) && targetFps > 0)
         {
-            Application.targetFrameRate = result;
+            Application.targetFrameRate = targetFps;
         }
         QualitySettings.vSyncCount = (int)configArray[183] == 1 ? 1 : 0;
         AudioListener.volume = PlayerPrefs.GetFloat("vol", 1f);
@@ -6590,7 +6590,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         racingSpawnPointSet = false;
         racingDoors = new List<GameObject>();
         allowedToCannon = new Dictionary<int, CannonValues>();
-        if (!Level.Name.StartsWith("Custom") && (int)Settings[2] == 1)
+        if (!Level.DisplayName.StartsWith("Custom") && (int)Settings[2] == 1)
         {
             GameObject gameObject3 = GameObject.Find("aot_supply");
             if (gameObject3 != null && Minimap.Instance != null)
@@ -6601,7 +6601,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             string text3 = string.Empty;
             string text4 = string.Empty;
             string[] array3 = new string[6] { string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty };
-            if (Level.Map.Contains("City"))
+            if (Level.MapName.Contains("City"))
             {
                 for (int i = 51; i < 59; i++)
                 {
@@ -6618,7 +6618,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     array3[i] = (string)Settings[i + 169];
                 }
             }
-            else if (Level.Map.Contains("Forest"))
+            else if (Level.MapName.Contains("Forest"))
             {
                 for (int k = 33; k < 41; k++)
                 {
@@ -6651,7 +6651,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 base.photonView.RPC("loadskinRPC", PhotonTargets.AllBuffered, text4, text2, text3, array3);
             }
         }
-        else if (Level.Name.StartsWith("Custom"))
+        else if (Level.DisplayName.StartsWith("Custom"))
         {
             foreach (GameObject gameObject3 in GameObject.FindGameObjectsWithTag("playerRespawn"))
             {
@@ -7600,7 +7600,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
 
-        if (Level.Map.Contains("Forest")) // Load Forest skin
+        if (Level.MapName.Contains("Forest")) // Load Forest skin
         {
             string[] strArray = url.Split(',');
             string[] strArray2 = url2.Split(',');
@@ -7750,7 +7750,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
             finally { }
         }
-        else if (Level.Map.Contains("City")) // Load City skin
+        else if (Level.MapName.Contains("City")) // Load City skin
         {
             string[] strArray4 = url.Split(',');
             string[] strArray3 = url2.Split(',');
@@ -9609,9 +9609,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             }
                             Settings[184] = GUI.TextField(new Rect(halfMenuWidth + 234f, halfMenuHeight + 184f, 80f, 20f), (string)Settings[184]);
                             Application.targetFrameRate = -1;
-                            if (int.TryParse((string)Settings[184], out int result4) && result4 > 0)
+                            if (int.TryParse((string)Settings[184], out int targetFps) && targetFps > 0)
                             {
-                                Application.targetFrameRate = result4;
+                                Application.targetFrameRate = targetFps;
                             }
                             GUI.Label(new Rect(halfMenuWidth + 470f, halfMenuHeight + 51f, 185f, 22f), "Snapshots", "Label");
                             GUI.Label(new Rect(halfMenuWidth + 386f, halfMenuHeight + 81f, 185f, 22f), "Enable Snapshots:", "Label");
@@ -11630,7 +11630,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         int titansToSpawn = rate;
 
-        if (Level.Name.StartsWith("Custom"))
+        if (Level.DisplayName.StartsWith("Custom"))
         {
             titansToSpawn = 5;
             if (RCSettings.GameType == 1)
@@ -11643,7 +11643,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
         }
 
-        if (RCSettings.MoreTitans > 0 || ((RCSettings.MoreTitans == 0 && Level.Name.StartsWith("Custom")) && RCSettings.GameType >= 2))
+        if (RCSettings.MoreTitans > 0 || ((RCSettings.MoreTitans == 0 && Level.DisplayName.StartsWith("Custom")) && RCSettings.GameType >= 2))
         {
             titansToSpawn = RCSettings.MoreTitans;
         }
@@ -11751,7 +11751,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
             }
         }
-        else if (Level.Name.StartsWith("Custom"))
+        else if (Level.DisplayName.StartsWith("Custom"))
         {
             for (int i = 0; i < titansToSpawn; i++)
             {

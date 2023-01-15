@@ -23,7 +23,7 @@
                 HERO hero = player.GetHero();
                 if (hero == null || hero.HasDied()) return;
 
-                hero.photonView.RPC("netDie", PhotonTargets.All, hero.transform.position, false, -1, "[FF0000]Server", false);
+                hero.photonView.RPC("netDie", PhotonTargets.All, hero.transform.position, false, -1, "[FF0000]Server ", false);
             }
         }
     }

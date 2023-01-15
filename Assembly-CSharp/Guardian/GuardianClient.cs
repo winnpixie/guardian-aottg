@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.2.1";
+        public static readonly string Build = "1.2.2";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -216,7 +216,7 @@ namespace Guardian
                 DiscordRPC.SetPresence(new Discord.Activity
                 {
                     Details = $"Playing offline.",
-                    State = $"{FengGameManagerMKII.Level.Name} / {difficulty}"
+                    State = $"{FengGameManagerMKII.Level.DisplayName} / {difficulty}"
                 });
             }
 
@@ -391,7 +391,7 @@ namespace Guardian
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            // UI.WindowManager.HandleWindowFocusEvent(hasFocus);
+            UI.WindowManager.HandleWindowFocusEvent(hasFocus);
 
             if (!hasFocus
                 || IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop) return;

@@ -74,7 +74,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         if (humanPt == humanPtMax)
         {
             state = CheckPointState.Human;
-            if (base.photonView.isMine && FengGameManagerMKII.Level.Map != "The City I")
+            if (base.photonView.isMine && FengGameManagerMKII.Level.MapName != "The City I")
             {
                 Vector3 position = base.transform.position;
                 Vector3 up = Vector3.up;
@@ -112,7 +112,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
         Vector3 up = Vector3.up;
         Vector3 position2 = base.transform.position;
         GameObject gameObject = fengGame.SpawnTitan(rate, position - up * (position2.y - GetHeight(base.transform.position)), base.transform.rotation);
-        if (FengGameManagerMKII.Level.Map == "The City I")
+        if (FengGameManagerMKII.Level.MapName == "The City I")
         {
             gameObject.GetComponent<TITAN>().chaseDistance = 120f;
         }
@@ -222,7 +222,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
                 if (spawnTitanTimer > titanInterval)
                 {
                     spawnTitanTimer = 0f;
-                    if (FengGameManagerMKII.Level.Map == "The City I")
+                    if (FengGameManagerMKII.Level.MapName == "The City I")
                     {
                         if (FengGameManagerMKII.Instance.AllTitans.Count < 12)
                         {
@@ -303,7 +303,7 @@ public class PVPcheckPoint : Photon.MonoBehaviour
             titanPt = 0f;
             state = CheckPointState.Human;
             base.photonView.RPC("changeState", PhotonTargets.AllBuffered, (int)CheckPointState.Human);
-            if (FengGameManagerMKII.Level.Map != "The City I")
+            if (FengGameManagerMKII.Level.MapName != "The City I")
             {
                 Vector3 position = base.transform.position;
                 Vector3 up = Vector3.up;

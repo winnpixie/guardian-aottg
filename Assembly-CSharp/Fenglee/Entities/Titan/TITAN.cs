@@ -2197,7 +2197,7 @@ public class TITAN : Photon.MonoBehaviour
         {
             headscale = new Vector3(1f, 1f, 1f);
         }
-        else if (level < 1f && FengGameManagerMKII.Level.Name.StartsWith("Custom"))
+        else if (level < 1f && FengGameManagerMKII.Level.DisplayName.StartsWith("Custom"))
         {
             myTitanTrigger.GetComponent<CapsuleCollider>().radius *= 2.5f - level;
         }
@@ -3242,7 +3242,7 @@ public class TITAN : Photon.MonoBehaviour
         {
             flag = true;
         }
-        if (FengGameManagerMKII.Level.Name.StartsWith("Custom"))
+        if (FengGameManagerMKII.Level.DisplayName.StartsWith("Custom"))
         {
             flag = true;
         }
@@ -3296,7 +3296,7 @@ public class TITAN : Photon.MonoBehaviour
         }
         if (num == 4)
         {
-            if (!FengGameManagerMKII.Level.Punks)
+            if (!FengGameManagerMKII.Level.HasPunks)
             {
                 num = 1;
             }

@@ -7,45 +7,68 @@ namespace Guardian.UI
     class WindowManager
     {
         private static bool IsFullscreen;
+        private static bool UseExclusiveFullscreen = false; // Force no until I fix this
 
         [DllImport("user32.dll")]
         public static extern int GetActiveWindow();
+
+        [DllImport("user32.dll")]
+        public static extern int GetFocus();
+
+        [DllImport("user32.dll")]
+        public static extern int GetForegroundWindow();
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "SetWindowTextW")]
         public static extern bool SetWindowTitle(int hWnd, string lpString);
 
         [DllImport("user32.dll")]
-        public static extern void ShowWindow(int hWnd, int nCmdShow);
+        public static extern bool ShowWindow(int hWnd, int nCmdShow);
 
         public static void HandleWindowFocusEvent(bool hasFocus)
         {
-            // FIXME: Exclusive Fullscreen requires more testing before being properly implemented again.
             if (hasFocus)
             {
-                if (IsFullscreen)
+                Application.targetFrameRate = -1;
+                if (int.TryParse((string)FengGameManagerMKII.Settings[184], out int targetFps) && targetFps > 0)
                 {
-                    IsFullscreen = false;
-
-                    ShowWindow(GetActiveWindow(), 1); // SW_SHOWNORMAL
-
-                    Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
-
-                    GameObject mainCam = GameObject.Find("MainCamera");
-                    if (mainCam != null)
-                    {
-                        IN_GAME_MAIN_CAMERA mainCamera = mainCam.GetComponent<IN_GAME_MAIN_CAMERA>();
-                        mainCamera.StartCoroutine(CoMarkHudDirty(mainCamera));
-                    }
+                    Application.targetFrameRate = targetFps;
                 }
             }
-            else if (!IsFullscreen)
+            else if (GuardianClient.Properties.LimitUnfocusedFPS.Value && GuardianClient.Properties.MaxUnfocusedFPS.Value > 0)
             {
-                if (Screen.fullScreen)
-                {
-                    IsFullscreen = true;
-                    Screen.SetResolution(960, 600, false);
+                Application.targetFrameRate = GuardianClient.Properties.MaxUnfocusedFPS.Value;
+            }
 
-                    ShowWindow(GetActiveWindow(), 2); // SW_SHOWMINIMIZED
+            // FIXME: Exclusive Fullscreen requires more testing before being properly implemented again.
+            if (UseExclusiveFullscreen)
+            {
+                if (hasFocus)
+                {
+                    if (IsFullscreen)
+                    {
+                        IsFullscreen = false;
+
+                        ShowWindow(GetActiveWindow(), 9); // SW_RESTORE
+
+                        Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
+
+                        GameObject mainCam = GameObject.Find("MainCamera");
+                        if (mainCam != null)
+                        {
+                            IN_GAME_MAIN_CAMERA mainCamera = mainCam.GetComponent<IN_GAME_MAIN_CAMERA>();
+                            mainCamera.StartCoroutine(CoMarkHudDirty(mainCamera));
+                        }
+                    }
+                }
+                else if (!IsFullscreen)
+                {
+                    if (Screen.fullScreen)
+                    {
+                        IsFullscreen = true;
+                        Screen.SetResolution(960, 600, false);
+
+                        ShowWindow(GetActiveWindow(), 2); // SW_SHOWMINIMIZED
+                    }
                 }
             }
         }

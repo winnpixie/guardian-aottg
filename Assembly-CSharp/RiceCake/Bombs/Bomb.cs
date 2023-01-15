@@ -48,25 +48,26 @@ public class Bomb : Photon.MonoBehaviour
 
         foreach (HERO player in FengGameManagerMKII.Instance.Heroes)
         {
-            GameObject gameObject = player.gameObject;
-            if (Vector3.Distance(gameObject.transform.position, position) < radius && !gameObject.GetPhotonView().isMine && !player.bombImmune)
+            if (Vector3.Distance(player.transform.position, position) < radius && !player.photonView.isMine && !player.bombImmune)
             {
-                PhotonPlayer owner = gameObject.GetPhotonView().owner;
+                PhotonPlayer owner = player.photonView.owner;
                 if (RCSettings.TeamMode > 0 && PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam] != null && owner.customProperties[RCPlayerProperty.RCTeam] != null)
                 {
-                    int num = GExtensions.AsInt(PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam]);
-                    int num2 = GExtensions.AsInt(owner.customProperties[RCPlayerProperty.RCTeam]);
-                    if (num == 0 || num != num2)
+                    int myTeam = GExtensions.AsInt(PhotonNetwork.player.customProperties[RCPlayerProperty.RCTeam]);
+                    int theirTeam = GExtensions.AsInt(owner.customProperties[RCPlayerProperty.RCTeam]);
+                    if (myTeam == 0 || myTeam != theirTeam)
                     {
-                        gameObject.GetComponent<HERO>().MarkDead();
-                        gameObject.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
+                        player.MarkDead();
+                        //gameObject.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
+                        player.photonView.RPC("netDie", PhotonTargets.All, base.transform.position, false, base.photonView.viewID, GExtensions.AsString(PhotonNetwork.player.Username) + " ", false);
                         FengGameManagerMKII.Instance.UpdatePlayerKillInfo(0, PhotonNetwork.player);
                     }
                 }
                 else
                 {
-                    gameObject.GetComponent<HERO>().MarkDead();
-                    gameObject.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
+                    player.MarkDead();
+                    //gameObject.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]) + " ");
+                    player.photonView.RPC("netDie", PhotonTargets.All, base.transform.position, false, base.photonView.viewID, GExtensions.AsString(PhotonNetwork.player.Username) + " ", false);
                     FengGameManagerMKII.Instance.UpdatePlayerKillInfo(0, PhotonNetwork.player);
                 }
             }

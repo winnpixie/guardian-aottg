@@ -25,6 +25,8 @@
     <Authors>The Attack on Titan Tribute Game Community</Authors>
     <RootNamespace></RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" />
   <ItemGroup>
     <Reference Include="Anarchy.Custom">
       <HintPath>..\Guardian64\Guardian_Data\Managed\Anarchy.Custom.dll</HintPath>

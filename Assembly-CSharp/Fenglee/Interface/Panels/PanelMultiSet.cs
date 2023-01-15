@@ -33,15 +33,16 @@ public class PanelMultiSet : MonoBehaviour
         bool shouldResize = false;
         foreach (LevelInfo levelInfo in LevelInfo.Levels)
         {
-            if (!list.items.Contains(levelInfo.Name) && !levelInfo.Name.StartsWith("[S]") && !levelInfo.Name.Equals("Cage Fighting"))
+            if (!list.items.Contains(levelInfo.DisplayName) && !levelInfo.DisplayName.StartsWith("[S]") && levelInfo.IsSelectable)
             {
-                list.items.Add(levelInfo.Name);
+                list.items.Add(levelInfo.DisplayName);
                 shouldResize = true;
             }
         }
+
         if (shouldResize)
         {
-            list.textScale *= 0.55f;
+            list.textScale *= 0.7f;
         }
     }
 

@@ -498,7 +498,7 @@ public class InstantiateTracker
                     }
                     return Instantiated(photonPlayer, GameResource.General);
                 case "horse":
-                    if (!FengGameManagerMKII.Level.Horses && RCSettings.HorseMode == 0)
+                    if (!FengGameManagerMKII.Level.SpawnHorses && RCSettings.HorseMode == 0)
                     {
                         if (PhotonNetwork.isMasterClient && !FengGameManagerMKII.Instance.restartingHorse)
                         {

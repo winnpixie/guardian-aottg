@@ -15,12 +15,12 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 
                 PhotonNetwork.room.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
                 {
-                    { "Map", levelInfo.Name }
+                    { "Map", levelInfo.DisplayName }
                 });
 
                 FengGameManagerMKII.Instance.RestartGame();
 
-                GameHelper.Broadcast($"The map in play is now {levelInfo.Name}!");
+                GameHelper.Broadcast($"The map in play is now {levelInfo.DisplayName}!");
             }
             else
             {
@@ -28,7 +28,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 
                 foreach (LevelInfo level in LevelInfo.Levels)
                 {
-                    irc.AddLine("> ".AsColor("00FF00").AsBold() + level.Name);
+                    irc.AddLine("> ".AsColor("00FF00").AsBold() + level.DisplayName);
                 }
             }
         }
