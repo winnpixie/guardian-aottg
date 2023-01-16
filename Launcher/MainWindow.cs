@@ -61,7 +61,14 @@ namespace Launcher
                     AppendToLog("Starting Guardian.exe...");
                 }
 
-                Process.Start("Guardian.exe");
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    FileName = "Guardian.exe",
+                    WorkingDirectory = Program.Cwd
+                };
+
+                Process.Start(psi);
                 AppendToLog("\n");
             }
             catch (Exception ex)
