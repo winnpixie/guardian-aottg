@@ -218,7 +218,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     private float GetSensitivityMultiWithTimeDelta()
     {
-        return SensitivityMulti * UnityEngine.Time.deltaTime * 62f;
+        return (SensitivityMulti * UnityEngine.Time.deltaTime) * 62f;
     }
 
     private float GetSensitivityMulti()
@@ -258,8 +258,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         float mouseYaw = Guardian.GuardianClient.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse X") : Input.GetAxis("Mouse X");
         float mousePitch = Guardian.GuardianClient.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse Y") : Input.GetAxis("Mouse Y");
 
-        float dYaw = mouseYaw * 10f * GetSensitivityMulti();
-        float dPitch = (0f - mousePitch) * 10f * GetSensitivityMulti() * (float)GetReverse();
+        float dYaw = (mouseYaw * 10f) * GetSensitivityMulti();
+        float dPitch = (-mousePitch * 10f) * GetSensitivityMulti() * (float)GetReverse();
 
         switch (CameraMode)
         {

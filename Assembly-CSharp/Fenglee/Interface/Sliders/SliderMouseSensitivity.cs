@@ -9,6 +9,7 @@ public class SliderMouseSensitivity : MonoBehaviour
         if (!init)
         {
             init = true;
+
             if (PlayerPrefs.HasKey("MouseSensitivity"))
             {
                 base.gameObject.GetComponent<UISlider>().sliderValue = PlayerPrefs.GetFloat("MouseSensitivity");
@@ -22,6 +23,7 @@ public class SliderMouseSensitivity : MonoBehaviour
         {
             PlayerPrefs.SetFloat("MouseSensitivity", base.gameObject.GetComponent<UISlider>().sliderValue);
         }
+
         IN_GAME_MAIN_CAMERA.SensitivityMulti = PlayerPrefs.GetFloat("MouseSensitivity");
     }
 }

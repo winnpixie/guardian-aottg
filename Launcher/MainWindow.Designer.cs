@@ -67,7 +67,7 @@ namespace Launcher
             this.UploadLogBtn.Name = "UploadLogBtn";
             this.UploadLogBtn.Size = new System.Drawing.Size(335, 48);
             this.UploadLogBtn.TabIndex = 2;
-            this.UploadLogBtn.Text = "Upload output_log.txt to Hastebin\r\n\r\n(Game must be ran at least once!)";
+            this.UploadLogBtn.Text = "Upload output_log.txt to Hastebin.com\r\n\r\n(Game must be ran at least once!)";
             this.UploadLogBtn.UseVisualStyleBackColor = true;
             this.UploadLogBtn.Click += new System.EventHandler(this.UploadLogBtn_Click);
             // 
