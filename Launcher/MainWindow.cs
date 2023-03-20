@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -256,10 +256,13 @@ namespace Launcher
 
                     // Read JSON response and return URL
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    using (JsonDocument jd = JsonDocument.Parse(responseBody))
+                    JObject json = JObject.Parse(responseBody);
+                    if (json.TryGetValue("key", out JToken keyToken))
                     {
-                        return "https://hastebin.com/" + jd.RootElement.GetProperty("key").GetString() + ".txt";
+                        return "https://hastebin.com/" + keyToken.ToObject<string>() + ".txt";
                     }
+
+                    throw new Exception("Bad JSON response from https://hastebin.com/");
                 }
             }
         }

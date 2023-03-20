@@ -41,8 +41,8 @@ public class InRoomChat : Photon.MonoBehaviour
 
     public void AddMessage(string sender, string text)
     {
-        sender = Guardian.GuardianClient.BlacklistedTagsPattern.Replace(sender, string.Empty);
-        text = Guardian.GuardianClient.BlacklistedTagsPattern.Replace(text, string.Empty);
+        sender = Guardian.Utilities.GameHelper.BlacklistedTagsPattern.Replace(sender, string.Empty);
+        text = Guardian.Utilities.GameHelper.BlacklistedTagsPattern.Replace(text, string.Empty);
 
         if (sender.Length != 0 || text.Length != 0)
         {
@@ -101,7 +101,7 @@ public class InRoomChat : Photon.MonoBehaviour
                         string text = Detagger.Replace(message.Content, string.Empty);
 
                         Guardian.GuardianClient.Commands.Find("translate").Execute(this, new string[] {
-                            "auto", Guardian.GuardianClient.SystemLanguage, text
+                            "auto", Guardian.Utilities.Translator.SystemLanguage, text
                         });
                     }
                     else if (Input.GetMouseButtonDown(1)) // Right-click

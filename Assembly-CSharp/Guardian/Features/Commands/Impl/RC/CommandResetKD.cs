@@ -5,7 +5,7 @@ namespace Guardian.Features.Commands.Impl.RC
 {
     class CommandResetKD : Command
     {
-        public CommandResetKD() : base("resetkd", new string[0], "[all/id]", false) { }
+        public CommandResetKD() : base("resetkd", new string[0], "[all|id]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

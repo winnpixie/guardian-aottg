@@ -8,8 +8,8 @@ namespace Guardian.UI.Impl
     class GuiModConfiguration : Gui
     {
         private Regex NumericPattern = new Regex("-?(\\d*\\.?)?\\d+", RegexOptions.IgnoreCase);
-        private int Width = 440;
-        private int Height = 320;
+        private int Width = 640;
+        private int Height = 480;
         private bool ShouldSave = false;
         private Dictionary<Property, bool> TempBoolProps = new Dictionary<Property, bool>();
         private Dictionary<Property, string> TempIntProps = new Dictionary<Property, string>();
@@ -50,7 +50,8 @@ namespace Guardian.UI.Impl
 
         public override void Draw()
         {
-            GUILayout.BeginArea(new Rect(5, Screen.height - Height - 5, Width, Height), GuiSkins.Box);
+            //GUILayout.BeginArea(new Rect(5, Screen.height - Height - 5, Width, Height), GuiSkins.Box);
+            GUILayout.BeginArea(new Rect((Screen.width / 2f) - (Width / 2f), (Screen.height / 2f) - (Height / 2f), Width, Height), GuiSkins.Box);
             GUILayout.Label("Mod Configuration", GUILayout.Width(Width));
             ScrollPosition = GUILayout.BeginScrollView(ScrollPosition);
             GUILayout.BeginVertical();
@@ -130,36 +131,35 @@ namespace Guardian.UI.Impl
 
         public override void OnClose()
         {
-            if (ShouldSave)
+            if (!ShouldSave) return;
+
+            foreach (KeyValuePair<Property, bool> pair in TempBoolProps)
             {
-                foreach (KeyValuePair<Property, bool> pair in TempBoolProps)
-                {
-                    ((Property<bool>)pair.Key).Value = pair.Value;
-                }
-
-                foreach (KeyValuePair<Property, string> pair in TempIntProps)
-                {
-                    if (int.TryParse(pair.Value, out int val))
-                    {
-                        ((Property<int>)pair.Key).Value = val;
-                    }
-                }
-
-                foreach (KeyValuePair<Property, string> pair in TempFloatProps)
-                {
-                    if (float.TryParse(pair.Value, out float val))
-                    {
-                        ((Property<float>)pair.Key).Value = val;
-                    }
-                }
-
-                foreach (KeyValuePair<Property, string> pair in TempStringProps)
-                {
-                    ((Property<string>)pair.Key).Value = pair.Value;
-                }
-
-                GuardianClient.Properties.Save();
+                ((Property<bool>)pair.Key).Value = pair.Value;
             }
+
+            foreach (KeyValuePair<Property, string> pair in TempIntProps)
+            {
+                if (int.TryParse(pair.Value, out int val))
+                {
+                    ((Property<int>)pair.Key).Value = val;
+                }
+            }
+
+            foreach (KeyValuePair<Property, string> pair in TempFloatProps)
+            {
+                if (float.TryParse(pair.Value, out float val))
+                {
+                    ((Property<float>)pair.Key).Value = val;
+                }
+            }
+
+            foreach (KeyValuePair<Property, string> pair in TempStringProps)
+            {
+                ((Property<string>)pair.Key).Value = pair.Value;
+            }
+
+            GuardianClient.Properties.Save();
         }
     }
 }

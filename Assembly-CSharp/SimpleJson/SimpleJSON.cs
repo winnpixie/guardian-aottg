@@ -192,7 +192,7 @@ namespace SimpleJson
         }
         public virtual void Add(JSONNode aItem)
         {
-            Add("", aItem);
+            Add(string.Empty, aItem);
         }
 
         public virtual JSONNode Remove(string aKey)
@@ -545,7 +545,7 @@ namespace SimpleJson
             JSONNode ctx = null;
             int i = 0;
             StringBuilder Token = new StringBuilder();
-            string TokenName = "";
+            string TokenName = string.Empty;
             bool QuoteMode = false;
             bool TokenIsQuoted = false;
             bool HasNewlineChar = false;
@@ -564,7 +564,7 @@ namespace SimpleJson
                         {
                             ctx.Add(TokenName, stack.Peek());
                         }
-                        TokenName = "";
+                        TokenName = string.Empty;
                         Token.Length = 0;
                         ctx = stack.Peek();
                         HasNewlineChar = false;
@@ -582,7 +582,7 @@ namespace SimpleJson
                         {
                             ctx.Add(TokenName, stack.Peek());
                         }
-                        TokenName = "";
+                        TokenName = string.Empty;
                         Token.Length = 0;
                         ctx = stack.Peek();
                         HasNewlineChar = false;
@@ -605,7 +605,7 @@ namespace SimpleJson
                         if (ctx != null)
                             ctx.Inline = !HasNewlineChar;
                         TokenIsQuoted = false;
-                        TokenName = "";
+                        TokenName = string.Empty;
                         Token.Length = 0;
                         if (stack.Count > 0)
                             ctx = stack.Peek();
@@ -636,7 +636,7 @@ namespace SimpleJson
                         if (Token.Length > 0 || TokenIsQuoted)
                             ctx.Add(TokenName, ParseElement(Token.ToString(), TokenIsQuoted));
                         TokenIsQuoted = false;
-                        TokenName = "";
+                        TokenName = string.Empty;
                         Token.Length = 0;
                         TokenIsQuoted = false;
                         break;
@@ -1068,7 +1068,7 @@ namespace SimpleJson
         }
         public override void Clear()
         {
-            m_Data = "";
+            m_Data = string.Empty;
         }
     }
     // End of JSONString

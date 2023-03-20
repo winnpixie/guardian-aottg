@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace Guardian
+namespace Guardian.UI.Impl.Debug
 {
     class Logger
     {
@@ -11,19 +11,17 @@ namespace Guardian
 
         private void Log(string message)
         {
-            message = GuardianClient.BlacklistedTagsPattern.Replace(message, string.Empty);
+            message = GameHelper.BlacklistedTagsPattern.Replace(message, string.Empty);
+            if (message.Length < 1) return;
 
-            if (message.Length > 0)
+            Entries.Add(new Entry(message));
+
+            if (Entries.Count > GuardianClient.Properties.MaxLogLines.Value)
             {
-                Entries.Add(new Entry(message));
-
-                if (Entries.Count > GuardianClient.Properties.MaxLogLines.Value)
-                {
-                    Entries.RemoveAt(0);
-                }
-
-                ScrollPosition = GameHelper.ScrollBottom;
+                Entries.RemoveAt(0);
             }
+
+            ScrollPosition = GameHelper.ScrollBottom;
         }
 
         public void Info(string message)
@@ -54,11 +52,11 @@ namespace Guardian
 
             public Entry(string text)
             {
-                this.Text = text;
-                this.Time = GameHelper.CurrentTimeMillis();
+                Text = text;
+                Time = GameHelper.CurrentTimeMillis();
 
-                DateTime date = GameHelper.Epoch.AddMilliseconds(this.Time).ToLocalTime();
-                this.Timestamp = date.ToString("HH:mm:ss");
+                DateTime date = GameHelper.Epoch.AddMilliseconds(Time).ToLocalTime();
+                Timestamp = date.ToString("HH:mm:ss");
             }
 
             public override string ToString()

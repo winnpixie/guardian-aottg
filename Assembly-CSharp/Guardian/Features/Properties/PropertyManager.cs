@@ -33,13 +33,14 @@ namespace Guardian.Features.Properties
         public Property<float> RightRopeTileScale = new Property<float>("Assets_RightRopeTileScale", new string[0], 1f);
 
         // Player
-        public Property<bool> UseRawInput = new Property<bool>("Player_RawTPS-WOWInput", new string[0], true);
+        public Property<bool> UseRawInput = new Property<bool>("Player_RawMouseInput", new string[0], false);
         public Property<bool> DoubleTapBurst = new Property<bool>("Player_DoubleTapBurst", new string[0], true);
+        public Property<float> ReelOutScrollSmoothing = new Property<float>("Player_ReelOutScrollSmoothing", new string[0], 0.2f);
+        public Property<bool> ShowSkillTimer = new Property<bool>("Player_ShowSkillTimer", new string[0], true);
         public Property<bool> AlternateIdle = new Property<bool>("Player_AHSSIdle", new string[0], false);
         public Property<bool> AlternateBurst = new Property<bool>("Player_CrossBurst", new string[0], false);
         public Property<bool> HideHookArrows = new Property<bool>("Player_HideHookArrows", new string[0], false);
         public Property<bool> HoldForBladeTrails = new Property<bool>("Player_HoldForBladeTrails", new string[0], true);
-        public Property<float> ReelOutScrollSmoothing = new Property<float>("Player_ReelOutScrollSmoothing", new string[0], 0.2f);
         public Property<float> OpacityOfOwnName = new Property<float>("Player_OpacityOfOwnName", new string[0], 1.0f);
         public Property<float> OpacityOfOtherNames = new Property<float>("Player_OpacityOfOtherNames", new string[0], 1.0f);
         public Property<bool> DirectionalFlares = new Property<bool>("Player_DirectionalFlares", new string[0], true);
@@ -55,7 +56,7 @@ namespace Guardian.Features.Properties
         public Property<bool> TranslateIncoming = new Property<bool>("Chat_TranslateIncoming", new string[0], false);
         public Property<string> IncomingLanguage = new Property<string>("Chat_IncomingLanguage", new string[0], "auto");
         public Property<bool> TranslateOutgoing = new Property<bool>("Chat_TranslateOutgoing", new string[0], false);
-        public Property<string> OutgoingLanguage = new Property<string>("Chat_OutgoingLanguage", new string[0], GuardianClient.SystemLanguage);
+        public Property<string> OutgoingLanguage = new Property<string>("Chat_OutgoingLanguage", new string[0], Translator.SystemLanguage);
 
         public Property<string> JoinMessage = new Property<string>("Chat_JoinMessage", new string[0], string.Empty);
         public Property<string> ChatName = new Property<string>("Chat_UserName", new string[0], string.Empty);

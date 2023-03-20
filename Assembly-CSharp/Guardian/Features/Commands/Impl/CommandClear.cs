@@ -1,11 +1,12 @@
-﻿using Guardian.Utilities;
+﻿using Guardian.UI.Impl.Debug;
+using Guardian.Utilities;
 using System.Collections.Generic;
 
 namespace Guardian.Features.Commands.Impl
 {
     class CommandClear : Command
     {
-        public CommandClear() : base("clear", new string[0], "[log/global/id]", false) { }
+        public CommandClear() : base("clear", new string[0], "[log|global|id]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

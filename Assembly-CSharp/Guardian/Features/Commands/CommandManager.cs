@@ -40,6 +40,7 @@ namespace Guardian.Features.Commands
 
             // Debug
             base.Add(new CommandLogProperties());
+            base.Add(new CommandStopwatch());
 
             // RC MasterClient
             base.Add(new CommandAso());

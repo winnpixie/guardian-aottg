@@ -1,12 +1,15 @@
 ﻿using SimpleJson;
 using System;
 using System.Collections;
+using System.Globalization;
 using UnityEngine;
 
 namespace Guardian.Utilities
 {
     class Translator
     {
+        public static string SystemLanguage => CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+
         // private static readonly string ApiUrl = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={0}&tl={1}&q={2}"; // Alt-URL
         private static readonly string ApiUrl = "https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl={0}&tl={1}&dt=t&q={2}";
 

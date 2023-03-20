@@ -5,7 +5,7 @@ namespace Launcher
 {
     static class Program
     {
-        public static readonly string Build = "1.0.2";
+        public static readonly string Build = "1.0.3";
         public static readonly string Cwd = Environment.CurrentDirectory;
         public static readonly int Arch = Environment.Is64BitOperatingSystem ? 64 : 32;
 

@@ -320,36 +320,41 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                     lineRenderer.SetPosition(value - 1, base.transform.position);
                     break;
                 case 2:
-                    if (leviMode && !petraMode)
+                    if (leviMode)
                     {
-                        GetSpiral(master.transform.position, master.transform.rotation.eulerAngles);
-                        Vector3 b = myRef.transform.position - (Vector3)spiralNodes[0];
-                        lineRenderer.SetVertexCount((int)((float)spiralNodes.Count - (float)spiralcount * 0.5f));
-                        for (int j = 0; (float)j <= (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f; j++)
+                        if (!petraMode) // FIXME: Petra stuff, wow.
                         {
-                            if (spiralcount < 5)
+                            GetSpiral(master.transform.position, master.transform.rotation.eulerAngles);
+                            Vector3 b = myRef.transform.position - (Vector3)spiralNodes[0];
+                            lineRenderer.SetVertexCount((int)((float)spiralNodes.Count - (float)spiralcount * 0.5f));
+                            for (int j = 0; (float)j <= (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f; j++)
                             {
-                                Vector3 position = (Vector3)spiralNodes[j] + b;
-                                float num5 = (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f;
-                                float x = position.x;
-                                float num6 = position.y * ((num5 - (float)j) / num5);
-                                Vector3 position2 = base.gameObject.transform.position;
-                                position = new Vector3(x, num6 + position2.y * ((float)j / num5), position.z);
-                                lineRenderer.SetPosition(j, position);
-                            }
-                            else
-                            {
-                                lineRenderer.SetPosition(j, (Vector3)spiralNodes[j] + b);
+                                if (spiralcount < 5)
+                                {
+                                    Vector3 position = (Vector3)spiralNodes[j] + b;
+                                    float num5 = (float)(spiralNodes.Count - 1) - (float)spiralcount * 0.5f;
+                                    float x = position.x;
+                                    float num6 = position.y * ((num5 - (float)j) / num5);
+                                    Vector3 position2 = base.gameObject.transform.position;
+                                    position = new Vector3(x, num6 + position2.y * ((float)j / num5), position.z);
+                                    lineRenderer.SetPosition(j, position);
+                                }
+                                else
+                                {
+                                    lineRenderer.SetPosition(j, (Vector3)spiralNodes[j] + b);
+                                }
                             }
                         }
                     }
                     else
                     {
+                        float distanceToOwner = (base.transform.position - myRef.transform.position).magnitude;
+                        base.transform.position = Vector3.MoveTowards(base.transform.position, myRef.transform.position, (killTime / 0.1f) * distanceToOwner * retractSpeed);
                         lineRenderer.SetVertexCount(2);
                         lineRenderer.SetPosition(0, base.transform.position);
                         lineRenderer.SetPosition(1, myRef.transform.position);
+
                         killTime += Time.deltaTime * 0.2f;
-                        lineRenderer.SetWidth(0.1f - killTime, 0.1f - killTime);
                         if (killTime > 0.1f)
                         {
                             RemoveMe();
@@ -359,31 +364,24 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                 case 3:
                     break;
                 case 4:
-                    base.gameObject.transform.position += velocity + velocity2 * Time.deltaTime;
-                    ArrayList arrayList = nodes;
-                    Vector3 position3 = base.gameObject.transform.position;
-                    float x2 = position3.x;
-                    Vector3 position4 = base.gameObject.transform.position;
-                    float y = position4.y;
-                    Vector3 position5 = base.gameObject.transform.position;
-                    arrayList.Add(new Vector3(x2, y, position5.z));
-                    Vector3 a3 = myRef.transform.position - (Vector3)nodes[0];
-                    for (int k = 0; k <= nodes.Count - 1; k++)
                     {
-                        lineRenderer.SetVertexCount(nodes.Count);
-                        lineRenderer.SetPosition(k, (Vector3)nodes[k] + a3 * Mathf.Pow(0.5f, k));
-                    }
-                    killTime2 += Time.deltaTime;
-                    if (killTime2 > 0.8f)
-                    {
-                        killTime += Time.deltaTime * 0.2f;
-                        lineRenderer.SetWidth(0.1f - killTime, 0.1f - killTime);
-                        if (killTime > 0.1f)
+                        float distanceToOwner = (base.transform.position - myRef.transform.position).magnitude;
+                        base.transform.position = Vector3.MoveTowards(base.transform.position, myRef.transform.position, (killTime / 0.8f) * distanceToOwner * retractSpeed);
+                        lineRenderer.SetVertexCount(2);
+                        lineRenderer.SetPosition(0, base.transform.position);
+                        lineRenderer.SetPosition(1, myRef.transform.position);
+
+                        killTime2 += Time.deltaTime;
+                        if (killTime2 > 0.8f)
                         {
-                            RemoveMe();
+                            killTime += Time.deltaTime * 0.2f;
+                            if (killTime > 0.1f)
+                            {
+                                RemoveMe();
+                            }
                         }
+                        break;
                     }
-                    break;
             }
 
             // BEGIN Guardian
@@ -395,6 +393,8 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
             // END: Guardian
         }
     }
+
+    private float retractSpeed = 0.25f;
 
     public void Disable()
     {
@@ -603,18 +603,18 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
 
         if (left)
         {
-            if (parentHero._leftRopeMat != null)
+            if (parentHero.g_leftRopeMaterial != null)
             {
-                lineRenderer.material = parentHero._leftRopeMat;
-                tileScale = parentHero._leftRopeXScale;
+                lineRenderer.material = parentHero.g_leftRopeMaterial;
+                tileScale = parentHero.g_leftRopeTileScale;
             }
         }
         else
         {
-            if (parentHero._rightRopeMat != null)
+            if (parentHero.g_rightRopeMaterial != null)
             {
-                lineRenderer.material = parentHero._rightRopeMat;
-                tileScale = parentHero._rightRopeXScale;
+                lineRenderer.material = parentHero.g_rightRopeMaterial;
+                tileScale = parentHero.g_rightRopeTileScale;
             }
         }
     }

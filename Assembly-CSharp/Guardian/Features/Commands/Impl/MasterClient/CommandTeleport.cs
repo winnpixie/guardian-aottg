@@ -5,7 +5,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 {
     class CommandTeleport : Command
     {
-        public CommandTeleport() : base("teleport", new string[] { "tp" }, "<id/all/x y z> [id/x y z]", true) { }
+        public CommandTeleport() : base("teleport", new string[] { "tp" }, "<id|all|x y z> [id|x y z]", true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

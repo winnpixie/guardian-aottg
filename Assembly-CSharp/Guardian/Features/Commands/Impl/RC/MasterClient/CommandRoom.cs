@@ -5,7 +5,7 @@ namespace Guardian.Features.Commands.Impl.RC.MasterClient
 {
     class CommandRoom : Command
     {
-        public CommandRoom() : base("room", new string[0], "<time/max/open/visible/pttl/rttl> <value>", true) { }
+        public CommandRoom() : base("room", new string[0], "<time|max|open|visible|pttl|rttl> <value>", true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

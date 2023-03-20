@@ -255,11 +255,17 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         base.transform.position += Vector3.up * heightMulti;
         base.transform.position -= Vector3.up * (0.6f - CameraDistance) * 2f;
 
-        float mouseYaw = Guardian.GuardianClient.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse X") : Input.GetAxis("Mouse X");
-        float mousePitch = Guardian.GuardianClient.Properties.UseRawInput.Value ? Input.GetAxisRaw("Mouse Y") : Input.GetAxis("Mouse Y");
+        float mouseYaw = Input.GetAxisRaw("Mouse X");
+        float mousePitch = Input.GetAxisRaw("Mouse Y");
 
-        float dYaw = (mouseYaw * 10f) * GetSensitivityMulti();
-        float dPitch = (-mousePitch * 10f) * GetSensitivityMulti() * (float)GetReverse();
+        float dYaw = mouseYaw * 10f;
+        float dPitch = (-mousePitch * 10f) * (float)GetReverse();
+
+        if (!Guardian.GuardianClient.Properties.UseRawInput.Value)
+        {
+            dYaw *= GetSensitivityMulti();
+            dPitch *= GetSensitivityMulti();
+        }
 
         switch (CameraMode)
         {
@@ -297,12 +303,22 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     Vector3 mousePosition = Input.mousePosition;
                     if (mousePosition.x < (float)Screen.width * 0.4f)
                     {
-                        dYaw = (0f - ((Screen.width * 0.4f) - mousePosition.x) / (float)Screen.width * 0.4f) * GetSensitivityMultiWithTimeDelta() * 150f;
+                        dYaw = (-((Screen.width * 0.4f) - mousePosition.x) / (float)(Screen.width * 0.4f)) * 150f;
+                        if (!Guardian.GuardianClient.Properties.UseRawInput.Value)
+                        {
+                            dYaw *= GetSensitivityMultiWithTimeDelta();
+                        }
+
                         base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
                     }
                     else if (mousePosition.x > (float)Screen.width * 0.6f)
                     {
-                        dYaw = (mousePosition.x - (float)Screen.width * 0.6f) / (float)Screen.width * 0.4f * GetSensitivityMultiWithTimeDelta() * 150f;
+                        dYaw = ((mousePosition.x - (float)Screen.width * 0.6f) / (float)(Screen.width * 0.4f)) * 150f;
+                        if (!Guardian.GuardianClient.Properties.UseRawInput.Value)
+                        {
+                            dYaw *= GetSensitivityMultiWithTimeDelta();
+                        }
+
                         base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
                     }
 

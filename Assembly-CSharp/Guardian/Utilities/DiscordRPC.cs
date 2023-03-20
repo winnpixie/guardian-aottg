@@ -9,6 +9,7 @@
         public static void Initialize()
         {
             if (_Discord != null) return;
+            if (!GuardianClient.Properties.UseRichPresence.Value) return;
 
             try
             {
@@ -71,7 +72,7 @@
         {
             Initialize();
 
-            if (_Discord == null || !GuardianClient.Properties.UseRichPresence.Value) return;
+            if (_Discord == null) return;
 
             try
             {

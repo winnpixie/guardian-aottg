@@ -6,7 +6,12 @@ namespace Guardian.Utilities
     {
         private static readonly Random random = new Random();
 
-        public static int Abs(int val)
+        public static int AbsInt(int val)
+        {
+            return val < 0 ? -val : val;
+        }
+
+        public static float AbsFloat(float val)
         {
             return val < 0 ? -val : val;
         }
@@ -23,7 +28,7 @@ namespace Guardian.Utilities
             return n >= val ? n : n + 1;
         }
 
-        public static int Clamp(int val, int min, int max)
+        public static int ClampInt(int val, int min, int max)
         {
             return val < min ? min : val > max ? max : val;
         }

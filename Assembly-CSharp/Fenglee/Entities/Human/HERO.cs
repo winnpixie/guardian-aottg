@@ -2,7 +2,6 @@ using RC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using Xft;
 
@@ -220,53 +219,53 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     // BEGIN RC
     // Network optimizations
-    private bool cancelGasDisable;
-    private bool areAnimationsPaused;
+    private bool rc_cancelGasDisable;
+    private bool rc_areAnimationsPaused;
 
     // Reel smoothing
-    private float reelInAxis;
-    private float reelOutAxis;
-    private float reelOutScrollTimeLeft;
+    private float rc_reelInAxis;
+    private float rc_reelOutAxis;
+    private float rc_reelOutScrollTimeLeft;
+
+    // ThunderSpears
+    public GameObject rc_thunderSpearLeft;
+    public GameObject rc_thunderSpearRight;
     // END RC
 
     // BEGIN Guardian
     // Custom assets
-    private AudioSource _burstSound;
-    private AudioSource _flareSound;
-    private Texture _gasTexture;
+    private AudioSource g_burstSound;
+    private AudioSource g_flareSound;
+    private Texture g_gasTexture;
 
-    public Material _leftRopeMat;
-    public float _leftRopeXScale;
-    public Material _rightRopeMat;
-    public float _rightRopeXScale;
+    public Material g_leftRopeMaterial;
+    public float g_leftRopeTileScale;
+    public Material g_rightRopeMaterial;
+    public float g_rightRopeTileScale;
 
-    // RC/Guardian ThunderSpear monstrosity
-    public GameObject _thunderSpearLeft;
-    public GameObject _thunderSpearRight;
-
-    private float previousSpeed;
+    // Misc
+    private float g_previousSpeed;
+    private long g_lastGasBurst = Guardian.Utilities.GameHelper.CurrentTimeMillis();
     // END Guardian
 
     // BEGIN Syal
-    public GameObject _skyBarrier;
+    public GameObject tlw_skyBarrier;
     // END Syal
-
-    private System.Diagnostics.Stopwatch _lastGasBurst = new System.Diagnostics.Stopwatch();
 
     [Guardian.Networking.RPC]
     private void SetupThunderSpearsRPC(PhotonMessageInfo info)
     {
         if (info.sender == base.photonView.owner)
         {
-            _thunderSpearLeft = (GameObject)GameObject.Instantiate(FengGameManagerMKII.RCAssets.Load("ThunderSpearProp"));
-            _thunderSpearLeft.transform.parent = handL.transform.parent;
-            _thunderSpearLeft.transform.localPosition = new Vector3(-0.001649f, 0.000775f, -0.000227f);
-            _thunderSpearLeft.transform.localRotation = Quaternion.Euler(5f, -85f, 10f);
+            rc_thunderSpearLeft = (GameObject)GameObject.Instantiate(FengGameManagerMKII.RCAssets.Load("ThunderSpearProp"));
+            rc_thunderSpearLeft.transform.parent = handL.transform.parent;
+            rc_thunderSpearLeft.transform.localPosition = new Vector3(-0.001649f, 0.000775f, -0.000227f);
+            rc_thunderSpearLeft.transform.localRotation = Quaternion.Euler(5f, -85f, 10f);
 
-            _thunderSpearRight = (GameObject)GameObject.Instantiate(FengGameManagerMKII.RCAssets.Load("ThunderSpearProp"));
-            _thunderSpearRight.transform.parent = handR.transform.parent;
-            _thunderSpearRight.transform.localPosition = new Vector3(-0.001649f, -0.000775f, -0.000227f);
-            _thunderSpearRight.transform.localRotation = Quaternion.Euler(-5f, -85f, -10f);
+            rc_thunderSpearRight = (GameObject)GameObject.Instantiate(FengGameManagerMKII.RCAssets.Load("ThunderSpearProp"));
+            rc_thunderSpearRight.transform.parent = handR.transform.parent;
+            rc_thunderSpearRight.transform.localPosition = new Vector3(-0.001649f, -0.000775f, -0.000227f);
+            rc_thunderSpearRight.transform.localRotation = Quaternion.Euler(-5f, -85f, -10f);
 
             currentBladeNum = totalBladeNum = 0;
             currentBladeSta = totalBladeSta = 0;
@@ -296,34 +295,34 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         float scrollDir = Input.GetAxisRaw("Mouse ScrollWheel") * 5555f;
 
-        reelOutScrollTimeLeft -= Time.deltaTime;
-        if (reelOutScrollTimeLeft <= 0f)
+        rc_reelOutScrollTimeLeft -= Time.deltaTime;
+        if (rc_reelOutScrollTimeLeft <= 0f)
         {
-            reelOutAxis = 0f;
+            rc_reelOutAxis = 0f;
         }
 
         if (((int)FengGameManagerMKII.Settings[97] == 1 && FengGameManagerMKII.InputRC.IsInputHuman(InputCodeRC.ReelIn)) || (scrollDir < 0f))
         {
-            reelInAxis = -1f;
+            rc_reelInAxis = -1f;
         }
         if (((int)FengGameManagerMKII.Settings[116] == 1 && FengGameManagerMKII.InputRC.IsInputHuman(InputCodeRC.ReelOut)) || scrollDir > 0f)
         {
-            reelOutAxis = 1f;
+            rc_reelOutAxis = 1f;
 
             if (scrollDir > 0f)
             {
-                reelOutScrollTimeLeft = Guardian.GuardianClient.Properties.ReelOutScrollSmoothing.Value;
+                rc_reelOutScrollTimeLeft = Guardian.GuardianClient.Properties.ReelOutScrollSmoothing.Value;
             }
         }
     }
 
     private float GetReelAxis()
     {
-        if (reelInAxis != 0f)
+        if (rc_reelInAxis != 0f)
         {
-            return reelInAxis;
+            return rc_reelInAxis;
         }
-        return reelOutAxis;
+        return rc_reelOutAxis;
     }
 
     public bool IsInvincible()
@@ -1067,12 +1066,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if (!(dashTime > 0f) && !(currentGas <= 0f) && !isMounted)
         {
-            if (_lastGasBurst.ElapsedMilliseconds > 0 && _lastGasBurst.ElapsedMilliseconds < 300)
-            {
-                return;
-            }
-            _lastGasBurst.Reset();
-            _lastGasBurst.Start();
+            // Guardian
+            if (Guardian.Utilities.GameHelper.CurrentTimeMillis() - g_lastGasBurst < 300) return;
+
+            g_lastGasBurst = Guardian.Utilities.GameHelper.CurrentTimeMillis();
 
             UseGas(totalGas * 0.04f);
             facingDirection = GetGlobalFacingDirection(horizontal, vertical);
@@ -1107,9 +1104,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     theGas = PhotonNetwork.Instantiate("FX/boost_smoke", base.transform.position, base.transform.rotation, 0);
                 }
 
-                if (_gasTexture != null)
+                if (g_gasTexture != null)
                 {
-                    theGas.GetComponentInChildren<ParticleSystem>().renderer.material.mainTexture = _gasTexture;
+                    theGas.GetComponentInChildren<ParticleSystem>().renderer.material.mainTexture = g_gasTexture;
                 }
             }
 
@@ -1120,9 +1117,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             FalseAttack();
             base.rigidbody.AddForce(dashV * 40f, ForceMode.VelocityChange);
 
-            if (_burstSound != null)
+            if (g_burstSound != null)
             {
-                _burstSound.Play();
+                g_burstSound.Play();
             }
         }
     }
@@ -1389,11 +1386,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void PauseAnimation()
     {
-        if (areAnimationsPaused)
+        if (rc_areAnimationsPaused)
         {
             return;
         }
-        areAnimationsPaused = true;
+        rc_areAnimationsPaused = true;
 
         foreach (AnimationState anim in base.animation)
         {
@@ -1417,11 +1414,11 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void ContinueAnimation()
     {
-        if (!areAnimationsPaused)
+        if (!rc_areAnimationsPaused)
         {
             return;
         }
-        areAnimationsPaused = false;
+        rc_areAnimationsPaused = false;
 
         ResetAnimationSpeed();
         PlayAnimation(GetCurrentAnimationPlaying());
@@ -1595,6 +1592,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
 
         leviMode = base.animation.IsPlaying("attack5") || base.animation.IsPlaying("special_petra");
+
         if (!leviMode)
         {
             FalseAttack();
@@ -1665,14 +1663,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (leviMode)
         {
             launchElapsedTimeR = -100f;
-            launchElapsedTimeL = -100f;
         }
 
-        // TODO: Remove?
         if (base.animation.IsPlaying("special_petra"))
         {
-            launchElapsedTimeR = -100f;
             launchElapsedTimeL = -100f;
+            launchElapsedTimeR = -100f;
+
+            // TODO: Remove?
             if ((bool)bulletRight)
             {
                 //bulletRight.GetComponent<Bullet>().Disable();
@@ -1686,7 +1684,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
 
         sparks.enableEmission = false;
-        cancelGasDisable = true;
+        rc_cancelGasDisable = true;
     }
 
     private void AimLeftArmTo(Vector3 target)
@@ -1798,9 +1796,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 gameObject2.GetComponent<FlareMovement>().DontShowHint();
             }
 
-            if (_flareSound != null)
+            if (g_flareSound != null)
             {
-                _flareSound.Play();
+                g_flareSound.Play();
             }
         }
     }
@@ -2053,16 +2051,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 meatDie.clip = deathClip;
             }
 
-            _burstSound = base.gameObject.AddComponent<AudioSource>();
+            g_burstSound = base.gameObject.AddComponent<AudioSource>();
             if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/burst.wav", out AudioClip burstClip))
             {
-                _burstSound.clip = burstClip;
+                g_burstSound.clip = burstClip;
             }
 
-            _flareSound = base.gameObject.AddComponent<AudioSource>();
+            g_flareSound = base.gameObject.AddComponent<AudioSource>();
             if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/flare_shot.wav", out AudioClip flareClip))
             {
-                _flareSound.clip = flareClip;
+                g_flareSound.clip = flareClip;
             }
         }
 
@@ -2226,9 +2224,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
                 if (y > 0)
                 {
-                    _skyBarrier = (GameObject)UnityEngine.Object.Instantiate(FengGameManagerMKII.RCAssets.Load("killCuboid"), new Vector3(0, y, 0), Quaternion.identity);
-                    _skyBarrier.gameObject.AddComponent<RacingKillTrigger>();
-                    _skyBarrier.transform.localScale = new Vector3(1600, 20, 1600);
+                    tlw_skyBarrier = (GameObject)UnityEngine.Object.Instantiate(FengGameManagerMKII.RCAssets.Load("killCuboid"), new Vector3(0, y, 0), Quaternion.identity);
+                    tlw_skyBarrier.gameObject.AddComponent<RacingKillTrigger>();
+                    tlw_skyBarrier.transform.localScale = new Vector3(1600, 20, 1600);
                 }
             }
         }
@@ -2270,10 +2268,10 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             base.photonView.RPC("SetupThunderSpearsRPC", PhotonTargets.OthersBuffered);
 
-            _thunderSpearRight = (GameObject)GameObject.Instantiate(FengGameManagerMKII.RCAssets.Load("ThunderSpearProp"));
-            _thunderSpearRight.transform.parent = handR.transform.parent;
-            _thunderSpearRight.transform.localPosition = new Vector3(-0.001649f, -0.000775f, -0.000227f);
-            _thunderSpearRight.transform.localRotation = Quaternion.Euler(-5f, -85f, -10f);
+            rc_thunderSpearRight = (GameObject)GameObject.Instantiate(FengGameManagerMKII.RCAssets.Load("ThunderSpearProp"));
+            rc_thunderSpearRight.transform.parent = handR.transform.parent;
+            rc_thunderSpearRight.transform.localPosition = new Vector3(-0.001649f, -0.000775f, -0.000227f);
+            rc_thunderSpearRight.transform.localRotation = Quaternion.Euler(-5f, -85f, -10f);
 
             rightBulletLeft = 0;
             rightGunHasBullet = false;
@@ -2287,7 +2285,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         if (Guardian.GuardianClient.Properties.FatalCollisions.Value)
         {
-            if (previousSpeed - currentSpeed >= Guardian.GuardianClient.Properties.FatalSpeedDelta.Value)
+            if (g_previousSpeed - currentSpeed >= Guardian.GuardianClient.Properties.FatalSpeedDelta.Value)
             {
                 this.MarkDead();
                 base.photonView.RPC("netDie", PhotonTargets.All, base.transform.position, false, -1, Guardian.GuardianClient.Properties.CollisionsDeathMessage.Value + " ", false);
@@ -2301,7 +2299,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         {
             return;
         }
-        previousSpeed = currentSpeed;
+        g_previousSpeed = currentSpeed;
         currentSpeed = baseRigidBody.velocity.magnitude;
 
         // Guardian
@@ -2873,7 +2871,6 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 baseRigidBody.AddForce(force2, ForceMode.Impulse);
             }
 
-            // TODO: Remove?
             if (attackAnimation == "special_petra" && launchPointLeft.sqrMagnitude > 0f)
             {
                 Vector3 force3 = launchPointLeft - baseTransform.position;
@@ -2881,6 +2878,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 force3 *= 13f;
                 baseRigidBody.AddForce(force3, ForceMode.Impulse);
 
+                // TODO: Remove?
                 if (bulletRight != null)
                 {
                     //bulletRight.GetComponent<Bullet>().Disable();
@@ -2924,7 +2922,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             currentCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(currentCamera.GetComponent<Camera>().fieldOfView, 50f, 0.1f);
         }
 
-        if (!cancelGasDisable)
+        if (!rc_cancelGasDisable)
         {
             if (flag)
             {
@@ -2946,7 +2944,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         else
         {
-            cancelGasDisable = false;
+            rc_cancelGasDisable = false;
         }
 
         if (currentSpeed > 80f)
@@ -2963,7 +2961,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             speedFXPS.enableEmission = false;
         }
 
-        reelInAxis = 0f;
+        rc_reelInAxis = 0f;
     }
 
     private void UpdateResourceUI()
@@ -3133,7 +3131,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         string text = (magnitude <= 1000f) ? ((int)magnitude).ToString() : "???";
 
         // Guardian
-        if (myGroup == GroupType.Human)
+        if (myGroup == GroupType.Human && Guardian.GuardianClient.Properties.ShowSkillTimer.Value)
         {
             if (skillCDDuration > 0f)
             {
@@ -3250,9 +3248,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         // Anarchy
         Anarchy.Custom.Level.CustomAnarchyLevel.Instance.RemoveHero(this);
 
-        if (_skyBarrier != null)
+        if (tlw_skyBarrier != null)
         {
-            UnityEngine.Object.Destroy(_skyBarrier);
+            UnityEngine.Object.Destroy(tlw_skyBarrier);
         }
 
         if (myFlashlight != null)
@@ -3726,7 +3724,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                                 ReleaseHookedTarget();
                                             }
                                             dashDirection = hitInfo.point - baseTransform.position;
-                                            LaunchRightHook(hitInfo, single: true, true);
+                                            LaunchRightHook(hitInfo, single: true, isLevi: true);
                                             rope.Play();
                                         }
                                         facingDirection = Mathf.Atan2(dashDirection.x, dashDirection.z) * 57.29578f;
@@ -3753,8 +3751,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                                 ReleaseHookedTarget();
                                             }
                                             dashDirection = hitInfo2.point - baseTransform.position;
-                                            LaunchLeftHook(hitInfo2, single: true, true, true);
-                                            LaunchRightHook(hitInfo2, single: true, true, true);
+                                            LaunchLeftHook(hitInfo2, single: true, isLevi: true, isPetra: true);
+                                            LaunchRightHook(hitInfo2, single: true, isLevi: true, isPetra: true);
                                             rope.Play();
                                         }
                                         facingDirection = Mathf.Atan2(dashDirection.x, dashDirection.z) * 57.29578f;
@@ -6235,7 +6233,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                                     renderer4.material.mainTexture = tex10;
 
                                     // Set smoke/dash texture to the custom gas texture
-                                    _gasTexture = tex10;
+                                    g_gasTexture = tex10;
 
                                     FengGameManagerMKII.LinkHash[0].Add(strArray[10], renderer4.material);
                                 }
@@ -6245,7 +6243,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                         else
                         {
                             renderer4.material = (Material)FengGameManagerMKII.LinkHash[0][strArray[10]];
-                            _gasTexture = renderer4.material.mainTexture;
+                            g_gasTexture = renderer4.material.mainTexture;
                         }
                     }
                     else if (strArray[10].ToLower() == "transparent")
@@ -6380,9 +6378,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (strArray.Length > 14)
         {
             // BEGIN ThunderSpear Skins
-            if (_thunderSpearLeft != null)
+            if (rc_thunderSpearLeft != null)
             {
-                foreach (Renderer renderer in _thunderSpearLeft.GetComponentsInChildren<Renderer>())
+                foreach (Renderer renderer in rc_thunderSpearLeft.GetComponentsInChildren<Renderer>())
                 {
                     if (strArray[13].EndsWith(".png") || strArray[13].EndsWith(".jpg") || strArray[13].EndsWith(".jpeg"))
                     {
@@ -6420,9 +6418,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 }
             }
 
-            if (_thunderSpearRight != null)
+            if (rc_thunderSpearRight != null)
             {
-                foreach (Renderer renderer in _thunderSpearRight.GetComponentsInChildren<Renderer>())
+                foreach (Renderer renderer in rc_thunderSpearRight.GetComponentsInChildren<Renderer>())
                 {
                     if (strArray[14].EndsWith(".png") || strArray[14].EndsWith(".jpg") || strArray[14].EndsWith(".jpeg"))
                     {
@@ -6478,27 +6476,27 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[15]))
                             {
                                 unload = true;
-                                _leftRopeMat = new Material(Shader.Find("Transparent/Diffuse"))
+                                g_leftRopeMaterial = new Material(Shader.Find("Transparent/Diffuse"))
                                 {
                                     mainTexture = ropeTex
                                 };
-                                FengGameManagerMKII.LinkHash[0].Add(strArray[15], _leftRopeMat);
-                                _leftRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
+                                FengGameManagerMKII.LinkHash[0].Add(strArray[15], g_leftRopeMaterial);
+                                g_leftRopeMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
                             }
                             else
                             {
-                                _leftRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
+                                g_leftRopeMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
                             }
                         }
                     }
                     else
                     {
-                        _leftRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
+                        g_leftRopeMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[15]];
                     }
                 }
                 if (float.TryParse(strArray[16], out float l_xScale)) // Left rope tiling
                 {
-                    _leftRopeXScale = l_xScale;
+                    g_leftRopeTileScale = l_xScale;
                 }
 
                 if (strArray[17].EndsWith(".png") || strArray[17].EndsWith(".jpg") || strArray[17].EndsWith(".jpeg")) // Right rope
@@ -6515,27 +6513,27 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             if (!FengGameManagerMKII.LinkHash[0].ContainsKey(strArray[17]))
                             {
                                 unload = true;
-                                _rightRopeMat = new Material(Shader.Find("Transparent/Diffuse"))
+                                g_rightRopeMaterial = new Material(Shader.Find("Transparent/Diffuse"))
                                 {
                                     mainTexture = ropeTex
                                 };
-                                FengGameManagerMKII.LinkHash[0].Add(strArray[17], _rightRopeMat);
-                                _rightRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
+                                FengGameManagerMKII.LinkHash[0].Add(strArray[17], g_rightRopeMaterial);
+                                g_rightRopeMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
                             }
                             else
                             {
-                                _rightRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
+                                g_rightRopeMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
                             }
                         }
                     }
                     else
                     {
-                        _rightRopeMat = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
+                        g_rightRopeMaterial = (Material)FengGameManagerMKII.LinkHash[0][strArray[17]];
                     }
                 }
                 if (float.TryParse(strArray[18], out float r_xScale)) // Right rope tiling
                 {
-                    _rightRopeXScale = r_xScale;
+                    g_rightRopeTileScale = r_xScale;
                 }
                 // END: Hook Textures
             }

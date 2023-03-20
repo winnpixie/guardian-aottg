@@ -74,7 +74,7 @@ public static class RCextensions
             }
         }
 
-        Guardian.GuardianClient.Logger.Debug($"Image too large ({link.url}, {link.size} bytes, {maxFileSize} bytes max");
+        Guardian.GuardianClient.Logger.Warn($"Image too large ({link.url}, {link.size} bytes, {maxFileSize} bytes max");
         return new Texture2D(2, 2, TextureFormat.DXT1, false);
     }
 

@@ -4,7 +4,7 @@
     {
         private readonly int CommandsPerPage = 7;
 
-        public CommandHelp() : base("help", new string[] { "?", "commands" }, "[page/command]", false) { }
+        public CommandHelp() : base("help", new string[] { "?", "commands" }, "[page|command]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
@@ -22,9 +22,9 @@
                     irc.AddLine($"Aliases: [{string.Join(", ", command.Aliases)}]");
                     return;
                 }
-                else if (int.TryParse(args[0], out int thePage))
+                else if (int.TryParse(args[0], out page))
                 {
-                    page = Utilities.MathHelper.Clamp(thePage, 1, pages) - 1;
+                    page = Utilities.MathHelper.ClampInt(page, 1, pages) - 1;
                 }
             }
 

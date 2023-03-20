@@ -7,15 +7,15 @@ using Guardian.Networking;
 using Guardian.UI.Toasts;
 using Guardian.Utilities;
 using System.Collections;
-using System.Globalization;
-using System.Text.RegularExpressions;
 using UnityEngine;
+using Guardian.UI.Impl.Debug;
+using System.IO;
 
 namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.2.2";
+        public static readonly string Build = "1.2.3";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -26,9 +26,7 @@ namespace Guardian
 
         public static readonly Logger Logger = new Logger();
         public static UI.GuiController GuiController;
-        public static readonly Regex BlacklistedTagsPattern = new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
         public static bool WasQuitRequested = false;
-        public static string SystemLanguage => CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
         private static bool IsFirstInit = true;
         private static bool HasJoinedRoom = false;
 
@@ -106,7 +104,7 @@ namespace Guardian
             }
             else
             {
-                string latestBuild = "";
+                string latestBuild = string.Empty;
                 foreach (string buildData in www.text.Split('\n'))
                 {
                     string[] buildInfo = buildData.Split(new char[] { '=' }, 2);
@@ -196,7 +194,6 @@ namespace Guardian
 
             FpsCounter.UpdateCounter();
         }
-
 
         private void OnLevelWasLoaded(int level)
         {
@@ -393,8 +390,7 @@ namespace Guardian
         {
             UI.WindowManager.HandleWindowFocusEvent(hasFocus);
 
-            if (!hasFocus
-                || IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop) return;
+            if (!hasFocus || IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop) return;
 
             // Minimap turns white
             if (Minimap.Instance != null)

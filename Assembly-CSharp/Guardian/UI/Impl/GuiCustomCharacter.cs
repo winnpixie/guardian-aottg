@@ -4,7 +4,7 @@ namespace Guardian.UI.Impl
 {
     class GuiCustomCharacter : Gui
     {
-        private string[] OriginalCharacters =
+        private readonly string[] OriginalCharacters =
         {
             "MIKASA",
             "LEVI",

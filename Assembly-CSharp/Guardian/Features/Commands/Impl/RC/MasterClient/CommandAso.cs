@@ -4,7 +4,7 @@ namespace Guardian.Features.Commands.Impl.RC.MasterClient
 {
     class CommandAso : Command
     {
-        public CommandAso() : base("aso", new string[0], "<kdr/racing>", true) { }
+        public CommandAso() : base("aso", new string[0], "<kdr|racing>", true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

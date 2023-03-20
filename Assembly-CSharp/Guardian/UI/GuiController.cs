@@ -1,5 +1,5 @@
 ﻿using Guardian.UI.Impl;
-using Guardian.UI.Impl.Logging;
+using Guardian.UI.Impl.Debug;
 using UnityEngine;
 
 namespace Guardian.UI
@@ -7,6 +7,7 @@ namespace Guardian.UI
     class GuiController : MonoBehaviour
     {
         public Gui CurrentScreen;
+        public GuiModConfiguration ConfigurationScreen = new GuiModConfiguration();
 
         private readonly GuiDebug DebugScreen = new GuiDebug();
 

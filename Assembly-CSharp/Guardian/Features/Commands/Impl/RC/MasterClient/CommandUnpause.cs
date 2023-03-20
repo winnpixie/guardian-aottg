@@ -4,7 +4,7 @@ namespace Guardian.Features.Commands.Impl.RC.MasterClient
 {
     class CommandUnpause : Command
     {
-        public CommandUnpause() : base("unpause", new string[0], "", true) { }
+        public CommandUnpause() : base("unpause", new string[0], string.Empty, true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

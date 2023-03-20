@@ -4,7 +4,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 {
     class CommandDifficulty : Command
     {
-        public CommandDifficulty() : base("difficulty", new string[0], "<training/normal/hard/abnormal>", true) { }
+        public CommandDifficulty() : base("difficulty", new string[0], "<training|normal|hard|abnormal>", true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
