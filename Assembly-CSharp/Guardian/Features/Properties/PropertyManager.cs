@@ -10,6 +10,8 @@ namespace Guardian.Features.Properties
         private readonly string _dataPath = GuardianClient.RootDir + "\\GameSettings.txt";
 
         // Gamemodes
+        public Property<int> MaxTitanPoints = new Property<int>("Gamemodes_Capture:MaxTitanPoints", new string[0], 200);
+        public Property<int> MaxHumanPoints = new Property<int>("Gamemodes_Capture:MaxHumanPoints", new string[0], 200);
         public Property<bool> BombsKillTitans = new Property<bool>("Gamemodes_Bomb:BombsKillTitans", new string[0], true);
         public Property<bool> UseSkyBarrier = new Property<bool>("Gamemodes_Bomb:UseSkyBarrier", new string[0], true);
 
@@ -107,6 +109,8 @@ namespace Guardian.Features.Properties
         public override void Load()
         {
             // Gamemodes
+            base.Add(MaxTitanPoints);
+            base.Add(MaxHumanPoints);
             base.Add(BombsKillTitans);
             base.Add(UseSkyBarrier);
 
@@ -245,7 +249,7 @@ namespace Guardian.Features.Properties
                         Light light = mainLight.GetComponent<Light>();
                         if (mainLight != null)
                         {
-                            light.color = MainLightColor.Value.ToColor();
+                            light.color = ColorHelper.FromHex(MainLightColor.Value);
                         }
                     }
                 }
@@ -262,7 +266,7 @@ namespace Guardian.Features.Properties
 
             FogColor.OnValueChanged = () =>
             {
-                RenderSettings.fogColor = FogColor.Value.ToColor();
+                RenderSettings.fogColor = ColorHelper.FromHex(FogColor.Value);
             };
             base.Add(FogColor);
 

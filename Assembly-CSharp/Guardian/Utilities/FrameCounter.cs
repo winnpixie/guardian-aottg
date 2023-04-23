@@ -4,18 +4,19 @@
     {
         public int FrameCount;
 
+        private readonly MsTimer Timer = new MsTimer();
+
         private int CurrentFrameCount;
-        private long LastPollTime;
 
         public void UpdateCounter()
         {
             CurrentFrameCount++;
 
-            if (GameHelper.CurrentTimeMillis() - LastPollTime < 1000) return;
+            if (!Timer.HasPassed(1000)) return;
 
             FrameCount = CurrentFrameCount;
             CurrentFrameCount = 0;
-            LastPollTime = GameHelper.CurrentTimeMillis();
+            Timer.Update();
         }
     }
 }

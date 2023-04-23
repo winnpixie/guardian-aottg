@@ -4,7 +4,7 @@ namespace Guardian.Features.Commands.Impl.Debug
 {
     internal class CommandStopwatch : Command
     {
-        private long StartTime;
+        private readonly MsTimer Watch = new MsTimer();
 
         public CommandStopwatch() : base("stopwatch", new string[] { "sw", "timer" }, "<start|end>", false) { }
 
@@ -15,11 +15,11 @@ namespace Guardian.Features.Commands.Impl.Debug
             switch (args[0].ToLower())
             {
                 case "start":
-                    StartTime = GameHelper.CurrentTimeMillis();
+                    Watch.Update();
                     irc.AddLine("Timer started! Type <b>/stopwatch end</b> to see how long you waited.");
                     break;
                 case "end":
-                    irc.AddLine($"Timer stopped! You waited {GameHelper.CurrentTimeMillis() - StartTime}ms to end it.");
+                    irc.AddLine($"Timer stopped! You waited {Watch.GetElapsed()}ms to end it.");
                     break;
                 default:
                     break;

@@ -2,13 +2,18 @@ using UnityEngine;
 
 public class MapNameChange : MonoBehaviour
 {
+    private UIPopupList mapList;
+
+    void Awake()
+    {
+        mapList = GetComponent<UIPopupList>();
+    }
+
     private void OnSelectionChange()
     {
-        UIPopupList list = GetComponent<UIPopupList>();
-        LevelInfo info = LevelInfo.GetInfo(list.selection);
-        if (info != null)
-        {
-            GameObject.Find("LabelLevelInfo").GetComponent<UILabel>().text = info.Description;
-        }
+        LevelInfo info = LevelInfo.GetInfo(mapList.selection);
+        if (info == null) return;
+
+        GameObject.Find("LabelLevelInfo").GetComponent<UILabel>().text = info.Description;
     }
 }

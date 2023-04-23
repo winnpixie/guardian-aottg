@@ -62,7 +62,7 @@ public static class GExtensions
                     i += 2;
                     continue;
                 }
-                else if (i + 7 < str.Length && str[i + 7].Equals(']') && str.Substring(i + 1, 6).IsHex()) // [RRGGBB], aka use the color supplied by RRGGBB
+                else if (i + 7 < str.Length && str[i + 7].Equals(']') && Guardian.Utilities.ColorHelper.IsHex(str.Substring(i + 1, 6))) // [RRGGBB], aka use the color supplied by RRGGBB
                 {
                     string color = str.Substring(i + 1, 6).ToUpper();
                     colorHistory.Push(color);
@@ -89,55 +89,6 @@ public static class GExtensions
         return ColorTagPattern.Replace(str, string.Empty);
     }
 
-    public static bool IsHex(this string str)
-    {
-        return (str.Length == 6 || str.Length == 8) && int.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _);
-    }
-
-    public static string ToHex(this Color color)
-    {
-        int r = Mathf.RoundToInt(color.r * 255f);
-        int g = Mathf.RoundToInt(color.g * 255f);
-        int b = Mathf.RoundToInt(color.b * 255f);
-        int a = Mathf.RoundToInt(color.a * 255f);
-
-        return r.ToString("X2") + g.ToString("X2") + b.ToString("X2") + a.ToString("X2");
-    }
-
-    public static Color ToColor(this string str)
-    {
-        float red = 0;
-        float green = 0;
-        float blue = 0;
-        float alpha = 1f;
-
-        // Red
-        if (int.TryParse(str.Substr(0, 1), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int r))
-        {
-            red = r / 255f;
-        }
-
-        // Green
-        if (int.TryParse(str.Substr(2, 3), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int g))
-        {
-            green = g / 255f;
-        }
-
-        // Blue
-        if (int.TryParse(str.Substr(4, 5), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int b))
-        {
-            blue = b / 255f;
-        }
-
-        // Alpha
-        if (str.Length == 8 && int.TryParse(str.Substr(6, 7), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int a))
-        {
-            alpha = a / 255f;
-        }
-
-        return new Color(red, green, blue, alpha);
-    }
-
     public static string AsBold(this string str)
     {
         return $"<b>{str}</b>";
@@ -150,7 +101,7 @@ public static class GExtensions
 
     public static string AsColor(this string str, string hex)
     {
-        if (hex.IsHex())
+        if (Guardian.Utilities.ColorHelper.IsHex(hex))
         {
             return $"<color=#{hex}>{str}</color>";
         }

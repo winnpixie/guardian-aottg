@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FlareMovement : MonoBehaviour
+public class FlareMovement : Photon.MonoBehaviour
 {
     public GameObject hint;
     private GameObject hero;
@@ -8,6 +8,8 @@ public class FlareMovement : MonoBehaviour
     private Vector3 offY;
     private bool nohint;
     private float timer;
+
+    private Light g_light;
 
     private void Start()
     {
@@ -19,26 +21,16 @@ public class FlareMovement : MonoBehaviour
             }
         }
 
-        Color customColor = color switch
-        {
-            "Green" => Guardian.GuardianClient.Properties.Flare1Color.Value.ToColor(),
-            "Red" => Guardian.GuardianClient.Properties.Flare2Color.Value.ToColor(),
-            "Black" => Guardian.GuardianClient.Properties.Flare3Color.Value.ToColor(),
-            _ => Color.white
-        };
-
         Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, base.GetComponent<ParticleSystem>().startColor, true, true);
-
-        base.GetComponent<ParticleSystem>().startColor = customColor;
 
         if (Guardian.GuardianClient.Properties.EmissiveFlares.Value)
         {
-            Light light = base.gameObject.AddComponent<Light>();
-            light.type = LightType.Point;
-            light.intensity = 1f;
-            light.range = 125f;
-            light.color = base.GetComponent<ParticleSystem>().startColor;
-            light.renderMode = LightRenderMode.ForcePixel;
+            g_light = base.gameObject.AddComponent<Light>();
+            g_light.type = LightType.Point;
+            g_light.intensity = 1f;
+            g_light.range = 125f;
+            g_light.color = base.GetComponent<ParticleSystem>().startColor;
+            g_light.renderMode = LightRenderMode.ForcePixel;
         }
 
         hero = GameObject.Find("MainCamera").GetComponent<IN_GAME_MAIN_CAMERA>().main_object;
@@ -46,7 +38,6 @@ public class FlareMovement : MonoBehaviour
         {
             hint = (GameObject)Object.Instantiate(Resources.Load("UI/" + color + "FlareHint"));
 
-            hint.GetComponent<MeshRenderer>().material.color = customColor;
 
             if (color == "Black")
             {
@@ -64,6 +55,25 @@ public class FlareMovement : MonoBehaviour
             hint.transform.localScale = Vector3.zero;
             iTween.ScaleTo(hint, iTween.Hash("x", 1f, "y", 1f, "z", 1f, "easetype", iTween.EaseType.easeOutElastic, "time", 1f));
             iTween.ScaleTo(hint, iTween.Hash("x", 0, "y", 0, "z", 0, "easetype", iTween.EaseType.easeInBounce, "time", 0.5f, "delay", 2.5f));
+        }
+    }
+
+    [Guardian.Networking.RPC]
+    public void SetMyColor(float r, float g, float b, float a, PhotonMessageInfo info = null)
+    {
+        if (info != null && info.sender.Id != base.photonView.owner.Id) return;
+
+        Color customColor = new Color(r, g, b, a);
+        base.GetComponent<ParticleSystem>().startColor = customColor;
+
+        if (g_light != null)
+        {
+            g_light.color = customColor;
+        }
+
+        if (hint != null)
+        {
+            hint.GetComponent<MeshRenderer>().material.color = customColor;
         }
     }
 

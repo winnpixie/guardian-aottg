@@ -56,7 +56,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public static Material SkyMaterial;
     public static string OldScript;
     public static string CurrentLevel;
-    public static string NameField;
     public static string UsernameField;
     public static string PasswordField;
     public static string PrivateServerField;
@@ -98,8 +97,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public int humanScore;
     public int PVPtitanScore;
     public int PVPhumanScore;
-    private int PVPtitanScoreMax = 200;
-    private int PVPhumanScoreMax = 200;
+    private int PVPtitanScoreMax // = 200;
+    {
+        get { return Guardian.GuardianClient.Properties.MaxTitanPoints.Value; }
+    }
+    private int PVPhumanScoreMax // = 200;
+    {
+        get { return Guardian.GuardianClient.Properties.MaxHumanPoints.Value; }
+    }
     private bool isWinning;
     private bool isLosing;
     private int teamWinner;
@@ -189,9 +194,10 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public List<GameObject> AllTitans = new List<GameObject>();
     public List<COLOSSAL_TITAN> Colossals = new List<COLOSSAL_TITAN>();
 
+    private readonly Guardian.Utilities.MsTimer g_roundTimer = new Guardian.Utilities.MsTimer();
+    private readonly Guardian.Utilities.MsTimer g_waveTimer = new Guardian.Utilities.MsTimer();
+
     private Dictionary<int, VoteKick> VoteKicks = new Dictionary<int, VoteKick>();
-    private long RoundStartTime;
-    private long WaveStartTime;
     // END: Guardian
 
     // BEGIN TLW/RRC
@@ -802,12 +808,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 // BEGIN Guardian
                 if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                 {
-                    long currentTime = Guardian.Utilities.GameHelper.CurrentTimeMillis();
                     if (Guardian.GuardianClient.Properties.AnnounceWaveTime.Value)
                     {
-                        Guardian.Utilities.GameHelper.Broadcast($"This wave lasted for <b>{(currentTime - WaveStartTime) / 1000f}</b> second(s)!");
+                        Guardian.Utilities.GameHelper.Broadcast($"This wave lasted for <b>{g_waveTimer.GetElapsed() / 1000f}</b> second(s)!");
                     }
-                    WaveStartTime = currentTime;
+                    g_waveTimer.Update();
                 }
                 // END: Guardian
 
@@ -1086,10 +1091,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         fT = new ArrayList();
         cT = new ArrayList();
         hooks = new ArrayList();
-        if (NameField == null)
-        {
-            NameField = "GUEST" + UnityEngine.Random.Range(0, 100000);
-        }
         if (PrivateServerField == null)
         {
             PrivateServerField = string.Empty;
@@ -1213,7 +1214,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         if (Guardian.GuardianClient.Properties.TranslateIncoming.Value && !info.sender.isLocal)
         {
-            StartCoroutine(Guardian.Utilities.Translator.Translate(message, Guardian.GuardianClient.Properties.IncomingLanguage.Value, Guardian.Utilities.Translator.SystemLanguage, result =>
+            StartCoroutine(Guardian.Utilities.Translator.TranslateRoutine(message, Guardian.GuardianClient.Properties.IncomingLanguage.Value, Guardian.Utilities.Translator.SystemLanguage, result =>
             {
                 if (result.Length > 1 && !result[0].Equals(Guardian.Utilities.Translator.SystemLanguage, StringComparison.OrdinalIgnoreCase))
                 {
@@ -1289,25 +1290,20 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.Mode;
         PhotonNetwork.LoadLevel(levelInfo.MapName);
 
-        ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-
-        string playerName = LoginFengKAI.Player.Name;
-        if (LoginFengKAI.LoginState != LoginState.LoggedIn && NameField.StripNGUI().Length > 0)
+        ExitGames.Client.Photon.Hashtable initialProperties = new ExitGames.Client.Photon.Hashtable
         {
-            LoginFengKAI.Player.Name = playerName = NameField;
-        }
-        hashtable.Add(PhotonPlayerProperty.Name, playerName);
-
-        hashtable.Add(PhotonPlayerProperty.Guild, LoginFengKAI.Player.Guild);
-        hashtable.Add(PhotonPlayerProperty.Kills, 0);
-        hashtable.Add(PhotonPlayerProperty.MaxDamage, 0);
-        hashtable.Add(PhotonPlayerProperty.TotalDamage, 0);
-        hashtable.Add(PhotonPlayerProperty.Deaths, 0);
-        hashtable.Add(PhotonPlayerProperty.IsDead, true);
-        hashtable.Add(PhotonPlayerProperty.IsTitan, 0);
-        hashtable.Add(RCPlayerProperty.RCTeam, 0);
-        hashtable.Add(RCPlayerProperty.CurrentLevel, string.Empty);
-        PhotonNetwork.player.SetCustomProperties(hashtable);
+            { PhotonPlayerProperty.Name, LoginFengKAI.Player.Name },
+            { PhotonPlayerProperty.Guild, LoginFengKAI.Player.Guild },
+            { PhotonPlayerProperty.Kills, 0 },
+            { PhotonPlayerProperty.MaxDamage, 0 },
+            { PhotonPlayerProperty.TotalDamage, 0 },
+            { PhotonPlayerProperty.Deaths, 0 },
+            { PhotonPlayerProperty.IsDead, true },
+            { PhotonPlayerProperty.IsTitan, 0 },
+            { RCPlayerProperty.RCTeam, 0 },
+            { RCPlayerProperty.CurrentLevel, string.Empty }
+        };
+        PhotonNetwork.player.SetCustomProperties(initialProperties);
 
         humanScore = 0;
         titanScore = 0;
@@ -1605,8 +1601,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
 
             // Mod
-            RoundStartTime = Guardian.Utilities.GameHelper.CurrentTimeMillis();
-            WaveStartTime = RoundStartTime;
+            g_roundTimer.Update();
+            g_waveTimer.Update();
         }
         else
         {
@@ -2755,8 +2751,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         // BEGIN Guardian
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && Guardian.GuardianClient.Properties.AnnounceRoundTime.Value)
         {
-            float elapsedRoundTime = (Guardian.Utilities.GameHelper.CurrentTimeMillis() - RoundStartTime) / 1000f;
-            Guardian.Utilities.GameHelper.Broadcast($"This round lasted for <b>{elapsedRoundTime}</b> second(s)!");
+            Guardian.Utilities.GameHelper.Broadcast($"This round lasted for <b>{g_roundTimer.GetElapsed() / 1000f}</b> second(s)!");
         }
         // END: Guardian
 
@@ -3825,41 +3820,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         return gameSettings;
-    }
-
-    private IEnumerator CoLogin()
-    {
-        WWWForm myForm = new WWWForm();
-        myForm.AddField("userid", UsernameField);
-        myForm.AddField("password", PasswordField);
-
-        using WWW www = new WWW("http://fenglee.com/game/aog/require_user_info.php", myForm);
-        yield return www;
-        if (www.error == null && !www.text.Contains("Error,please sign in again."))
-        {
-            string[] array = www.text.Split('|');
-            LoginFengKAI.Player.Name = UsernameField;
-            LoginFengKAI.Player.Guild = array[0];
-            LoginFengKAI.LoginState = LoginState.LoggedIn;
-        }
-        else
-        {
-            LoginFengKAI.LoginState = LoginState.Failed;
-        }
-    }
-
-    private IEnumerator CoSetGuild()
-    {
-        WWWForm myForm = new WWWForm();
-        myForm.AddField("name", LoginFengKAI.Player.Name);
-        myForm.AddField("guildname", LoginFengKAI.Player.Guild);
-
-        using WWW www = new WWW("http://fenglee.com/game/aog/change_guild_name.php", myForm);
-        yield return www;
-        if (www.error != null)
-        {
-            print(www.error);
-        }
     }
 
     // RC background (unused for Guardian)
@@ -8023,79 +7983,35 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     PhotonNetwork.SwitchToProtocol(Guardian.Networking.NetworkHelper.Connection.Protocol);
                 }
                 GUI.Box(new Rect(10f, 30f, 220f, 150f), string.Empty);
-                if (GUI.Button(new Rect(17.5f, 40f, 40f, 25f), "Login"))
+                if (GUI.Button(new Rect(17f, 40f, 100f, 25f), "Name & Guild"))
                 {
                     Settings[187] = 0;
                 }
-                else if (GUI.Button(new Rect(65f, 40f, 95f, 25f), "Custom Name"))
+                else if (GUI.Button(new Rect(123f, 40f, 100f, 25f), "Servers"))
                 {
                     Settings[187] = 1;
-                }
-                else if (GUI.Button(new Rect(167.5f, 40f, 55f, 25f), "Servers"))
-                {
-                    Settings[187] = 2;
                 }
 
                 switch ((int)Settings[187])
                 {
-                    case 0: // Logged In
-                        if (LoginFengKAI.LoginState == LoginState.LoggedIn)
-                        {
-                            GUI.Label(new Rect(20f, 80f, 70f, 20f), "Username:", "Label");
-                            GUI.Label(new Rect(90f, 80f, 90f, 20f), LoginFengKAI.Player.Name, "Label");
-                            GUI.Label(new Rect(20f, 105f, 45f, 20f), "Guild:", "Label");
-                            LoginFengKAI.Player.Guild = GUI.TextField(new Rect(65f, 105f, 145f, 20f), LoginFengKAI.Player.Guild, 40);
-                            if (GUI.Button(new Rect(35f, 140f, 70f, 25f), "Set Guild"))
-                            {
-                                StartCoroutine(CoSetGuild());
-                            }
-                            else if (GUI.Button(new Rect(130f, 140f, 65f, 25f), "Logout"))
-                            {
-                                LoginFengKAI.LoginState = LoginState.LoggedOut;
-                            }
-                            return;
-                        }
-                        GUI.Label(new Rect(20f, 80f, 70f, 20f), "Username:", "Label");
-                        UsernameField = GUI.TextField(new Rect(90f, 80f, 130f, 20f), UsernameField, 40);
-                        GUI.Label(new Rect(20f, 105f, 70f, 20f), "Password:", "Label");
-                        PasswordField = GUI.PasswordField(new Rect(90f, 105f, 130f, 20f), PasswordField, '*', 40);
-                        if (GUI.Button(new Rect(30f, 140f, 50f, 25f), "Login") && LoginFengKAI.LoginState != LoginState.LoggingIn)
-                        {
-                            StartCoroutine(CoLogin());
-                            LoginFengKAI.LoginState = LoginState.LoggingIn;
-                        }
-                        if (LoginFengKAI.LoginState == LoginState.LoggingIn)
-                        {
-                            GUI.Label(new Rect(100f, 140f, 120f, 25f), "Logging in...", "Label");
-                        }
-                        else if (LoginFengKAI.LoginState == LoginState.Failed)
-                        {
-                            GUI.Label(new Rect(100f, 140f, 120f, 25f), "Login Failed.", "Label");
-                        }
-                        break;
-                    case 1: // Custom User
-                        if (LoginFengKAI.LoginState == LoginState.LoggedIn)
-                        {
-                            GUI.Label(new Rect(30f, 80f, 180f, 60f), "You're already logged in!", "Label");
-                            return;
-                        }
+                    case 0: // Custom User
                         // Change max from 40 to 255 because why not
                         GUI.Label(new Rect(20f, 80f, 45f, 20f), "Name:", "Label");
-                        NameField = GUI.TextField(new Rect(65f, 80f, 145f, 20f), NameField, 255);
+                        LoginFengKAI.Player.Name = GUI.TextField(new Rect(65f, 80f, 145f, 20f), LoginFengKAI.Player.Name, 255);
                         GUI.Label(new Rect(20f, 105f, 45f, 20f), "Guild:", "Label");
                         LoginFengKAI.Player.Guild = GUI.TextField(new Rect(65f, 105f, 145f, 20f), LoginFengKAI.Player.Guild, 255);
                         if (GUI.Button(new Rect(42f, 140f, 50f, 25f), "Save"))
                         {
-                            PlayerPrefs.SetString("name", NameField);
+                            PlayerPrefs.SetString("name", LoginFengKAI.Player.Name);
                             PlayerPrefs.SetString("guildname", LoginFengKAI.Player.Guild);
                         }
                         else if (GUI.Button(new Rect(128f, 140f, 50f, 25f), "Load"))
                         {
-                            NameField = PlayerPrefs.GetString("name", string.Empty);
+                            LoginFengKAI.Player.Name = PlayerPrefs.GetString("name", string.Empty);
                             LoginFengKAI.Player.Guild = PlayerPrefs.GetString("guildname", string.Empty);
                         }
                         break;
-                    case 2: // Custom Server
+                    case 1: // Custom Server
                         if (UIMainReferences.Version == UIMainReferences.FengVersion)
                         {
                             GUI.Label(new Rect(37f, 75f, 190f, 25f), "Connected to public server.", "Label");

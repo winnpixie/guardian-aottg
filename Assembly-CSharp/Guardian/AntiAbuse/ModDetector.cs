@@ -8,7 +8,7 @@ namespace Guardian.AntiAbuse
 {
     class ModDetector
     {
-        public static void OnPlayerPropertyModification(object[] playerAndUpdatedProps)
+        public static void OnPlayerPropertyModified(object[] playerAndUpdatedProps)
         {
             PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
             ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;

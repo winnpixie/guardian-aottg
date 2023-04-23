@@ -24,7 +24,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public static DayLight Lighting = DayLight.Day;
     public static bool UsingTitan;
     public static float CameraDistance = 0.6f;
-    public static CameraType CameraMode;
+    public static CameraType CameraMode = CameraType.Original;
     public static string SingleCharacter;
 
     public static int WindowWidth = 960;
@@ -269,20 +269,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
         switch (CameraMode)
         {
-            case CameraType.WoW:
-                {
-                    if (Input.GetKey(KeyCode.Mouse1))
-                    {
-                        base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
-                        float currentPitch = base.transform.rotation.eulerAngles.x % 360f;
-                        float newPitch = currentPitch + dPitch;
-                        if ((!(dPitch > 0f) || ((!(currentPitch < 260f) || !(newPitch > 260f)) && (!(currentPitch < 80f) || !(newPitch > 80f)))) && (!(dPitch < 0f) || ((!(currentPitch > 280f) || !(newPitch < 280f)) && (!(currentPitch > 100f) || !(newPitch < 100f)))))
-                        {
-                            base.transform.RotateAround(base.transform.position, base.transform.right, dPitch);
-                        }
-                    }
-                    break;
-                }
             case CameraType.TPS:
                 {
                     if (!inputManager.menuOn)
@@ -796,10 +782,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     Screen.lockCursor = false;
                     break;
                 case CameraType.Original:
-                    CameraMode = CameraType.WoW;
-                    Screen.lockCursor = false;
-                    break;
-                case CameraType.WoW:
                     CameraMode = CameraType.TPS;
                     Screen.lockCursor = true;
                     break;

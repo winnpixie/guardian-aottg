@@ -7,7 +7,7 @@ namespace Guardian.Utilities
 {
     class GameHelper
     {
-        public static readonly Regex BlacklistedTagsPattern = new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
+        public static readonly Regex DangerousTagsPattern = new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
         public static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static readonly Vector2 ScrollBottom = new Vector2(0, float.MaxValue);
 

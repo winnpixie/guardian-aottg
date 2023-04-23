@@ -7,9 +7,9 @@ namespace Guardian.UI.Impl
 {
     class GuiModConfiguration : Gui
     {
-        private Regex NumericPattern = new Regex("-?(\\d*\\.?)?\\d+", RegexOptions.IgnoreCase);
-        private int Width = 640;
-        private int Height = 480;
+        private Regex NumericPattern = new Regex("[\\-\\.0-9]", RegexOptions.IgnoreCase);
+        private int Width = 480;
+        private int Height = 320;
         private bool ShouldSave = false;
         private Dictionary<Property, bool> TempBoolProps = new Dictionary<Property, bool>();
         private Dictionary<Property, string> TempIntProps = new Dictionary<Property, string>();
@@ -50,10 +50,9 @@ namespace Guardian.UI.Impl
 
         public override void Draw()
         {
-            //GUILayout.BeginArea(new Rect(5, Screen.height - Height - 5, Width, Height), GuiSkins.Box);
-            GUILayout.BeginArea(new Rect((Screen.width / 2f) - (Width / 2f), (Screen.height / 2f) - (Height / 2f), Width, Height), GuiSkins.Box);
+            GUILayout.BeginArea(new Rect(5, Screen.height - Height - 5, Width, Height), GuiSkins.Box);
+            //GUILayout.BeginArea(new Rect((Screen.width / 2f) - (Width / 2f), (Screen.height / 2f) - (Height / 2f), Width, Height), GuiSkins.Box);
             GUILayout.Label("Mod Configuration", GUILayout.Width(Width));
-            ScrollPosition = GUILayout.BeginScrollView(ScrollPosition);
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
@@ -66,6 +65,8 @@ namespace Guardian.UI.Impl
             GUILayout.EndHorizontal();
 
             GUILayout.Label(CurrentSection.AsBold());
+
+            ScrollPosition = GUILayout.BeginScrollView(ScrollPosition);
 
             foreach (Property property in GuardianClient.Properties.Elements)
             {

@@ -9,13 +9,12 @@ using Guardian.Utilities;
 using System.Collections;
 using UnityEngine;
 using Guardian.UI.Impl.Debug;
-using System.IO;
 
 namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.2.3";
+        public static readonly string Build = "1.3.0";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -45,7 +44,7 @@ namespace Guardian
                     }
                 }
 
-                StartCoroutine(CoWaitAndSetParticleTexture());
+                StartCoroutine(WaitAndSetParticleTextures());
             }
 
             GuiController = base.gameObject.AddComponent<UI.GuiController>();
@@ -61,11 +60,7 @@ namespace Guardian
             SkinValidator.Init();
 
             // Load name and guild (if possible)
-            FengGameManagerMKII.NameField = PlayerPrefs.GetString("name", string.Empty);
-            if (FengGameManagerMKII.NameField.StripNGUI().Length < 1)
-            {
-                FengGameManagerMKII.NameField = LoginFengKAI.Player.Name;
-            }
+            LoginFengKAI.Player.Name = PlayerPrefs.GetString("name", string.Empty);
             LoginFengKAI.Player.Guild = PlayerPrefs.GetString("guildname", string.Empty);
 
             // Load various features
@@ -73,65 +68,14 @@ namespace Guardian
             Gamemodes.Load();
             Properties.Load();
 
-            DiscordRPC.StartTime = GameHelper.CurrentTimeMillis();
-            DiscordRPC.Initialize();
+            DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
+            DiscordHelper.Initialize();
 
             // Check for an update
-            StartCoroutine(CoCheckForUpdate());
+            StartCoroutine(UpdateChecker.CheckForUpdate());
         }
 
-        private IEnumerator CoCheckForUpdate()
-        {
-            Logger.Info("Checking for update...");
-            Logger.Info($"Installed: {Build}");
-
-            using WWW www = new WWW("http://aottg.winnpixie.xyz/clients/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
-            yield return www;
-
-            if (www.error != null)
-            {
-                Logger.Error(www.error);
-
-                Logger.Error($"\nIf errors persist, PLEASE contact me!");
-                Logger.Info("Discord:");
-                Logger.Info($"\t- {"https://discord.gg/JGzTdWm".AsColor("0099FF")}");
-
-                try
-                {
-                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]COULD NOT VERIFY BUILD.[-] If this persists, PLEASE contact me @ [0099FF]https://discord.gg/JGzTdWm[-]!";
-                }
-                catch { }
-            }
-            else
-            {
-                string latestBuild = string.Empty;
-                foreach (string buildData in www.text.Split('\n'))
-                {
-                    string[] buildInfo = buildData.Split(new char[] { '=' }, 2);
-                    if (!buildInfo[0].Equals("MOD")) continue;
-
-                    latestBuild = buildInfo[1].Trim();
-                }
-                Logger.Info("Latest: " + latestBuild);
-
-                if (!latestBuild.Equals(Build))
-                {
-                    Toasts.Add(new Toast("SYSTEM", "Your copy of Guardian is OUT OF DATE, please update!", 20));
-
-                    Logger.Info($"Your copy of Guardian is {"OUT OF DATE".AsBold().AsItalic().AsColor("FF0000")}!");
-                    Logger.Info("If you don't have the launcher, download it here:");
-                    Logger.Info($"\t- {"https://cb.run/GuardianAoT".AsColor("0099FF")}");
-
-                    try
-                    {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]OUT OF DATE![-] Please update from the launcher @ [0099FF]https://cb.run/GuardianAoT[-]!";
-                    }
-                    catch { }
-                }
-            }
-        }
-
-        private IEnumerator CoWaitAndSetParticleTexture()
+        private IEnumerator WaitAndSetParticleTextures()
         {
             // Load custom textures and audio clips
             ResourceLoader.TryGetAsset("Custom/Textures/dust.png", out Texture2D dustTexture);
@@ -190,7 +134,7 @@ namespace Guardian
                 Gamemodes.CurrentMode.OnUpdate();
             }
 
-            DiscordRPC.RunCallbacks();
+            DiscordHelper.RunCallbacks();
 
             FpsCounter.UpdateCounter();
         }
@@ -210,7 +154,7 @@ namespace Guardian
                     _ => "Unknown"
                 };
 
-                DiscordRPC.SetPresence(new Discord.Activity
+                DiscordHelper.SetPresence(new Discord.Activity
                 {
                     Details = $"Playing offline.",
                     State = $"{FengGameManagerMKII.Level.DisplayName} / {difficulty}"
@@ -257,14 +201,14 @@ namespace Guardian
 
         private void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
         {
-            NetworkValidator.OnPlayerPropertyModification(playerAndUpdatedProps);
+            NetworkValidator.OnPlayerPropertyModified(playerAndUpdatedProps);
 
-            ModDetector.OnPlayerPropertyModification(playerAndUpdatedProps);
+            ModDetector.OnPlayerPropertyModified(playerAndUpdatedProps);
         }
 
         private void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
-            NetworkValidator.OnRoomPropertyModification(propertiesThatChanged);
+            NetworkValidator.OnRoomPropertyModified(propertiesThatChanged);
 
             PhotonPlayer sender = null;
             if (propertiesThatChanged.ContainsKey("sender") && propertiesThatChanged["sender"] is PhotonPlayer player)
@@ -314,19 +258,19 @@ namespace Guardian
                  { GuardianPlayerProperty.GuardianMod, Build }
             });
 
-            StartCoroutine(CoUpdateMyPing());
+            StartCoroutine(UpdateMyPing());
 
             string[] roomInfo = PhotonNetwork.room.name.Split('`');
             if (roomInfo.Length < 7) return;
 
-            DiscordRPC.SetPresence(new Discord.Activity
+            DiscordHelper.SetPresence(new Discord.Activity
             {
                 Details = $"Playing in {(roomInfo[5].Length < 1 ? string.Empty : "[PWD]")} {roomInfo[0].StripNGUI()}",
                 State = $"({NetworkHelper.GetRegionCode().ToUpper()}) {roomInfo[1]} / {roomInfo[2].ToUpper()}"
             });
         }
 
-        private IEnumerator CoUpdateMyPing()
+        private IEnumerator UpdateMyPing()
         {
             while (PhotonNetwork.inRoom)
             {
@@ -355,7 +299,7 @@ namespace Guardian
             RCSettings.BombCeiling = false;
             RCSettings.HideNames = false;
 
-            DiscordRPC.SetPresence(new Discord.Activity
+            DiscordHelper.SetPresence(new Discord.Activity
             {
                 Details = "Idle..."
             });
@@ -412,7 +356,7 @@ namespace Guardian
 
             Properties.Save();
 
-            DiscordRPC.Dispose();
+            DiscordHelper.Dispose();
         }
     }
 }

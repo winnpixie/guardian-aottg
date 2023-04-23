@@ -15,17 +15,18 @@ public class AHSSShotGunCollider : MonoBehaviour
 
     private FengGameManagerMKII fengGame;
 
-    private AudioSource hitSound;
+    private AudioSource g_hitSound;
 
     private void Start()
     {
         // Load custom textures and audio clips
         {
-            hitSound = gameObject.AddComponent<AudioSource>();
+            g_hitSound = gameObject.AddComponent<AudioSource>();
 
             if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
             {
-                hitSound.clip = deathClip;
+                g_hitSound.clip = deathClip;
+                g_hitSound.dopplerLevel = 0f;
             }
         }
 
@@ -142,7 +143,7 @@ public class AHSSShotGunCollider : MonoBehaviour
                     currentHits.Add(hitbox);
 
                     // Custom hit sound
-                    hitSound.Play();
+                    g_hitSound.Play();
 
                     int damage = (int)((currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity - hitbox.transform.root.rigidbody.velocity).magnitude * 10f * scoreMulti);
                     damage = Mathf.Max(10, damage);

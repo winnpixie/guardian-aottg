@@ -10,7 +10,6 @@
 
             string name = string.Join(" ", args);
             LoginFengKAI.Player.Name = name;
-            FengGameManagerMKII.NameField = name;
 
             PhotonNetwork.player.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {

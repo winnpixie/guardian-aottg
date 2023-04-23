@@ -23,7 +23,8 @@
                 HERO hero = player.GetHero();
                 if (hero == null || hero.HasDied()) return;
 
-                hero.photonView.RPC("netDie", PhotonTargets.All, hero.transform.position, false, -1, "[FF0000]Server ", false);
+                string reason = args.Length < 2 ? "[FF0000]Server " : string.Join(" ", args.CopyOfRange(2, args.Length - 1));
+                hero.photonView.RPC("netDie", PhotonTargets.All, hero.transform.position, false, -1, reason, false);
             }
         }
     }

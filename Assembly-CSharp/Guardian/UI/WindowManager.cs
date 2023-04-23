@@ -56,7 +56,7 @@ namespace Guardian.UI
                         if (mainCam != null)
                         {
                             IN_GAME_MAIN_CAMERA mainCamera = mainCam.GetComponent<IN_GAME_MAIN_CAMERA>();
-                            mainCamera.StartCoroutine(CoMarkHudDirty(mainCamera));
+                            mainCamera.StartCoroutine(MarkHudDirty(mainCamera));
                         }
                     }
                 }
@@ -73,7 +73,7 @@ namespace Guardian.UI
             }
         }
 
-        private static IEnumerator CoMarkHudDirty(IN_GAME_MAIN_CAMERA mainCamera)
+        private static IEnumerator MarkHudDirty(IN_GAME_MAIN_CAMERA mainCamera)
         {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();

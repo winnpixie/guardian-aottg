@@ -41,8 +41,8 @@ public class InRoomChat : Photon.MonoBehaviour
 
     public void AddMessage(string sender, string text)
     {
-        sender = Guardian.Utilities.GameHelper.BlacklistedTagsPattern.Replace(sender, string.Empty);
-        text = Guardian.Utilities.GameHelper.BlacklistedTagsPattern.Replace(text, string.Empty);
+        sender = Guardian.Utilities.GameHelper.DangerousTagsPattern.Replace(sender, string.Empty);
+        text = Guardian.Utilities.GameHelper.DangerousTagsPattern.Replace(text, string.Empty);
 
         if (sender.Length != 0 || text.Length != 0)
         {

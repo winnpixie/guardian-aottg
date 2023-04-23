@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Xft;
+using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
 
 public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScriptHero
 {
@@ -244,8 +245,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     public float g_rightRopeTileScale;
 
     // Misc
+    private readonly Guardian.Utilities.MsTimer g_burstTimer = new Guardian.Utilities.MsTimer();
+
     private float g_previousSpeed;
-    private long g_lastGasBurst = Guardian.Utilities.GameHelper.CurrentTimeMillis();
     // END Guardian
 
     // BEGIN Syal
@@ -1067,9 +1069,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (!(dashTime > 0f) && !(currentGas <= 0f) && !isMounted)
         {
             // Guardian
-            if (Guardian.Utilities.GameHelper.CurrentTimeMillis() - g_lastGasBurst < 300) return;
+            if (!g_burstTimer.HasPassed(300)) return;
 
-            g_lastGasBurst = Guardian.Utilities.GameHelper.CurrentTimeMillis();
+            g_burstTimer.Update();
 
             UseGas(totalGas * 0.04f);
             facingDirection = GetGlobalFacingDirection(horizontal, vertical);
@@ -1756,50 +1758,60 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void ShootFlare(int type)
     {
-        bool canShoot = false;
-        if (type == 1 && flare1CD == 0f)
+        switch (type)
         {
-            flare1CD = flareTotalCD;
-            canShoot = true;
+            case 1:
+                if (flare1CD > 0f) return;
+
+                flare1CD = flareTotalCD;
+                break;
+            case 2:
+                if (flare2CD > 0f) return;
+
+                flare2CD = flareTotalCD;
+                break;
+            case 3:
+                if (flare3CD > 0f) return;
+
+                flare3CD = flareTotalCD;
+                break;
         }
-        if (type == 2 && flare2CD == 0f)
+
+        Quaternion firingDirection = base.transform.rotation;
+
+        if (Guardian.GuardianClient.Properties.DirectionalFlares.Value)
         {
-            flare2CD = flareTotalCD;
-            canShoot = true;
+            // Yes I took this from Anarchy-Expedition, hush.
+            Quaternion cameraRot = Camera.main.transform.rotation;
+            firingDirection = Quaternion.Euler(cameraRot.eulerAngles.x + 60f, cameraRot.eulerAngles.y, cameraRot.eulerAngles.z);
         }
-        if (type == 3 && flare3CD == 0f)
+
+        Color flareColor = type switch
         {
-            flare3CD = flareTotalCD;
-            canShoot = true;
+            1 => Guardian.Utilities.ColorHelper.FromHex(Guardian.GuardianClient.Properties.Flare1Color.Value),
+            2 => Guardian.Utilities.ColorHelper.FromHex(Guardian.GuardianClient.Properties.Flare2Color.Value),
+            3 => Guardian.Utilities.ColorHelper.FromHex(Guardian.GuardianClient.Properties.Flare3Color.Value),
+            _ => Color.white
+        };
+
+        GameObject flare;
+        if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+        {
+            flare = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/flareBullet" + type), base.transform.position, firingDirection);
+            flare.GetComponent<FlareMovement>().SetMyColor(flareColor.r, flareColor.g, flareColor.b, flareColor.a);
+            UnityEngine.Object.Destroy(flare, 25f);
+        }
+        else
+        {
+            flare = PhotonNetwork.Instantiate("FX/flareBullet" + type, base.transform.position, firingDirection, 0);
+            flare.GetComponent<FlareMovement>().photonView.RPC("SetMyColor", PhotonTargets.All, flareColor.r, flareColor.g, flareColor.b, flareColor.a);
         }
 
-        if (canShoot)
+        flare.GetComponent<FlareMovement>().DontShowHint();
+
+        if (g_flareSound != null)
         {
-            Quaternion firingDirection = base.transform.rotation;
-
-            if (Guardian.GuardianClient.Properties.DirectionalFlares.Value)
-            {
-                // Yes I took this from Anarchy-Expedition, hush.
-                Quaternion cameraRot = Camera.main.transform.rotation;
-                firingDirection = Quaternion.Euler(cameraRot.eulerAngles.x + 60f, cameraRot.eulerAngles.y, cameraRot.eulerAngles.z);
-            }
-
-            if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
-            {
-                GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/flareBullet" + type), base.transform.position, firingDirection);
-                gameObject.GetComponent<FlareMovement>().DontShowHint();
-                UnityEngine.Object.Destroy(gameObject, 25f);
-            }
-            else
-            {
-                GameObject gameObject2 = PhotonNetwork.Instantiate("FX/flareBullet" + type, base.transform.position, firingDirection, 0);
-                gameObject2.GetComponent<FlareMovement>().DontShowHint();
-            }
-
-            if (g_flareSound != null)
-            {
-                g_flareSound.Play();
-            }
+            g_flareSound.Play();
         }
     }
 
@@ -2034,33 +2046,39 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/hook_shot.wav", out AudioClip hookShotClip))
             {
                 rope.clip = hookShotClip;
+                rope.dopplerLevel = 0f;
             }
 
             if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/sword_swing.wav", out AudioClip swordSwingClip))
             {
                 slash.clip = swordSwingClip;
+                slash.dopplerLevel = 0f;
             }
 
             if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/sword_hit.wav", out AudioClip swordHitClip))
             {
                 slashHit.clip = swordHitClip;
+                slashHit.dopplerLevel = 0f;
             }
 
             if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/player_die.wav", out AudioClip deathClip))
             {
                 meatDie.clip = deathClip;
+                meatDie.dopplerLevel = 0f;
             }
 
             g_burstSound = base.gameObject.AddComponent<AudioSource>();
             if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/burst.wav", out AudioClip burstClip))
             {
                 g_burstSound.clip = burstClip;
+                g_burstSound.dopplerLevel = 0f;
             }
 
             g_flareSound = base.gameObject.AddComponent<AudioSource>();
             if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/flare_shot.wav", out AudioClip flareClip))
             {
                 g_flareSound.clip = flareClip;
+                g_flareSound.dopplerLevel = 0f;
             }
         }
 
@@ -2977,8 +2995,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         }
         else if (gasPercent < 0.25f)
         {
-            cachedSprites["gasL"].color = Guardian.Utilities.Colors.Orange;
-            cachedSprites["gasR"].color = Guardian.Utilities.Colors.Orange;
+            cachedSprites["gasL"].color = Guardian.Utilities.ColorHelper.Orange;
+            cachedSprites["gasR"].color = Guardian.Utilities.ColorHelper.Orange;
         }
         else if (gasPercent < 0.5f)
         {
@@ -3006,8 +3024,8 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             else if (blaPercent < 0.25f)
             {
 
-                cachedSprites["bladel1"].color = Guardian.Utilities.Colors.Orange;
-                cachedSprites["blader1"].color = Guardian.Utilities.Colors.Orange;
+                cachedSprites["bladel1"].color = Guardian.Utilities.ColorHelper.Orange;
+                cachedSprites["blader1"].color = Guardian.Utilities.ColorHelper.Orange;
             }
             else if (blaPercent < 0.5f)
             {

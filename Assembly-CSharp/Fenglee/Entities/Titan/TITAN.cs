@@ -1549,7 +1549,7 @@ public class TITAN : Photon.MonoBehaviour
         if (Minimap.Instance != null)
         {
             // Color.yellow
-            Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Guardian.Utilities.Colors.Orange, trackOrientation: true, depthAboveAll: true);
+            Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Guardian.Utilities.ColorHelper.Orange, trackOrientation: true, depthAboveAll: true);
         }
         currentCamera = GameObject.Find("MainCamera");
         runAnimation = "run_walk";

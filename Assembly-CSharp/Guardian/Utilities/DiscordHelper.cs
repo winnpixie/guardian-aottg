@@ -1,6 +1,6 @@
 ﻿namespace Guardian.Utilities
 {
-    class DiscordRPC
+    class DiscordHelper
     {
         public static long StartTime;
 

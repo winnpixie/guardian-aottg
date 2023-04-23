@@ -1,22 +1,22 @@
 ﻿class SynchronizedList<T> : System.Collections.Generic.IList<T>
 {
-    private readonly System.Collections.Generic.List<T> _List = new System.Collections.Generic.List<T>();
-    private readonly object AccessLock = new object();
+    private readonly System.Collections.Generic.List<T> RealList = new System.Collections.Generic.List<T>();
+    private readonly object Lock = new object();
 
     public T this[int index]
     {
         get
         {
-            lock (AccessLock)
+            lock (Lock)
             {
-                return _List[index];
+                return RealList[index];
             }
         }
         set
         {
-            lock (AccessLock)
+            lock (Lock)
             {
-                _List[index] = value;
+                RealList[index] = value;
             }
         }
     }
@@ -25,9 +25,9 @@
     {
         get
         {
-            lock (AccessLock)
+            lock (Lock)
             {
-                return _List.Count;
+                return RealList.Count;
             }
         }
     }
@@ -36,96 +36,96 @@
     {
         get
         {
-            return ((System.Collections.Generic.ICollection<T>)_List).IsReadOnly;
+            return ((System.Collections.Generic.ICollection<T>)RealList).IsReadOnly;
         }
     }
 
     public void Add(T item)
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            _List.Add(item);
+            RealList.Add(item);
         }
     }
 
     public void Clear()
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            _List.Clear();
+            RealList.Clear();
         }
     }
 
     public bool Contains(T item)
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            return _List.Contains(item);
+            return RealList.Contains(item);
         }
     }
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            _List.CopyTo(array, arrayIndex);
+            RealList.CopyTo(array, arrayIndex);
         }
     }
 
     public System.Collections.Generic.IEnumerator<T> GetEnumerator()
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            return _List.GetEnumerator();
+            return RealList.GetEnumerator();
         }
     }
 
     public int IndexOf(T item)
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            return _List.IndexOf(item);
+            return RealList.IndexOf(item);
         }
     }
 
     public void Insert(int index, T item)
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            _List.Insert(index, item);
+            RealList.Insert(index, item);
         }
     }
 
     public bool Remove(T item)
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            return _List.Remove(item);
+            return RealList.Remove(item);
         }
     }
 
     public void RemoveAt(int index)
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            _List.RemoveAt(index);
+            RealList.RemoveAt(index);
         }
     }
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            return _List.GetEnumerator();
+            return RealList.GetEnumerator();
         }
     }
 
     // BEGIN Custom
     public void RemoveAll(System.Predicate<T> predicate)
     {
-        lock (AccessLock)
+        lock (Lock)
         {
-            _List.RemoveAll(predicate);
+            RealList.RemoveAll(predicate);
         }
     }
     // END Custom

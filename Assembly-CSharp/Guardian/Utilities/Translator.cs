@@ -10,10 +10,10 @@ namespace Guardian.Utilities
     {
         public static string SystemLanguage => CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
-        // private static readonly string ApiUrl = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={0}&tl={1}&q={2}"; // Alt-URL
+        //private static readonly string ApiUrl = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={0}&tl={1}&q={2}"; // Alt-URL
         private static readonly string ApiUrl = "https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl={0}&tl={1}&dt=t&q={2}";
 
-        public static IEnumerator Translate(string text, string langFrom, string langTo, Action<string[]> callback)
+        public static IEnumerator TranslateRoutine(string text, string langFrom, string langTo, Action<string[]> callback)
         {
             string query = WWW.EscapeURL(text);
             string url = string.Format(ApiUrl, langFrom, langTo, query);

@@ -2,6 +2,13 @@ using UnityEngine;
 
 public class LanguageChangeListener : MonoBehaviour
 {
+    private UIPopupList languageList;
+
+    void Awake()
+    {
+        languageList = GetComponent<UIPopupList>();
+    }
+
     private void Start()
     {
         if (Language.type == -1)
@@ -16,17 +23,17 @@ public class LanguageChangeListener : MonoBehaviour
                 Language.type = 0;
             }
             Language.Init();
-            GetComponent<UIPopupList>().selection = Language.GetLang(Language.type);
+            languageList.selection = Language.GetLang(Language.type);
         }
         else
         {
-            GetComponent<UIPopupList>().selection = Language.GetLang(Language.type);
+            languageList.selection = Language.GetLang(Language.type);
         }
     }
 
     private void OnSelectionChange()
     {
-        Language.type = Language.GetLangIndex(GetComponent<UIPopupList>().selection);
+        Language.type = Language.GetLangIndex(languageList.selection);
         PlayerPrefs.SetInt("language", Language.type);
     }
 }

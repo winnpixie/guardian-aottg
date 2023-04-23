@@ -49,9 +49,8 @@ namespace Guardian.AntiAbuse.Validators
         // HERO.SetMyCannon
         public static bool IsCannonSetValid(int viewId, PhotonMessageInfo info)
         {
-            // FIXME: No longer checking if PV has a Cannon object, un-tested.
             PhotonView view = PhotonView.Find(viewId);
-            if (view != null && view.ownerId == info.sender.Id) return true;
+            if (view != null && view.GetComponent<Cannon>() != null) return true;
 
             GuardianClient.Logger.Warn($"'HERO.SetMyCannon' from #{(info == null ? "?" : info.sender.Id.ToString())}");
             return false;

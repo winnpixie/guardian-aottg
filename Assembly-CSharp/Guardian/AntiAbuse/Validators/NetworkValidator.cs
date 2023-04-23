@@ -122,7 +122,7 @@ namespace Guardian.AntiAbuse.Validators
             return false;
         }
 
-        public static void OnPlayerPropertyModification(object[] playerAndUpdatedProps)
+        public static void OnPlayerPropertyModified(object[] playerAndUpdatedProps)
         {
             PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
             ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
@@ -153,7 +153,7 @@ namespace Guardian.AntiAbuse.Validators
             }
         }
 
-        public static void OnRoomPropertyModification(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+        public static void OnRoomPropertyModified(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
             // Remove invalid properties
             if (!PhotonNetwork.isMasterClient

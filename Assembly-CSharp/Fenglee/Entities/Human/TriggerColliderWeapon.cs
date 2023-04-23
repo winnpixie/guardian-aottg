@@ -21,6 +21,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                 Object.Destroy(base.gameObject.GetComponent<AudioSource>());
                 meatDie = gameObject.AddComponent<AudioSource>();
                 meatDie.clip = deathClip;
+                meatDie.dopplerLevel = 0f;
             }
         }
 

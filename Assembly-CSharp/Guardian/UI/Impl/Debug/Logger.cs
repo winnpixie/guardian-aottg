@@ -11,7 +11,7 @@ namespace Guardian.UI.Impl.Debug
 
         private void Log(string message)
         {
-            message = GameHelper.BlacklistedTagsPattern.Replace(message, string.Empty);
+            message = GameHelper.DangerousTagsPattern.Replace(message, string.Empty);
             if (message.Length < 1) return;
 
             Entries.Add(new Entry(message));

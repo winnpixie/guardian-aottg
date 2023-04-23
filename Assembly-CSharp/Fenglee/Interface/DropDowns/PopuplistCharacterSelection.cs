@@ -7,9 +7,16 @@ public class PopuplistCharacterSelection : MonoBehaviour
     public GameObject BLA;
     public GameObject ACL;
 
+    private UIPopupList characterList;
+
+    void Awake()
+    {
+        characterList = GetComponent<UIPopupList>();
+    }
+
     private void onCharacterChange()
     {
-        string selection = GetComponent<UIPopupList>().selection;
+        string selection = characterList.selection;
         HeroStat heroStat;
         switch (selection)
         {
@@ -20,7 +27,7 @@ public class PopuplistCharacterSelection : MonoBehaviour
                 heroStat = ((heroCostume != null) ? heroCostume.stat : new HeroStat());
                 break;
             default:
-                heroStat = HeroStat.GetInfo(GetComponent<UIPopupList>().selection);
+                heroStat = HeroStat.GetInfo(characterList.selection);
                 break;
         }
 

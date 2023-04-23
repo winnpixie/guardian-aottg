@@ -408,7 +408,7 @@ public class MicGUI : MonoBehaviour
 
         GUILayout.EndArea();
         GUILayout.EndVertical();
-        if ((!Input.GetKey(KeyCode.Mouse0) || !Input.GetKey(KeyCode.Mouse1)) && !Input.GetKey(KeyCode.C) && (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.WoW || IN_GAME_MAIN_CAMERA.CameraMode == CameraType.Original))
+        if ((!Input.GetKey(KeyCode.Mouse0) || !Input.GetKey(KeyCode.Mouse1)) && !Input.GetKey(KeyCode.C) && IN_GAME_MAIN_CAMERA.CameraMode == CameraType.Original)
         {
             GUI.DragWindow();
         }

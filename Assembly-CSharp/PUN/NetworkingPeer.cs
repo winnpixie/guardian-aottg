@@ -1395,6 +1395,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             int ownerId = viewId / PhotonNetwork.MAX_VIEW_IDS;
             bool isOurs = ownerId == mLocalActor.Id;
             bool isSenders = ownerId == sender.Id;
+
             if (isOurs)
             {
                 Debug.LogWarning("Received RPC \"" + rpcName + "\" for viewID " + viewId + " but this PhotonView does not exist! View was/is ours." + (!isSenders ? " Remote called." : " Owner called."));
@@ -1403,8 +1404,10 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             {
                 Debug.LogError("Received RPC \"" + rpcName + "\" for viewID " + viewId + " but this PhotonView does not exist! Was remote PV." + (!isSenders ? " Remote called." : " Owner called."));
             }
+
             return;
         }
+
         if (photonView.prefix != viewPrefix)
         {
             Debug.LogError("Received RPC \"" + rpcName + "\" on viewID " + viewId + " with a prefix of " + viewPrefix + ", our prefix is " + photonView.prefix + ". The RPC has been ignored.");
@@ -1442,7 +1445,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     methods = this.monoRPCMethodsCache[keyType] = SupportClass.GetMethods(keyType, typeof(Guardian.Networking.RPC));
                 }
 
-                if (methods == null) return;
+                if (methods == null) continue;
 
                 foreach (MethodInfo method in methods)
                 {
@@ -1464,7 +1467,6 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                                 break;
                             }
 
-                            object[] tmp = new object[parameters.Length + 1];
                             Array.Resize(ref parameters, parameters.Length + 1);
                             parameters[parameters.Length - 1] = new PhotonMessageInfo(sender, timestamp, photonView);
                         }
@@ -1492,8 +1494,8 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         }
 
         // TODO: Jesus christ.
-        if (sender == null) return;
         if (isKnown) return;
+        if (sender == null) return;
 
         switch (rpcName)
         {
