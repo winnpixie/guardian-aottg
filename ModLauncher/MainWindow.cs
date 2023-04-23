@@ -1,11 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,7 +20,7 @@ namespace Launcher
 
         private void MainWindow_Load(object sender, EventArgs args)
         {
-            LogOutputArea.AutoWordSelection = true;
+            OutputLogBox.AutoWordSelection = true;
 
             InformationLbl.Text = string.Format(InformationLbl.Text, Environment.OSVersion.VersionString, Program.Arch, Program.Build);
             InformationLbl.Refresh();
@@ -35,17 +33,12 @@ namespace Launcher
 
         private void SetLogText(string message)
         {
-            LogOutputArea.Text = message;
-        }
-
-        private void PrependToLog(string message)
-        {
-            LogOutputArea.Text = message + LogOutputArea.Text;
+            OutputLogBox.Text = message;
         }
 
         private void AppendToLog(string message)
         {
-            LogOutputArea.Text += message;
+            OutputLogBox.Text += message;
         }
 
         private void StartGame(bool clearLog)
@@ -54,11 +47,11 @@ namespace Launcher
             {
                 if (clearLog)
                 {
-                    SetLogText("Starting Guardian.exe...");
+                    SetLogText("Starting Guardian...");
                 }
                 else
                 {
-                    AppendToLog("Starting Guardian.exe...");
+                    AppendToLog("Starting Guardian...");
                 }
 
                 ProcessStartInfo psi = new ProcessStartInfo
@@ -79,26 +72,31 @@ namespace Launcher
 
         private async void UpdateAndPlayBtn_Start(object sender, EventArgs e)
         {
-            SetLogText(string.Empty);
-
-            // Terminate any active processes related to our software
-            try
-            {
-                AppendToLog("Attempting to kill active Guardian processes...");
-                Process.Start(new ProcessStartInfo("taskkill.exe", "/F /IM Guardian.exe"));
-            }
-            catch { }
+            SetLogText("!! PLEASE CLOSE ALL RUNNING INSTANCES OF GUARDIAN MOD !!\n");
 
             // Get and print the latest build information
             try
             {
                 AppendToLog("\nObtaining latest build information...");
-                string latestVersion = await GetVersionData();
-                AppendToLog($"\n{latestVersion}");
+                string versionData = await GetVersionData();
+                AppendToLog($"\n{versionData}");
+
+                foreach (string buildData in versionData.Split('\n'))
+                {
+                    string[] buildInfo = buildData.Split(new char[] { '=' }, 2);
+                    if (!buildInfo[0].Equals("LAUNCHER")) continue;
+
+                    string latestBuild = buildInfo[1].Trim();
+
+                    if (latestBuild.Equals(Program.Build)) break;
+
+                    AppendToLog("\nYour copy of the Guardian Mod Launcher is OUT OF DATE, please update!");
+                    AppendToLog("\n\t- https://cb.run/GuardianAoT");
+                }
             }
             catch (Exception ex)
             {
-                AppendToLog($"ERROR, SKIPPING\n\n{ex}\n");
+                AppendToLog($"!! ERROR !! (This part is not crucial, skipping!!)\n\n{ex}\n");
             }
 
             byte[] binZipData;
@@ -111,7 +109,7 @@ namespace Launcher
             }
             catch (Exception ex)
             {
-                AppendToLog($"FAILED\n\n{ex}");
+                AppendToLog($"!! ERROR !!\n\n{ex}");
                 return;
             }
 
@@ -127,7 +125,7 @@ namespace Launcher
                 }
                 catch (Exception ex)
                 {
-                    AppendToLog($"FAILED\nPlease delete it yourself and retry.\n\n{ex}\n");
+                    AppendToLog($"!! ERROR !!\nPlease delete it yourself and retry.\n\n{ex}\n");
                     return;
                 }
             }
@@ -140,7 +138,7 @@ namespace Launcher
             }
             catch (Exception ex)
             {
-                AppendToLog($"FAILED\n\n{ex}\n");
+                AppendToLog($"!! ERROR !!\n\n{ex}\n");
                 return;
             }
 
@@ -152,7 +150,7 @@ namespace Launcher
             }
             catch (Exception ex)
             {
-                AppendToLog($"FAILED\n\n{ex}\n");
+                AppendToLog($"!! ERROR !!\n\n{ex}\n");
                 return;
             }
 
@@ -165,7 +163,7 @@ namespace Launcher
             }
             catch (Exception ex)
             {
-                AppendToLog($"FAILED (This is probably still okay!!)\n\n{ex}\n");
+                AppendToLog($"!! ERROR !! (This part is not crucial, skipping!!)\n\n{ex}\n");
             }
 
             StartGame(false);
@@ -196,8 +194,6 @@ namespace Launcher
             {
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    AppendToLog($"\nExtracting {entry.FullName}...");
-
                     string path = Program.Cwd + "\\" + entry.FullName;
                     if (path.EndsWith("\\") || path.EndsWith("/"))
                     {
@@ -206,6 +202,7 @@ namespace Launcher
                     }
                     else
                     {
+                        AppendToLog($"\nExtracting {entry.FullName}...");
                         entry.ExtractToFile(path, true);
                     }
                 }
@@ -215,56 +212,6 @@ namespace Launcher
         private void StartGameBtn_Click(object sender, EventArgs e)
         {
             StartGame(true);
-        }
-
-        private async void UploadLogBtn_Click(object sender, EventArgs e)
-        {
-            // Ensure user has ran the game at least once
-            FileInfo outputLogFile = new FileInfo(Program.Cwd + "\\Guardian_Data\\output_log.txt");
-            if (!outputLogFile.Exists)
-            {
-                SetLogText("No 'output_log.txt' in Guardian_Data");
-                return;
-            }
-
-            try
-            {
-                SetLogText("Uploading Guardian_Data\\output_log.txt to hastebin.com...");
-                AppendToLog("\n\n" + await UploadLog(outputLogFile));
-            }
-            catch (Exception ex)
-            {
-                AppendToLog($"FAILED\n\n{ex}\n");
-            }
-        }
-
-        private async Task<string> UploadLog(FileInfo outputLog)
-        {
-            // Read contents of output_log.txt
-            using (StreamReader sr = new StreamReader(outputLog.OpenRead()))
-            {
-                string outputText = await sr.ReadToEndAsync();
-
-                // Upload file contents to hastebin.com
-                using (StringContent payload = new StringContent(outputText, Encoding.UTF8, "text/plain"))
-                {
-                    HttpResponseMessage response = await httpClient.PostAsync("https://hastebin.com/documents", payload);
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        throw new Exception("Bad response from https://hastebin.com/");
-                    }
-
-                    // Read JSON response and return URL
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    JObject json = JObject.Parse(responseBody);
-                    if (json.TryGetValue("key", out JToken keyToken))
-                    {
-                        return "https://hastebin.com/" + keyToken.ToObject<string>() + ".txt";
-                    }
-
-                    throw new Exception("Bad JSON response from https://hastebin.com/");
-                }
-            }
         }
     }
 }

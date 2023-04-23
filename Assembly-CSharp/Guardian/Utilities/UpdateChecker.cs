@@ -30,19 +30,16 @@ namespace Guardian.Utilities
             }
             else
             {
-                string latestBuild = string.Empty;
                 foreach (string buildData in www.text.Split('\n'))
                 {
                     string[] buildInfo = buildData.Split(new char[] { '=' }, 2);
                     if (!buildInfo[0].Equals("MOD")) continue;
 
-                    latestBuild = buildInfo[1].Trim();
-                }
+                    string latestBuild = buildInfo[1].Trim();
+                    GuardianClient.Logger.Info("Latest: " + latestBuild);
 
-                GuardianClient.Logger.Info("Latest: " + latestBuild);
+                    if (latestBuild.Equals(GuardianClient.Build)) break;
 
-                if (!latestBuild.Equals(GuardianClient.Build))
-                {
                     GuardianClient.Toasts.Add(new Toast("SYSTEM", "Your copy of Guardian is OUT OF DATE, please update!", 20));
 
                     GuardianClient.Logger.Info($"Your copy of Guardian is {"OUT OF DATE".AsBold().AsItalic().AsColor("FF0000")}!");
