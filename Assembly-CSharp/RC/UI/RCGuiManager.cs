@@ -334,8 +334,8 @@ namespace RC.UI
                 }
                 if (!fgm.mainCamera.enabled)
                 {
-                    Screen.showCursor = true;
-                    Screen.lockCursor = true;
+                    Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: true);
+
                     GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = false;
                     Camera.main.GetComponent<SpectatorMovement>().disable = false;
                     Camera.main.GetComponent<MouseLook>().disable = false;
@@ -344,13 +344,11 @@ namespace RC.UI
                 IN_GAME_MAIN_CAMERA.IsPausing = false;
                 if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS)
                 {
-                    Screen.showCursor = false;
-                    Screen.lockCursor = true;
+                    Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: true);
                 }
                 else
                 {
-                    Screen.showCursor = false;
-                    Screen.lockCursor = false;
+                    Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: false);
                 }
                 GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = false;
                 GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().JustUpdate();
@@ -365,8 +363,9 @@ namespace RC.UI
                 {
                     PhotonNetwork.Disconnect();
                 }
-                Screen.lockCursor = false;
-                Screen.showCursor = true;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
                 IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
                 fgm.gameStart = false;
                 GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = false;

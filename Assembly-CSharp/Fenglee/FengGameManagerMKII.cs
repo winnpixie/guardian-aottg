@@ -407,8 +407,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             { PhotonPlayerProperty.IsTitan, 1 }
         };
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-        Screen.showCursor = false;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
         SetTextCenter("The game has started for 60 seconds.\n please wait for next round.\n Click Right Mouse Key to Enter or Exit the Spectator Mode.");
         mainCamera.enabled = true;
         mainCamera.SetMainObject(null);
@@ -425,8 +426,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             { PhotonPlayerProperty.IsTitan, 2 }
         };
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-        Screen.showCursor = true;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
         SetTextCenter("The game has started for 60 seconds.\n please wait for next round.\n Click Right Mouse Key to Enter or Exit the Spectator Mode.");
         mainCamera.enabled = true;
         mainCamera.SetMainObject(null);
@@ -459,8 +461,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             { PhotonPlayerProperty.IsTitan, 2 }
         };
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-        Screen.showCursor = true;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
         SetTextCenter(string.Empty);
     }
 
@@ -476,15 +479,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     public void OnDisconnectedFromPhoton()
     {
         UnityEngine.MonoBehaviour.print("OnDisconnectedFromPhoton");
-        Screen.lockCursor = false;
-        Screen.showCursor = true;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
     }
 
     public void OnConnectionFail(DisconnectCause cause)
     {
         UnityEngine.MonoBehaviour.print("OnConnectionFail: " + cause.ToString());
-        Screen.lockCursor = false;
-        Screen.showCursor = true;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
         IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
         gameStart = false;
         NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[0], state: false);
@@ -1339,8 +1343,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         LoadConfig();
         IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
         gameStart = false;
-        Screen.lockCursor = false;
-        Screen.showCursor = true;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
         inputManager.menuOn = false;
         DestroyAllExistingCloths();
         UnityEngine.Object.Destroy(GameObject.Find("MultiplayerManager"));
@@ -1447,8 +1452,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         mainCamGameObj.name = "MainCamera";
         SetCamera(mainCamGameObj.GetComponent<IN_GAME_MAIN_CAMERA>());
 
-        Screen.lockCursor = true;
-        Screen.showCursor = true;
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: true);
 
         ui = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("UI_IN_GAME"));
         ui.name = "UI_IN_GAME";
@@ -1474,8 +1478,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             mainCamGameObj.GetComponent<MouseLook>().disable = true;
             IN_GAME_MAIN_CAMERA.Gamemode = Level.Mode;
             SpawnPlayer(IN_GAME_MAIN_CAMERA.SingleCharacter.ToUpper());
-            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-            Screen.showCursor = false;
+
+            Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
             int abnormal = 90;
             if (difficulty == 1)
             {
@@ -1511,7 +1516,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         else if ((int)Settings[245] == 0)
         {
-            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
+            Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
             if (IN_GAME_MAIN_CAMERA.Gamemode == GameMode.PvPCapture)
             {
                 if (GExtensions.AsInt(PhotonNetwork.player.customProperties[PhotonPlayerProperty.IsTitan]) == 2)
@@ -1900,8 +1906,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             GameObject.Find("LabelMaxDmg").GetComponent<UILabel>().text = maxDamage;
             GameObject.Find("LabelTotalDmg").GetComponent<UILabel>().text = totalDamage;
             GameObject.Find("LabelResultTitle").GetComponent<UILabel>().text = gameResult;
-            Screen.lockCursor = false;
-            Screen.showCursor = true;
+
+            Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
             IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
             gameStart = false;
         }
@@ -2062,8 +2069,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 if (NGUITools.GetActive(ui.GetComponent<UIReferArray>().panels[3]))
                 {
-                    Screen.lockCursor = true;
-                    Screen.showCursor = true;
+                    Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: true);
+
                     NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[0], state: true);
                     NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[1], state: false);
                     NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[2], state: false);
@@ -2073,8 +2080,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 else
                 {
-                    Screen.lockCursor = false;
-                    Screen.showCursor = true;
+                    Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
                     NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[0], state: false);
                     NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[1], state: false);
                     NGUITools.SetActive(ui.GetComponent<UIReferArray>().panels[2], state: false);
@@ -2086,8 +2093,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
             if (inputManager.isInputDown[15] && !inputManager.menuOn)
             {
-                Screen.showCursor = true;
-                Screen.lockCursor = false;
+                Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
                 Camera.main.GetComponent<SpectatorMovement>().disable = true;
                 Camera.main.GetComponent<MouseLook>().disable = true;
                 inputManager.menuOn = true;
@@ -2479,8 +2486,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
         gameStart = false;
-        Screen.lockCursor = false;
-        Screen.showCursor = true;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
         string players = string.Empty;
         string kills = string.Empty;
         string deaths = string.Empty;
@@ -2688,8 +2696,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             mainCam.GetComponent<SpectatorMovement>().disable = true;
             mainCam.GetComponent<MouseLook>().disable = true;
             mainCamera.gameOver = false;
-            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-            Screen.showCursor = false;
+
+            Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
             isLosing = false;
             SetTextCenter(string.Empty);
         }
@@ -2731,8 +2740,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 { PhotonPlayerProperty.IsTitan, 2 }
             };
             PhotonNetwork.player.SetCustomProperties(hashtable);
-            Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-            Screen.showCursor = true;
+
+            Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
             SetTextCenter(string.Empty);
         }
         else
@@ -2983,8 +2993,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             mainCamera.enabled = true;
             if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.Original)
             {
-                Screen.lockCursor = false;
-                Screen.showCursor = false;
+                Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: false);
             }
             GameObject gameObject3 = GameObject.FindGameObjectWithTag("Player");
             if (gameObject3 != null && gameObject3.GetComponent<HERO>() != null)
@@ -2998,8 +3007,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             mainCamera.SetSpectorMode(val: false);
             mainCamera.gameOver = true;
 
-            Screen.lockCursor = !Screen.lockCursor;
-            Screen.lockCursor = !Screen.lockCursor;
+            Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: !Screen.lockCursor);
+            Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: !Screen.lockCursor);
         }
         else
         {
@@ -5523,8 +5532,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         mainCam.GetComponent<SpectatorMovement>().disable = true;
         mainCam.GetComponent<MouseLook>().disable = true;
         mainCamera.gameOver = false;
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-        Screen.showCursor = false;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
         isLosing = false;
         SetTextCenter(string.Empty);
     }
@@ -5555,8 +5565,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             { PhotonPlayerProperty.IsTitan, 1 },
         };
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-        Screen.showCursor = false;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
         mainCamera.enabled = true;
         mainCamera.SetMainObject(null);
         mainCamera.SetSpectorMode(val: true);
@@ -5572,8 +5583,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             { PhotonPlayerProperty.IsTitan, 2 }
         };
         PhotonNetwork.player.SetCustomProperties(hashtable);
-        Screen.lockCursor = IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS;
-        Screen.showCursor = true;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS);
+
         SetTextCenter("Syncing spawn locations...");
         mainCamera.enabled = true;
         mainCamera.SetMainObject(null);
@@ -6054,7 +6066,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 LinkHash[3].Add(selectedObj.GetInstanceID(), selectedObj.name + "," + Convert.ToString(selectedObj.transform.position.x) + "," + Convert.ToString(selectedObj.transform.position.y) + "," + Convert.ToString(selectedObj.transform.position.z) + "," + Convert.ToString(selectedObj.transform.rotation.x) + "," + Convert.ToString(selectedObj.transform.rotation.y) + "," + Convert.ToString(selectedObj.transform.rotation.z) + "," + Convert.ToString(selectedObj.transform.rotation.w));
                 selectedObj = null;
                 Camera.main.GetComponent<MouseLook>().enabled = true;
-                Screen.lockCursor = true;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
             }
 
             if (InputRC.IsInputLevel(InputCodeRC.LevelDelete))
@@ -6062,7 +6075,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 UnityEngine.Object.Destroy(selectedObj);
                 selectedObj = null;
                 Camera.main.GetComponent<MouseLook>().enabled = true;
-                Screen.lockCursor = true;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
+
                 LinkHash[3].Remove(selectedObj.GetInstanceID());
             }
             return;
@@ -6111,12 +6126,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             if (Screen.lockCursor)
             {
                 Camera.main.GetComponent<MouseLook>().enabled = false;
-                Screen.lockCursor = false;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: false);
             }
             else
             {
                 Camera.main.GetComponent<MouseLook>().enabled = true;
-                Screen.lockCursor = true;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
             }
         }
 
@@ -6132,14 +6149,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             {
                 selectedObj = transform2.gameObject;
                 Camera.main.GetComponent<MouseLook>().enabled = false;
-                Screen.lockCursor = true;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
+
                 LinkHash[3].Remove(selectedObj.GetInstanceID());
             }
             else if (transform2.parent.gameObject.name.StartsWith("custom") || transform2.parent.gameObject.name.StartsWith("base") || transform2.parent.gameObject.name.StartsWith("racing") || transform2.parent.gameObject.name.StartsWith("photon"))
             {
                 selectedObj = transform2.parent.gameObject;
                 Camera.main.GetComponent<MouseLook>().enabled = false;
-                Screen.lockCursor = true;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
+
                 LinkHash[3].Remove(selectedObj.GetInstanceID());
             }
         }
@@ -8257,8 +8278,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                     else if (GUI.Button(new Rect(205f, 500f, 60f, 30f), "Exit"))
                     {
-                        Screen.lockCursor = false;
-                        Screen.showCursor = true;
+                        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
                         IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
                         inputManager.menuOn = false;
                         UnityEngine.Object.Destroy(GameObject.Find("MultiplayerManager"));
@@ -9326,13 +9347,15 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     selectedObj.transform.position = new Vector3(Camera.main.transform.position.x + Camera.main.transform.forward.x * 10f, Camera.main.transform.position.y + Camera.main.transform.forward.y * 10f, Camera.main.transform.position.z + Camera.main.transform.forward.z * 10f);
                     selectedObj.transform.rotation = Quaternion.Euler(0f, Camera.main.transform.rotation.eulerAngles.y, 0f);
                 }
-                Screen.lockCursor = true;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
+
                 GUI.FocusControl(null);
             }
             else if (inputManager != null && inputManager.menuOn)
             {
-                Screen.showCursor = true;
-                Screen.lockCursor = false;
+                Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
                 if ((int)Settings[64] == 6) // TODO: What is this one again?
                 {
                     return;
@@ -9369,13 +9392,15 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     int masterLength = GExtensions.AsString(PhotonNetwork.masterClient.customProperties[RCPlayerProperty.CurrentLevel]).Length;
                     GUI.Label(new Rect(num7 - 60f, num8 - 30f, 200f, 22f), "Loading Level (" + ourLength + "/" + masterLength + ")");
                     retryTime += Time.deltaTime;
-                    Screen.lockCursor = false;
-                    Screen.showCursor = true;
+
+                    Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
                     if (GUI.Button(new Rect(num7 - 20f, num8 + 50f, 40f, 30f), "Quit"))
                     {
                         PhotonNetwork.Disconnect();
-                        Screen.lockCursor = false;
-                        Screen.showCursor = true;
+
+                        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
                         IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
                         this.gameStart = false;
                         GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = false;

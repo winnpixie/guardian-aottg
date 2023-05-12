@@ -273,7 +273,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 {
                     if (!inputManager.menuOn)
                     {
-                        Screen.lockCursor = true;
+                        Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
                     }
                     base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
                     float currentPitch = base.transform.rotation.eulerAngles.x % 360f;
@@ -284,25 +284,45 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     }
                     break;
                 }
+            case CameraType.WoW:
+                {
+                    if (Input.GetKey(KeyCode.Mouse1))
+                    {
+                        base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
+                        float currentPitch = base.transform.rotation.eulerAngles.x % 360f;
+                        float newPitch = currentPitch + dPitch;
+                        if ((!(dPitch > 0f) || ((!(currentPitch < 260f) || !(newPitch > 260f)) && (!(currentPitch < 80f) || !(newPitch > 80f)))) && (!(dPitch < 0f) || ((!(currentPitch > 280f) || !(newPitch < 280f)) && (!(currentPitch > 100f) || !(newPitch < 100f)))))
+                        {
+                            base.transform.RotateAround(base.transform.position, base.transform.right, dPitch);
+                        }
+                    }
+                    break;
+                }
             case CameraType.Original:
                 {
                     Vector3 mousePosition = Input.mousePosition;
                     if (mousePosition.x < (float)Screen.width * 0.4f)
                     {
-                        dYaw = (-((Screen.width * 0.4f) - mousePosition.x) / (float)(Screen.width * 0.4f)) * 150f;
                         if (!Guardian.GuardianClient.Properties.UseRawInput.Value)
                         {
-                            dYaw *= GetSensitivityMultiWithTimeDelta();
+                            dYaw = (0f - ((Screen.width * 0.4f) - mousePosition.x) / (float)Screen.width * 0.4f) * GetSensitivityMultiWithTimeDelta() * 150f;
+                        }
+                        else
+                        {
+                            dYaw = (0f - ((Screen.width * 0.4f) - mousePosition.x) / (float)Screen.width * 0.4f) * (UnityEngine.Time.deltaTime * 62f) * 150f;
                         }
 
                         base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
                     }
                     else if (mousePosition.x > (float)Screen.width * 0.6f)
                     {
-                        dYaw = ((mousePosition.x - (float)Screen.width * 0.6f) / (float)(Screen.width * 0.4f)) * 150f;
                         if (!Guardian.GuardianClient.Properties.UseRawInput.Value)
                         {
-                            dYaw *= GetSensitivityMultiWithTimeDelta();
+                            dYaw = (mousePosition.x - (float)Screen.width * 0.6f) / (float)Screen.width * 0.4f * GetSensitivityMultiWithTimeDelta() * 150f;
+                        }
+                        else
+                        {
+                            dYaw = (mousePosition.x - (float)Screen.width * 0.6f) / (float)Screen.width * 0.4f * (UnityEngine.Time.deltaTime * 62f) * 150f;
                         }
 
                         base.transform.RotateAround(base.transform.position, Vector3.up, dYaw);
@@ -648,8 +668,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
         if (Gametype == GameType.Stop)
         {
-            Screen.showCursor = true;
-            Screen.lockCursor = false;
+            Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
             return;
         }
 
@@ -730,8 +750,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     UnityEngine.Time.timeScale = 0f;
                 }
                 GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = true;
-                Screen.showCursor = true;
-                Screen.lockCursor = false;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
             }
         }
 
@@ -743,8 +763,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             Minimap.OnScreenResolutionChanged();
 
             SetHUDPosition();
-            Screen.lockCursor = !Screen.lockCursor;
-            Screen.lockCursor = !Screen.lockCursor;
+            Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: !Screen.lockCursor);
+            Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: !Screen.lockCursor);
         }
 
         // Fullscreen toggle
@@ -779,11 +799,15 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             {
                 case CameraType.TPS:
                     CameraMode = CameraType.Original;
-                    Screen.lockCursor = false;
+                    Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: false);
                     break;
                 case CameraType.Original:
+                    CameraMode = CameraType.WoW;
+                    Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: false);
+                    break;
+                case CameraType.WoW:
                     CameraMode = CameraType.TPS;
-                    Screen.lockCursor = true;
+                    Guardian.UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
                     break;
             }
 

@@ -135,7 +135,11 @@ public class Horse : Photon.MonoBehaviour
                 }
                 else
                 {
-                    Idle();
+                    if (!base.animation.IsPlaying("horse_crazy") || base.animation["horse_crazy"].normalizedTime >= 1f)
+                    {
+                        Idle();
+                    }
+
                     if (base.rigidbody.velocity.magnitude > 15f)
                     {
                         if (!myHero.animation.IsPlaying("horse_run"))
@@ -149,9 +153,16 @@ public class Horse : Photon.MonoBehaviour
                     }
                 }
 
-                if ((controller.isAttackDown || controller.isAttackIIDown) && IsGrounded())
+                if (IsGrounded())
                 {
-                    base.rigidbody.AddForce(Vector3.up * 25f, ForceMode.VelocityChange);
+                    if (controller.isAttackDown)
+                    {
+                        base.rigidbody.AddForce(Vector3.up * 25f, ForceMode.VelocityChange);
+                    }
+                    else if (controller.isAttackIIDown)
+                    {
+                        CrossFade("horse_crazy", 0.1f);
+                    }
                 }
                 break;
             case "follow":
@@ -250,6 +261,7 @@ public class Horse : Photon.MonoBehaviour
                 break;
             case "idle":
                 Idle();
+
                 if (myHero != null && Vector3.Distance(myHero.transform.position, base.transform.position) > 20f)
                 {
                     Follow();

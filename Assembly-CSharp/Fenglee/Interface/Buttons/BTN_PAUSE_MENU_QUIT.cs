@@ -12,14 +12,15 @@ public class BTN_PAUSE_MENU_QUIT : MonoBehaviour
         {
             PhotonNetwork.Disconnect();
         }
-        Screen.lockCursor = false;
-        Screen.showCursor = true;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
         IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
 
         FengGameManagerMKII.Instance.gameStart = false;
 
         GameObject imc = GameObject.Find("InputManagerController");
-        if(imc != null)
+        if (imc != null)
         {
             imc.GetComponent<FengCustomInputs>().menuOn = false;
         }

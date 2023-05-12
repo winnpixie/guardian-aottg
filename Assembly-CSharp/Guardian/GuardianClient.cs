@@ -14,7 +14,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.3.0";
+        public static readonly string Build = "1.3.1";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -345,8 +345,8 @@ namespace Guardian
             // TPS crosshair ending up where it shouldn't
             if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS)
             {
-                Screen.lockCursor = false;
-                Screen.lockCursor = true;
+                UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: false);
+                UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
             }
         }
 

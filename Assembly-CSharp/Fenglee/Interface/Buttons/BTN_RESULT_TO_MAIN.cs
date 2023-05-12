@@ -11,8 +11,9 @@ public class BTN_RESULT_TO_MAIN : MonoBehaviour
 		}
 		IN_GAME_MAIN_CAMERA.Gametype = GameType.Stop;
 		GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().gameStart = false;
-		Screen.lockCursor = false;
-		Screen.showCursor = true;
+
+        Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
+
 		GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().menuOn = false;
 		Object.Destroy(GameObject.Find("MultiplayerManager"));
 		Application.LoadLevel("menu");

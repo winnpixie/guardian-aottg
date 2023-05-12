@@ -247,33 +247,42 @@ public class TITAN_EREN : Photon.MonoBehaviour
         {
             if (inputManager.isInputDown[InputCode.Attack0] || inputManager.isInputDown[InputCode.Attack1])
             {
-                if (inputManager.isInputDown[InputCode.Attack1])
+                bool flag = false;
+                if ((IN_GAME_MAIN_CAMERA.CameraMode == CameraType.WoW && inputManager.isInput[InputCode.Down]) || inputManager.isInputDown[InputCode.Attack1])
                 {
-                    attackAnimation = "attack_kick";
+                    if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.WoW && inputManager.isInputDown[InputCode.Attack1] && inputManager.inputKey[11] == KeyCode.Mouse1)
+                    {
+                        flag = true;
+                    }
+                    if (!flag)
+                    {
+                        attackAnimation = "attack_kick";
+                    }
                 }
                 else
                 {
                     attackAnimation = "attack_combo_001";
                 }
-
-                PlayAnimation(attackAnimation);
-                base.animation[attackAnimation].time = 0f;
-                isAttack = true;
-                needFreshCorePosition = true;
-                if (attackAnimation == "attack_combo_001" || attackAnimation == "attack_combo_001")
+                if (!flag)
                 {
-                    attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R/hand_R");
+                    PlayAnimation(attackAnimation);
+                    base.animation[attackAnimation].time = 0f;
+                    isAttack = true;
+                    needFreshCorePosition = true;
+                    if (attackAnimation == "attack_combo_001" || attackAnimation == "attack_combo_001")
+                    {
+                        attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_R/upper_arm_R/forearm_R/hand_R");
+                    }
+                    else if (attackAnimation == "attack_combo_002")
+                    {
+                        attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_L/upper_arm_L/forearm_L/hand_L");
+                    }
+                    else if (attackAnimation == "attack_kick")
+                    {
+                        attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/thigh_R/shin_R/foot_R");
+                    }
+                    hitTargets = new ArrayList();
                 }
-                else if (attackAnimation == "attack_combo_002")
-                {
-                    attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/shoulder_L/upper_arm_L/forearm_L/hand_L");
-                }
-                else if (attackAnimation == "attack_kick")
-                {
-                    attackBox = base.transform.Find("Amarture/Core/Controller_Body/hip/thigh_R/shin_R/foot_R");
-                }
-
-                hitTargets = new ArrayList();
             }
             if (inputManager.isInputDown[InputCode.Salute])
             {

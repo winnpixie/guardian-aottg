@@ -70,6 +70,10 @@ public class TITAN_CONTROLLER : MonoBehaviour
             {
                 isAttackDown = true;
             }
+            if (inputManager.isInputDown[InputCode.Salute])
+            {
+                isAttackIIDown = true;
+            }
             isWALKDown = FengGameManagerMKII.InputRC.IsInputHorse(InputCodeRC.HorseWalk);
             return;
         }

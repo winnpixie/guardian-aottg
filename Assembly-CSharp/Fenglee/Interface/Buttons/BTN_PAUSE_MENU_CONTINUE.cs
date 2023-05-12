@@ -24,8 +24,8 @@ public class BTN_PAUSE_MENU_CONTINUE : MonoBehaviour
         NGUITools.SetActive(gameObject.GetComponent<UIReferArray>().panels[3], state: false);
         if (!currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().enabled)
         {
-            Screen.showCursor = true;
-            Screen.lockCursor = true;
+            Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: true);
+
             inputs.menuOn = false;
             currentCamera.GetComponent<SpectatorMovement>().disable = false;
             currentCamera.GetComponent<MouseLook>().disable = false;
@@ -34,13 +34,11 @@ public class BTN_PAUSE_MENU_CONTINUE : MonoBehaviour
         IN_GAME_MAIN_CAMERA.IsPausing = false;
         if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS)
         {
-            Screen.showCursor = false;
-            Screen.lockCursor = true;
+            Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: true);
         }
         else
         {
-            Screen.showCursor = false;
-            Screen.lockCursor = false;
+            Guardian.UI.WindowManager.SetCursorStates(shown: false, locked: false);
         }
         inputs.menuOn = false;
         inputs.JustUpdate();

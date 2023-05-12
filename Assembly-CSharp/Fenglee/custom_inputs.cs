@@ -135,8 +135,8 @@ public class custom_inputs : MonoBehaviour
             {
                 Time.timeScale = 0f;
                 menuOn = true;
-                Screen.showCursor = true;
-                Screen.lockCursor = false;
+
+                Guardian.UI.WindowManager.SetCursorStates(shown: true, locked: false);
             }
         }
     }
