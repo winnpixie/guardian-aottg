@@ -14,7 +14,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.3.1";
+        public static readonly string Build = "1.4.0";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -67,6 +67,9 @@ namespace Guardian
             Commands.Load();
             Gamemodes.Load();
             Properties.Load();
+
+            // Load emotes
+            EmoteHelper.Load();
 
             DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
             DiscordHelper.Initialize();

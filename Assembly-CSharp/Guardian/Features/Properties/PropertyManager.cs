@@ -7,7 +7,7 @@ namespace Guardian.Features.Properties
 {
     class PropertyManager : FeatureManager<Property>
     {
-        private readonly string _dataPath = GuardianClient.RootDir + "\\GameSettings.txt";
+        private readonly string DataPath = GuardianClient.RootDir + "\\GameSettings.txt";
 
         // Gamemodes
         public Property<int> MaxTitanPoints = new Property<int>("Gamemodes_Capture:MaxTitanPoints", new string[0], 200);
@@ -26,6 +26,7 @@ namespace Guardian.Features.Properties
         public Property<int> FatalSpeedDelta = new Property<int>("MC_FatalSpeedDelta", new string[0], 75);
         public Property<string> CollisionsDeathMessage = new Property<string>("MC_CollisionsDeathMessage", new string[0], "[FF4444]Blunt force trauma");
         public Property<bool> HideNames = new Property<bool>("MC_DisableNames", new string[0], false);
+        public Property<bool> ClearStatsOnReset = new Property<bool>("MC_ClearStatsOnReset", new string[0], false);
 
         // Assets
         public Property<string> ThunderSpearSkin = new Property<string>("Assets_ThunderSpearSkin", new string[0], string.Empty);
@@ -125,6 +126,7 @@ namespace Guardian.Features.Properties
             base.Add(FatalSpeedDelta);
             base.Add(CollisionsDeathMessage);
             base.Add(HideNames);
+            base.Add(ClearStatsOnReset);
 
             // Assets
             base.Add(ThunderSpearSkin);
@@ -340,52 +342,50 @@ namespace Guardian.Features.Properties
 
         public void LoadFromFile()
         {
-            GameHelper.TryCreateFile(_dataPath, false);
+            GameHelper.TryCreateFile(DataPath, false);
 
-            foreach (string line in File.ReadAllLines(_dataPath))
+            foreach (string line in File.ReadAllLines(DataPath))
             {
                 string[] data = line.Split(new char[] { '=' }, 2);
                 Property property = Find(data[0]);
+                if (property == null) continue;
 
-                if (property != null)
+                if (property.Value is bool)
                 {
-                    if (property.Value is bool)
+                    if (bool.TryParse(data[1], out bool result))
                     {
-                        if (bool.TryParse(data[1], out bool result))
-                        {
-                            ((Property<bool>)property).Value = result;
-                        }
+                        ((Property<bool>)property).Value = result;
                     }
-                    else if (property.Value is int)
+                }
+                else if (property.Value is int)
+                {
+                    if (int.TryParse(data[1], out int result))
                     {
-                        if (int.TryParse(data[1], out int result))
-                        {
-                            ((Property<int>)property).Value = result;
-                        }
+                        ((Property<int>)property).Value = result;
                     }
-                    else if (property.Value is float)
+                }
+                else if (property.Value is float)
+                {
+                    if (float.TryParse(data[1], out float result))
                     {
-                        if (float.TryParse(data[1], out float result))
-                        {
-                            ((Property<float>)property).Value = result;
-                        }
+                        ((Property<float>)property).Value = result;
                     }
-                    else if (property.Value is string)
-                    {
-                        ((Property<string>)property).Value = data[1];
-                    }
+                }
+                else if (property.Value is string)
+                {
+                    ((Property<string>)property).Value = data[1];
                 }
             }
         }
 
         public override void Save()
         {
-            GameHelper.TryCreateFile(_dataPath, false);
+            GameHelper.TryCreateFile(DataPath, false);
 
             StringBuilder builder = new StringBuilder();
             base.Elements.ForEach(property => builder.AppendLine($"{property.Name}={property.Value}"));
 
-            File.WriteAllText(_dataPath, builder.ToString());
+            File.WriteAllText(DataPath, builder.ToString());
         }
     }
 }

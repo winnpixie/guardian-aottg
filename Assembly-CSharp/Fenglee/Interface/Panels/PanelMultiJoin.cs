@@ -11,6 +11,11 @@ public class PanelMultiJoin : MonoBehaviour
     private string filter = string.Empty;
     private UILabel pageLabel;
 
+    // BEGIN Guardian
+    public bool g_hideFullRooms;
+    public bool g_hideLockedRooms;
+    // END Guardian
+
     private void Start()
     {
         for (int i = 0; i < 10; i++)
@@ -90,16 +95,27 @@ public class PanelMultiJoin : MonoBehaviour
     private void ShowServerList()
     {
         RoomInfo[] rooms = PhotonNetwork.GetRoomList();
-        if (rooms.Length != 0)
+
+        // BEGIN Guardian
+        ArrayList g_filteredRooms = new ArrayList();
+        foreach (RoomInfo info in rooms)
+        {
+            if (!ShouldListRoom(info)) continue;
+
+            g_filteredRooms.Add(info);
+        }
+        // END Guardian
+
+        if (g_filteredRooms.Count > 0)
         {
             if (filter.Length == 0)
             {
                 for (int i = 0; i < 10; i++)
                 {
                     int index = 10 * (currentPage - 1) + i;
-                    if (index < rooms.Length)
+                    if (index < g_filteredRooms.Count)
                     {
-                        RoomInfo roomInfo = rooms[index];
+                        RoomInfo roomInfo = (RoomInfo)g_filteredRooms[index];
                         items[i].SetActive(value: true);
                         items[i].GetComponentInChildren<UILabel>().text = GetServerDataString(roomInfo);
                         items[i].GetComponentInChildren<BTN_Connect_To_Server_On_List>().roomName = roomInfo.name;
@@ -183,21 +199,20 @@ public class PanelMultiJoin : MonoBehaviour
             items[num].SetActive(false);
         }
         string[] array = roomName.Split('`');
-        if (array.Length > 6)
-        {
-            if (array[5].Length > 0)
-            {
-                PanelMultiJoinPWD.Password = array[5];
-                PanelMultiJoinPWD.RoomName = roomName;
+        if (array.Length < 7) return;
 
-                UIMainReferences ui = GameObject.Find("UIRefer").GetComponent<UIMainReferences>();
-                NGUITools.SetActive(ui.PanelMultiPWD, state: true);
-                NGUITools.SetActive(ui.panelMultiROOM, state: false);
-            }
-            else
-            {
-                PhotonNetwork.JoinRoom(roomName);
-            }
+        if (array[5].Length > 0)
+        {
+            PanelMultiJoinPWD.Password = array[5];
+            PanelMultiJoinPWD.RoomName = roomName;
+
+            UIMainReferences ui = GameObject.Find("UIRefer").GetComponent<UIMainReferences>();
+            NGUITools.SetActive(ui.PanelMultiPWD, state: true);
+            NGUITools.SetActive(ui.panelMultiROOM, state: false);
+        }
+        else
+        {
+            PhotonNetwork.JoinRoom(roomName);
         }
     }
 
@@ -211,16 +226,33 @@ public class PanelMultiJoin : MonoBehaviour
     private void UpdateFilteredRooms()
     {
         filterRoom = new ArrayList();
-        if (filter.Length > 0)
+        if (filter.Length == 0) return;
+
+        foreach (RoomInfo roomInfo in PhotonNetwork.GetRoomList())
         {
-            foreach (RoomInfo roomInfo in PhotonNetwork.GetRoomList())
-            {
-                if (roomInfo.name.ToUpper().Contains(filter.ToUpper()))
-                {
-                    filterRoom.Add(roomInfo);
-                }
-            }
+            // Guardian
+            if (!ShouldListRoom(roomInfo)) continue;
+
+            if (!roomInfo.name.ToUpper().Contains(filter.ToUpper())) continue;
+
+            filterRoom.Add(roomInfo);
         }
+    }
+
+    // Guardian
+    private bool ShouldListRoom(RoomInfo info)
+    {
+        if (g_hideFullRooms && info.playerCount >= info.maxPlayers && info.maxPlayers > 0) return false;
+
+        if (g_hideLockedRooms)
+        {
+            string[] data = info.name.Split('`');
+            if (data.Length < 7) return true;
+
+            return data[5].Length == 0;
+        }
+
+        return true;
     }
 
     private void Update()

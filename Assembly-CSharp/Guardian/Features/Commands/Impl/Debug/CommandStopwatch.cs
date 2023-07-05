@@ -2,7 +2,7 @@
 
 namespace Guardian.Features.Commands.Impl.Debug
 {
-    internal class CommandStopwatch : Command
+    class CommandStopwatch : Command
     {
         private readonly MsTimer Watch = new MsTimer();
 

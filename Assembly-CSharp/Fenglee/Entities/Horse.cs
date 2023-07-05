@@ -353,6 +353,7 @@ public class Horse : Photon.MonoBehaviour
             base.photonView.RPC("setDust", PhotonTargets.Others, false);
         }
 
+        // Guardian, this was removed with RC's ServerUpdate patch?
         // base.rigidbody.AddForce(-base.rigidbody.velocity, ForceMode.VelocityChange);
     }
 

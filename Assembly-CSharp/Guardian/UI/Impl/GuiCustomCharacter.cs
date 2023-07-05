@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Guardian.UI.Components.Impl;
+using UnityEngine;
 
 namespace Guardian.UI.Impl
 {
@@ -16,9 +17,53 @@ namespace Guardian.UI.Impl
             "SASHA"
         };
         private CustomCharacterManager _CharacterManager;
-        private string hairColorRed = "255";
-        private string hairColorGreen = "255";
-        private string hairColorBlue = "255";
+
+        private readonly GTextField HairRedField = new GTextField("255");
+        private readonly GTextField HairGreenField = new GTextField("255");
+        private readonly GTextField HairBlueField = new GTextField("255");
+
+        private readonly GButton SetRedBtn = new GButton("Set Red Value");
+        private readonly GButton SetGreenBtn = new GButton("Set Green Value");
+        private readonly GButton SetBlueBtn = new GButton("Set Blue Value");
+
+        public override void OnOpen()
+        {
+            SetRedBtn.OnClick = () =>
+            {
+                if (int.TryParse(HairRedField.Text, out int r))
+                {
+                    if (r < 0) r = 0;
+
+                    float rf = r / 255f;
+                    _CharacterManager.hairR.GetComponent<UISlider>().sliderValue = rf;
+                    _CharacterManager.OnHairRChange(rf);
+                }
+            };
+
+            SetGreenBtn.OnClick = () =>
+            {
+                if (int.TryParse(HairGreenField.Text, out int g))
+                {
+                    if (g < 0) g = 0;
+
+                    float gf = g / 255f;
+                    _CharacterManager.hairG.GetComponent<UISlider>().sliderValue = gf;
+                    _CharacterManager.OnHairRChange(gf);
+                }
+            };
+
+            SetBlueBtn.OnClick = () =>
+            {
+                if (int.TryParse(HairBlueField.Text, out int b))
+                {
+                    if (b < 0) b = 0;
+
+                    float bf = b / 255f;
+                    _CharacterManager.hairB.GetComponent<UISlider>().sliderValue = bf;
+                    _CharacterManager.OnHairBChange(bf);
+                }
+            };
+        }
 
         public override void Draw()
         {
@@ -49,48 +94,18 @@ namespace Guardian.UI.Impl
                 GUILayout.Label("Set Hair R/G/B");
 
                 // Red
-                hairColorRed = GUILayout.TextField(hairColorRed);
-                if (GUILayout.Button("Set Red Value"))
-                {
-                    if (int.TryParse(hairColorRed, out int r))
-                    {
-                        if (r < 0) r = 0;
-
-                        float rf = r / 255f;
-                        _CharacterManager.hairR.GetComponent<UISlider>().sliderValue = rf;
-                        _CharacterManager.OnHairRChange(rf);
-                    }
-                }
+                HairRedField.Tick();
+                SetRedBtn.Tick();
 
                 // Green
                 GUILayout.Label(string.Empty);
-                hairColorGreen = GUILayout.TextField(hairColorGreen);
-                if (GUILayout.Button("Set Green Value"))
-                {
-                    if (int.TryParse(hairColorGreen, out int g))
-                    {
-                        if (g < 0) g = 0;
-
-                        float gf = g / 255f;
-                        _CharacterManager.hairG.GetComponent<UISlider>().sliderValue = gf;
-                        _CharacterManager.OnHairGChange(gf);
-                    }
-                }
+                HairGreenField.Tick();
+                SetGreenBtn.Tick();
 
                 // Blue
                 GUILayout.Label(string.Empty);
-                hairColorBlue = GUILayout.TextField(hairColorBlue);
-                if (GUILayout.Button("Set Blue Value"))
-                {
-                    if (int.TryParse(hairColorBlue, out int b))
-                    {
-                        if (b < 0) b = 0;
-
-                        float bf = b / 255f;
-                        _CharacterManager.hairB.GetComponent<UISlider>().sliderValue = bf;
-                        _CharacterManager.OnHairBChange(bf);
-                    }
-                }
+                HairBlueField.Tick();
+                SetBlueBtn.Tick();
 
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();

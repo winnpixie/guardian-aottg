@@ -48,7 +48,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     {
         master.GetComponent<HERO>().photonView.RPC("netDie2", PhotonTargets.All, -1, "Trap");
     }
-    // END: Anarchy
+    // END Anarchy
 
     public void Launch(Vector3 v, Vector3 v2, string launcherRef, bool isLeft, GameObject master, bool leviMode = false, bool petraMode = false)
     {
@@ -390,7 +390,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                 float ropeLength = (base.transform.position - myRef.transform.position).magnitude;
                 lineRenderer.material.mainTextureScale = new Vector2(tileScale * ropeLength, 1f);
             }
-            // END: Guardian
+            // END Guardian
         }
     }
 

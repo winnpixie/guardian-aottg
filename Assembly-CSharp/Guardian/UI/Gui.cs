@@ -1,8 +1,16 @@
-﻿namespace Guardian.UI
+﻿using Guardian.UI.Components;
+using System.Collections.Generic;
+
+namespace Guardian.UI
 {
-    abstract class Gui
+    class Gui
     {
-        public abstract void Draw();
+        public readonly List<GComponent> Components = new List<GComponent>();
+
+        public virtual void Draw()
+        {
+            Components.ForEach(c => c.Tick());
+        }
 
         public virtual void OnOpen() { }
 

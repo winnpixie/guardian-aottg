@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Xft;
-using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
 
 public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScriptHero
 {
@@ -1091,7 +1090,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 else
                 {
                     PhotonNetwork.Instantiate("redCross1", base.transform.position, base.transform.rotation, 0);
-                    PhotonNetwork.Instantiate("redCross1", base.transform.position, base.transform.rotation, 0);
+                    PhotonNetwork.Instantiate("redCross", base.transform.position, base.transform.rotation, 0);
                 }
             }
             else
@@ -5722,7 +5721,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             leftRopeTileScale.ToString("F3"),
             rightRopeSkin,
             rightRopeTileScale.ToString("F3")
-            // END: Guardian
+            // END Guardian
         };
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
@@ -6553,7 +6552,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 {
                     g_rightRopeTileScale = r_xScale;
                 }
-                // END: Hook Textures
+                // END Hook Textures
             }
         }
 

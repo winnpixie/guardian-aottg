@@ -7,12 +7,13 @@ namespace Guardian.AntiAbuse.Validators
 {
     class SkinValidator
     {
-        public static readonly string AllowedHostsPath = GuardianClient.RootDir + "\\Hosts.txt";
         public static List<string> AllowedHosts = new List<string>();
+
+        private static readonly string _allowedHostsPath = GuardianClient.RootDir + "\\Hosts.txt";
 
         public static void Init()
         {
-            if (!File.Exists(AllowedHostsPath))
+            if (!File.Exists(_allowedHostsPath))
             {
                 AllowedHosts.Add("i.imgur.com");
                 AllowedHosts.Add("imgur.com");
@@ -21,9 +22,9 @@ namespace Guardian.AntiAbuse.Validators
                 AllowedHosts.Add("media.discordapp.net");
                 AllowedHosts.Add("i.gyazo.com");
 
-                File.WriteAllLines(AllowedHostsPath, AllowedHosts.ToArray());
+                File.WriteAllLines(_allowedHostsPath, AllowedHosts.ToArray());
             }
-            AllowedHosts = new List<string>(File.ReadAllLines(AllowedHostsPath));
+            AllowedHosts = new List<string>(File.ReadAllLines(_allowedHostsPath));
 
             if (AllowedHosts.Count < 1)
             {

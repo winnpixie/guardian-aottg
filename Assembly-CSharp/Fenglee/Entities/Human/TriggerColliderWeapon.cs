@@ -56,9 +56,11 @@ public class TriggerColliderWeapon : MonoBehaviour
             if (other.gameObject.transform.root.gameObject.tag == "titan")
             {
                 currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.GetComponent<HERO>().slashHit.Play();
-                GameObject gameObject = (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer) ?
-                    ((GameObject)Object.Instantiate(Resources.Load("hitMeat"))) : PhotonNetwork.Instantiate("hitMeat", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
-                gameObject.transform.position = base.transform.position;
+                GameObject hitMeatObj = IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer
+                    ? (GameObject)Object.Instantiate(Resources.Load("hitMeat"))
+                    : PhotonNetwork.Instantiate("hitMeat", base.transform.position, Quaternion.Euler(270f, 0f, 0f), 0);
+
+                hitMeatObj.transform.position = base.transform.position;
                 base.transform.root.GetComponent<HERO>().UseBlade();
             }
         }

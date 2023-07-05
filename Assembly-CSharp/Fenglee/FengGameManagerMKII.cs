@@ -1606,7 +1606,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     break;
             }
 
-            // Mod
+            // Guardian
             g_roundTimer.Update();
             g_waveTimer.Update();
         }
@@ -1793,7 +1793,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
-        // Mod
+        // Guardian
         VoteKicks.Remove(player.Id);
 
         if (!gameTimesUp)
@@ -2017,6 +2017,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         NGUITools.SetActive(references.panelMultiStart, state: false);
         NGUITools.SetActive(references.panelMultiROOM, state: true);
         NGUITools.SetActive(references.PanelMultiJoinPrivate, state: false);
+
+        // Guardian
+        Guardian.GuardianClient.GuiController.OpenScreen(new Guardian.UI.Impl.GuiRoomList(references.panelMultiROOM.GetComponent<PanelMultiJoin>()));
     }
 
     public void RestartGame(bool masterClientSwitched = false)
@@ -2045,11 +2048,30 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             base.photonView.RPC("RPCLoadLevel", PhotonTargets.All);
             SetGameSettings(gameSettings);
 
+            // Guardian
+            if (Guardian.GuardianClient.Properties.ClearStatsOnReset.Value)
+            {
+                ExitGames.Client.Photon.Hashtable clearedStats = new ExitGames.Client.Photon.Hashtable
+                {
+                    { PhotonPlayerProperty.Kills, 0 },
+                    { PhotonPlayerProperty.Deaths, 0 },
+                    { PhotonPlayerProperty.MaxDamage, 0 },
+                    { PhotonPlayerProperty.TotalDamage, 0 }
+                };
+
+                foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                {
+                    player.SetCustomProperties(clearedStats);
+                }
+
+                Guardian.Utilities.GameHelper.Broadcast("Player stats (Kills, Deaths, Max Damage, and Total Damage) have been reset!");
+            }
+
             if (masterClientSwitched)
             {
                 Guardian.Utilities.GameHelper.Broadcast("MasterClient has switched to " + ((string)PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity().AsBold());
 
-                // Mod
+                // Guardian
                 VoteKicks = new Dictionary<int, VoteKick>();
             }
         }

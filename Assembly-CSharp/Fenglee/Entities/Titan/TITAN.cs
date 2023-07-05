@@ -2709,24 +2709,25 @@ public class TITAN : Photon.MonoBehaviour
                 {
                     attacked = true;
                     fxPosition = baseTransform.Find("ap_" + attackAnimation).position;
-                    GameObject gameObject7 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/" + fxName), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/" + fxName, fxPosition, fxRotation, 0);
+                    GameObject fxObj = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/" + fxName), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/" + fxName, fxPosition, fxRotation, 0);
                     if (nonAI)
                     {
-                        gameObject7.transform.localScale = baseTransform.localScale * 1.5f;
-                        if (gameObject7.GetComponent<EnemyfxIDcontainer>() != null)
+                        fxObj.transform.localScale = baseTransform.localScale * 1.5f;
+                        if (fxObj.GetComponent<EnemyfxIDcontainer>() != null)
                         {
-                            gameObject7.GetComponent<EnemyfxIDcontainer>().myOwnerViewID = base.photonView.viewID;
+                            fxObj.GetComponent<EnemyfxIDcontainer>().myOwnerViewID = base.photonView.viewID;
                         }
                     }
                     else
                     {
-                        gameObject7.transform.localScale = baseTransform.localScale;
+                        fxObj.transform.localScale = baseTransform.localScale;
                     }
-                    if (gameObject7.GetComponent<EnemyfxIDcontainer>() != null)
+
+                    if (fxObj.GetComponent<EnemyfxIDcontainer>() != null)
                     {
-                        gameObject7.GetComponent<EnemyfxIDcontainer>().titanName = base.name;
+                        fxObj.GetComponent<EnemyfxIDcontainer>().titanName = base.name;
                     }
-                    float b = 1f - Vector3.Distance(currentCamera.transform.position, gameObject7.transform.position) * 0.05f;
+                    float b = 1f - Vector3.Distance(currentCamera.transform.position, fxObj.transform.position) * 0.05f;
                     b = Mathf.Min(1f, b);
                     currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(b, b);
                 }
@@ -2904,9 +2905,9 @@ public class TITAN : Photon.MonoBehaviour
                             }
                             CrossFade("attack_" + attackAnimation, 0.1f);
                             fxPosition = baseTransform.position;
-                            GameObject gameObject9 = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/boom2"), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/boom2", fxPosition, fxRotation, 0);
-                            gameObject9.transform.localScale = baseTransform.localScale * 1.6f;
-                            float b2 = 1f - Vector3.Distance(currentCamera.transform.position, gameObject9.transform.position) * 0.05f;
+                            GameObject fxObj = (IN_GAME_MAIN_CAMERA.Gametype != GameType.Multiplayer || !base.photonView.isMine) ? ((GameObject)UnityEngine.Object.Instantiate(Resources.Load("FX/boom2"), fxPosition, fxRotation)) : PhotonNetwork.Instantiate("FX/boom2", fxPosition, fxRotation, 0);
+                            fxObj.transform.localScale = baseTransform.localScale * 1.6f;
+                            float b2 = 1f - Vector3.Distance(currentCamera.transform.position, fxObj.transform.position) * 0.05f;
                             b2 = Mathf.Min(1f, b2);
                             currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().StartShake(b2, b2);
                         }

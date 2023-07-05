@@ -137,7 +137,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 break;
         }
 
-        // Mod
+        // Guardian
         Guardian.GuardianClient.Properties.UseMainLightColor.OnValueChanged();
 
         if (FengGameManagerMKII.SkyMaterial != null && FengGameManagerMKII.SkyMaterial != base.gameObject.GetComponent<Skybox>().material)

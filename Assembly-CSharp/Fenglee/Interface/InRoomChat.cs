@@ -214,27 +214,26 @@ public class InRoomChat : Photon.MonoBehaviour
         DrawMessageTextField();
     }
 
-    public static object[] FormatMessage(string input, string name)
+    public static object[] FormatMessage(string message, string name)
     {
         // Auto-translate
         if (Guardian.GuardianClient.Properties.TranslateOutgoing.Value)
         {
-            string[] result = Guardian.Utilities.Translator.Translate(input, Guardian.GuardianClient.Properties.IncomingLanguage.Value, Guardian.GuardianClient.Properties.OutgoingLanguage.Value);
+            string[] result = Guardian.Utilities.Translator.Translate(message, Guardian.GuardianClient.Properties.IncomingLanguage.Value, Guardian.GuardianClient.Properties.OutgoingLanguage.Value);
 
             if (result.Length > 1 && !result[0].Equals(Guardian.GuardianClient.Properties.OutgoingLanguage.Value))
             {
-                input = result[1];
+                message = result[1];
             }
         }
 
         // Emotes
-        input = input.Replace("<3", "\u2665");
-        input = input.Replace(":lenny:", "( ͡° ͜ʖ ͡°)");
+        message = Guardian.Utilities.EmoteHelper.FormatText(message);
 
         // 4chan green-text
-        if (input.StripUnityColors().StartsWith(">"))
+        if (message.StripUnityColors().StartsWith(">"))
         {
-            input = input.StripUnityColors().AsColor("B5BD68"); // #789922 is the true color, but contrasts terribly :(
+            message = message.StripUnityColors().AsColor("B5BD68"); // #789922 is the true color, but contrasts terribly :(
         }
         else
         {
@@ -242,19 +241,19 @@ public class InRoomChat : Photon.MonoBehaviour
             string chatColor = Guardian.GuardianClient.Properties.TextColor.Value;
             if (chatColor.Length > 0)
             {
-                input = input.AsColor(chatColor);
+                message = message.AsColor(chatColor);
             }
         }
 
         // Bold chat
         if (Guardian.GuardianClient.Properties.BoldText.Value)
         {
-            input = input.AsBold();
+            message = message.AsBold();
         }
         // Italic chat
         if (Guardian.GuardianClient.Properties.ItalicText.Value)
         {
-            input = input.AsItalic();
+            message = message.AsItalic();
         }
 
         // Custom name
@@ -274,7 +273,7 @@ public class InRoomChat : Photon.MonoBehaviour
             name = name.AsItalic();
         }
 
-        return new object[] { $"{Guardian.GuardianClient.Properties.TextPrefix.Value}{input}{Guardian.GuardianClient.Properties.TextSuffix.Value}", name };
+        return new object[] { $"{Guardian.GuardianClient.Properties.TextPrefix.Value}{message}{Guardian.GuardianClient.Properties.TextSuffix.Value}", name };
     }
 
     public class Message

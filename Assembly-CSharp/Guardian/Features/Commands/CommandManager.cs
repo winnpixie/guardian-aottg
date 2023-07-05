@@ -13,6 +13,7 @@ namespace Guardian.Features.Commands
             // Normal
             base.Add(new CommandHelp());
             base.Add(new CommandClear());
+            base.Add(new CommandEmotes());
             base.Add(new CommandIgnore());
             base.Add(new CommandMute());
             base.Add(new CommandRageQuit());
