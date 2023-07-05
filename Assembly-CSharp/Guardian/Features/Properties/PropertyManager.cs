@@ -138,11 +138,12 @@ namespace Guardian.Features.Properties
             // Player
             base.Add(UseRawInput);
             base.Add(DoubleTapBurst);
+            base.Add(ReelOutScrollSmoothing);
+            base.Add(ShowSkillTimer);
             base.Add(AlternateIdle);
             base.Add(AlternateBurst);
             base.Add(HideHookArrows);
             base.Add(HoldForBladeTrails);
-            base.Add(ReelOutScrollSmoothing);
 
             OpacityOfOwnName.OnValueChanged = () =>
             {
