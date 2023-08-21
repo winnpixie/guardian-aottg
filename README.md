@@ -3,8 +3,8 @@
 A free, open-source, and feature-rich modification for the Attack on Titan Tribute Game.
 
 ## Where do I get/download Guardian Mod?
-Download "[Launcher.exe](https://aottg.winnpixie.xyz/clients/guardian/Launcher.exe)" and run it!
-    - If Windows Smart Defender stops the launcher from running, click "More Info" and then click "Run Anyway", this is an issue I can/will not fix as I do not sign the executable.
+Download "[ModLauncher.exe](https://aottgfan.site/clients/guardian/Launcher.exe)" and run it!
+    - If Windows Smart Defender stops the launcher from running, click "More Info" and then click "Run Anyway", this is an issue I can not/will not fix as I do not sign the executable.
 
 ## Features
 This mod has (almost) everything RiceCake's mod (RC mod) has, and much more!
@@ -17,6 +17,11 @@ This mod has (almost) everything RiceCake's mod (RC mod) has, and much more!
 - Custom textures/sounds!
     - Help on these are available in the `README.TXT` file found when you download and run Guardian's launcher, or when you extract the ZIP file.
 - A *boat-load* of new settings (ESCAPE key to open the configuration menu):
+    - **Game-modes**
+        - MaxTitanPoints - Max points titans must gain to win CTF missions.
+        - MaxHumanPoints - Max points humans must gain to win CTF missions.
+        - BombsKillTitans - Expands upon normal Bomb-PVP to work with titans.
+        - UseSkyBarrier - Enables a "limit" of how high players can fly upwards during a Bomb-PVP match. (Insta-death box for your own collision)
     - **Master Client**
         - AnnounceRoundTime - Announces how many seconds a full round took to finish.
         - AnnounceWaveTime - Announces how many seconds a survival wave took to finish.
@@ -24,9 +29,10 @@ This mod has (almost) everything RiceCake's mod (RC mod) has, and much more!
         - InfiniteRoom - Stops your room from expiring, thus allowing you to host forever.
         - OGPunkHair - Lets you play like its 2015 again when they still had brightly colored hair.
         - DeadlyHooks - Spice up gameplay by making hooks more 'realistic' by KILLING players instead of grappling to them.
+        - FatalCollisions - Adds death by impact for those who can't control their ODMG.
+        - FatalSpeedDelta - The minimum speed a player must lose in one physics update to die by impact.
         - HideNames - Turns off player nametags for everyone in the room with a compatible mod.
-        - BombsKillTitans - Expands upon normal Bomb-PVP to work with titans.
-        - UseSkyBarrier - Enables a "limit" of how high players can fly upwards during a Bomb-PVP match. (Insta-death box for your own collision)
+        - ClearStatsOnReset - Wipes K/D/MD/TD on every match restart.
     - **Assets**
         - ThunderSpearSkin - ThunderSpear left/right skin url.
         - LeftRopeSkin - Left ODMG rope/wire skin url.
@@ -34,17 +40,18 @@ This mod has (almost) everything RiceCake's mod (RC mod) has, and much more!
         - RightRopeSkin - Right ODMG rope/wire skin url.
         - RightRopeTileScale - Right ODMG rope/wire skin tile scale.
     - **Player**
-        - RawTPS-WOWInput - Enables the use of 'Raw' mouse input from Unity for TPS and WOW.
+        - UseRawInput - Enables the use of 'Raw' mouse input from Unity for TPS and WOW.
         - DoubleTapBurst - Change whether or not double-tapping a movement key will perform a gas burst.
+        - ReelOutScrollSmoothing - Makes scroll-wheel reel-out a viable option, it's literally magic and I don't understand how RiceCake did it.
+        - ShowSkillTimer - Toggles the crosshair timer for when your Skill is ready to use.
         - AHSSIdle - Makes blade users look about 10x cooler when standing.
         - CrossBurst - Changes your burst particles from the original poof of gas to two intersecting red beams.
         - HideHookArrows - Hides those pesky double-hook indicators that fly across your screen violently as you pass by objects.
         - HoldForBladeTrails - Allows your blade trail to be seen when you're readying an attack, rather than only once you swing.
-        - ReelOutScrollSmoothing - Makes scroll-wheel reel-out a viable option, it's literally magic and I don't understand how RiceCake did it.
         - OpacityOfOwnName - Change the name-tag opacity of yourself.
         - OpacityOfOtherNames - Change the name-tag opacity of others.
         - DirectionalFlares - Fire flares towards your cursor position instead of straight up.
-            - I stole this one right out of Expedition Mod, #SorryNotSorry.
+            - I stole the code for this right out of Expedition Mod, #SorryNotSorry.
         - SuicideMessage - Display a custom message in the kill-feed when you press your Suicide/Reset key.
         - LavaDeathMessage - Display a custom message in the kill-feed when you die to Lava.
         - LocalMinDamage - Enforce an always-on requirement for yourself when killing titans.
@@ -75,7 +82,7 @@ This mod has (almost) everything RiceCake's mod (RC mod) has, and much more!
             - DrawDistance - See more or less of the map at once.
             - FieldOfView - Change field of view. (***DISABLED**/NEEDS RE-IMPLEMENTATION*)
             - Blur - Toggle camera blurring effects/depth of field.
-            - UseMainLightColor - Toggle between custom lighting or map-set lighting.
+            - CustomMainLightColor - Toggle between custom lighting or map-set lighting.
             - MainLightColor - Set HEX color for custom lighting.
             - Fog - Toggle fog visibility, this can make some maps like City pretty terrifying, or really bad, it's up to interpretation.
                 - FogColor - Set custom fog HEX color.
@@ -89,6 +96,8 @@ This mod has (almost) everything RiceCake's mod (RC mod) has, and much more!
         - FPSCamera - Allows you to play AoTTG from a First-Person View (EXPERIMENTAL).
         - MultiplayerNapeMeat - Adds nape meat slices into multiplayer (BUGGY).
     - **Miscellaneous**
+        - LimitUnfocusedFPS - Toggles an FPS limiter to save system resources when you're not tabbed into the game.
+        - MaxUnfocusedFPS - The maximum FPS goal for the game when you're not tabbed in (I recommend no less than **30** if you're the MasterClient)
         - DiscordPresence - Toggle Rich Presence to show as your status in [Discord](https://discord.com/) (requires a game/app restart).
         - PhotonAppId - Use a custom [Photon](https://photonengine.com/) Application Id for multiplayer servers.
         - PhotonUserId - Set your Photonian friend-name for user discovery services.
