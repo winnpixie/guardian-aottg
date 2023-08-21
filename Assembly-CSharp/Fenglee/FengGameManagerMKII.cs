@@ -8014,13 +8014,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     switch (Guardian.Networking.NetworkHelper.Connection.Protocol)
                     {
                         case ExitGames.Client.Photon.ConnectionProtocol.Udp:
-                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnection.TCP;
+                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnectionType.TCP;
                             break;
                         case ExitGames.Client.Photon.ConnectionProtocol.Tcp:
-                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnection.RHttp;
+                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnectionType.RHttp;
                             break;
                         case ExitGames.Client.Photon.ConnectionProtocol.RHttp:
-                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnection.UDP;
+                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnectionType.UDP;
                             break;
                     }
                     PhotonNetwork.SwitchToProtocol(Guardian.Networking.NetworkHelper.Connection.Protocol);

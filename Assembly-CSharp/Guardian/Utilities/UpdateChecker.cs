@@ -11,7 +11,7 @@ namespace Guardian.Utilities
             GuardianClient.Logger.Info("Checking for update...");
             GuardianClient.Logger.Info($"Installed: {GuardianClient.Build}");
 
-            using WWW www = new WWW("http://aottg.winnpixie.xyz/clients/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
+            using WWW www = new WWW("http://aottgfan.site/clients/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Random long to try and avoid cache issues
             yield return www;
 
             if (www.error != null)

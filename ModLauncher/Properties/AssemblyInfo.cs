@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Launcher")]
-[assembly: AssemblyDescription("Launcher and Updater for the AoTTG Guardian Mod.")]
+[assembly: AssemblyTitle("ModLauncher")]
+[assembly: AssemblyDescription("Launcher for Guardian Mod for AoTTG.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Launcher")]
-[assembly: AssemblyCopyright("Copyright (C) 2022")]
+[assembly: AssemblyProduct("ModLauncher")]
+[assembly: AssemblyCopyright("Copyright (C) 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

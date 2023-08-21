@@ -11,7 +11,7 @@ namespace Launcher
 {
     public partial class MainWindow : Form
     {
-        private readonly HttpClient httpClient = new HttpClient();
+        private static readonly HttpClient httpClient = new HttpClient();
 
         public MainWindow()
         {
@@ -70,108 +70,108 @@ namespace Launcher
             }
         }
 
-        private async void UpdateAndPlayBtn_Start(object sender, EventArgs e)
+        private void UpdateBtn_Click(object sender, EventArgs e)
         {
-            SetLogText("!! PLEASE CLOSE ALL RUNNING INSTANCES OF GUARDIAN MOD !!\n");
+            SetLogText("!! PLEASE MAKE SURE GUARDIAN MOD IS NOT OPEN !!\n");
 
-            // Get and print the latest build information
-            try
+            Task.Run(async () =>
             {
-                AppendToLog("\nObtaining latest build information...");
-                string versionData = await GetVersionData();
-                AppendToLog($"\n{versionData}");
-
-                foreach (string buildData in versionData.Split('\n'))
-                {
-                    string[] buildInfo = buildData.Split(new char[] { '=' }, 2);
-                    if (!buildInfo[0].Equals("LAUNCHER")) continue;
-
-                    string latestBuild = buildInfo[1].Trim();
-
-                    if (latestBuild.Equals(Program.Build)) break;
-
-                    AppendToLog("\nYour copy of the Guardian Mod Launcher is OUT OF DATE, please update!");
-                    AppendToLog("\n\t- https://cb.run/GuardianAoT");
-                }
-            }
-            catch (Exception ex)
-            {
-                AppendToLog($"!! ERROR !! (This part is not crucial, skipping!!)\n\n{ex}\n");
-            }
-
-            byte[] binZipData;
-
-            // Get the binary data
-            try
-            {
-                AppendToLog($"\nDownloading binaries for {Program.Arch}-bit Windows...");
-                binZipData = await GetGameData();
-            }
-            catch (Exception ex)
-            {
-                AppendToLog($"!! ERROR !!\n\n{ex}");
-                return;
-            }
-
-            FileInfo gameZip = new FileInfo(Program.Cwd + $"\\{Program.BinaryName}");
-
-            // Delete previous ZIP to try and minimize unintended behaviour
-            if (gameZip.Exists)
-            {
+                // Get and print the latest build information
                 try
                 {
-                    AppendToLog($"\nDeleting previous ZIP...");
-                    gameZip.Delete();
+                    AppendToLog("\nObtaining latest build information...");
+                    string versionData = await GetVersionData();
+                    AppendToLog($"\n{versionData}");
+
+                    foreach (string buildData in versionData.Split('\n'))
+                    {
+                        string[] buildInfo = buildData.Split(new char[] { '=' }, 2);
+                        if (!buildInfo[0].Equals("LAUNCHER")) continue;
+
+                        string latestBuild = buildInfo[1].Trim();
+                        if (latestBuild.Equals(Program.Build)) break;
+
+                        AppendToLog("\nYour copy of the Guardian Mod Launcher is OUT OF DATE, please update!");
+                        AppendToLog("\n\t- https://cb.run/GuardianAoT");
+                    }
+                }
+                catch
+                {
+                    AppendToLog($"!! ERROR !! (This is *probably* fine?...)\n");
+                }
+
+                byte[] gameZipData;
+                // Get the binary data
+                try
+                {
+                    AppendToLog($"\nDownloading binaries for {Program.Arch}-bit Windows...");
+                    gameZipData = await GetGameData();
                 }
                 catch (Exception ex)
                 {
-                    AppendToLog($"!! ERROR !!\nPlease delete it yourself and retry.\n\n{ex}\n");
+                    SetLogText($"!! ERROR !! Could not download client files.\n\n{ex}");
                     return;
                 }
-            }
 
-            // Write ZIP data to local file
-            try
-            {
-                AppendToLog($"\nWriting ZIP data to {gameZip.FullName}...");
-                await WriteGameData(gameZip, binZipData);
-            }
-            catch (Exception ex)
-            {
-                AppendToLog($"!! ERROR !!\n\n{ex}\n");
-                return;
-            }
+                FileInfo gameZip = new FileInfo(Program.Cwd + $"\\{Program.BinaryName}");
+                // Delete previous ZIP to try and minimize unintended behaviour
+                if (gameZip.Exists)
+                {
+                    try
+                    {
+                        AppendToLog($"\nDeleting previous ZIP...");
+                        gameZip.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        SetLogText($"!! ERROR !! Please delete any pre-existing ZIP files and retry.\n\n{ex}");
+                        return;
+                    }
+                }
 
-            // Extract ZIP contents to current working directory
-            try
-            {
-                AppendToLog($"\nExtracting {gameZip.FullName} to current directory ({Program.Cwd})...");
-                ExtractToDirectory(gameZip);
-            }
-            catch (Exception ex)
-            {
-                AppendToLog($"!! ERROR !!\n\n{ex}\n");
-                return;
-            }
+                // Write ZIP data to local file
+                try
+                {
+                    AppendToLog($"\nWriting ZIP data to {gameZip.FullName}...");
+                    await WriteGameData(gameZip, gameZipData);
+                }
+                catch (Exception ex)
+                {
+                    SetLogText($"!! ERROR !! Could not save client files...\n\n{ex}\n");
+                    return;
+                }
 
-            // Delete ZIP file since we're done with it
-            try
-            {
-                AppendToLog("\nCleaning up...");
-                gameZip.Delete();
-                AppendToLog("\n");
-            }
-            catch (Exception ex)
-            {
-                AppendToLog($"!! ERROR !! (This part is not crucial, skipping!!)\n\n{ex}\n");
-            }
+                // Extract ZIP contents to current working directory
+                try
+                {
+                    AppendToLog($"\nExtracting {gameZip.FullName} to current directory ({Program.Cwd})...");
+                    ExtractToDirectory(gameZip);
+                }
+                catch (Exception ex)
+                {
+                    SetLogText($"!! ERROR !! Could not extract client files...\n\n{ex}\n");
+                    return;
+                }
 
-            StartGame(false);
+                // Delete ZIP file since we're done with it
+                try
+                {
+                    AppendToLog("\nCleaning up...");
+                    gameZip.Delete();
+                    AppendToLog("\n");
+                }
+                catch
+                {
+                    AppendToLog($"!! ERROR !! (This is *probably* fine?...)\n");
+                }
+
+                StartGame(false);
+            });
         }
 
         private async Task<string> GetVersionData()
         {
-            return await httpClient.GetStringAsync($"{Program.VersionsURL}?t=" + Environment.TickCount);
+            return await httpClient.GetStringAsync($"{Program.VersionsURL}?t={Environment.TickCount}");
         }
 
         private async Task<byte[]> GetGameData()
@@ -179,12 +179,11 @@ namespace Launcher
             return await httpClient.GetByteArrayAsync($"{Program.GameDataURL}?t=" + Environment.TickCount);
         }
 
-        private async Task<bool> WriteGameData(FileInfo file, byte[] binData)
+        private async Task WriteGameData(FileInfo file, byte[] binData)
         {
             using (FileStream fs = file.OpenWrite())
             {
                 await fs.WriteAsync(binData, 0, binData.Length);
-                return true;
             }
         }
 
@@ -209,7 +208,7 @@ namespace Launcher
             }
         }
 
-        private void StartGameBtn_Click(object sender, EventArgs e)
+        private void PlayBtn_Click(object sender, EventArgs e)
         {
             StartGame(true);
         }

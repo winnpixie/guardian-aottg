@@ -6,7 +6,7 @@
         public static PhotonApplication Custom = new PhotonApplication("Custom", string.Empty);
         public static PhotonApplication Guardian = new PhotonApplication("Guardian", "b92ae2ae-b815-4f37-806a-58b4f58573ff");
 
-        public string Name;
+        public readonly string Name;
         public string Id;
 
         public PhotonApplication(string name, string id)

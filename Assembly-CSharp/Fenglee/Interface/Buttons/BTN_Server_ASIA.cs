@@ -9,7 +9,7 @@ public class BTN_Server_ASIA : MonoBehaviour
 
         if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.AoTTG2)
         {
-            PhotonNetwork.ConnectToMaster("51.79.164.137", Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
+            PhotonNetwork.ConnectToMaster(Guardian.Networking.PhotonServerAddress.Singapore, Guardian.Networking.NetworkHelper.Connection.Port, FengGameManagerMKII.ApplicationId, UIMainReferences.Version);
             Guardian.Networking.NetworkHelper.IsCloud = false;
         }
         else
