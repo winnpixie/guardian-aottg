@@ -8,11 +8,6 @@ using UnityEngine;
 
 public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IGameManager
 {
-    // Adapt to the new AoTTG-2 applicationId
-    public static string ApplicationId
-    {
-        get { return Guardian.Networking.NetworkHelper.App.Id; }
-    }
     public static LevelInfo Level;
     // public static bool LAN;
     public static ExitGames.Client.Photon.Hashtable BanHash;
@@ -7984,53 +7979,39 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     }
                 }
 
-                float num7 = (float)Screen.width / 2f - 85f;
-                float num8 = (float)Screen.height / 2f;
-                GUI.Box(new Rect(num7, 5f, 150f, 105f), string.Empty);
-                if (GUI.Button(new Rect(num7 + 11f, 15f, 128f, 25f), "Level Editor"))
+                // Top Center
+                float halfScrWidth = (float)Screen.width / 2f - 110f;
+                float halfScrHeight = (float)Screen.height / 2f;
+                GUI.Box(new Rect(halfScrWidth, 5f, 200f, 125f), string.Empty);
+                if (GUI.Button(new Rect(halfScrWidth + 5f, 10f, 190f, 25f), "Open Level Editor"))
                 {
                     Settings[64] = 101;
                     Application.LoadLevel(2);
                 }
-                else if (GUI.Button(new Rect(num7 + 11f, 45f, 128f, 25f), $"Server: {Guardian.Networking.NetworkHelper.App.Name}"))
+                else if (GUI.Button(new Rect(halfScrWidth + 5f, 40f, 190f, 25f), $"Server: {Guardian.Networking.NetworkHelper.Provider.Name}"))
+                {
+                    // Server Provider switcher
+                    Guardian.Networking.NetworkHelper.Provider = Guardian.Networking.PhotonServerProvider.GetNext(Guardian.Networking.NetworkHelper.Provider);
+                }
+                else if (GUI.Button(new Rect(halfScrWidth + 5f, 70f, 190f, 25f), $"App-Id: {Guardian.Networking.NetworkHelper.App.Name}"))
                 {
                     // App-Id switcher
-                    if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.AoTTG2)
-                    {
-                        Guardian.Networking.NetworkHelper.App = Guardian.Networking.PhotonApplication.Custom;
-                    }
-                    else if (Guardian.Networking.NetworkHelper.App == Guardian.Networking.PhotonApplication.Custom)
-                    {
-                        Guardian.Networking.NetworkHelper.App = Guardian.Networking.PhotonApplication.Guardian;
-                    }
-                    else
-                    {
-                        Guardian.Networking.NetworkHelper.App = Guardian.Networking.PhotonApplication.AoTTG2;
-                    }
+                    Guardian.Networking.NetworkHelper.App = Guardian.Networking.PhotonApplication.GetNext(Guardian.Networking.NetworkHelper.App);
                 }
-                else if (GUI.Button(new Rect(num7 + 11f, 75f, 128f, 25f), $"Protocol: {Guardian.Networking.NetworkHelper.Connection.Name}"))
+                else if (GUI.Button(new Rect(halfScrWidth + 5f, 100f, 190f, 25f), $"Protocol: {Guardian.Networking.NetworkHelper.Connection.Name}"))
                 {
                     // Protocol switcher
-                    switch (Guardian.Networking.NetworkHelper.Connection.Protocol)
-                    {
-                        case ExitGames.Client.Photon.ConnectionProtocol.Udp:
-                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnectionType.TCP;
-                            break;
-                        case ExitGames.Client.Photon.ConnectionProtocol.Tcp:
-                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnectionType.RHttp;
-                            break;
-                        case ExitGames.Client.Photon.ConnectionProtocol.RHttp:
-                            Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnectionType.UDP;
-                            break;
-                    }
+                    Guardian.Networking.NetworkHelper.Connection = Guardian.Networking.PhotonConnectionType.GetNext(Guardian.Networking.NetworkHelper.Connection);
                     PhotonNetwork.SwitchToProtocol(Guardian.Networking.NetworkHelper.Connection.Protocol);
                 }
+
+                // Top Left
                 GUI.Box(new Rect(10f, 30f, 220f, 150f), string.Empty);
                 if (GUI.Button(new Rect(17f, 40f, 100f, 25f), "Name & Guild"))
                 {
                     Settings[187] = 0;
                 }
-                else if (GUI.Button(new Rect(123f, 40f, 100f, 25f), "Servers"))
+                else if (GUI.Button(new Rect(123f, 40f, 100f, 25f), "Lobbies"))
                 {
                     Settings[187] = 1;
                 }
@@ -8057,17 +8038,17 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     case 1: // Custom Server
                         if (UIMainReferences.Version == UIMainReferences.FengVersion)
                         {
-                            GUI.Label(new Rect(37f, 75f, 190f, 25f), "Connected to public server.", "Label");
+                            GUI.Label(new Rect(37f, 75f, 190f, 25f), "Connected to Public Lobby.", "Label");
                         }
                         else if (UIMainReferences.Version == S[0])
                         {
-                            GUI.Label(new Rect(28f, 75f, 190f, 25f), "Connected to RC private server.", "Label");
+                            GUI.Label(new Rect(28f, 75f, 190f, 25f), "Connected to RC Private Lobby.", "Label");
                         }
                         else
                         {
-                            GUI.Label(new Rect(37f, 75f, 190f, 25f), "Connected to custom server.", "Label");
+                            GUI.Label(new Rect(37f, 75f, 190f, 25f), "Connected to Custom Lobby.", "Label");
                         }
-                        GUI.Label(new Rect(20f, 100f, 90f, 25f), "Public Server:", "Label");
+                        GUI.Label(new Rect(20f, 100f, 90f, 25f), "Public Lobby:", "Label");
                         GUI.Label(new Rect(20f, 125f, 80f, 25f), "RC Private:", "Label");
                         GUI.Label(new Rect(20f, 150f, 60f, 25f), "Custom:", "Label");
                         if (GUI.Button(new Rect(160f, 100f, 60f, 20f), "Connect"))

@@ -849,6 +849,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                     {
                         Debug.LogError($"The appId this client sent is unknown on the server (Cloud). Check settings. If using the Cloud, check account.");
                         SendMonoMessage(PhotonNetworkingMessage.OnFailedToConnectToPhoton, DisconnectCause.InvalidAuthentication);
+
+                        // Mod
+                        Debug.LogError(operationResponse.DebugMessage);
                     }
                     else if (operationResponse.ReturnCode == 32755)
                     {
