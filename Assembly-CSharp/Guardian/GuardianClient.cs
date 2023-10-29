@@ -14,7 +14,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.4.5";
+        public static readonly string Build = "1.4.7";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();

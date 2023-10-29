@@ -66,11 +66,5 @@ namespace Guardian.Utilities
 
             return n + 1;
         }
-
-        // Yeah, I took this from RCextensions
-        public static bool IsPowerOf2(int val)
-        {
-            return (val & (val - 1)) == 0;
-        }
     }
 }

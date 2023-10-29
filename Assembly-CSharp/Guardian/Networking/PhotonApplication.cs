@@ -11,7 +11,6 @@
         public static PhotonApplication ProjectVoltage = new PhotonApplication("Project Voltage", "55ab2405-6c80-4bf9-aff8-3e53f64c36cf", 6);
         public static PhotonApplication AoTTG2Legacy = new PhotonApplication("AoTTG-2 [DEAD]", "5578b046-8264-438c-99c5-fb15c71b6744", 7);
         public static PhotonApplication Fenglee = new PhotonApplication("Fenglee [DEAD]", "f1f6195c-df4a-40f9-bae5-4744c32901ef", 8);
-        public static PhotonApplication Temporary = new PhotonApplication("TEMPORARY", "e3341a7b-1cb9-4b6c-90e4-39b796e52876", 9);
 
         public readonly string Name;
         public string Id;
@@ -37,8 +36,7 @@
                 5 => ProjectVoltage,
                 6 => AoTTG2Legacy,
                 7 => Fenglee,
-                8 => Temporary,
-                9 => AoTTG2,
+                8 => AoTTG2,
                 _ => Custom
             };
         }

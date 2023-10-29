@@ -29,6 +29,7 @@ namespace Guardian.Features.Properties
         public Property<bool> ClearStatsOnReset = new Property<bool>("MC_ClearStatsOnReset", new string[0], false);
 
         // Assets
+        public Property<bool> LimitSkinSizes = new Property<bool>("Assets_LimitSkinSizes", new string[0], true);
         public Property<string> ThunderSpearSkin = new Property<string>("Assets_ThunderSpearSkin", new string[0], string.Empty);
         public Property<string> LeftRopeSkin = new Property<string>("Assets_LeftRopeSkin", new string[0], string.Empty);
         public Property<float> LeftRopeTileScale = new Property<float>("Assets_LeftRopeTileScale", new string[0], 1f);
@@ -129,6 +130,7 @@ namespace Guardian.Features.Properties
             base.Add(ClearStatsOnReset);
 
             // Assets
+            base.Add(LimitSkinSizes);
             base.Add(ThunderSpearSkin);
             base.Add(LeftRopeSkin);
             base.Add(LeftRopeTileScale);

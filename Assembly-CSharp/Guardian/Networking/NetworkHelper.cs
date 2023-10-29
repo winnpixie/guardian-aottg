@@ -2,8 +2,8 @@
 {
     class NetworkHelper
     {
-        public static PhotonServerProvider Provider = PhotonServerProvider.ExitGames;
-        public static PhotonApplication App = PhotonApplication.Temporary;
+        public static PhotonServerProvider Provider = PhotonServerProvider.AoTTG2;
+        public static PhotonApplication App = PhotonApplication.AoTTG2;
         public static PhotonConnectionType Connection = PhotonConnectionType.UDP;
         public static bool IsCloud = false;
 

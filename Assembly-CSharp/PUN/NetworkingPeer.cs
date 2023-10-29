@@ -1130,6 +1130,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         {
             Debug.Log($"OnStatusChanged: {statusCode}");
         }
+
         switch (statusCode)
         {
             case StatusCode.Connect:

@@ -9,7 +9,6 @@ namespace Guardian.Utilities
     {
         public static Dictionary<string, object> AssetCache = new Dictionary<string, object>();
 
-        // Retrieves an asset from StreamingAssets.
         public static bool TryGetAsset<T>(string path, out T value)
         {
             path = "file:///" + Application.streamingAssetsPath + $"/{path}";
@@ -17,7 +16,6 @@ namespace Guardian.Utilities
             return TryGet(path, out value);
         }
 
-        // Retrieves a cached asset.
         public static bool TryGet<T>(string path, out T value)
         {
             if (AssetCache.TryGetValue(path, out object cachedValue))
@@ -36,7 +34,6 @@ namespace Guardian.Utilities
             return false;
         }
 
-        // Retrieves an asset.
         public static bool TryGetRaw<T>(string path, out T value)
         {
             value = default;
@@ -74,7 +71,6 @@ namespace Guardian.Utilities
         }
 
         // FIXME: Performs an uncached lookup, create a synchronized dictionary?
-        // Retrieves an asset from StreamingAssets through Unity Coroutines
         public static IEnumerator GetAssetRoutine<T>(string path, Action<T> callback)
         {
             path = "file:///" + Application.streamingAssetsPath + $"/{path}";
@@ -83,7 +79,6 @@ namespace Guardian.Utilities
         }
 
         // FIXME: Performs an uncached lookup, create a synchronized dictionary?
-        // Retrieves an asset through Unity Coroutines (UNCACHED)
         public static IEnumerator GetRawRoutine<T>(string path, Action<T> callback)
         {
             using WWW www = new WWW(path);

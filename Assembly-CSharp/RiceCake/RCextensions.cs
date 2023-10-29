@@ -4,78 +4,65 @@ using Guardian.Utilities;
 
 public static class RCextensions
 {
-    public static Texture2D LoadImage(WWW link, bool mipmapEnabled, int maxFileSize)
+    public static Texture2D LoadImage(WWW link, bool enableMipMapping, int maxFileSize)
     {
-        if (link.size < maxFileSize)
+        if (link.error != null)
         {
-            Texture2D texture = link.texture;
-            int width = texture.width;
-            int height = texture.height;
+            Guardian.GuardianClient.Logger.Warn($"Can not load image, url: '{link.url}', reason: '{link.error}'");
+            return new Texture2D(1, 1, TextureFormat.DXT1, false);
+        }
 
-            int resizedSize = 0;
-            if (width < 4 || !MathHelper.IsPowerOf2(width))
+        if (link.size > maxFileSize && Guardian.GuardianClient.Properties.LimitSkinSizes.Value)
+        {
+            Guardian.GuardianClient.Logger.Warn($"Image too large, url: '{link.url}', size: {link.size} bytes, max: {maxFileSize} bytes");
+            return new Texture2D(1, 1, TextureFormat.DXT1, false);
+        }
+
+        Texture2D texture = link.texture;
+        int width = texture.width;
+        int height = texture.height;
+
+        int newSize = 0;
+        if (width < 4 || !IsPowerOf2(width))
+        {
+            newSize = 4;
+            width = Math.Min(width, 2047);
+
+            if (newSize < width)
             {
-                resizedSize = 4;
-                width = Math.Min(width, 2047);
-
-                if (resizedSize < width)
-                {
-                    resizedSize = MathHelper.NextPowerOf2(width);
-                }
+                newSize = MathHelper.NextPowerOf2(width);
             }
-            else if (height < 4 || !MathHelper.IsPowerOf2(height))
+        }
+        else if (height < 4 || !IsPowerOf2(height))
+        {
+            newSize = 4;
+            height = Math.Min(height, 2047);
+
+            if (newSize < height)
             {
-                resizedSize = 4;
-                height = Math.Min(height, 2047);
-
-                if (resizedSize < height)
-                {
-                    resizedSize = MathHelper.NextPowerOf2(height);
-                }
-            }
-
-            if (resizedSize == 0)
-            {
-                Texture2D output = new Texture2D(4, 4, texture.format, mipmapEnabled);
-
-                try
-                {
-                    link.LoadImageIntoTexture(output);
-                }
-                catch
-                {
-                    output = new Texture2D(4, 4, texture.format, false);
-                    link.LoadImageIntoTexture(output);
-                }
-
-                output.Compress(true);
-                return output;
-            }
-            else
-            {
-                TextureFormat compressionFormat = texture.format == TextureFormat.RGB24
-                    ? TextureFormat.DXT1
-                    : TextureFormat.DXT5;
-
-                Texture2D resized = new Texture2D(4, 4, compressionFormat, false);
-                link.LoadImageIntoTexture(resized);
-
-                try
-                {
-                    resized.Resize(resizedSize, resizedSize, compressionFormat, mipmapEnabled);
-                }
-                catch
-                {
-                    resized.Resize(resizedSize, resizedSize, compressionFormat, false);
-                }
-
-                resized.Apply();
-                return resized;
+                newSize = MathHelper.NextPowerOf2(height);
             }
         }
 
-        Guardian.GuardianClient.Logger.Warn($"Image too large ({link.url}, {link.size} bytes, {maxFileSize} bytes max");
-        return new Texture2D(2, 2, TextureFormat.DXT1, false);
+        Texture2D output = new Texture2D(1, 1, texture.format, enableMipMapping);
+        link.LoadImageIntoTexture(output);
+
+        if (newSize > 0)
+        {
+            // FIXME: Implement an image scaler algorithm
+            // output.Resize(newSize, newSize, output.format, enableMipMapping);
+        }
+
+        output.Compress(true);
+        output.Apply(true);
+
+        UnityEngine.Object.Destroy(texture);
+        return output;
+    }
+
+    public static bool IsPowerOf2(int val)
+    {
+        return (val & (val - 1)) == 0;
     }
 
     public static void Add<T>(ref T[] source, T value)
@@ -92,20 +79,23 @@ public static class RCextensions
         if (source.Length == 1)
         {
             source = new T[0];
+            return;
         }
-        else if (source.Length > 1)
+
+        if (source.Length > 1)
         {
-            T[] array = new T[source.Length - 1];
-            int index = 0;
+            T[] newArr = new T[source.Length - 1];
+            int idx = 0;
+
             for (int i = 0; i < source.Length; i++)
             {
-                if (i != position)
-                {
-                    array[index] = source[i];
-                    index++;
-                }
+                if (i == position) continue;
+
+                newArr[idx] = source[i];
+                idx++;
             }
-            source = array;
+
+            source = newArr;
         }
     }
 }
