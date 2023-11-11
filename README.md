@@ -3,7 +3,7 @@
 A free, open-source, and feature-rich modification for the Attack on Titan Tribute Game.
 
 ## Where do I get/download Guardian Mod?
-Download "[ModLauncher.exe](https://aottgfan.site/clients/guardian/Launcher.exe)" and run it!
+Download "[ModLauncher.exe](https://aottgfan.site/clients/guardian/ModLauncher.exe)" and run it!
     - If Windows Smart Defender stops the launcher from running, click "More Info" and then click "Run Anyway", this is an issue I can not/will not fix as I do not sign the executable.
 
 ## Features
