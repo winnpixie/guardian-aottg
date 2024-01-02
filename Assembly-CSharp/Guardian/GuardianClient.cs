@@ -9,12 +9,13 @@ using Guardian.Utilities;
 using System.Collections;
 using UnityEngine;
 using Guardian.UI.Impl.Debug;
+using Guardian.UI;
 
 namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.4.7";
+        public static readonly string Build = "1.5.1";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -24,7 +25,7 @@ namespace Guardian
         public static readonly ToastManager Toasts = new ToastManager();
 
         public static readonly Logger Logger = new Logger();
-        public static UI.GuiController GuiController;
+        public static GuiController GuiController;
         public static bool WasQuitRequested = false;
         private static bool IsFirstInit = true;
         private static bool HasJoinedRoom = false;
@@ -52,6 +53,9 @@ namespace Guardian
 
             if (!IsFirstInit) return;
             IsFirstInit = false;
+
+            // Load Window Manager service
+            WindowManager.Init();
 
             // Load network validation service
             NetworkValidator.Init();

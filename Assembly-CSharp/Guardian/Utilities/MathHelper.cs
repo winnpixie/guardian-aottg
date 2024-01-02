@@ -11,6 +11,16 @@ namespace Guardian.Utilities
             return val < 0 ? -val : val;
         }
 
+        public static int MaxInt(int val, int max)
+        {
+            return val > max ? val : max;
+        }
+
+        public static int MinInt(int val, int min)
+        {
+            return val < min ? val : min;
+        }
+
         public static float AbsFloat(float val)
         {
             return val < 0 ? -val : val;

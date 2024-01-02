@@ -40,6 +40,7 @@ namespace Guardian.Features.Commands
             base.Add(new CommandTeleport());
 
             // Debug
+            base.Add(new CommandHorse());
             base.Add(new CommandLogProperties());
             base.Add(new CommandStopwatch());
 

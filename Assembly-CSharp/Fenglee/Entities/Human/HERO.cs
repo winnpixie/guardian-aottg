@@ -4276,17 +4276,26 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             }
                             baseRigidBody.AddForce(Vector3.up * 200f, ForceMode.Acceleration);
                             string shotPrefab = !doubleShot ? "FX/shotGun" : "FX/shotGun 1";
+
+                            GameObject gunBullet = null;
                             if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && base.photonView.isMine)
                             {
-                                GameObject gameObject3 = PhotonNetwork.Instantiate(shotPrefab, baseTransform.position + baseTransform.up * 0.8f - baseTransform.right * 0.1f, baseTransform.rotation, 0);
-                                if (gameObject3.GetComponent<EnemyfxIDcontainer>() != null)
+                                gunBullet = PhotonNetwork.Instantiate(shotPrefab, baseTransform.position + baseTransform.up * 0.8f - baseTransform.right * 0.1f, baseTransform.rotation, 0);
+                                if (gunBullet.GetComponent<EnemyfxIDcontainer>() != null)
                                 {
-                                    gameObject3.GetComponent<EnemyfxIDcontainer>().myOwnerViewID = base.photonView.viewID;
+                                    gunBullet.GetComponent<EnemyfxIDcontainer>().myOwnerViewID = base.photonView.viewID;
                                 }
                             }
                             else
                             {
-                                UnityEngine.Object.Instantiate(Resources.Load(shotPrefab), baseTransform.position + baseTransform.up * 0.8f - baseTransform.right * 0.1f, baseTransform.rotation);
+                                gunBullet = (GameObject)UnityEngine.Object.Instantiate(Resources.Load(shotPrefab), baseTransform.position + baseTransform.up * 0.8f - baseTransform.right * 0.1f, baseTransform.rotation);
+                            }
+
+                            // Guardian
+                            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/gun_shot.wav", out AudioClip gunShotClip))
+                            {
+                                gunBullet.GetComponent<AudioSource>().clip = gunShotClip;
+                                gunBullet.GetComponent<AudioSource>().Play();
                             }
                         }
 

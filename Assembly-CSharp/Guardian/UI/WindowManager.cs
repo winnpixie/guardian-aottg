@@ -1,26 +1,21 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Runtime.InteropServices;
-using System;
 
 namespace Guardian.UI
 {
     class WindowManager
     {
-        private static bool IsFullscreen;
-        private static bool UseExclusiveFullscreen = false; // Force no until I fix this
+        private static bool Fullscreen;
+
+        public static int WindowWidth = 960;
+        public static int WindowHeight = 600;
+
+        public static int ScreenWidth;
+        public static int ScreenHeight;
 
         [DllImport("user32.dll")]
         public static extern int GetActiveWindow();
-
-        [DllImport("user32.dll")]
-        public static extern int GetFocus();
-
-        [DllImport("user32.dll")]
-        public static extern int GetForegroundWindow();
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "SetWindowTextW")]
-        public static extern bool SetWindowTitle([In] int hWnd, [In] string lpString);
 
         [DllImport("user32.dll")]
         public static extern bool ShowWindow([In] int hWnd, [In] int nCmdShow);
@@ -57,15 +52,80 @@ namespace Guardian.UI
             Screen.showCursor = shown;
             Screen.lockCursor = locked;
 
-            // TODO: Testing for bRuki.
             if (!locked)
             {
                 RestrictCursor();
             }
         }
 
+        public static void Init()
+        {
+            if (Screen.fullScreen)
+            {
+                WindowWidth = 960;
+                WindowHeight = 600;
+
+                ScreenWidth = Screen.width;
+                ScreenHeight = Screen.height;
+            }
+            else
+            {
+                WindowWidth = Screen.width;
+                WindowHeight = Screen.height;
+
+                ScreenWidth = Screen.currentResolution.width;
+                ScreenHeight = Screen.currentResolution.height;
+            }
+        }
+
+        public static void ToggleFullscreen()
+        {
+            Screen.fullScreen = !Screen.fullScreen;
+            if (Screen.fullScreen)
+            {
+                Screen.SetResolution(WindowWidth, WindowHeight, fullscreen: false);
+            }
+            else
+            {
+                WindowWidth = Mathf.Max(640, Screen.width);
+                WindowHeight = Mathf.Max(480, Screen.height);
+
+                Screen.SetResolution(ScreenWidth, ScreenHeight, fullscreen: true);
+            }
+        }
+
         public static void HandleWindowFocusEvent(bool hasFocus)
         {
+            // TODO: I believe Exclusive Fullscreen still requires more testing.
+            if (hasFocus)
+            {
+                if (Fullscreen)
+                {
+                    Fullscreen = false;
+                    Screen.SetResolution(ScreenWidth, ScreenHeight, true);
+
+                    GameObject mainCam = GameObject.Find("MainCamera");
+                    if (mainCam != null)
+                    {
+                        IN_GAME_MAIN_CAMERA mainCamera = mainCam.GetComponent<IN_GAME_MAIN_CAMERA>();
+                        mainCamera.StartCoroutine(MarkHudDirty(mainCamera));
+                    }
+                }
+            }
+            else if (!Fullscreen)
+            {
+                if (Screen.fullScreen)
+                {
+                    ScreenWidth = Screen.width;
+                    ScreenHeight = Screen.height;
+
+                    Fullscreen = true;
+                    Screen.SetResolution(960, 600, false);
+
+                    ShowWindow(GetActiveWindow(), 2); // SW_SHOWMINIMIZED
+                }
+            }
+
             if (hasFocus)
             {
                 RestrictCursor();
@@ -82,40 +142,8 @@ namespace Guardian.UI
 
                 if (GuardianClient.Properties.LimitUnfocusedFPS.Value && GuardianClient.Properties.MaxUnfocusedFPS.Value > 0)
                 {
-                    Application.targetFrameRate = GuardianClient.Properties.MaxUnfocusedFPS.Value;
-                }
-            }
-
-            // FIXME: Exclusive Fullscreen requires more testing before being properly implemented again.
-            if (UseExclusiveFullscreen)
-            {
-                if (hasFocus)
-                {
-                    if (IsFullscreen)
-                    {
-                        IsFullscreen = false;
-
-                        ShowWindow(GetActiveWindow(), 9); // SW_RESTORE
-
-                        Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
-
-                        GameObject mainCam = GameObject.Find("MainCamera");
-                        if (mainCam != null)
-                        {
-                            IN_GAME_MAIN_CAMERA mainCamera = mainCam.GetComponent<IN_GAME_MAIN_CAMERA>();
-                            mainCamera.StartCoroutine(MarkHudDirty(mainCamera));
-                        }
-                    }
-                }
-                else if (!IsFullscreen)
-                {
-                    if (Screen.fullScreen)
-                    {
-                        IsFullscreen = true;
-                        Screen.SetResolution(960, 600, false);
-
-                        ShowWindow(GetActiveWindow(), 2); // SW_SHOWMINIMIZED
-                    }
+                    // FPS under ~15-30 as MasterClient provides a borderline non-playable experience to others, this should prevent that.
+                    Application.targetFrameRate = Utilities.MathHelper.MaxInt(GuardianClient.Properties.MaxUnfocusedFPS.Value, PhotonNetwork.isMasterClient ? 51 : 1);
                 }
             }
         }

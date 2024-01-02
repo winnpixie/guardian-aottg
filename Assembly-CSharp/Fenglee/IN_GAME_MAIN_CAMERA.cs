@@ -27,9 +27,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public static CameraType CameraMode = CameraType.Original;
     public static string SingleCharacter;
 
-    public static int WindowWidth = 960;
-    public static int WindowHeight = 600;
-
     public FengCustomInputs inputManager;
     public RotationAxes axes;
     public float minimumX = -360f;
@@ -770,19 +767,8 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         // Fullscreen toggle
         if (inputManager.isInputDown[InputCode.Fullscreen])
         {
-            Screen.fullScreen = !Screen.fullScreen;
-            if (Screen.fullScreen)
-            {
-                Screen.SetResolution(WindowWidth, WindowHeight, fullscreen: false);
-            }
-            else
-            {
-                // Preserve old size values
-                WindowWidth = Mathf.Max(640, Screen.width);
-                WindowHeight = Mathf.Max(480, Screen.height);
+            Guardian.UI.WindowManager.ToggleFullscreen();
 
-                Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, fullscreen: true);
-            }
             needSetHUD = true;
         }
 

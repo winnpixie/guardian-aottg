@@ -8098,15 +8098,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
                 if (GUI.Button(new Rect(210f, 10f, 80f, 25f), "Full Screen"))
                 {
-                    Screen.fullScreen = !Screen.fullScreen;
-                    if (Screen.fullScreen)
-                    {
-                        Screen.SetResolution(960, 600, fullscreen: false);
-                    }
-                    else
-                    {
-                        Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, fullscreen: true);
-                    }
+                    Guardian.UI.WindowManager.ToggleFullscreen();
                 }
                 if ((int)Settings[68] == 100 || (int)Settings[68] == 102)
                 {

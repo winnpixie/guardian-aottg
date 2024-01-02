@@ -95,7 +95,7 @@ namespace Guardian.Features.Properties
         public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], false);
 
         // Misc
-        public Property<bool> LimitUnfocusedFPS = new Property<bool>("Misc_LimitUnfocusedFPS", new string[0], false);
+        public Property<bool> LimitUnfocusedFPS = new Property<bool>("Misc_LimitUnfocusedFPS", new string[0], true);
         public Property<int> MaxUnfocusedFPS = new Property<int>("Misc_MaxUnfocusedFPS", new string[0], 1);
         public Property<bool> UseRichPresence = new Property<bool>("Misc_DiscordPresence", new string[0], true);
         public Property<string> PhotonAppId = new Property<string>("Misc_PhotonAppId", new string[0], string.Empty);
