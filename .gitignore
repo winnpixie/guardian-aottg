@@ -1,7 +1,3 @@
-# Miscellaneous
-Guardian32/
-Guardian64/
-
 # Visual Studio
 .vs/
 [Bb]in/
@@ -9,3 +5,10 @@ Guardian64/
 [Ll]ib/
 *.sln
 *.pdb
+
+# VS Code
+.vscode/
+
+# Miscellaneous
+Guardian32/
+Guardian64/

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Guardian.Utilities;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -244,6 +246,38 @@ public class InRoomChat : Photon.MonoBehaviour
                 message = message.AsColor(chatColor);
             }
         }
+
+        // Mentions
+        string tempMessage = string.Empty;
+        for (int i = 0; i < message.Length; i++)
+        {
+            char c = message[i];
+            string playerId = string.Empty;
+
+            if (c == '@')
+            {
+                for (int off = 1; off < message.Length - i; off++)
+                {
+                    char num = message[i + off];
+                    if (num < '0' || num > '9') break;
+
+                    playerId += num;
+                }
+            }
+
+            if (playerId.Length > 0)
+            {
+                PhotonPlayer player = PhotonPlayer.Find(int.Parse(playerId));
+                tempMessage += player != null ? $"@{player.Username.NGUIToUnity()}" : $"@{playerId}";
+                i += playerId.Length;
+            }
+            else
+            {
+                tempMessage += c;
+            }
+        }
+
+        message = tempMessage;
 
         // Bold chat
         if (Guardian.GuardianClient.Properties.BoldText.Value)
