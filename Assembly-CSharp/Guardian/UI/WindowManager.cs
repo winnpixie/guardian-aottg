@@ -22,10 +22,7 @@ namespace Guardian.UI
 
         public struct RECT
         {
-            long left;
-            long top;
-            long right;
-            long bottom;
+            long left, top, right, bottom;
         }
 
         [DllImport("user32.dll")]
@@ -37,13 +34,13 @@ namespace Guardian.UI
         [DllImport("user32.dll")]
         public static extern bool GetWindowRect([In] int hWnd, [Out] out RECT rect);
 
-        public static bool RestrictCursor()
+        public static bool HackCursor(bool restrain)
         {
-            return GetWindowRect(GetActiveWindow(), out RECT rect) && ClipCursor(ref rect);
-        }
+            if (restrain)
+            {
+                return GetWindowRect(GetActiveWindow(), out RECT rect) && ClipCursor(ref rect);
+            }
 
-        public static bool UnlockCursor()
-        {
             return ClipCursor();
         }
 
@@ -54,7 +51,7 @@ namespace Guardian.UI
 
             if (!locked)
             {
-                RestrictCursor();
+                HackCursor(GuardianClient.Properties.RestrainCursor.Value);
             }
         }
 
@@ -126,25 +123,23 @@ namespace Guardian.UI
                 }
             }
 
+            if (GuardianClient.Properties.RestrainCursor.Value)
+            {
+                HackCursor(hasFocus);
+            }
+
             if (hasFocus)
             {
-                RestrictCursor();
-
                 Application.targetFrameRate = -1;
                 if (int.TryParse((string)FengGameManagerMKII.Settings[184], out int targetFps) && targetFps > 0)
                 {
                     Application.targetFrameRate = targetFps;
                 }
             }
-            else
+            else if (GuardianClient.Properties.LimitUnfocusedFPS.Value && GuardianClient.Properties.MaxUnfocusedFPS.Value > 0)
             {
-                UnlockCursor();
-
-                if (GuardianClient.Properties.LimitUnfocusedFPS.Value && GuardianClient.Properties.MaxUnfocusedFPS.Value > 0)
-                {
-                    // FPS under ~15-30 as MasterClient provides a borderline non-playable experience to others, this should prevent that.
-                    Application.targetFrameRate = Utilities.MathHelper.MaxInt(GuardianClient.Properties.MaxUnfocusedFPS.Value, PhotonNetwork.isMasterClient ? 51 : 1);
-                }
+                // FPS under ~15-30 as MasterClient provides a borderline non-playable experience to others, this should prevent that.
+                Application.targetFrameRate = Utilities.MathHelper.MaxInt(GuardianClient.Properties.MaxUnfocusedFPS.Value, PhotonNetwork.isMasterClient ? 51 : 1);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using Guardian.Utilities;
+﻿using Guardian.UI;
+using Guardian.Utilities;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -95,6 +96,7 @@ namespace Guardian.Features.Properties
         public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], false);
 
         // Misc
+        public Property<bool> RestrainCursor = new Property<bool>("Misc_RestrainCursor", new string[0], true);
         public Property<bool> LimitUnfocusedFPS = new Property<bool>("Misc_LimitUnfocusedFPS", new string[0], true);
         public Property<int> MaxUnfocusedFPS = new Property<int>("Misc_MaxUnfocusedFPS", new string[0], 1);
         public Property<bool> UseRichPresence = new Property<bool>("Misc_DiscordPresence", new string[0], true);
@@ -318,6 +320,12 @@ namespace Guardian.Features.Properties
             base.Add(MultiplayerNapeMeat);
 
             // Misc
+            RestrainCursor.OnValueChanged = () =>
+            {
+                WindowManager.HackCursor(RestrainCursor.Value);
+            };
+            base.Add(RestrainCursor);
+
             base.Add(LimitUnfocusedFPS);
             base.Add(MaxUnfocusedFPS);
             base.Add(UseRichPresence);

@@ -27,7 +27,7 @@ namespace RC.UI.Impl
             }
             if ((int)FengGameManagerMKII.Settings[188] == 0)
             {
-                if (GUI.Button(new Rect(halfMenuWidth + 375f, halfMenuHeight + 51f, 120f, 22f), "Forest Skins"))
+                if (GUI.Button(new Rect(halfMenuWidth + 375f, halfMenuHeight + 51f, 120f, 22f), "Outside Skins"))
                 {
                     FengGameManagerMKII.Settings[188] = 1;
                 }

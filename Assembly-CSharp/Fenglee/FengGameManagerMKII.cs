@@ -6600,7 +6600,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             string text3 = string.Empty;
             string text4 = string.Empty;
             string[] array3 = new string[6] { string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty };
-            if (Level.MapName.Contains("City"))
+            if (Level.MapName.Contains("City") || Level.MapName.Contains("Colossal")) // MOD: Include more levels for skins
             {
                 for (int i = 51; i < 59; i++)
                 {
@@ -6617,7 +6617,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     array3[i] = (string)Settings[i + 169];
                 }
             }
-            else if (Level.MapName.Contains("Forest"))
+            else if (Level.MapName.Contains("Forest") || Level.MapName.Contains("OutSide")) // MOD: Include more levels for skins
             {
                 for (int k = 33; k < 41; k++)
                 {
