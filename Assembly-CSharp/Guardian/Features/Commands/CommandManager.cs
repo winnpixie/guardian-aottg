@@ -23,7 +23,7 @@ namespace Guardian.Features.Commands
             base.Add(new CommandScreenshot());
             base.Add(new CommandSetGuild());
             base.Add(new CommandSetLighting());
-            base.Add(new CommandSetName());
+            base.Add(new CommandSetUsername());
             base.Add(new CommandTranslate());
             base.Add(new CommandUnignore());
             base.Add(new CommandUnmute());

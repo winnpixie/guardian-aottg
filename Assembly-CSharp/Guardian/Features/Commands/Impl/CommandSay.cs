@@ -2,7 +2,7 @@
 {
     class CommandSay : Command
     {
-        public CommandSay() : base("say", new string[0], "<message>", false) { }
+        public CommandSay() : base("say", new string[0], "[message]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

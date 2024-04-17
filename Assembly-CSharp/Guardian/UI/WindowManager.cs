@@ -91,22 +91,15 @@ namespace Guardian.UI
             }
         }
 
-        public static void HandleWindowFocusEvent(bool hasFocus)
+        // TODO: I believe Exclusive Fullscreen still requires more testing.
+        private static void HandleExclusiveFullscreen(bool hasFocus)
         {
-            // TODO: I believe Exclusive Fullscreen still requires more testing.
             if (hasFocus)
             {
                 if (Fullscreen)
                 {
                     Fullscreen = false;
                     Screen.SetResolution(ScreenWidth, ScreenHeight, true);
-
-                    GameObject mainCam = GameObject.Find("MainCamera");
-                    if (mainCam != null)
-                    {
-                        IN_GAME_MAIN_CAMERA mainCamera = mainCam.GetComponent<IN_GAME_MAIN_CAMERA>();
-                        mainCamera.StartCoroutine(MarkHudDirty(mainCamera));
-                    }
                 }
             }
             else if (!Fullscreen)
@@ -120,6 +113,21 @@ namespace Guardian.UI
                     Screen.SetResolution(960, 600, false);
 
                     ShowWindow(GetActiveWindow(), 2); // SW_SHOWMINIMIZED
+                }
+            }
+        }
+
+        public static void HandleWindowFocusEvent(bool hasFocus)
+        {
+            // HandleExclusiveFullscreen(hasFocus);
+
+            if (hasFocus)
+            {
+                GameObject mainCam = GameObject.Find("MainCamera");
+                if (mainCam != null)
+                {
+                    IN_GAME_MAIN_CAMERA mainCamera = mainCam.GetComponent<IN_GAME_MAIN_CAMERA>();
+                    mainCamera.StartCoroutine(MarkHudDirty(mainCamera));
                 }
             }
 
@@ -138,7 +146,7 @@ namespace Guardian.UI
             }
             else if (GuardianClient.Properties.LimitUnfocusedFPS.Value && GuardianClient.Properties.MaxUnfocusedFPS.Value > 0)
             {
-                // FPS under ~15-30 as MasterClient provides a borderline non-playable experience to others, this should prevent that.
+                // FPS under 51 could potentially affect Physics-related logic, ensure the MasterClient does not attempt to go below that.
                 Application.targetFrameRate = Utilities.MathHelper.MaxInt(GuardianClient.Properties.MaxUnfocusedFPS.Value, PhotonNetwork.isMasterClient ? 51 : 1);
             }
         }

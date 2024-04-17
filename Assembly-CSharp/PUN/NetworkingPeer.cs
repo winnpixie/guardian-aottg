@@ -1503,6 +1503,12 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
         switch (rpcName)
         {
+            case "CheckEquipmentAttachPointRPC": // Prolonpo x RC
+            case "DeleteFireRPC":
+            case "ResetAllSupplierGearRPC":
+            case "throwBladesRPC":
+                sender.IsProlonpoRC = true;
+                break;
             case "FlareColour":
                 sender.IsAnarchyExpMod = true;
                 break;

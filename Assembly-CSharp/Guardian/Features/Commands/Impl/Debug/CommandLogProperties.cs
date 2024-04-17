@@ -9,7 +9,7 @@ namespace Guardian.Features.Commands.Impl.Debug
     {
         private readonly string SaveDir = GuardianClient.RootDir + "\\Properties";
 
-        public CommandLogProperties() : base("logpr", new string[0], "<id>", false) { }
+        public CommandLogProperties() : base("logproperties", new string[] { "logprops", "logpr" }, "<id>", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

@@ -4,7 +4,7 @@ namespace Guardian.Features.Commands.Impl.Debug
 {
     class CommandHorse : Command
     {
-        public CommandHorse() : base("horse", new string[0], "<follow/stay>", false) { }
+        public CommandHorse() : base("horse", new string[0], "<action>", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

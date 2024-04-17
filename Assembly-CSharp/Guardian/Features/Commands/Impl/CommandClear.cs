@@ -6,7 +6,7 @@ namespace Guardian.Features.Commands.Impl
 {
     class CommandClear : Command
     {
-        public CommandClear() : base("clear", new string[0], "[log|global|id]", false) { }
+        public CommandClear() : base("clear", new string[0], "[global|log|id]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
@@ -14,10 +14,6 @@ namespace Guardian.Features.Commands.Impl
             {
                 switch (args[0].ToLower())
                 {
-                    case "log":
-                        GuardianClient.Logger.Entries = new SynchronizedList<Logger.Entry>();
-                        GuardianClient.Logger.Info("Event log has been cleared!");
-                        break;
                     case "global":
                         if (!PhotonNetwork.isMasterClient) break;
 
@@ -27,6 +23,10 @@ namespace Guardian.Features.Commands.Impl
                             GameHelper.Broadcast(" ");
                         }
                         GameHelper.Broadcast("Global chat has been cleared!".AsColor("AAFF00"));
+                        break;
+                    case "log":
+                        GuardianClient.Logger.Entries = new SynchronizedList<Logger.Entry>();
+                        GuardianClient.Logger.Info("Event log has been cleared!");
                         break;
                     default:
                         if (!PhotonNetwork.isMasterClient || !int.TryParse(args[0], out int id)) break;

@@ -1,8 +1,8 @@
 ﻿namespace Guardian.Features.Commands.Impl
 {
-    class CommandSetName : Command
+    class CommandSetUsername : Command
     {
-        public CommandSetName() : base("setname", new string[] { "name" }, "[name]", false) { }
+        public CommandSetUsername() : base("setusername", new string[] { "username", "setname", "name" }, "[name]", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

@@ -66,6 +66,7 @@ public class PhotonPlayer
     public bool IsNRCMod;
     public bool IsPBMod;
     public bool IsPhotonMod;
+    public bool IsProlonpoRC;
     public bool IsRC83Mod;
     public bool IsRRCMod;
     public bool IsTRAPMod;

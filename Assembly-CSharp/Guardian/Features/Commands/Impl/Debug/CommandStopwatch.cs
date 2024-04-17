@@ -6,7 +6,7 @@ namespace Guardian.Features.Commands.Impl.Debug
     {
         private readonly MsTimer Watch = new MsTimer();
 
-        public CommandStopwatch() : base("stopwatch", new string[] { "sw", "timer" }, "<start|end>", false) { }
+        public CommandStopwatch() : base("stopwatch", new string[] { "sw", "timer" }, "<action>", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

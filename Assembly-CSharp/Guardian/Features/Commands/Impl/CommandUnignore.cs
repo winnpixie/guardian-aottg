@@ -2,7 +2,7 @@
 {
     class CommandUnignore : Command
     {
-        public CommandUnignore() : base("unignore", new string[] { "unig" }, "<id>", false) { }
+        public CommandUnignore() : base("unignore", new string[0], "<id>", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

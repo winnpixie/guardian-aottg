@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guardian;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -22,8 +23,10 @@ namespace Launcher
         {
             OutputLogBox.AutoWordSelection = true;
 
-            InformationLbl.Text = string.Format(InformationLbl.Text, Environment.OSVersion.VersionString, Program.Arch, Program.Build);
+            InformationLbl.Text = string.Format(InformationLbl.Text, Environment.OSVersion.VersionString, Constants.OSArch, Constants.AppVersion);
             InformationLbl.Refresh();
+
+            httpClient.Timeout = TimeSpan.MaxValue;
         }
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
@@ -58,7 +61,7 @@ namespace Launcher
                 {
                     UseShellExecute = true,
                     FileName = "Guardian.exe",
-                    WorkingDirectory = Program.Cwd
+                    WorkingDirectory = Constants.InstallDir
                 };
 
                 Process.Start(psi);
@@ -89,7 +92,7 @@ namespace Launcher
                         if (!buildInfo[0].Equals("LAUNCHER")) continue;
 
                         string latestBuild = buildInfo[1].Trim();
-                        if (latestBuild.Equals(Program.Build)) break;
+                        if (latestBuild.Equals(Constants.AppVersion)) break;
 
                         AppendToLog("\nYour copy of the Guardian Mod Launcher is OUT OF DATE, please update!");
                         AppendToLog("\n\t- https://cb.run/GuardianAoT");
@@ -104,7 +107,7 @@ namespace Launcher
                 // Get the binary data
                 try
                 {
-                    AppendToLog($"\nDownloading binaries for {Program.Arch}-bit Windows...");
+                    AppendToLog($"\nDownloading binaries for {Constants.OSArch}-bit Windows...");
                     gameZipData = await GetGameData();
                 }
                 catch (Exception ex)
@@ -113,7 +116,7 @@ namespace Launcher
                     return;
                 }
 
-                FileInfo gameZip = new FileInfo(Program.Cwd + $"\\{Program.BinaryName}");
+                FileInfo gameZip = new FileInfo(Constants.InstallDir + $"\\{Constants.BinaryName}");
                 // Delete previous ZIP to try and minimize unintended behaviour
                 if (gameZip.Exists)
                 {
@@ -144,7 +147,7 @@ namespace Launcher
                 // Extract ZIP contents to current working directory
                 try
                 {
-                    AppendToLog($"\nExtracting {gameZip.FullName} to current directory ({Program.Cwd})...");
+                    AppendToLog($"\nExtracting {gameZip.FullName} to current directory ({Constants.InstallDir})...");
                     ExtractToDirectory(gameZip);
                 }
                 catch (Exception ex)
@@ -171,12 +174,12 @@ namespace Launcher
 
         private async Task<string> GetVersionData()
         {
-            return await httpClient.GetStringAsync($"{Program.VersionsURL}?t={Environment.TickCount}");
+            return await httpClient.GetStringAsync($"{Constants.VersionsURL}?t={Environment.TickCount}");
         }
 
         private async Task<byte[]> GetGameData()
         {
-            return await httpClient.GetByteArrayAsync($"{Program.GameDataURL}?t=" + Environment.TickCount);
+            return await httpClient.GetByteArrayAsync($"{Constants.GameDataURL}?t=" + Environment.TickCount);
         }
 
         private async Task WriteGameData(FileInfo file, byte[] binData)
@@ -193,7 +196,7 @@ namespace Launcher
             {
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    string path = Program.Cwd + "\\" + entry.FullName;
+                    string path = Constants.InstallDir + "\\" + entry.FullName;
                     if (path.EndsWith("\\") || path.EndsWith("/"))
                     {
                         DirectoryInfo di = new DirectoryInfo(path.Substring(0, path.Length - 1));

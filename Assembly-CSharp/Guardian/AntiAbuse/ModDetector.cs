@@ -106,6 +106,12 @@ namespace Guardian.AntiAbuse
                 mods.Add("[EE66FF][TRAP]");
             }
 
+            // Prolonpo x RC
+            if (player.IsProlonpoRC)
+            {
+                mods.Add("[FFFFFF][Prolonpo-RC]");
+            }
+
             // RC83
             if (player.IsRC83Mod)
             {

@@ -5,7 +5,7 @@ namespace Guardian.Features.Commands.Impl
 {
     class CommandSetLighting : Command
     {
-        public CommandSetLighting() : base("setlighting", new string[] { "lighting", "settime", "time" }, "<day|dawn|night>", false) { }
+        public CommandSetLighting() : base("setlighting", new string[] { "lighting", "settime", "time" }, "<lightlevel>", false) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {

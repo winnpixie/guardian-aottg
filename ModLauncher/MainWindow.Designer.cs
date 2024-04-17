@@ -33,17 +33,18 @@ namespace Launcher
             this.PlayBtn = new System.Windows.Forms.Button();
             this.UpdateBtn = new System.Windows.Forms.Button();
             this.OutputLogBox = new System.Windows.Forms.RichTextBox();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // InformationLbl
             // 
             this.InformationLbl.AutoSize = true;
-            this.InformationLbl.Location = new System.Drawing.Point(13, 387);
+            this.InformationLbl.Location = new System.Drawing.Point(13, 402);
             this.InformationLbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.InformationLbl.Name = "InformationLbl";
-            this.InformationLbl.Size = new System.Drawing.Size(117, 45);
+            this.InformationLbl.Size = new System.Drawing.Size(117, 30);
             this.InformationLbl.TabIndex = 8;
-            this.InformationLbl.Text = "Platform: {0} {1}-bit\r\n\r\nLauncher Version: {2}";
+            this.InformationLbl.Text = "Platform: {0} {1}-bit\r\nLauncher Version: {2}";
             // 
             // PlayBtn
             // 
@@ -52,7 +53,7 @@ namespace Launcher
             this.PlayBtn.Name = "PlayBtn";
             this.PlayBtn.Size = new System.Drawing.Size(335, 40);
             this.PlayBtn.TabIndex = 6;
-            this.PlayBtn.Text = "Start without Downloading";
+            this.PlayBtn.Text = "Play (No Update)";
             this.PlayBtn.UseVisualStyleBackColor = true;
             this.PlayBtn.Click += new System.EventHandler(this.PlayBtn_Click);
             // 
@@ -63,7 +64,7 @@ namespace Launcher
             this.UpdateBtn.Name = "UpdateBtn";
             this.UpdateBtn.Size = new System.Drawing.Size(335, 40);
             this.UpdateBtn.TabIndex = 5;
-            this.UpdateBtn.Text = "Update and Start";
+            this.UpdateBtn.Text = "Play";
             this.UpdateBtn.UseVisualStyleBackColor = true;
             this.UpdateBtn.Click += new System.EventHandler(this.UpdateBtn_Click);
             // 
@@ -74,9 +75,13 @@ namespace Launcher
             this.OutputLogBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.OutputLogBox.Name = "OutputLogBox";
             this.OutputLogBox.ReadOnly = true;
-            this.OutputLogBox.Size = new System.Drawing.Size(678, 326);
+            this.OutputLogBox.Size = new System.Drawing.Size(678, 341);
             this.OutputLogBox.TabIndex = 7;
             this.OutputLogBox.Text = "";
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // MainWindow
             // 
@@ -91,7 +96,7 @@ namespace Launcher
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "MainWindow";
-            this.Text = "Guardian Mod Launcher";
+            this.Text = "WinnPixie\'s Mod Launcher";
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -104,6 +109,7 @@ namespace Launcher
         private System.Windows.Forms.Button PlayBtn;
         private System.Windows.Forms.Button UpdateBtn;
         private System.Windows.Forms.RichTextBox OutputLogBox;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

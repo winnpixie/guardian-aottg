@@ -4,7 +4,7 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 {
     class CommandSetTitans : Command
     {
-        public CommandSetTitans() : base("settitans", new string[0], "<normal|aberrant|jumper|crawler|punk>", true) { }
+        public CommandSetTitans() : base("settitans", new string[0], "<type>", true) { }
 
         public override void Execute(InRoomChat irc, string[] args)
         {
