@@ -22,7 +22,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <Authors>The Attack on Titan Tribute Game Community</Authors>
+    <Authors>winnpixie</Authors>
     <RootNamespace></RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
