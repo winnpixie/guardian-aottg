@@ -28,11 +28,7 @@ public class LoginFengKAI : MonoBehaviour
 
     private void Start()
     {
-        if (Player == null)
-        {
-            Player = new FengPlayer();
-            Player.InitAsGuest();
-        }
+        if (Player == null) Player = new FengPlayer();
 
         if (Name.Length > 0)
         {
@@ -255,7 +251,6 @@ public class LoginFengKAI : MonoBehaviour
     {
         ClearCookies();
         Player = new FengPlayer();
-        Player.InitAsGuest();
         output.GetComponent<UILabel>().text = "Welcome, " + Player.Name;
     }
 }

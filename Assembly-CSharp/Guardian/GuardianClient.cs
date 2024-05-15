@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.5.2.1";
+        public static readonly string Build = "1.5.3";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -54,6 +54,9 @@ namespace Guardian
             if (!IsFirstInit) return;
             IsFirstInit = false;
 
+            string cli = System.Environment.CommandLine;
+            if (cli.IndexOf(' ') > 0) Logger.Debug($"CLI:{cli.Substring(cli.IndexOf(' '))}");
+
             // Load Window Manager service
             WindowManager.Init();
 
@@ -64,8 +67,10 @@ namespace Guardian
             SkinValidator.Init();
 
             // Load name and guild (if possible)
-            LoginFengKAI.Player.Name = PlayerPrefs.GetString("name", string.Empty);
-            LoginFengKAI.Player.Guild = PlayerPrefs.GetString("guildname", string.Empty);
+            string playerName = PlayerPrefs.GetString("name", string.Empty);
+            string playerGuild = PlayerPrefs.GetString("guildname", string.Empty);
+            if (playerName.Length > 0) LoginFengKAI.Player.Name = playerName;
+            LoginFengKAI.Player.Guild = playerGuild;
 
             // Load various features
             Commands.Load();

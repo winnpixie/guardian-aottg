@@ -8,8 +8,8 @@ namespace Guardian.UI
     {
         private static bool Fullscreen;
 
-        public static int WindowWidth = 960;
-        public static int WindowHeight = 600;
+        public static int WindowWidth = 1280;
+        public static int WindowHeight = 720;
 
         public static int ScreenWidth;
         public static int ScreenHeight;
@@ -59,8 +59,8 @@ namespace Guardian.UI
         {
             if (Screen.fullScreen)
             {
-                WindowWidth = 960;
-                WindowHeight = 600;
+                WindowWidth = 1280;
+                WindowHeight = 720;
 
                 ScreenWidth = Screen.width;
                 ScreenHeight = Screen.height;
@@ -69,9 +69,18 @@ namespace Guardian.UI
             {
                 WindowWidth = Screen.width;
                 WindowHeight = Screen.height;
-
                 ScreenWidth = Screen.currentResolution.width;
                 ScreenHeight = Screen.currentResolution.height;
+            }
+
+            string[] cliArgs = System.Environment.GetCommandLineArgs();
+            for (int i = 1; i < cliArgs.Length; i++)
+            {
+                if (!cliArgs[i].Equals("-screen-fullscreen")) continue;
+                if (i + 1 == cliArgs.Length) continue;
+
+                bool fullScreen = cliArgs[i + 1].Equals("1");
+                if (Screen.fullScreen != fullScreen) ToggleFullscreen();
             }
         }
 
