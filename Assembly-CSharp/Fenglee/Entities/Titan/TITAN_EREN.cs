@@ -1191,11 +1191,11 @@ public class TITAN_EREN : Photon.MonoBehaviour
             yield return null;
         }
 
-        bool flag = true;
+        bool mipmapping = true;
         bool unload = false;
         if ((int)FengGameManagerMKII.Settings[63] == 1)
         {
-            flag = false;
+            mipmapping = false;
         }
 
         try
@@ -1210,7 +1210,7 @@ public class TITAN_EREN : Photon.MonoBehaviour
                         yield return link;
 
                         // Old limit: 1MB
-                        Texture2D tex = RCextensions.LoadImage(link, flag, 2000000);
+                        Texture2D tex = RCextensions.LoadImage(link, mipmapping, 2000000);
                         link.Dispose();
                         if (!FengGameManagerMKII.LinkHash[2].ContainsKey(url))
                         {

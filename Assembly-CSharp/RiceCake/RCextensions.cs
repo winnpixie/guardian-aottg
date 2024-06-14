@@ -49,8 +49,7 @@ public static class RCextensions
 
         if (newSize > 0)
         {
-            // FIXME: Implement an image scaler algorithm
-            // output.Resize(newSize, newSize, output.format, enableMipMapping);
+            TextureScale.Bilinear(output, newSize, newSize);
         }
 
         output.Compress(true);
@@ -74,7 +73,7 @@ public static class RCextensions
         source = array;
     }
 
-    public static void RemoveAt<T>(ref T[] source, int position)
+    public static void RemoveAt<T>(ref T[] source, int index)
     {
         if (source.Length == 1)
         {
@@ -89,7 +88,7 @@ public static class RCextensions
 
             for (int i = 0; i < source.Length; i++)
             {
-                if (i == position) continue;
+                if (i == index) continue;
 
                 newArr[idx] = source[i];
                 idx++;

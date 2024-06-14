@@ -257,10 +257,10 @@ public class TITAN_SETUP : Photon.MonoBehaviour
             obj2.transform.rotation = hair_go_ref.transform.rotation;
             obj2.transform.localScale = hair_go_ref.transform.localScale;
             obj2.renderer.material = CharacterMaterials.materials[this.hair.Texture];
-            bool flag = true;
+            bool mipmapping = true;
             if ((int)FengGameManagerMKII.Settings[63] == 1)
             {
-                flag = false;
+                mipmapping = false;
             }
             if (hairLink.EndsWith(".jpg") || hairLink.EndsWith(".png") || hairLink.EndsWith(".jpeg"))
             {
@@ -272,7 +272,7 @@ public class TITAN_SETUP : Photon.MonoBehaviour
                         yield return link;
 
                         // Old limit: 200KB
-                        Texture2D tex = RCextensions.LoadImage(link, flag, 300000);
+                        Texture2D tex = RCextensions.LoadImage(link, mipmapping, 300000);
                         link.Dispose();
                         if (!FengGameManagerMKII.LinkHash[0].ContainsKey(hairLink))
                         {

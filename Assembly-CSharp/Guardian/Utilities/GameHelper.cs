@@ -55,15 +55,9 @@ namespace Guardian.Utilities
             {
                 if (!directory)
                 {
-                    if (!File.Exists(path))
-                    {
-                        File.Create(path).Close();
-                    }
+                    if (!File.Exists(path)) File.Create(path).Close();
                 }
-                else if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+                else if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             }
             catch
             {
