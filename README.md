@@ -3,7 +3,7 @@
 A free, open-source, and feature-rich modification for the Attack on Titan Tribute Game.
 
 ## Where can I download Guardian Mod?
-Download and run "[Paradis.exe](https://aottgfan.site/clients/guardian/Paradis.exe)" to start playing!
+Download and run "[Paradis.exe](https://aottg.winnpixie.com/clients/guardian/Paradis.exe)" to start playing!
     - If Windows Smart Defender stops Paradis from opening, click "More Info", and then click "Run Anyway". This is an issue I will not fix, as I do not sign the executable.
 
 ## Features

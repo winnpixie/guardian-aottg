@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.5.3";
+        public static readonly string Build = "1.5.3.1";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -48,7 +48,7 @@ namespace Guardian
                 StartCoroutine(WaitAndSetParticleTextures());
             }
 
-            GuiController = base.gameObject.AddComponent<UI.GuiController>();
+            GuiController = base.gameObject.AddComponent<GuiController>();
             base.gameObject.AddComponent<MicEF>();
 
             if (!IsFirstInit) return;
@@ -69,7 +69,7 @@ namespace Guardian
             // Load name and guild (if possible)
             string playerName = PlayerPrefs.GetString("name", string.Empty);
             string playerGuild = PlayerPrefs.GetString("guildname", string.Empty);
-            if (playerName.Length > 0) LoginFengKAI.Player.Name = playerName;
+            if (playerName.StripNGUI().Length > 0) LoginFengKAI.Player.Name = playerName;
             LoginFengKAI.Player.Guild = playerGuild;
 
             // Load various features
@@ -80,11 +80,11 @@ namespace Guardian
             // Load emotes
             EmoteHelper.Load();
 
-            DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
-            DiscordHelper.Initialize();
-
             // Check for an update
             StartCoroutine(UpdateChecker.CheckForUpdate());
+
+            DiscordHelper.StartTime = GameHelper.CurrentTimeMillis();
+            DiscordHelper.Initialize();
         }
 
         private IEnumerator WaitAndSetParticleTextures()
@@ -94,7 +94,7 @@ namespace Guardian
             ResourceLoader.TryGetAsset("Custom/Textures/blood.png", out Texture2D bloodTexture);
             ResourceLoader.TryGetAsset("Custom/Textures/gun_smoke.png", out Texture2D gunSmokeTexture);
 
-            for (; ; )
+            while (true)
             {
                 foreach (ParticleSystem ps in UnityEngine.Object.FindObjectsOfType<ParticleSystem>())
                 {
@@ -141,10 +141,7 @@ namespace Guardian
 
         private void Update()
         {
-            if (PhotonNetwork.isMasterClient)
-            {
-                Gamemodes.CurrentMode.OnUpdate();
-            }
+            if (PhotonNetwork.isMasterClient) Gamemodes.CurrentMode.OnUpdate();
 
             DiscordHelper.RunCallbacks();
 
@@ -173,20 +170,13 @@ namespace Guardian
                 });
             }
 
-            if (PhotonNetwork.isMasterClient)
-            {
-                Gamemodes.CurrentMode.OnReset();
-            }
+            if (PhotonNetwork.isMasterClient) Gamemodes.CurrentMode.OnReset();
 
             if (HasJoinedRoom) { return; }
             HasJoinedRoom = true;
 
             string joinMessage = Properties.JoinMessage.Value.NGUIToUnity();
-            if (joinMessage.StripNGUI().Length < 1)
-            {
-                joinMessage = Properties.JoinMessage.Value;
-            }
-
+            if (joinMessage.StripNGUI().Length < 1) joinMessage = Properties.JoinMessage.Value;
             if (joinMessage.Length < 1) return;
             Commands.Find("say").Execute(InRoomChat.Instance, joinMessage.Split(' '));
         }
@@ -203,10 +193,7 @@ namespace Guardian
 
         private void OnPhotonPlayerDisconnected(PhotonPlayer player)
         {
-            if (PhotonNetwork.isMasterClient)
-            {
-                Gamemodes.CurrentMode.OnPlayerLeave(player);
-            }
+            if (PhotonNetwork.isMasterClient) Gamemodes.CurrentMode.OnPlayerLeave(player);
 
             Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() + " disconnected.".AsColor("FF0000"));
         }
