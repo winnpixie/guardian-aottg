@@ -20,17 +20,11 @@ namespace Guardian.Features
         {
             foreach (T element in Elements)
             {
-                if (element.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    return element;
-                }
+                if (element.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) return element;
 
                 foreach (string alias in element.Aliases)
                 {
-                    if (alias.Equals(name, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return element;
-                    }
+                    if (alias.Equals(name, StringComparison.OrdinalIgnoreCase)) return element;
                 }
             }
 

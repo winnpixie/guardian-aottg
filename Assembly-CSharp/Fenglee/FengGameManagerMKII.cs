@@ -1207,7 +1207,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
             return;
         }
-        // END Guardian
 
         if (info.sender.Muted) { return; }
 
@@ -1215,32 +1214,19 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             StartCoroutine(Guardian.Utilities.Translator.TranslateRoutine(message, Guardian.GuardianClient.Properties.IncomingLanguage.Value, Guardian.Utilities.Translator.SystemLanguage, result =>
             {
-                if (result.Length > 1 && !result[0].Equals(Guardian.Utilities.Translator.SystemLanguage, StringComparison.OrdinalIgnoreCase))
+                if (!result[0].Equals(Guardian.Utilities.Translator.SystemLanguage, StringComparison.OrdinalIgnoreCase))
                 {
-                    message = $"[gt({result[0].ToLower()}->{Guardian.Utilities.Translator.SystemLanguage.ToLower()})] ".AsColor("0099FF") + result[1];
+                    message = $"[gt::{result[0].ToLower()}->{Guardian.Utilities.Translator.SystemLanguage.ToLower()}] ".AsColor("0099FF") + result[1];
                 }
 
-                if (sender.Length == 0)
-                {
-                    InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "]").AsColor("FFCC00"), message);
-                }
-                else
-                {
-                    InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "] ").AsColor("FFCC00") + sender, message);
-                }
-            }));
+                InRoomChat.Instance.AddMessage($"[{info.sender.Id}]".AsColor("FFCC00") + (sender.Length > 0 ? $" {sender}" : string.Empty), message);
+            }, error => InRoomChat.Instance.AddMessage($"[{info.sender.Id}]".AsColor("FFCC00") + (sender.Length > 0 ? $" {sender}" : string.Empty), message)));
 
             return;
         }
+        // END Guardian
 
-        if (sender.Length == 0)
-        {
-            InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "]").AsColor("FFCC00"), message);
-        }
-        else
-        {
-            InRoomChat.Instance.AddMessage(("[" + info.sender.Id + "] ").AsColor("FFCC00") + sender, message);
-        }
+        InRoomChat.Instance.AddMessage($"[{info.sender.Id}]".AsColor("FFCC00") + (sender.Length > 0 ? $" {sender}" : string.Empty), message);
     }
 
     public void OnJoinedRoom()
@@ -1660,118 +1646,120 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                     StartCoroutine(CoLoadCustomLevel(new List<PhotonPlayer> { player }));
                 }
 
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
+                ExitGames.Client.Photon.Hashtable gameSettings = new ExitGames.Client.Photon.Hashtable();
+                // Guardian
+                Guardian.Networking.SyncedSettings.ApplySettings(gameSettings);
                 if (RCSettings.BombMode == 1)
                 {
-                    hashtable.Add("bomb", 1);
+                    gameSettings.Add("bomb", 1);
                 }
                 if (RCSettings.GlobalDisableMinimap == 1)
                 {
-                    hashtable.Add("globalDisableMinimap", 1);
+                    gameSettings.Add("globalDisableMinimap", 1);
                 }
                 if (RCSettings.TeamMode > 0)
                 {
-                    hashtable.Add("team", RCSettings.TeamMode);
+                    gameSettings.Add("team", RCSettings.TeamMode);
                 }
                 if (RCSettings.PointMode > 0)
                 {
-                    hashtable.Add("point", RCSettings.PointMode);
+                    gameSettings.Add("point", RCSettings.PointMode);
                 }
                 if (RCSettings.DisableRock > 0)
                 {
-                    hashtable.Add("rock", RCSettings.DisableRock);
+                    gameSettings.Add("rock", RCSettings.DisableRock);
                 }
                 if (RCSettings.ExplodeMode > 0)
                 {
-                    hashtable.Add("explode", RCSettings.ExplodeMode);
+                    gameSettings.Add("explode", RCSettings.ExplodeMode);
                 }
                 if (RCSettings.HealthMode > 0)
                 {
-                    hashtable.Add("healthMode", RCSettings.HealthMode);
-                    hashtable.Add("healthLower", RCSettings.HealthLower);
-                    hashtable.Add("healthUpper", RCSettings.HealthUpper);
+                    gameSettings.Add("healthMode", RCSettings.HealthMode);
+                    gameSettings.Add("healthLower", RCSettings.HealthLower);
+                    gameSettings.Add("healthUpper", RCSettings.HealthUpper);
                 }
                 if (RCSettings.InfectionMode > 0)
                 {
-                    hashtable.Add("infection", RCSettings.InfectionMode);
+                    gameSettings.Add("infection", RCSettings.InfectionMode);
                 }
                 if (RCSettings.BanEren == 1)
                 {
-                    hashtable.Add("eren", RCSettings.BanEren);
+                    gameSettings.Add("eren", RCSettings.BanEren);
                 }
                 if (RCSettings.MoreTitans > 0)
                 {
-                    hashtable.Add("titanc", RCSettings.MoreTitans);
+                    gameSettings.Add("titanc", RCSettings.MoreTitans);
                 }
                 if (RCSettings.MinimumDamage > 0)
                 {
-                    hashtable.Add("damage", RCSettings.MinimumDamage);
+                    gameSettings.Add("damage", RCSettings.MinimumDamage);
                 }
                 if (RCSettings.SizeMode > 0)
                 {
-                    hashtable.Add("sizeMode", RCSettings.SizeMode);
-                    hashtable.Add("sizeLower", RCSettings.SizeLower);
-                    hashtable.Add("sizeUpper", RCSettings.SizeUpper);
+                    gameSettings.Add("sizeMode", RCSettings.SizeMode);
+                    gameSettings.Add("sizeLower", RCSettings.SizeLower);
+                    gameSettings.Add("sizeUpper", RCSettings.SizeUpper);
                 }
                 if (RCSettings.SpawnMode > 0)
                 {
-                    hashtable.Add("spawnMode", RCSettings.SpawnMode);
-                    hashtable.Add("nRate", RCSettings.NormalRate);
-                    hashtable.Add("aRate", RCSettings.AberrantRate);
-                    hashtable.Add("jRate", RCSettings.JumperRate);
-                    hashtable.Add("cRate", RCSettings.CrawlerRate);
-                    hashtable.Add("pRate", RCSettings.PunkRate);
+                    gameSettings.Add("spawnMode", RCSettings.SpawnMode);
+                    gameSettings.Add("nRate", RCSettings.NormalRate);
+                    gameSettings.Add("aRate", RCSettings.AberrantRate);
+                    gameSettings.Add("jRate", RCSettings.JumperRate);
+                    gameSettings.Add("cRate", RCSettings.CrawlerRate);
+                    gameSettings.Add("pRate", RCSettings.PunkRate);
                 }
                 if (RCSettings.WaveModeOn > 0)
                 {
-                    hashtable.Add("waveModeOn", 1);
-                    hashtable.Add("waveModeNum", RCSettings.WaveModeNum);
+                    gameSettings.Add("waveModeOn", 1);
+                    gameSettings.Add("waveModeNum", RCSettings.WaveModeNum);
                 }
                 if (RCSettings.FriendlyMode > 0)
                 {
-                    hashtable.Add("friendly", 1);
+                    gameSettings.Add("friendly", 1);
                 }
                 if (RCSettings.PvPMode > 0)
                 {
-                    hashtable.Add("pvp", RCSettings.PvPMode);
+                    gameSettings.Add("pvp", RCSettings.PvPMode);
                 }
                 if (RCSettings.MaxWave > 0)
                 {
-                    hashtable.Add("maxwave", RCSettings.MaxWave);
+                    gameSettings.Add("maxwave", RCSettings.MaxWave);
                 }
                 if (RCSettings.EndlessMode > 0)
                 {
-                    hashtable.Add("endless", RCSettings.EndlessMode);
+                    gameSettings.Add("endless", RCSettings.EndlessMode);
                 }
                 if (RCSettings.Motd.Length > 0)
                 {
-                    hashtable.Add("motd", RCSettings.Motd);
+                    gameSettings.Add("motd", RCSettings.Motd);
                 }
                 if (RCSettings.HorseMode > 0)
                 {
-                    hashtable.Add("horse", RCSettings.HorseMode);
+                    gameSettings.Add("horse", RCSettings.HorseMode);
                 }
                 if (RCSettings.AhssReload > 0)
                 {
-                    hashtable.Add("ahssReload", RCSettings.AhssReload);
+                    gameSettings.Add("ahssReload", RCSettings.AhssReload);
                 }
                 if (RCSettings.PunkWaves > 0)
                 {
-                    hashtable.Add("punkWaves", RCSettings.PunkWaves);
+                    gameSettings.Add("punkWaves", RCSettings.PunkWaves);
                 }
                 if (RCSettings.DeadlyCannons > 0)
                 {
-                    hashtable.Add("deadlycannons", RCSettings.DeadlyCannons);
+                    gameSettings.Add("deadlycannons", RCSettings.DeadlyCannons);
                 }
                 if (RCSettings.RacingStatic > 0)
                 {
-                    hashtable.Add("asoracing", RCSettings.RacingStatic);
+                    gameSettings.Add("asoracing", RCSettings.RacingStatic);
                 }
                 if (IgnoreList != null && IgnoreList.Count > 0)
                 {
                     photonView.RPC("ignorePlayerArray", player, IgnoreList.ToArray());
                 }
-                photonView.RPC("settingRPC", player, hashtable);
+                photonView.RPC("settingRPC", player, gameSettings);
                 photonView.RPC("setMasterRC", player);
 
                 if (Time.timeScale <= 0.1f && pauseWaitTime > 3f)
@@ -3569,6 +3557,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     private ExitGames.Client.Photon.Hashtable CheckGameGUI()
     {
         ExitGames.Client.Photon.Hashtable gameSettings = new ExitGames.Client.Photon.Hashtable();
+        // Guardian
+        Guardian.Networking.SyncedSettings.ApplySettings(gameSettings);
+
         if ((int)Settings[200] > 0)
         {
             Settings[192] = 0;
@@ -9759,27 +9750,30 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     }
 
     [Guardian.Networking.RPC(Name = "settingRPC")]
-    private void SettingRPC(ExitGames.Client.Photon.Hashtable settings, PhotonMessageInfo info)
+    private void SettingRPC(ExitGames.Client.Photon.Hashtable gameSettings, PhotonMessageInfo info)
     {
         if (info.sender.isMasterClient)
         {
-            SetGameSettings(settings);
+            SetGameSettings(gameSettings);
         }
     }
 
-    private void SetGameSettings(ExitGames.Client.Photon.Hashtable settings)
+    private void SetGameSettings(ExitGames.Client.Photon.Hashtable gameSettings)
     {
         restartingEren = false;
         restartingBomb = false;
         restartingHorse = false;
         restartingTitan = false;
 
+        // Guardian
+        Guardian.Networking.SyncedSettings.UpdateSettings(gameSettings);
+
         // Bomb PVP
-        if (settings.ContainsKey("bomb"))
+        if (gameSettings.ContainsKey("bomb"))
         {
-            if (RCSettings.BombMode != (int)settings["bomb"])
+            if (RCSettings.BombMode != (int)gameSettings["bomb"])
             {
-                RCSettings.BombMode = (int)settings["bomb"];
+                RCSettings.BombMode = (int)gameSettings["bomb"];
                 InRoomChat.Instance.AddLine("PVP Bomb Mode enabled.".AsColor("FFCC00"));
             }
         }
@@ -9795,14 +9789,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
         RCSettings.BombCeiling = false;
         // Bomb Ceiling
-        if (RCSettings.BombMode != 0 && (!settings.ContainsKey("bombCeiling") || (int)settings["bombCeiling"] == 1))
+        if (RCSettings.BombMode != 0 && (!gameSettings.ContainsKey("bombCeiling") || (int)gameSettings["bombCeiling"] == 1))
         {
             RCSettings.BombCeiling = true;
             InRoomChat.Instance.AddLine("Sky Barrier/Bomb Ceiling is enabled. Don't fly too high!".AsColor("FFCC00"));
         }
 
         // Global Hide Names
-        bool hideNames = settings.ContainsKey("globalHideNames");
+        bool hideNames = gameSettings.ContainsKey("globalHideNames");
         if (RCSettings.HideNames != hideNames)
         {
             RCSettings.HideNames = hideNames;
@@ -9810,11 +9804,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Global Minimap Disable
-        if (settings.ContainsKey("globalDisableMinimap"))
+        if (gameSettings.ContainsKey("globalDisableMinimap"))
         {
-            if (RCSettings.GlobalDisableMinimap != (int)settings["globalDisableMinimap"])
+            if (RCSettings.GlobalDisableMinimap != (int)gameSettings["globalDisableMinimap"])
             {
-                RCSettings.GlobalDisableMinimap = (int)settings["globalDisableMinimap"];
+                RCSettings.GlobalDisableMinimap = (int)gameSettings["globalDisableMinimap"];
                 InRoomChat.Instance.AddLine("Minimaps are not allowed.".AsColor("FFCC00"));
             }
         }
@@ -9825,11 +9819,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Horses
-        if (settings.ContainsKey("horse"))
+        if (gameSettings.ContainsKey("horse"))
         {
-            if (RCSettings.HorseMode != (int)settings["horse"])
+            if (RCSettings.HorseMode != (int)gameSettings["horse"])
             {
-                RCSettings.HorseMode = (int)settings["horse"];
+                RCSettings.HorseMode = (int)gameSettings["horse"];
                 InRoomChat.Instance.AddLine("Horses enabled.".AsColor("FFCC00"));
             }
         }
@@ -9844,11 +9838,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Punk Waves
-        if (settings.ContainsKey("punkWaves"))
+        if (gameSettings.ContainsKey("punkWaves"))
         {
-            if (RCSettings.PunkWaves != (int)settings["punkWaves"])
+            if (RCSettings.PunkWaves != (int)gameSettings["punkWaves"])
             {
-                RCSettings.PunkWaves = (int)settings["punkWaves"];
+                RCSettings.PunkWaves = (int)gameSettings["punkWaves"];
                 InRoomChat.Instance.AddLine("Punk override every 5 waves enabled.".AsColor("FFCC00"));
             }
         }
@@ -9859,11 +9853,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // AHSS Air-Reload
-        if (settings.ContainsKey("ahssReload"))
+        if (gameSettings.ContainsKey("ahssReload"))
         {
-            if (RCSettings.AhssReload != (int)settings["ahssReload"])
+            if (RCSettings.AhssReload != (int)gameSettings["ahssReload"])
             {
-                RCSettings.AhssReload = (int)settings["ahssReload"];
+                RCSettings.AhssReload = (int)gameSettings["ahssReload"];
                 InRoomChat.Instance.AddLine("AHSS Air-Reload is not allowed.".AsColor("FFCC00"));
             }
         }
@@ -9874,11 +9868,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Team Sorting
-        if (settings.ContainsKey("team"))
+        if (gameSettings.ContainsKey("team"))
         {
-            if (RCSettings.TeamMode != (int)settings["team"])
+            if (RCSettings.TeamMode != (int)gameSettings["team"])
             {
-                RCSettings.TeamMode = (int)settings["team"];
+                RCSettings.TeamMode = (int)gameSettings["team"];
                 string str = string.Empty;
                 switch (RCSettings.TeamMode)
                 {
@@ -9907,11 +9901,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Point limit
-        if (settings.ContainsKey("point"))
+        if (gameSettings.ContainsKey("point"))
         {
-            if (RCSettings.PointMode != (int)settings["point"])
+            if (RCSettings.PointMode != (int)gameSettings["point"])
             {
-                RCSettings.PointMode = (int)settings["point"];
+                RCSettings.PointMode = (int)gameSettings["point"];
                 InRoomChat.Instance.AddLine("Point Limit enabled (".AsColor("FFCC00") + RCSettings.PointMode + ").".AsColor("FFCC00"));
             }
         }
@@ -9922,11 +9916,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Punk Rocks
-        if (settings.ContainsKey("rock"))
+        if (gameSettings.ContainsKey("rock"))
         {
-            if (RCSettings.DisableRock != (int)settings["rock"])
+            if (RCSettings.DisableRock != (int)gameSettings["rock"])
             {
-                RCSettings.DisableRock = (int)settings["rock"];
+                RCSettings.DisableRock = (int)gameSettings["rock"];
                 InRoomChat.Instance.AddLine("Punk rock throwing disabled.".AsColor("FFCC00"));
             }
         }
@@ -9937,11 +9931,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Titan Explode
-        if (settings.ContainsKey("explode"))
+        if (gameSettings.ContainsKey("explode"))
         {
-            if (RCSettings.ExplodeMode != (int)settings["explode"])
+            if (RCSettings.ExplodeMode != (int)gameSettings["explode"])
             {
-                RCSettings.ExplodeMode = (int)settings["explode"];
+                RCSettings.ExplodeMode = (int)gameSettings["explode"];
                 InRoomChat.Instance.AddLine("Titan Explode Mode enabled (Radius ".AsColor("FFCC00") + RCSettings.ExplodeMode + ").".AsColor("FFCC00"));
             }
         }
@@ -9952,13 +9946,13 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Titan Health
-        if (settings.ContainsKey("healthMode") && settings.ContainsKey("healthLower") && settings.ContainsKey("healthUpper"))
+        if (gameSettings.ContainsKey("healthMode") && gameSettings.ContainsKey("healthLower") && gameSettings.ContainsKey("healthUpper"))
         {
-            if (RCSettings.HealthMode != (int)settings["healthMode"] || RCSettings.HealthLower != (int)settings["healthLower"] || RCSettings.HealthUpper != (int)settings["healthUpper"])
+            if (RCSettings.HealthMode != (int)gameSettings["healthMode"] || RCSettings.HealthLower != (int)gameSettings["healthLower"] || RCSettings.HealthUpper != (int)gameSettings["healthUpper"])
             {
-                RCSettings.HealthMode = (int)settings["healthMode"];
-                RCSettings.HealthLower = (int)settings["healthLower"];
-                RCSettings.HealthUpper = (int)settings["healthUpper"];
+                RCSettings.HealthMode = (int)gameSettings["healthMode"];
+                RCSettings.HealthLower = (int)gameSettings["healthLower"];
+                RCSettings.HealthUpper = (int)gameSettings["healthUpper"];
                 string str = "Static";
                 if (RCSettings.HealthMode == 2)
                 {
@@ -9978,11 +9972,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Infection
-        if (settings.ContainsKey("infection"))
+        if (gameSettings.ContainsKey("infection"))
         {
-            if (RCSettings.InfectionMode != (int)settings["infection"])
+            if (RCSettings.InfectionMode != (int)gameSettings["infection"])
             {
-                RCSettings.InfectionMode = (int)settings["infection"];
+                RCSettings.InfectionMode = (int)gameSettings["infection"];
                 ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                 {
                     { RCPlayerProperty.RCTeam, 0 }
@@ -10007,11 +10001,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Anti-Eren
-        if (settings.ContainsKey("eren"))
+        if (gameSettings.ContainsKey("eren"))
         {
-            if (RCSettings.BanEren != (int)settings["eren"])
+            if (RCSettings.BanEren != (int)gameSettings["eren"])
             {
-                RCSettings.BanEren = (int)settings["eren"];
+                RCSettings.BanEren = (int)gameSettings["eren"];
                 InRoomChat.Instance.AddLine("Anti-Eren enabled. Using Titan Eren will get you kicked.".AsColor("FFCC00"));
                 if (PhotonNetwork.isMasterClient)
                 {
@@ -10026,11 +10020,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Custom Titan Count
-        if (settings.ContainsKey("titanc"))
+        if (gameSettings.ContainsKey("titanc"))
         {
-            if (RCSettings.MoreTitans != (int)settings["titanc"])
+            if (RCSettings.MoreTitans != (int)gameSettings["titanc"])
             {
-                RCSettings.MoreTitans = (int)settings["titanc"];
+                RCSettings.MoreTitans = (int)gameSettings["titanc"];
                 InRoomChat.Instance.AddLine(RCSettings.MoreTitans + " Titans will spawn each round.".AsColor("FFCC00"));
             }
         }
@@ -10041,11 +10035,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Minimum Damage
-        if (settings.ContainsKey("damage"))
+        if (gameSettings.ContainsKey("damage"))
         {
-            if (RCSettings.MinimumDamage != (int)settings["damage"])
+            if (RCSettings.MinimumDamage != (int)gameSettings["damage"])
             {
-                RCSettings.MinimumDamage = (int)settings["damage"];
+                RCSettings.MinimumDamage = (int)gameSettings["damage"];
                 InRoomChat.Instance.AddLine("Minimum nape damage (".AsColor("FFCC00") + RCSettings.MinimumDamage + ") enabled.".AsColor("FFCC00"));
             }
         }
@@ -10056,22 +10050,22 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Custom Titan Sizes
-        if (settings.ContainsKey("sizeMode") && settings.ContainsKey("sizeLower") && settings.ContainsKey("sizeUpper"))
+        if (gameSettings.ContainsKey("sizeMode") && gameSettings.ContainsKey("sizeLower") && gameSettings.ContainsKey("sizeUpper"))
         {
             // Temporary? fix for RiceCake not properly re-implementing all legacy settings
-            if (settings["sizeMode"] is bool sizeMode)
+            if (gameSettings["sizeMode"] is bool sizeMode)
             {
-                settings["sizeMode"] = sizeMode ? 1 : 0;
+                gameSettings["sizeMode"] = sizeMode ? 1 : 0;
 
                 // Logging it for funsies, lol
                 Guardian.GuardianClient.Logger.Debug("RC2020 'sizeMode' as <b>bool</b> detected, replacing with <b>int</b> equivalent.");
             }
 
-            if (RCSettings.SizeMode != (int)settings["sizeMode"] || RCSettings.SizeLower != (float)settings["sizeLower"] || RCSettings.SizeUpper != (float)settings["sizeUpper"])
+            if (RCSettings.SizeMode != (int)gameSettings["sizeMode"] || RCSettings.SizeLower != (float)gameSettings["sizeLower"] || RCSettings.SizeUpper != (float)gameSettings["sizeUpper"])
             {
-                RCSettings.SizeMode = (int)settings["sizeMode"];
-                RCSettings.SizeLower = (float)settings["sizeLower"];
-                RCSettings.SizeUpper = (float)settings["sizeUpper"];
+                RCSettings.SizeMode = (int)gameSettings["sizeMode"];
+                RCSettings.SizeLower = (float)gameSettings["sizeLower"];
+                RCSettings.SizeUpper = (float)gameSettings["sizeUpper"];
                 InRoomChat.Instance.AddLine("Custom titan size (".AsColor("FFCC00")
                     + RCSettings.SizeLower.ToString("F2") + ", ".AsColor("FFCC00")
                     + RCSettings.SizeUpper.ToString("F2") + ") enabled.".AsColor("FFCC00"));
@@ -10086,16 +10080,16 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Custom Spawn Rates
-        if (settings.ContainsKey("spawnMode") && settings.ContainsKey("nRate") && settings.ContainsKey("aRate") && settings.ContainsKey("jRate") && settings.ContainsKey("cRate") && settings.ContainsKey("pRate"))
+        if (gameSettings.ContainsKey("spawnMode") && gameSettings.ContainsKey("nRate") && gameSettings.ContainsKey("aRate") && gameSettings.ContainsKey("jRate") && gameSettings.ContainsKey("cRate") && gameSettings.ContainsKey("pRate"))
         {
-            if (RCSettings.SpawnMode != (int)settings["spawnMode"] || RCSettings.NormalRate != (float)settings["nRate"] || RCSettings.AberrantRate != (float)settings["aRate"] || RCSettings.JumperRate != (float)settings["jRate"] || RCSettings.CrawlerRate != (float)settings["cRate"] || RCSettings.PunkRate != (float)settings["pRate"])
+            if (RCSettings.SpawnMode != (int)gameSettings["spawnMode"] || RCSettings.NormalRate != (float)gameSettings["nRate"] || RCSettings.AberrantRate != (float)gameSettings["aRate"] || RCSettings.JumperRate != (float)gameSettings["jRate"] || RCSettings.CrawlerRate != (float)gameSettings["cRate"] || RCSettings.PunkRate != (float)gameSettings["pRate"])
             {
-                RCSettings.SpawnMode = (int)settings["spawnMode"];
-                RCSettings.NormalRate = (float)settings["nRate"];
-                RCSettings.AberrantRate = (float)settings["aRate"];
-                RCSettings.JumperRate = (float)settings["jRate"];
-                RCSettings.CrawlerRate = (float)settings["cRate"];
-                RCSettings.PunkRate = (float)settings["pRate"];
+                RCSettings.SpawnMode = (int)gameSettings["spawnMode"];
+                RCSettings.NormalRate = (float)gameSettings["nRate"];
+                RCSettings.AberrantRate = (float)gameSettings["aRate"];
+                RCSettings.JumperRate = (float)gameSettings["jRate"];
+                RCSettings.CrawlerRate = (float)gameSettings["cRate"];
+                RCSettings.PunkRate = (float)gameSettings["pRate"];
                 InRoomChat.Instance.AddLine("Custom spawn rate enabled (".AsColor("FFCC00") + RCSettings.NormalRate.ToString("F2") + "% Normal, ".AsColor("FFCC00")
                     + RCSettings.AberrantRate.ToString("F2") + "% Abnormal, ".AsColor("FFCC00")
                     + RCSettings.JumperRate.ToString("F2") + "% Jumper, ".AsColor("FFCC00")
@@ -10115,12 +10109,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Wave Mode (Titan count multiplier?)
-        if (settings.ContainsKey("waveModeOn") && settings.ContainsKey("waveModeNum"))
+        if (gameSettings.ContainsKey("waveModeOn") && gameSettings.ContainsKey("waveModeNum"))
         {
-            if (RCSettings.WaveModeOn != (int)settings["waveModeOn"] || RCSettings.WaveModeNum != (int)settings["waveModeNum"])
+            if (RCSettings.WaveModeOn != (int)gameSettings["waveModeOn"] || RCSettings.WaveModeNum != (int)gameSettings["waveModeNum"])
             {
-                RCSettings.WaveModeOn = (int)settings["waveModeOn"];
-                RCSettings.WaveModeNum = (int)settings["waveModeNum"];
+                RCSettings.WaveModeOn = (int)gameSettings["waveModeOn"];
+                RCSettings.WaveModeNum = (int)gameSettings["waveModeNum"];
                 InRoomChat.Instance.AddLine("Custom Wave Mode (".AsColor("FFCC00") + RCSettings.WaveModeNum.ToString() + ") enabled.".AsColor("FFCC00"));
             }
         }
@@ -10132,11 +10126,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Friendly Fire
-        if (settings.ContainsKey("friendly"))
+        if (gameSettings.ContainsKey("friendly"))
         {
-            if (RCSettings.FriendlyMode != (int)settings["friendly"])
+            if (RCSettings.FriendlyMode != (int)gameSettings["friendly"])
             {
-                RCSettings.FriendlyMode = (int)settings["friendly"];
+                RCSettings.FriendlyMode = (int)gameSettings["friendly"];
                 InRoomChat.Instance.AddLine("Friendly Fire disabled, PVP is not allowed.".AsColor("FFCC00"));
             }
         }
@@ -10147,11 +10141,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // PVP Mode
-        if (settings.ContainsKey("pvp"))
+        if (gameSettings.ContainsKey("pvp"))
         {
-            if (RCSettings.PvPMode != (int)settings["pvp"])
+            if (RCSettings.PvPMode != (int)gameSettings["pvp"])
             {
-                RCSettings.PvPMode = (int)settings["pvp"];
+                RCSettings.PvPMode = (int)gameSettings["pvp"];
                 string str = string.Empty;
                 if (RCSettings.PvPMode == 1)
                 {
@@ -10171,11 +10165,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Max Wave
-        if (settings.ContainsKey("maxwave"))
+        if (gameSettings.ContainsKey("maxwave"))
         {
-            if (RCSettings.MaxWave != (int)settings["maxwave"])
+            if (RCSettings.MaxWave != (int)gameSettings["maxwave"])
             {
-                RCSettings.MaxWave = (int)settings["maxwave"];
+                RCSettings.MaxWave = (int)gameSettings["maxwave"];
                 InRoomChat.Instance.AddLine("Max Wave is ".AsColor("FFCC00") + RCSettings.MaxWave + ".".AsColor("FFCC00"));
             }
         }
@@ -10186,11 +10180,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Endless Respawn
-        if (settings.ContainsKey("endless"))
+        if (gameSettings.ContainsKey("endless"))
         {
-            if (RCSettings.EndlessMode != (int)settings["endless"])
+            if (RCSettings.EndlessMode != (int)gameSettings["endless"])
             {
-                RCSettings.EndlessMode = (int)settings["endless"];
+                RCSettings.EndlessMode = (int)gameSettings["endless"];
                 InRoomChat.Instance.AddLine("Endless Respawn enabled (".AsColor("FFCC00") + RCSettings.EndlessMode + "s).".AsColor("FFCC00"));
             }
         }
@@ -10201,11 +10195,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Deadly Cannons
-        if (settings.ContainsKey("deadlycannons"))
+        if (gameSettings.ContainsKey("deadlycannons"))
         {
-            if (RCSettings.DeadlyCannons != (int)settings["deadlycannons"])
+            if (RCSettings.DeadlyCannons != (int)gameSettings["deadlycannons"])
             {
-                RCSettings.DeadlyCannons = (int)settings["deadlycannons"];
+                RCSettings.DeadlyCannons = (int)gameSettings["deadlycannons"];
                 InRoomChat.Instance.AddLine("Cannons will now kill humans.".AsColor("FFCC00"));
             }
         }
@@ -10216,11 +10210,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // Aso Racing
-        if (settings.ContainsKey("asoracing"))
+        if (gameSettings.ContainsKey("asoracing"))
         {
-            if (RCSettings.RacingStatic != (int)settings["asoracing"])
+            if (RCSettings.RacingStatic != (int)gameSettings["asoracing"])
             {
-                RCSettings.RacingStatic = (int)settings["asoracing"];
+                RCSettings.RacingStatic = (int)gameSettings["asoracing"];
                 InRoomChat.Instance.AddLine("Racing will not restart on win.".AsColor("FFCC00"));
             }
         }
@@ -10231,11 +10225,11 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // MOTD
-        if (settings.ContainsKey("motd"))
+        if (gameSettings.ContainsKey("motd"))
         {
-            if (RCSettings.Motd != (string)settings["motd"])
+            if (RCSettings.Motd != (string)gameSettings["motd"])
             {
-                RCSettings.Motd = (string)settings["motd"];
+                RCSettings.Motd = (string)gameSettings["motd"];
                 InRoomChat.Instance.AddLine("MOTD: ".AsColor("FFCC00") + RCSettings.Motd);
             }
         }

@@ -10,18 +10,13 @@ namespace Guardian.Features.Commands.Impl
         {
             if (args.Length < 3) return;
 
-            irc.StartCoroutine(Translator.TranslateRoutine(string.Join(" ", args.CopyOfRange(2, args.Length)), args[0], args[1], result =>
-            {
-                if (result.Length > 1)
-                {
-                    irc.AddMessage("Translation ".AsColor("FFCC00") + $"({result[0].ToUpper()}->{args[1].ToUpper()})", result[1]);
-                }
-                else
+            irc.StartCoroutine(Translator.TranslateRoutine(string.Join(" ", args.CopyOfRange(2, args.Length)), args[0], args[1],
+                result => irc.AddMessage($"[gt::{result[0].ToLower()}->{args[1].ToLower()}]".AsColor("0099FF"), result[1]),
+                error =>
                 {
                     irc.AddLine("An error occured while trying to retrieve the translation!".AsColor("FF0000"));
-                    irc.AddLine(result[0].AsColor("FF0000"));
-                }
-            }));
+                    irc.AddLine(error.AsColor("FF0000"));
+                }));
         }
     }
 }

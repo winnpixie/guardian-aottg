@@ -1175,6 +1175,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void UseGas(float amount = 0f)
     {
+        // Guardian
+        if (Guardian.Networking.SyncedSettings.InfiniteGas) return;
+
         if (amount == 0f)
         {
             amount = useGasSpeed;
@@ -1209,15 +1212,14 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     public void UseBlade(int amount = 0)
     {
-        if (amount == 0)
-        {
-            amount = 1;
-        }
+        // Guardian
+        if (Guardian.Networking.SyncedSettings.InfiniteAmmo) return;
+
+        if (amount == 0) amount = 1;
+
         amount *= 2;
-        if (!(currentBladeSta > 0f))
-        {
-            return;
-        }
+        if (!(currentBladeSta > 0f)) return;
+
         currentBladeSta -= amount;
         if (currentBladeSta <= 0f)
         {
@@ -1237,6 +1239,9 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
     private void UseBullet(int amount, bool left)
     {
+        // Guardian
+        if (Guardian.Networking.SyncedSettings.InfiniteAmmo) return;
+
         if (left)
         {
             leftBulletLeft -= amount;
@@ -1269,10 +1274,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         setup.part_blade_l.SetActive(value: false);
         setup.part_blade_r.SetActive(value: false);
 
-        if (state == HeroState.Attack)
-        {
-            FalseAttack();
-        }
+        if (state == HeroState.Attack) FalseAttack();
     }
 
     private void LaunchLeftHook(RaycastHit hit, bool single, bool isLevi = false, bool isPetra = false)

@@ -13,7 +13,7 @@ namespace Guardian.Utilities
         //private static readonly string ApiUrl = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={0}&tl={1}&q={2}"; // Alt-URL
         private static readonly string ApiUrl = "https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl={0}&tl={1}&dt=t&q={2}";
 
-        public static IEnumerator TranslateRoutine(string text, string langFrom, string langTo, Action<string[]> callback)
+        public static IEnumerator TranslateRoutine(string text, string langFrom, string langTo, Action<string[]> onSuccess, Action<string> onFailure)
         {
             string query = WWW.EscapeURL(text);
             string url = string.Format(ApiUrl, langFrom, langTo, query);
@@ -23,16 +23,16 @@ namespace Guardian.Utilities
 
             if (www.error != null)
             {
-                callback.Invoke(new string[] { www.error });
+                onFailure.Invoke(www.error);
             }
             else
             {
                 JSONArray json = JSON.Parse(www.text).AsArray;
 
-                callback.Invoke(new string[]
+                onSuccess.Invoke(new string[]
                 {
                         json[2].Value, // Language
-                        json[0].AsArray[0].AsArray[0].Value // Text
+                        json[0].AsArray[0].AsArray[0].Value // Translated text
                 });
             }
         }
@@ -55,7 +55,7 @@ namespace Guardian.Utilities
                 return new string[]
                 {
                     json[2].Value, // Language
-                    json[0].AsArray[0].AsArray[0].Value // Text
+                    json[0].AsArray[0].AsArray[0].Value // Translated text
                 };
             }
         }

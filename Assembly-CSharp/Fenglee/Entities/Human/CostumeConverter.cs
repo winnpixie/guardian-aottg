@@ -64,25 +64,27 @@ public class CostumeConverter
 
     public static void ToPhotonData(HeroCostume costume, PhotonPlayer player)
     {
-        Hashtable properties = new Hashtable();
-        properties.Add(PhotonPlayerProperty.Sex, (int)costume.sex);
-        properties.Add(PhotonPlayerProperty.CostumeId, costume.costumeId);
-        properties.Add(PhotonPlayerProperty.HeroCostumeId, costume.id);
-        properties.Add(PhotonPlayerProperty.Cape, costume.cape);
-        properties.Add(PhotonPlayerProperty.HairInfo, costume.hairInfo.Id);
-        properties.Add(PhotonPlayerProperty.EyeTextureId, costume.eye_texture_id);
-        properties.Add(PhotonPlayerProperty.BeardTextureId, costume.beard_texture_id);
-        properties.Add(PhotonPlayerProperty.GlassTextureId, costume.glass_texture_id);
-        properties.Add(PhotonPlayerProperty.SkinColor, costume.skin_color);
-        properties.Add(PhotonPlayerProperty.HairColor1, costume.hair_color.r);
-        properties.Add(PhotonPlayerProperty.HairColor2, costume.hair_color.g);
-        properties.Add(PhotonPlayerProperty.HairColor3, costume.hair_color.b);
-        properties.Add(PhotonPlayerProperty.Division, (int)costume.division);
-        properties.Add(PhotonPlayerProperty.StatSpeed, costume.stat.Speed);
-        properties.Add(PhotonPlayerProperty.StatGas, costume.stat.Gas);
-        properties.Add(PhotonPlayerProperty.StatBlade, costume.stat.Blade);
-        properties.Add(PhotonPlayerProperty.StatAccel, costume.stat.Accel);
-        properties.Add(PhotonPlayerProperty.StatSkill, costume.stat.SkillId);
+        Hashtable properties = new Hashtable
+        {
+            { PhotonPlayerProperty.Sex, (int)costume.sex },
+            { PhotonPlayerProperty.CostumeId, costume.costumeId },
+            { PhotonPlayerProperty.HeroCostumeId, costume.id },
+            { PhotonPlayerProperty.Cape, costume.cape },
+            { PhotonPlayerProperty.HairInfo, costume.hairInfo.Id },
+            { PhotonPlayerProperty.EyeTextureId, costume.eye_texture_id },
+            { PhotonPlayerProperty.BeardTextureId, costume.beard_texture_id },
+            { PhotonPlayerProperty.GlassTextureId, costume.glass_texture_id },
+            { PhotonPlayerProperty.SkinColor, costume.skin_color },
+            { PhotonPlayerProperty.HairColor1, costume.hair_color.r },
+            { PhotonPlayerProperty.HairColor2, costume.hair_color.g },
+            { PhotonPlayerProperty.HairColor3, costume.hair_color.b },
+            { PhotonPlayerProperty.Division, (int)costume.division },
+            { PhotonPlayerProperty.StatSpeed, costume.stat.Speed },
+            { PhotonPlayerProperty.StatGas, costume.stat.Gas },
+            { PhotonPlayerProperty.StatBlade, costume.stat.Blade },
+            { PhotonPlayerProperty.StatAccel, costume.stat.Accel },
+            { PhotonPlayerProperty.StatSkill, costume.stat.SkillId }
+        };
 
         player.SetCustomProperties(properties);
     }

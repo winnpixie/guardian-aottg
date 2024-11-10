@@ -113,17 +113,19 @@ public class HeroStat
             ahssDefault.Blade = 100;
             ahssDefault.Accel = 100;
 
-            StatCache = new Dictionary<string, HeroStat>();
-            StatCache.Add("MIKASA", mikasa);
-            StatCache.Add("LEVI", levi);
-            StatCache.Add("ARMIN", armin);
-            StatCache.Add("MARCO", marco);
-            StatCache.Add("JEAN", jean);
-            StatCache.Add("EREN", eren);
-            StatCache.Add("PETRA", petra);
-            StatCache.Add("SASHA", sasha);
-            StatCache.Add("CUSTOM_DEFAULT", customDefault);
-            StatCache.Add("AHSS", ahssDefault);
+            StatCache = new Dictionary<string, HeroStat>
+            {
+                { "MIKASA", mikasa },
+                { "LEVI", levi },
+                { "ARMIN", armin },
+                { "MARCO", marco },
+                { "JEAN", jean },
+                { "EREN", eren },
+                { "PETRA", petra },
+                { "SASHA", sasha },
+                { "CUSTOM_DEFAULT", customDefault },
+                { "AHSS", ahssDefault }
+            };
         }
     }
 }

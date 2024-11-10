@@ -22,6 +22,8 @@ namespace Guardian.Features.Properties
         public Property<bool> EndlessTitans = new Property<bool>("MC_EndlessTitans", new string[0], false);
         public Property<bool> InfiniteRoom = new Property<bool>("MC_InfiniteRoom", new string[0], true);
         public Property<bool> OGPunkHair = new Property<bool>("MC_OGPunkHair", new string[0], true);
+        public Property<bool> InfiniteGas = new Property<bool>("MC_InfiniteGas", new string[0], false);
+        public Property<bool> InfiniteAmmo = new Property<bool>("MC_InfiniteAmmo", new string[0], false);
         public Property<bool> DeadlyHooks = new Property<bool>("MC_DeadlyHooks", new string[0], false);
         public Property<bool> FatalCollisions = new Property<bool>("MC_FatalCollisions", new string[0], false);
         public Property<int> FatalSpeedDelta = new Property<int>("MC_FatalSpeedDelta", new string[0], 75);
@@ -124,6 +126,8 @@ namespace Guardian.Features.Properties
             base.Add(EndlessTitans);
             base.Add(InfiniteRoom);
             base.Add(OGPunkHair);
+            base.Add(InfiniteGas);
+            base.Add(InfiniteAmmo);
             base.Add(DeadlyHooks);
             base.Add(FatalCollisions);
             base.Add(FatalSpeedDelta);

@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.5.3.1";
+        public static readonly string Build = "1.6";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -165,7 +165,7 @@ namespace Guardian
 
                 DiscordHelper.SetPresence(new Discord.Activity
                 {
-                    Details = $"Playing offline.",
+                    Details = $"Playing Offline.",
                     State = $"{FengGameManagerMKII.Level.DisplayName} / {difficulty}"
                 });
             }
@@ -175,18 +175,15 @@ namespace Guardian
             if (HasJoinedRoom) { return; }
             HasJoinedRoom = true;
 
-            string joinMessage = Properties.JoinMessage.Value.NGUIToUnity();
-            if (joinMessage.StripNGUI().Length < 1) joinMessage = Properties.JoinMessage.Value;
+            string joinMessage = Properties.JoinMessage.Value;
             if (joinMessage.Length < 1) return;
+            if (joinMessage.StripNGUI().Length > 0) joinMessage = joinMessage.NGUIToUnity();
             Commands.Find("say").Execute(InRoomChat.Instance, joinMessage.Split(' '));
         }
 
         private void OnPhotonPlayerConnected(PhotonPlayer player)
         {
-            if (PhotonNetwork.isMasterClient)
-            {
-                Gamemodes.CurrentMode.OnPlayerJoin(player);
-            }
+            if (PhotonNetwork.isMasterClient) Gamemodes.CurrentMode.OnPlayerJoin(player);
 
             Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() + " connected.".AsColor("00FF00"));
         }
@@ -220,10 +217,7 @@ namespace Guardian
             if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string mapName)
             {
                 LevelInfo levelInfo = LevelInfo.GetInfo(mapName);
-                if (levelInfo != null)
-                {
-                    FengGameManagerMKII.Level = levelInfo;
-                }
+                if (levelInfo != null) FengGameManagerMKII.Level = levelInfo;
             }
 
             if (propertiesThatChanged.ContainsKey("Lighting") && propertiesThatChanged["Lighting"] is string lightLevel
@@ -297,6 +291,9 @@ namespace Guardian
             // FIXME: Why don't these properly reset?
             RCSettings.BombCeiling = false;
             RCSettings.HideNames = false;
+
+            SyncedSettings.InfiniteGas = false;
+            SyncedSettings.InfiniteAmmo = false;
 
             DiscordHelper.SetPresence(new Discord.Activity
             {
