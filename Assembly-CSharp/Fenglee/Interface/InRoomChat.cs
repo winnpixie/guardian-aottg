@@ -11,17 +11,25 @@ public class InRoomChat : Photon.MonoBehaviour
     public static List<Message> Messages = new List<Message>();
     private static readonly Regex Detagger = new Regex("<\\/?(color|size|b|i|material|quad)[^>]*>", RegexOptions.IgnoreCase);
 
+    public string inputLine = string.Empty;
     public bool IsVisible = true;
     private bool AlignBottom = true;
-    public string inputLine = string.Empty;
     private Vector2 ScrollPosition = Guardian.Utilities.GameHelper.ScrollBottom;
     private string TextFieldName = "ChatInput";
     private GUIStyle labelStyle;
+
+    // Guardian
+    private static string g_draftMessage = string.Empty;
 
     void Awake()
     {
         Instance = this;
         UpdatePosition();
+    }
+
+    void OnDestroy()
+    {
+        g_draftMessage = inputLine;
     }
 
     public void UpdatePosition()
@@ -59,7 +67,6 @@ public class InRoomChat : Photon.MonoBehaviour
 
     private void DrawMessageHistory()
     {
-
         if (labelStyle == null)
         {
             labelStyle = new GUIStyle(GUI.skin.label)
@@ -129,10 +136,11 @@ public class InRoomChat : Photon.MonoBehaviour
         KeyCode rcChatKey = FengGameManagerMKII.InputRC.humanKeys[InputCodeRC.Chat];
         if (Event.current.type == EventType.KeyUp)
         {
-            if (rcChatKey == KeyCode.None || Event.current.keyCode != rcChatKey
-                || GUI.GetNameOfFocusedControl().Equals(TextFieldName)) return;
-            GUI.FocusControl(TextFieldName);
-            inputLine = "\t";
+            if (rcChatKey == KeyCode.None) return;
+            if (Event.current.keyCode != rcChatKey) return;
+            if (GUI.GetNameOfFocusedControl().Equals(TextFieldName)) return;
+
+            TakeControl();
         }
 
         if (Event.current.type != EventType.KeyDown) return;
@@ -172,11 +180,9 @@ public class InRoomChat : Photon.MonoBehaviour
 
                 if (!inputLine.StartsWith("/"))
                 {
-                    string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity();
-                    if (name.StripNGUI().Length < 1)
-                    {
-                        name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
-                    }
+                    string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
+                    if (name.StripNGUI().Length > 0) name = name.NGUIToUnity();
+
                     FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, FormatMessage(inputLine, name));
                 }
                 else
@@ -190,9 +196,15 @@ public class InRoomChat : Photon.MonoBehaviour
         }
         else
         {
-            GUI.FocusControl(TextFieldName);
-            inputLine = "\t";
+            TakeControl();
         }
+    }
+
+    private void TakeControl()
+    {
+        GUI.FocusControl(TextFieldName);
+        inputLine = g_draftMessage.Length == 0 ? "\t" : g_draftMessage;
+        g_draftMessage = string.Empty;
     }
 
     private void DrawMessageTextField()
@@ -212,6 +224,8 @@ public class InRoomChat : Photon.MonoBehaviour
         DrawMessageHistory();
         HandleInput();
         DrawMessageTextField();
+
+        // if (g_draftMessage.Length > 0) TakeControl();
     }
 
     public static object[] FormatMessage(string message, string name)

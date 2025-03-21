@@ -1674,16 +1674,18 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             launchElapsedTimeR = -100f;
 
             // TODO: Remove?
+            /*
             if ((bool)bulletRight)
             {
-                //bulletRight.GetComponent<Bullet>().Disable();
-                //ReleaseHookedTarget();
+                bulletRight.GetComponent<Bullet>().Disable();
+                ReleaseHookedTarget();
             }
             if ((bool)bulletLeft)
             {
-                //bulletLeft.GetComponent<Bullet>().Disable();
-                //ReleaseHookedTarget();
+                bulletLeft.GetComponent<Bullet>().Disable();
+                ReleaseHookedTarget();
             }
+            */
         }
 
         sparks.enableEmission = false;
@@ -2898,16 +2900,18 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 baseRigidBody.AddForce(force3, ForceMode.Impulse);
 
                 // TODO: Remove?
+                /*
                 if (bulletRight != null)
                 {
-                    //bulletRight.GetComponent<Bullet>().Disable();
-                    //ReleaseHookedTarget();
+                    bulletRight.GetComponent<Bullet>().Disable();
+                    ReleaseHookedTarget();
                 }
                 if (bulletLeft != null)
                 {
-                    //bulletLeft.GetComponent<Bullet>().Disable();
-                    //ReleaseHookedTarget();
+                    bulletLeft.GetComponent<Bullet>().Disable();
+                    ReleaseHookedTarget();
                 }
+                */
             }
 
             baseRigidBody.AddForce(Vector3.up * 2f, ForceMode.Impulse);

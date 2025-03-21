@@ -7,23 +7,16 @@ namespace Guardian.UI
     class GuiController : MonoBehaviour
     {
         public Gui CurrentScreen;
-        public GuiModConfiguration ConfigurationScreen = new GuiModConfiguration();
 
         private readonly GuiDebug DebugScreen = new GuiDebug();
 
         public void OpenScreen(Gui screen)
         {
-            if (CurrentScreen != null)
-            {
-                CurrentScreen.OnClose();
-            }
+            if (CurrentScreen != null) CurrentScreen.OnClose();
 
             CurrentScreen = screen;
 
-            if (CurrentScreen != null)
-            {
-                CurrentScreen.OnOpen();
-            }
+            if (CurrentScreen != null) CurrentScreen.OnOpen();
         }
 
         void OnGUI()
@@ -35,10 +28,7 @@ namespace Guardian.UI
                 OpenScreen(new GuiModConfiguration());
             }
 
-            if (CurrentScreen != null)
-            {
-                CurrentScreen.Draw();
-            }
+            if (CurrentScreen != null) CurrentScreen.Draw();
 
             GuardianClient.Toasts.Draw();
 

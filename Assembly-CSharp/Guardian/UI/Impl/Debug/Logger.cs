@@ -16,10 +16,7 @@ namespace Guardian.UI.Impl.Debug
 
             Entries.Add(new Entry(message));
 
-            if (Entries.Count > GuardianClient.Properties.MaxLogLines.Value)
-            {
-                Entries.RemoveAt(0);
-            }
+            if (Entries.Count > GuardianClient.Properties.MaxLogLines.Value) Entries.RemoveAt(0);
 
             ScrollPosition = GameHelper.ScrollBottom;
         }

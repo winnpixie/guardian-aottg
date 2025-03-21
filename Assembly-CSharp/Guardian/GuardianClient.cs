@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.6";
+        public static readonly string Build = "1.6.0.1";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -26,9 +26,10 @@ namespace Guardian
 
         public static readonly Logger Logger = new Logger();
         public static GuiController GuiController;
-        public static bool WasQuitRequested = false;
-        private static bool IsFirstInit = true;
-        private static bool HasJoinedRoom = false;
+        public static bool ProgramExiting;
+        
+        private static bool _firstInit = true;
+        private static bool _loadedLevelOnce;
 
         private void Start()
         {
@@ -51,8 +52,8 @@ namespace Guardian
             GuiController = base.gameObject.AddComponent<GuiController>();
             base.gameObject.AddComponent<MicEF>();
 
-            if (!IsFirstInit) return;
-            IsFirstInit = false;
+            if (!_firstInit) return;
+            _firstInit = false;
 
             string cli = System.Environment.CommandLine;
             if (cli.IndexOf(' ') > 0) Logger.Debug($"CLI:{cli.Substring(cli.IndexOf(' '))}");
@@ -165,15 +166,15 @@ namespace Guardian
 
                 DiscordHelper.SetPresence(new Discord.Activity
                 {
-                    Details = $"Playing Offline.",
+                    Details = "Playing Offline.",
                     State = $"{FengGameManagerMKII.Level.DisplayName} / {difficulty}"
                 });
             }
 
             if (PhotonNetwork.isMasterClient) Gamemodes.CurrentMode.OnReset();
 
-            if (HasJoinedRoom) { return; }
-            HasJoinedRoom = true;
+            if (_loadedLevelOnce) { return; }
+            _loadedLevelOnce = true;
 
             string joinMessage = Properties.JoinMessage.Value;
             if (joinMessage.Length < 1) return;
@@ -235,7 +236,7 @@ namespace Guardian
 
         private void OnJoinedRoom()
         {
-            HasJoinedRoom = false;
+            _loadedLevelOnce = false;
 
             // TODO: Potentially use custom event/group combo to sync game-settings whilst not triggering other mods
             int[] groups = new int[byte.MaxValue];
@@ -308,7 +309,7 @@ namespace Guardian
 
         private void OnPhotonRoomJoinFailed(object[] codeAndMsg)
         {
-            Logger.Error($"OnPhotonRoomJoinFailed");
+            Logger.Error("OnPhotonRoomJoinFailed");
 
             foreach (object obj in codeAndMsg)
             {
@@ -318,7 +319,7 @@ namespace Guardian
 
         private void OnPhotonCreateRoomFailed(object[] codeAndMsg)
         {
-            Logger.Error($"OnPhotonCreateRoomFailed");
+            Logger.Error("OnPhotonCreateRoomFailed");
 
             foreach (object obj in codeAndMsg)
             {
@@ -328,27 +329,24 @@ namespace Guardian
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            UI.WindowManager.HandleWindowFocusEvent(hasFocus);
+            WindowManager.HandleWindowFocusEvent(hasFocus);
 
             if (!hasFocus || IN_GAME_MAIN_CAMERA.Gametype == GameType.Stop) return;
 
             // Minimap turns white
-            if (Minimap.Instance != null)
-            {
-                Minimap.WaitAndTryRecaptureInstance(0.5f);
-            }
+            if (Minimap.Instance != null) Minimap.WaitAndTryRecaptureInstance(0.5f);
 
             // TPS crosshair ending up where it shouldn't
             if (IN_GAME_MAIN_CAMERA.CameraMode == CameraType.TPS)
             {
-                UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: false);
-                UI.WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
+                WindowManager.SetCursorStates(shown: Screen.showCursor, locked: false);
+                WindowManager.SetCursorStates(shown: Screen.showCursor, locked: true);
             }
         }
 
         private void OnApplicationQuit()
         {
-            WasQuitRequested = true;
+            ProgramExiting = true;
 
             Properties.Save();
 

@@ -16,13 +16,13 @@ namespace Guardian.UI
         public static GUIStyle VerticalScrollbar;
         public static GUIStyle VerticalScrollbarThumb;
 
-        private static bool IsFirstInit = true;
+        private static bool _firstInit = true;
 
         public static void InitSkins()
         {
-            if (!IsFirstInit) return;
+            if (!_firstInit) return;
 
-            IsFirstInit = false;
+            _firstInit = false;
 
             // Boxes
             {

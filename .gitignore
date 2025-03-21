@@ -6,6 +6,10 @@
 *.sln
 *.pdb
 
+# JetBrains Rider
+.idea/
+*.sln.*
+
 # VS Code
 .vscode/
 
