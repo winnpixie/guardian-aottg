@@ -4,9 +4,9 @@ namespace Guardian.UI.Components.Impl
 {
     class GLabel : GComponent
     {
-        public string Text = string.Empty;
+        public string Text;
 
-        public GLabel(string text) : base()
+        public GLabel(string text)
         {
             Text = text;
         }
@@ -18,13 +18,13 @@ namespace Guardian.UI.Components.Impl
 
         public override void Tick()
         {
-            if (base.Relative)
+            if (Relative)
             {
                 GUILayout.Label(Text);
                 return;
             }
 
-            GUI.Label(base.Bounds, Text);
+            GUI.Label(Bounds, Text);
         }
     }
 }

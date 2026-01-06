@@ -5,34 +5,34 @@ namespace Guardian.UI.Impl
 {
     class GuiRoomList : Gui
     {
-        private readonly PanelMultiJoin roomListPanel;
+        private readonly PanelMultiJoin _roomListPanel;
 
-        private readonly GLabel filterLabel = new GLabel("Room Filters ++");
+        private readonly GLabel _filterLbl = new GLabel("Room Filters ++");
 
-        private readonly GCheckBox hideFullOption = new GCheckBox("Hide Full");
-        private readonly GCheckBox hideLockedOption = new GCheckBox("Hide Locked");
+        private readonly GCheckBox _hideFullOpt = new GCheckBox("Hide Full");
+        private readonly GCheckBox _hideLockedOpt = new GCheckBox("Hide Locked");
 
         public GuiRoomList(PanelMultiJoin panelMultiJoin) : base()
         {
-            this.roomListPanel = panelMultiJoin;
+            this._roomListPanel = panelMultiJoin;
         }
 
         public override void Draw()
         {
-            if (roomListPanel == null)
+            if (_roomListPanel == null)
             {
                 GuardianClient.GuiController.OpenScreen(null);
                 return;
             }
 
-            GUILayout.BeginArea(new Rect(Screen.width / 10 - 100, Screen.height / 10, 200, 100), GuiSkins.Box);
-            filterLabel.Tick();
+            GUILayout.BeginArea(new Rect(Screen.width / 10f - 100, Screen.height / 10f, 200, 100), GuiSkins.Box);
+            _filterLbl.Tick();
 
-            hideFullOption.Tick();
-            roomListPanel.g_hideFullRooms = hideFullOption.Selected;
+            _hideFullOpt.Tick();
+            _roomListPanel.g_hideFullRooms = _hideFullOpt.Selected;
 
-            hideLockedOption.Tick();
-            roomListPanel.g_hideLockedRooms = hideLockedOption.Selected;
+            _hideLockedOpt.Tick();
+            _roomListPanel.g_hideLockedRooms = _hideLockedOpt.Selected;
 
             GUILayout.EndArea();
         }

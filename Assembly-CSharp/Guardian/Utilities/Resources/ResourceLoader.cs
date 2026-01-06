@@ -1,17 +1,17 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections;
-using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-namespace Guardian.Utilities
+namespace Guardian.Utilities.Resources
 {
-    class ResourceLoader
+    public static class ResourceLoader
     {
-        public static Dictionary<string, object> AssetCache = new Dictionary<string, object>();
+        private static readonly Dictionary<string, object> AssetCache = new Dictionary<string, object>();
 
         public static bool TryGetAsset<T>(string path, out T value)
         {
-            path = "file:///" + Application.streamingAssetsPath + $"/{path}";
+            path = $"file:///{Application.streamingAssetsPath}/{path}";
 
             return TryGet(path, out value);
         }
@@ -37,10 +37,12 @@ namespace Guardian.Utilities
         public static bool TryGetRaw<T>(string path, out T value)
         {
             value = default;
-            System.Type assetType = typeof(T);
+            Type assetType = typeof(T);
 
             using WWW www = new WWW(path);
-            while (!www.isDone) { }
+            while (!www.isDone)
+            {
+            }
 
             if (www.error != null) return false;
 

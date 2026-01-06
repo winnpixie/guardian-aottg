@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Guardian.Utilities;
 using UnityEngine;
 
 public static class GExtensions
@@ -62,7 +63,7 @@ public static class GExtensions
                     i += 2;
                     continue;
                 }
-                else if (i + 7 < str.Length && str[i + 7].Equals(']') && Guardian.Utilities.ColorHelper.IsHex(str.Substring(i + 1, 6))) // [RRGGBB], aka use the color supplied by RRGGBB
+                else if (i + 7 < str.Length && str[i + 7].Equals(']') && ColorHelper.IsHex(str.Substring(i + 1, 6))) // [RRGGBB], aka use the color supplied by RRGGBB
                 {
                     string color = str.Substring(i + 1, 6).ToUpper();
                     colorHistory.Push(color);
@@ -101,7 +102,7 @@ public static class GExtensions
 
     public static string AsColor(this string str, string hex)
     {
-        if (Guardian.Utilities.ColorHelper.IsHex(hex))
+        if (ColorHelper.IsHex(hex))
         {
             return $"<color=#{hex}>{str}</color>";
         }

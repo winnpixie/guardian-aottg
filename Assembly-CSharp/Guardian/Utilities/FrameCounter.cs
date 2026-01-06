@@ -1,22 +1,22 @@
 ﻿namespace Guardian.Utilities
 {
-    class FrameCounter
+    public class FrameCounter
     {
         public int FrameCount;
 
-        private readonly MsTimer Timer = new MsTimer();
+        private readonly MsTimer _timer = new MsTimer();
 
-        private int CurrentFrameCount;
+        private int _frameCount;
 
         public void UpdateCounter()
         {
-            CurrentFrameCount++;
+            _frameCount++;
 
-            if (!Timer.HasPassed(1000)) return;
+            if (!_timer.HasPassed(1000)) return;
 
-            FrameCount = CurrentFrameCount;
-            CurrentFrameCount = 0;
-            Timer.Update();
+            FrameCount = _frameCount;
+            _frameCount = 0;
+            _timer.Update();
         }
     }
 }

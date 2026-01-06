@@ -5,17 +5,17 @@ using System.Text;
 
 namespace Guardian.Utilities
 {
-    class EmoteHelper
+    public static class EmoteHelper
     {
         public static readonly Dictionary<string, string> Emotes = new Dictionary<string, string>();
 
-        private static readonly string _emoteListPath = GuardianClient.RootDir + "\\Emotes.txt";
+        private static readonly string EmoteListPath = GuardianClient.RootDir + "\\Emotes.txt";
 
         public static void Load()
         {
             RegisterDefaultEmotes();
 
-            if (!File.Exists(_emoteListPath))
+            if (!File.Exists(EmoteListPath))
             {
                 StringBuilder builder = new StringBuilder();
                 foreach (KeyValuePair<string, string> emote in Emotes)
@@ -23,10 +23,10 @@ namespace Guardian.Utilities
                     builder.Append(emote.Key).Append("=").Append(emote.Value).Append(Environment.NewLine);
                 }
 
-                File.WriteAllText(_emoteListPath, builder.ToString());
+                File.WriteAllText(EmoteListPath, builder.ToString());
             }
 
-            foreach (string line in File.ReadAllLines(_emoteListPath))
+            foreach (string line in File.ReadAllLines(EmoteListPath))
             {
                 string[] data = line.Split(new char[] { '=' }, 2);
                 if (data[0].IndexOf(':') > -1)
@@ -37,7 +37,8 @@ namespace Guardian.Utilities
 
                 if (data.Length < 2)
                 {
-                    GuardianClient.Logger.Debug($"Unable to register emote '{data[0]}', replacement text MUST be present!");
+                    GuardianClient.Logger.Debug(
+                        $"Unable to register emote '{data[0]}', replacement text MUST be present!");
                     continue;
                 }
 

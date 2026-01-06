@@ -5,10 +5,10 @@ namespace Guardian.UI.Components.Impl
 {
     class GButton : GComponent
     {
-        public string Text = string.Empty;
-        public Action OnClick = () => { };
+        public string Text;
+        public Action OnClick;
 
-        public GButton(string text, Action onClick = null) : base()
+        public GButton(string text, Action onClick = null)
         {
             Text = text;
             OnClick = onClick;
@@ -22,13 +22,13 @@ namespace Guardian.UI.Components.Impl
 
         public override void Tick()
         {
-            if (base.Relative)
+            if (Relative)
             {
                 if (GUILayout.Button(Text)) OnClick.Invoke();
                 return;
             }
 
-            if (GUI.Button(base.Bounds, Text)) OnClick.Invoke();
+            if (GUI.Button(Bounds, Text)) OnClick.Invoke();
         }
     }
 }

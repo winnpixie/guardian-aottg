@@ -5,14 +5,14 @@ namespace Guardian.UI.Toasts
 {
     class ToastManager
     {
-        private SynchronizedList<Toast> Toasts = new SynchronizedList<Toast>();
+        private readonly SynchronizedList<Toast> _toasts = new SynchronizedList<Toast>();
 
         public void Draw()
         {
-            for (int i = Toasts.Count; i > 0; i--)
+            for (int i = _toasts.Count; i > 0; i--)
             {
-                int offset = Toasts.Count - i;
-                Toast toast = Toasts[i - 1];
+                int offset = _toasts.Count - i;
+                Toast toast = _toasts[i - 1];
                 if (75 * offset > Screen.height)
                 {
                     break;
@@ -29,12 +29,12 @@ namespace Guardian.UI.Toasts
             }
 
             long now = GameHelper.CurrentTimeMillis();
-            Toasts.RemoveAll(toast => (now - toast.Time) / 1000f >= toast.TimeToLive);
+            _toasts.RemoveAll(toast => (now - toast.Time) / 1000f >= toast.TimeToLive);
         }
 
         public void Add(Toast toast)
         {
-            Toasts.Add(toast);
+            _toasts.Add(toast);
         }
     }
 }

@@ -5,11 +5,15 @@ namespace Guardian.Features
 {
     class FeatureManager<T> where T : Feature
     {
-        public List<T> Elements = new List<T>();
+        public readonly List<T> Elements = new List<T>();
 
-        public virtual void Load() { }
+        public virtual void Load()
+        {
+        }
 
-        public virtual void Save() { }
+        public virtual void Save()
+        {
+        }
 
         public void Add(T element)
         {

@@ -1,4 +1,5 @@
 using System.Collections;
+using Guardian.Utilities.Resources;
 using UnityEngine;
 
 public class TriggerColliderWeapon : MonoBehaviour
@@ -16,7 +17,7 @@ public class TriggerColliderWeapon : MonoBehaviour
     private void Start()
     {
         {
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
+            if (ResourceLoader.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
             {
                 Object.Destroy(base.gameObject.GetComponent<AudioSource>());
                 meatDie = gameObject.AddComponent<AudioSource>();

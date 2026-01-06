@@ -1,12 +1,14 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using System;
+using System.Collections;
 using System.Runtime.InteropServices;
+using Guardian.Utilities;
+using UnityEngine;
 
 namespace Guardian.UI
 {
     class WindowManager
     {
-        private static bool Fullscreen;
+        private static bool _fullScreen;
 
         public static int WindowWidth = 1280;
         public static int WindowHeight = 720;
@@ -73,7 +75,7 @@ namespace Guardian.UI
                 ScreenHeight = Screen.currentResolution.height;
             }
 
-            string[] cliArgs = System.Environment.GetCommandLineArgs();
+            string[] cliArgs = Environment.GetCommandLineArgs();
             for (int i = 1; i < cliArgs.Length; i++)
             {
                 if (!cliArgs[i].Equals("-screen-fullscreen")) continue;
@@ -105,20 +107,20 @@ namespace Guardian.UI
         {
             if (hasFocus)
             {
-                if (Fullscreen)
+                if (_fullScreen)
                 {
-                    Fullscreen = false;
+                    _fullScreen = false;
                     Screen.SetResolution(ScreenWidth, ScreenHeight, true);
                 }
             }
-            else if (!Fullscreen)
+            else if (!_fullScreen)
             {
                 if (Screen.fullScreen)
                 {
                     ScreenWidth = Screen.width;
                     ScreenHeight = Screen.height;
 
-                    Fullscreen = true;
+                    _fullScreen = true;
                     Screen.SetResolution(960, 600, false);
 
                     ShowWindow(GetActiveWindow(), 2); // SW_SHOWMINIMIZED
@@ -153,10 +155,13 @@ namespace Guardian.UI
                     Application.targetFrameRate = targetFps;
                 }
             }
-            else if (GuardianClient.Properties.LimitUnfocusedFPS.Value && GuardianClient.Properties.MaxUnfocusedFPS.Value > 0)
+            else if (GuardianClient.Properties.LimitUnfocusedFPS.Value &&
+                     GuardianClient.Properties.MaxUnfocusedFPS.Value > 0)
             {
                 // FPS under 51 could potentially affect Physics-related logic, ensure the MasterClient does not attempt to go below that.
-                Application.targetFrameRate = Utilities.MathHelper.MaxInt(GuardianClient.Properties.MaxUnfocusedFPS.Value, PhotonNetwork.isMasterClient ? 51 : 1);
+                Application.targetFrameRate =
+                    MathHelper.MaxInt(GuardianClient.Properties.MaxUnfocusedFPS.Value,
+                        PhotonNetwork.isMasterClient ? 51 : 1);
             }
         }
 

@@ -7,7 +7,7 @@ namespace Guardian.UI.Components.Impl
         public string Text;
         public bool Selected;
 
-        public GCheckBox(string text, bool selected = false) : base()
+        public GCheckBox(string text, bool selected = false)
         {
             this.Text = text;
             this.Selected = selected;

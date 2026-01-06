@@ -5,15 +5,18 @@ using UnityEngine;
 
 namespace Guardian.Utilities
 {
-    class GameHelper
+    public static class GameHelper
     {
-        public static readonly Regex DangerousTagsPattern = new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
+        public static readonly Regex DangerousTagsPattern =
+            new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
+
         public static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static readonly Vector2 ScrollBottom = new Vector2(0, float.MaxValue);
 
         public static void Broadcast(string message)
         {
-            FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, message, "[MC]".AsColor("AAFF00").AsBold());
+            FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, message,
+                "[MC]".AsColor("AAFF00").AsBold());
         }
 
         public static object[] GetRandomTitanRespawnPoint()
@@ -23,7 +26,8 @@ namespace Guardian.Utilities
 
             if (FengGameManagerMKII.Instance.titanSpawns.Count > 0)
             {
-                position = FengGameManagerMKII.Instance.titanSpawns[MathHelper.RandInt(0, FengGameManagerMKII.Instance.titanSpawns.Count)];
+                position = FengGameManagerMKII.Instance.titanSpawns[
+                    MathHelper.RandInt(0, FengGameManagerMKII.Instance.titanSpawns.Count)];
             }
             else
             {

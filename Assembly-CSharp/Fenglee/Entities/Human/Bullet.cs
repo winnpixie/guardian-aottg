@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Guardian.Utilities.Resources;
 using UnityEngine;
 
 public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScriptHook
@@ -586,7 +587,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
     private void Start()
     {
         // Load custom textures and audio clips
-        if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Textures/hook.png", out Texture2D hookTexture))
+        if (ResourceLoader.TryGetAsset("Custom/Textures/hook.png", out Texture2D hookTexture))
         {
             base.gameObject.renderer.material.mainTexture = hookTexture;
         }

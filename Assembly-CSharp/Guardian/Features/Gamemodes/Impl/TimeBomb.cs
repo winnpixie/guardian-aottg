@@ -91,7 +91,7 @@ namespace Guardian.Features.Gamemodes.Impl
                 }
                 else if (timeLeft == 15)
                 {
-                    FengGameManagerMKII.Instance.photonView.RPC("Chat", player, $"15 seconds left...".AsColor("FF0000"), string.Empty);
+                    FengGameManagerMKII.Instance.photonView.RPC("Chat", player, "15 seconds left...".AsColor("FF0000"), string.Empty);
                 }
                 else if (timeLeft < 6)
                 {

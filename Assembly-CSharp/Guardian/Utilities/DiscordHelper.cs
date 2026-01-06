@@ -1,95 +1,106 @@
-﻿namespace Guardian.Utilities
-{
-    class DiscordHelper
-    {
-        public static long StartTime;
+﻿using Discord;
 
-        private static Discord.Discord _Discord;
+namespace Guardian.Utilities
+{
+    public static class DiscordHelper
+    {
+        private static Discord.Discord _discord;
+        private static long _startTime = -1L;
 
         public static void Initialize()
         {
-            if (_Discord != null) return;
+            if (_startTime == -1L) _startTime = GameHelper.CurrentTimeMillis();
+            
+            if (_discord != null) return;
             if (!GuardianClient.Properties.UseRichPresence.Value) return;
 
             try
             {
-                _Discord = new Discord.Discord(721934748825550931L, (ulong)Discord.CreateFlags.NoRequireDiscord);
+                _discord = new Discord.Discord(721934748825550931L, (ulong)CreateFlags.NoRequireDiscord);
 
-                _Discord.SetLogHook(Discord.LogLevel.Debug, (logLevel, message) =>
+                _discord.SetLogHook(LogLevel.Debug, (logLevel, message) =>
                 {
                     switch (logLevel)
                     {
-                        case Discord.LogLevel.Debug:
+                        case LogLevel.Debug:
                             GuardianClient.Logger.Debug(message);
                             break;
-                        case Discord.LogLevel.Info:
+                        case LogLevel.Info:
                             GuardianClient.Logger.Info(message);
                             break;
-                        case Discord.LogLevel.Warn:
+                        case LogLevel.Warn:
                             GuardianClient.Logger.Warn(message);
                             break;
-                        case Discord.LogLevel.Error:
+                        case LogLevel.Error:
                             GuardianClient.Logger.Error(message);
                             break;
                     }
                 });
 
-                _Discord.GetUserManager().OnCurrentUserUpdate += () =>
+                _discord.GetUserManager().OnCurrentUserUpdate += () =>
                 {
-                    GuardianClient.Logger.Debug($"Connected to Discord for Rich Presence.");
+                    GuardianClient.Logger.Debug("Connected to Discord for Rich Presence.");
                 };
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public static void RunCallbacks()
         {
-            if (_Discord == null) return;
+            if (_discord == null) return;
 
             try
             {
-                _Discord.RunCallbacks();
+                _discord.RunCallbacks();
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public static void Dispose()
         {
-            if (_Discord == null) return;
+            if (_discord == null) return;
 
             try
             {
-                _Discord.GetActivityManager().ClearActivity((result) =>
+                _discord.GetActivityManager().ClearActivity(result =>
                 {
-                    _Discord.Dispose();
-                    _Discord = null;
+                    _discord.Dispose();
+                    _discord = null;
                 });
             }
-            catch { }
+            catch
+            {
+            }
         }
 
-        public static void SetPresence(Discord.Activity activity)
+        public static void SetPresence(Activity activity)
         {
             Initialize();
 
-            if (_Discord == null) return;
+            if (_discord == null) return;
 
             try
             {
-                activity.Assets = new Discord.ActivityAssets
+                activity.Assets = new ActivityAssets
                 {
                     LargeImage = "main_icon",
                     LargeText = "G-Shield by Red"
                 };
 
-                activity.Timestamps = new Discord.ActivityTimestamps
+                activity.Timestamps = new ActivityTimestamps
                 {
-                    Start = StartTime
+                    Start = _startTime
                 };
 
-                _Discord.GetActivityManager().UpdateActivity(activity, result => { });
+                _discord.GetActivityManager().UpdateActivity(activity, result => { });
             }
-            catch { }
+            catch
+            {
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using Guardian.Utilities.Resources;
 using UnityEngine;
 
 public class FlareMovement : Photon.MonoBehaviour
@@ -15,7 +16,7 @@ public class FlareMovement : Photon.MonoBehaviour
     {
         // Load custom textures and audio clips
         {
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Textures/flare.png", out Texture2D flareTexture))
+            if (ResourceLoader.TryGetAsset("Custom/Textures/flare.png", out Texture2D flareTexture))
             {
                 base.GetComponent<ParticleSystem>().renderer.material.mainTexture = flareTexture;
             }

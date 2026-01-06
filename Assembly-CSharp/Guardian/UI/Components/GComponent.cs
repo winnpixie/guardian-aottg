@@ -5,7 +5,7 @@ namespace Guardian.UI.Components
     abstract class GComponent
     {
         public Rect Bounds;
-        public bool Relative;
+        public readonly bool Relative;
         public GUIStyle Style = GUIStyle.none;
 
         public GComponent()

@@ -2,8 +2,8 @@
 {
     public abstract class Command : Feature
     {
-        public string Usage;
-        public bool MasterClient;
+        public readonly string Usage;
+        public readonly bool MasterClient;
 
         public Command(string name, string[] aliases, string usage, bool masterClient) : base(name, aliases)
         {

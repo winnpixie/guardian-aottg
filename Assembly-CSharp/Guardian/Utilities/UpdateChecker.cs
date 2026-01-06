@@ -1,17 +1,18 @@
-﻿using Guardian.UI.Toasts;
-using System.Collections;
+﻿using System.Collections;
+using Guardian.UI.Toasts;
 using UnityEngine;
 
 namespace Guardian.Utilities
 {
-    public class UpdateChecker
+    public static class UpdateChecker
     {
         public static IEnumerator CheckForUpdate()
         {
             GuardianClient.Logger.Info("Checking for update...");
             GuardianClient.Logger.Info($"Installed: {GuardianClient.Build}");
 
-            using WWW www = new WWW("http://aottg.winnpixie.com/clients/guardian/version.txt?t=" + GameHelper.CurrentTimeMillis()); // Hopefully this avoids caching...
+            using WWW www = new WWW("http://aottg.winnpixie.com/clients/guardian/version.txt?t=" +
+                                    GameHelper.CurrentTimeMillis()); // Hopefully this avoids caching...
             yield return www;
 
             if (www.error != null)
@@ -25,9 +26,12 @@ namespace Guardian.Utilities
 
                 try
                 {
-                    GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]COULD NOT VERIFY BUILD.[-] If this persists, PLEASE contact me @ [0099FF]https://discord.gg/JGzTdWm[-]!";
+                    GameObject.Find("VERSION").GetComponent<UILabel>().text =
+                        "[FF0000]COULD NOT VERIFY BUILD.[-] If this persists, PLEASE contact me @ [0099FF]https://discord.gg/JGzTdWm[-]!";
                 }
-                catch { }
+                catch
+                {
+                }
             }
             else
             {
@@ -41,17 +45,22 @@ namespace Guardian.Utilities
 
                     if (latestBuild.Equals(GuardianClient.Build)) break;
 
-                    GuardianClient.Logger.Warn($"Your copy of Guardian is {"OUT OF DATE".AsBold().AsItalic().AsColor("FF0000")}!");
-                    GuardianClient.Toasts.Add(new Toast("UPDATE AVAILABLE", "Your copy of Guardian is OUT OF DATE, please update!", 15));
+                    GuardianClient.Logger.Warn(
+                        $"Your copy of Guardian is {"OUT OF DATE".AsBold().AsItalic().AsColor("FF0000")}!");
+                    GuardianClient.Toasts.Add(new Toast("UPDATE AVAILABLE",
+                        "Your copy of Guardian is OUT OF DATE, please update!", 15));
 
                     GuardianClient.Logger.Info("If you don't have the launcher, download it here:");
                     GuardianClient.Logger.Info($"\t- {"https://aottg.winnpixie.com".AsColor("0099FF")}");
 
                     try
                     {
-                        GameObject.Find("VERSION").GetComponent<UILabel>().text = "[FF0000]OUT OF DATE![-] Please update with the Launcher (DL @ [0099FF]https://aottg.winnpixie.com[-])!";
+                        GameObject.Find("VERSION").GetComponent<UILabel>().text =
+                            "[FF0000]OUT OF DATE![-] Please update with the Launcher (DL @ [0099FF]https://aottg.winnpixie.com[-])!";
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
             }
         }

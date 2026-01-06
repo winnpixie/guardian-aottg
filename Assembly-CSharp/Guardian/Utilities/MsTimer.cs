@@ -2,7 +2,7 @@
 {
     class MsTimer
     {
-        private long Marker;
+        private long _marker;
 
         public MsTimer()
         {
@@ -11,7 +11,7 @@
 
         public void Update()
         {
-            Marker = GetNow();
+            _marker = GetNow();
         }
 
         public bool HasPassed(long ms)
@@ -21,7 +21,7 @@
 
         public long GetElapsed()
         {
-            return GetNow() - Marker;
+            return GetNow() - _marker;
         }
 
         public static long GetNow()

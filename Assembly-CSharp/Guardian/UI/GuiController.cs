@@ -8,7 +8,7 @@ namespace Guardian.UI
     {
         public Gui CurrentScreen;
 
-        private readonly GuiDebug DebugScreen = new GuiDebug();
+        private readonly GuiDebug _debugScreen = new GuiDebug();
 
         public void OpenScreen(Gui screen)
         {
@@ -32,7 +32,7 @@ namespace Guardian.UI
 
             GuardianClient.Toasts.Draw();
 
-            DebugScreen.Draw();
+            _debugScreen.Draw();
         }
     }
 }

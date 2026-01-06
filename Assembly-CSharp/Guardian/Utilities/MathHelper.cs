@@ -2,9 +2,9 @@
 
 namespace Guardian.Utilities
 {
-    class MathHelper
+    public static class MathHelper
     {
-        private static readonly Random random = new Random();
+        private static readonly Random RandomInst = new Random();
 
         public static int AbsInt(int val)
         {
@@ -54,12 +54,12 @@ namespace Guardian.Utilities
                 min -= max;
             }
 
-            return random.Next(min, max);
+            return RandomInst.Next(min, max);
         }
 
         public static double Random()
         {
-            return random.NextDouble();
+            return RandomInst.NextDouble();
         }
 
         // Thank you, https://stackoverflow.com/a/45859570

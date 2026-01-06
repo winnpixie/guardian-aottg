@@ -5,7 +5,7 @@ namespace Guardian.UI.Impl
 {
     class GuiCustomCharacter : Gui
     {
-        private readonly string[] OriginalCharacters =
+        private readonly string[] _presets =
         {
             "MIKASA",
             "LEVI",
@@ -16,60 +16,60 @@ namespace Guardian.UI.Impl
             "JEAN",
             "SASHA"
         };
-        private CustomCharacterManager _CharacterManager;
+        private CustomCharacterManager _characterManagerInst;
 
-        private readonly GTextField HairRedField = new GTextField("255");
-        private readonly GTextField HairGreenField = new GTextField("255");
-        private readonly GTextField HairBlueField = new GTextField("255");
+        private readonly GTextField _hairRedField = new GTextField("255");
+        private readonly GTextField _hairGreenField = new GTextField("255");
+        private readonly GTextField _hairBlueField = new GTextField("255");
 
-        private readonly GButton SetRedBtn = new GButton("Set Red Value");
-        private readonly GButton SetGreenBtn = new GButton("Set Green Value");
-        private readonly GButton SetBlueBtn = new GButton("Set Blue Value");
+        private readonly GButton _setRedBtn = new GButton("Set Red Value");
+        private readonly GButton _setGreenBtn = new GButton("Set Green Value");
+        private readonly GButton _setBlueBtn = new GButton("Set Blue Value");
 
         public override void OnOpen()
         {
-            SetRedBtn.OnClick = () =>
+            _setRedBtn.OnClick = () =>
             {
-                if (int.TryParse(HairRedField.Text, out int r))
+                if (int.TryParse(_hairRedField.Text, out int r))
                 {
                     if (r < 0) r = 0;
 
                     float rf = r / 255f;
-                    _CharacterManager.hairR.GetComponent<UISlider>().sliderValue = rf;
-                    _CharacterManager.OnHairRChange(rf);
+                    _characterManagerInst.hairR.GetComponent<UISlider>().sliderValue = rf;
+                    _characterManagerInst.OnHairRChange(rf);
                 }
             };
 
-            SetGreenBtn.OnClick = () =>
+            _setGreenBtn.OnClick = () =>
             {
-                if (int.TryParse(HairGreenField.Text, out int g))
+                if (int.TryParse(_hairGreenField.Text, out int g))
                 {
                     if (g < 0) g = 0;
 
                     float gf = g / 255f;
-                    _CharacterManager.hairG.GetComponent<UISlider>().sliderValue = gf;
-                    _CharacterManager.OnHairRChange(gf);
+                    _characterManagerInst.hairG.GetComponent<UISlider>().sliderValue = gf;
+                    _characterManagerInst.OnHairRChange(gf);
                 }
             };
 
-            SetBlueBtn.OnClick = () =>
+            _setBlueBtn.OnClick = () =>
             {
-                if (int.TryParse(HairBlueField.Text, out int b))
+                if (int.TryParse(_hairBlueField.Text, out int b))
                 {
                     if (b < 0) b = 0;
 
                     float bf = b / 255f;
-                    _CharacterManager.hairB.GetComponent<UISlider>().sliderValue = bf;
-                    _CharacterManager.OnHairBChange(bf);
+                    _characterManagerInst.hairB.GetComponent<UISlider>().sliderValue = bf;
+                    _characterManagerInst.OnHairBChange(bf);
                 }
             };
         }
 
         public override void Draw()
         {
-            if (_CharacterManager != null)
+            if (_characterManagerInst != null)
             {
-                if (_CharacterManager.setup == null) return;
+                if (_characterManagerInst.setup == null) return;
 
                 GUILayout.BeginArea(new Rect((Screen.width / 2) + (Screen.width / 4) - 150, (Screen.height / 2) + (Screen.height / 4) - 150, 300, 300), GuiSkins.Box);
                 GUILayout.Label("Extended Configuration");
@@ -78,15 +78,15 @@ namespace Guardian.UI.Impl
                 GUILayout.BeginVertical();
                 GUILayout.Label("Set Stat Preset");
 
-                foreach (string character in OriginalCharacters)
+                foreach (string character in _presets)
                 {
                     HeroStat stat = HeroStat.GetInfo(character);
                     if (stat == null || !GUILayout.Button(stat.Name + " Stats")) continue;
 
-                    _CharacterManager.SetStatPoint(CreateStat.Speed, stat.Speed);
-                    _CharacterManager.SetStatPoint(CreateStat.Gas, stat.Gas);
-                    _CharacterManager.SetStatPoint(CreateStat.Blades, stat.Blade);
-                    _CharacterManager.SetStatPoint(CreateStat.Acceleration, stat.Accel);
+                    _characterManagerInst.SetStatPoint(CreateStat.Speed, stat.Speed);
+                    _characterManagerInst.SetStatPoint(CreateStat.Gas, stat.Gas);
+                    _characterManagerInst.SetStatPoint(CreateStat.Blades, stat.Blade);
+                    _characterManagerInst.SetStatPoint(CreateStat.Acceleration, stat.Accel);
                 }
                 GUILayout.EndVertical();
 
@@ -94,18 +94,18 @@ namespace Guardian.UI.Impl
                 GUILayout.Label("Set Hair R/G/B");
 
                 // Red
-                HairRedField.Tick();
-                SetRedBtn.Tick();
+                _hairRedField.Tick();
+                _setRedBtn.Tick();
 
                 // Green
                 GUILayout.Label(string.Empty);
-                HairGreenField.Tick();
-                SetGreenBtn.Tick();
+                _hairGreenField.Tick();
+                _setGreenBtn.Tick();
 
                 // Blue
                 GUILayout.Label(string.Empty);
-                HairBlueField.Tick();
-                SetBlueBtn.Tick();
+                _hairBlueField.Tick();
+                _setBlueBtn.Tick();
 
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
@@ -114,7 +114,7 @@ namespace Guardian.UI.Impl
             }
             else
             {
-                _CharacterManager = UnityEngine.Object.FindObjectOfType<CustomCharacterManager>();
+                _characterManagerInst = UnityEngine.Object.FindObjectOfType<CustomCharacterManager>();
             }
         }
     }

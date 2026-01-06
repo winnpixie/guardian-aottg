@@ -1,14 +1,16 @@
-﻿using UnityEngine;
+﻿using System.Globalization;
+using UnityEngine;
 
 namespace Guardian.Utilities
 {
-    class ColorHelper
+    public static class ColorHelper
     {
         public static readonly Color Orange = new Color(1f, 0.5f, 0f);
 
         public static bool IsHex(string str)
         {
-            return (str.Length == 6 || str.Length == 8) && int.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _);
+            return (str.Length == 6 || str.Length == 8) &&
+                   int.TryParse(str, NumberStyles.AllowHexSpecifier, null, out _);
         }
 
         public static string ToHex(Color color)
@@ -21,7 +23,7 @@ namespace Guardian.Utilities
             return r.ToString("X2") + g.ToString("X2") + b.ToString("X2") + a.ToString("X2");
         }
 
-        public static Color FromHex(string str)
+        public static Color FromHex(string rgba)
         {
             float red = 0;
             float green = 0;
@@ -29,25 +31,25 @@ namespace Guardian.Utilities
             float alpha = 1f;
 
             // Red
-            if (int.TryParse(str.Substr(0, 1), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int r))
+            if (int.TryParse(rgba.Substr(0, 1), NumberStyles.AllowHexSpecifier, null, out int r))
             {
                 red = r / 255f;
             }
 
             // Green
-            if (int.TryParse(str.Substr(2, 3), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int g))
+            if (int.TryParse(rgba.Substr(2, 3), NumberStyles.AllowHexSpecifier, null, out int g))
             {
                 green = g / 255f;
             }
 
             // Blue
-            if (int.TryParse(str.Substr(4, 5), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int b))
+            if (int.TryParse(rgba.Substr(4, 5), NumberStyles.AllowHexSpecifier, null, out int b))
             {
                 blue = b / 255f;
             }
 
             // Alpha
-            if (str.Length == 8 && int.TryParse(str.Substr(6, 7), System.Globalization.NumberStyles.AllowHexSpecifier, null, out int a))
+            if (rgba.Length == 8 && int.TryParse(rgba.Substr(6, 7), NumberStyles.AllowHexSpecifier, null, out int a))
             {
                 alpha = a / 255f;
             }

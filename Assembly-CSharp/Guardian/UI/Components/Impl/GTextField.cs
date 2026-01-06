@@ -4,7 +4,7 @@ namespace Guardian.UI.Components.Impl
 {
     class GTextField : GComponent
     {
-        public string Text = string.Empty;
+        public string Text;
 
         public GTextField(string text) : base()
         {
@@ -18,7 +18,7 @@ namespace Guardian.UI.Components.Impl
 
         public override void Tick()
         {
-            Text = base.Relative ? GUILayout.TextField(Text) : GUI.TextField(base.Bounds, Text);
+            Text = Relative ? GUILayout.TextField(Text) : GUI.TextField(Bounds, Text);
         }
     }
 }

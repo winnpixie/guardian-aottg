@@ -1,9 +1,9 @@
 ﻿namespace Guardian.Networking
 {
-    class GuardianPlayerProperty
+    public static class GuardianPlayerProperty
     {
-        public static readonly string GuardianMod = "GuardianMod"; // string, int(legacy)
-        public static readonly string Ping = "Ping";               // int
-        public static readonly string Stats = "Stats";             // int
+        public const string GuardianMod = "GuardianMod"; // string, int(legacy)
+        public const string Ping = "Ping"; // int
+        public const string Stats = "Stats"; // int
     }
 }

@@ -52,7 +52,7 @@ namespace Guardian.UI.Impl.Debug
             // XYZ
             if (GuardianClient.Properties.ShowCoordinates.Value)
             {
-                string coords = "Coordinates Unavailable";
+                string coords = "X n/a Y n/a Z n/a";
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
                 {
                     Photon.MonoBehaviour myObj = null;

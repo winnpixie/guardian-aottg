@@ -1,6 +1,6 @@
 ﻿namespace Guardian.Networking
 {
-    class NetworkHelper
+    public static class NetworkHelper
     {
         public static PhotonServerProvider Provider = PhotonServerProvider.AoTTG2;
         public static PhotonApplication App = PhotonApplication.AoTTG2;
@@ -18,7 +18,8 @@
                 return PhotonNetwork.networkingPeer.ConnectToRegionMaster(regionCode);
             }
 
-            return PhotonNetwork.ConnectToMaster(Provider.Regions[regionCode], Connection.Port, App.Id, UIMainReferences.Version);
+            return PhotonNetwork.ConnectToMaster(Provider.Regions[regionCode], Connection.Port, App.Id,
+                UIMainReferences.Version);
         }
 
         public static string GetRegionCode()

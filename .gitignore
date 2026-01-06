@@ -14,5 +14,5 @@
 .vscode/
 
 # Miscellaneous
-Guardian32/
-Guardian64/
+Guardian_Win32/
+Guardian_Win64/

@@ -2,8 +2,8 @@
 {
     public class Feature
     {
-        public string Name;
-        public string[] Aliases;
+        public readonly string Name;
+        public readonly string[] Aliases;
 
         public Feature(string name, params string[] aliases)
         {

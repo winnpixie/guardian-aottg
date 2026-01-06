@@ -2,6 +2,7 @@ using RC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Guardian.Utilities.Resources;
 using UnityEngine;
 using Xft;
 
@@ -2046,39 +2047,39 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     {
         // Load custom textures and audio clips
         {
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/hook_shot.wav", out AudioClip hookShotClip))
+            if (ResourceLoader.TryGetAsset("Custom/Audio/hook_shot.wav", out AudioClip hookShotClip))
             {
                 rope.clip = hookShotClip;
                 rope.dopplerLevel = 0f;
             }
 
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/sword_swing.wav", out AudioClip swordSwingClip))
+            if (ResourceLoader.TryGetAsset("Custom/Audio/sword_swing.wav", out AudioClip swordSwingClip))
             {
                 slash.clip = swordSwingClip;
                 slash.dopplerLevel = 0f;
             }
 
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/sword_hit.wav", out AudioClip swordHitClip))
+            if (ResourceLoader.TryGetAsset("Custom/Audio/sword_hit.wav", out AudioClip swordHitClip))
             {
                 slashHit.clip = swordHitClip;
                 slashHit.dopplerLevel = 0f;
             }
 
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/player_die.wav", out AudioClip deathClip))
+            if (ResourceLoader.TryGetAsset("Custom/Audio/player_die.wav", out AudioClip deathClip))
             {
                 meatDie.clip = deathClip;
                 meatDie.dopplerLevel = 0f;
             }
 
             g_burstSound = base.gameObject.AddComponent<AudioSource>();
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/burst.wav", out AudioClip burstClip))
+            if (ResourceLoader.TryGetAsset("Custom/Audio/burst.wav", out AudioClip burstClip))
             {
                 g_burstSound.clip = burstClip;
                 g_burstSound.dopplerLevel = 0f;
             }
 
             g_flareSound = base.gameObject.AddComponent<AudioSource>();
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/flare_shot.wav", out AudioClip flareClip))
+            if (ResourceLoader.TryGetAsset("Custom/Audio/flare_shot.wav", out AudioClip flareClip))
             {
                 g_flareSound.clip = flareClip;
                 g_flareSound.dopplerLevel = 0f;
@@ -4298,7 +4299,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                             }
 
                             // Guardian
-                            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/gun_shot.wav", out AudioClip gunShotClip))
+                            if (ResourceLoader.TryGetAsset("Custom/Audio/gun_shot.wav", out AudioClip gunShotClip))
                             {
                                 gunBullet.GetComponent<AudioSource>().clip = gunShotClip;
                                 gunBullet.GetComponent<AudioSource>().Play();
@@ -5566,6 +5567,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 myBomb.Explode(bombRadius);
                 detonate = false;
+                
+                // Guardian
+                if (isMounted)
+                {
+                    state = HeroState.Idle;
+                }
             }
         }
     }

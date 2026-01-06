@@ -1,5 +1,5 @@
-﻿using Guardian.UI.Components;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Guardian.UI.Components;
 
 namespace Guardian.UI
 {
@@ -12,8 +12,12 @@ namespace Guardian.UI
             Components.ForEach(c => c.Tick());
         }
 
-        public virtual void OnOpen() { }
+        public virtual void OnOpen()
+        {
+        }
 
-        public virtual void OnClose() { }
+        public virtual void OnClose()
+        {
+        }
     }
 }

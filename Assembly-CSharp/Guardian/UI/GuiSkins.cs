@@ -1,4 +1,5 @@
 ﻿using Guardian.Utilities;
+using Guardian.Utilities.Resources;
 using UnityEngine;
 
 namespace Guardian.UI

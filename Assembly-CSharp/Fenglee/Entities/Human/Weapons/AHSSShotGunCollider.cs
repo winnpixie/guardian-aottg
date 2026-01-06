@@ -1,4 +1,5 @@
 using System.Collections;
+using Guardian.Utilities.Resources;
 using UnityEngine;
 
 public class AHSSShotGunCollider : MonoBehaviour
@@ -23,7 +24,7 @@ public class AHSSShotGunCollider : MonoBehaviour
         {
             g_hitSound = gameObject.AddComponent<AudioSource>();
 
-            if (Guardian.Utilities.ResourceLoader.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
+            if (ResourceLoader.TryGetAsset("Custom/Audio/titan_die.wav", out AudioClip deathClip))
             {
                 g_hitSound.clip = deathClip;
                 g_hitSound.dopplerLevel = 0f;
