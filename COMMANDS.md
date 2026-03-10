@@ -96,12 +96,12 @@ These commands can be ran whenever, whether your the MasterClient or not.
 These commands are for development purposes, they will most likely not provide you any benefit.
 - `/horse <action>` - Toggles whether or not your horse will follow you.
     - Arguments:
-        1. `<action>` - type: `text`, accepts: `follow|stay`
+        1. `<action>` - type: `text`, expects: `follow|stay`
 - `/logproperties <id>` - Logs Photon Player Properties of **id** to a file.
     - Arguments:
-        1. `<id>` - type: `number`, valid: `ID of any player in room`
+        1. `<id>` - type: `number`, expects: `ID of any player in room`
     - Aliases: `logpr`
 - `/stopwatch <action>` - Starts or ends a temporary timer.
     - Arguments:
-        1. `<action>` - type: `text`, valid: `start|end`
+        1. `<action>` - type: `text`, expects: `start|end`
     - Aliases: `sw`, `timer`
