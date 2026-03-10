@@ -1,13 +1,16 @@
 ﻿// Created By: Elite Future, Discord: Elite Future#1043 for questions, suggestions, or optimizations
 // Compression/Decompression By: Sadico
 
-using UnityEngine;
 using System;
-using System.Threading;
 using System.Collections.Generic;
 using System.IO;
-using ICSharpCode.SharpZipLib.GZip;
+using System.Threading;
+using ExitGames.Client.Photon;
+using ExitGames.Client.Photon.Lite;
 using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.GZip;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class MicEF : MonoBehaviour
 {
@@ -118,7 +121,7 @@ public class MicEF : MonoBehaviour
                 Camera.main.gameObject.AddComponent<AudioSource>();
             }
 
-            foreach (KeyValuePair<int, MicPlayer> entry in MicEF.Users)
+            foreach (KeyValuePair<int, MicPlayer> entry in Users)
             {
                 entry.Value.RefreshInformation();
             }
@@ -174,12 +177,12 @@ public class MicEF : MonoBehaviour
                 // Too lazy to actually put this onto onjoin, so ez pz send that you have mic to everyone every time you use your mic
                 PhotonNetwork.RaiseEvent((byte)173, new byte[0], true, new RaiseEventOptions
                 {
-                    Receivers = ExitGames.Client.Photon.Lite.ReceiverGroup.Others
+                    Receivers = ReceiverGroup.Others
                 });
 
                 clip = Microphone.Start(DeviceName, true, 100, (int)Frequency);
 
-                ThreadId = UnityEngine.Random.Range(0, int.MaxValue);
+                ThreadId = Random.Range(0, int.MaxValue);
 
                 new Thread(() =>
                 {
@@ -228,7 +231,7 @@ public class MicEF : MonoBehaviour
     public void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
     {
         PhotonPlayer player = playerAndUpdatedProps[0] as PhotonPlayer;
-        ExitGames.Client.Photon.Hashtable properties = playerAndUpdatedProps[1] as ExitGames.Client.Photon.Hashtable;
+        Hashtable properties = playerAndUpdatedProps[1] as Hashtable;
 
         if (properties.ContainsKey("name") && properties["name"] is string && Users.ContainsKey(player.Id))
         {

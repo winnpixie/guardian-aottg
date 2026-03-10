@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Assembly-CSharp": {
+      "commandName": "Project"
+    },
+    "Runner": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\Hannah\\Desktop\\Development\\dotNET\\guardian-aottg\\Guardian_Win64\\Guardian.exe",
+      "workingDirectory": "C:\\Users\\Hannah\\Desktop\\Development\\dotNET\\guardian-aottg\\Guardian_Win64"
+    }
+  }
+}

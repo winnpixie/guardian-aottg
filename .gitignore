@@ -5,6 +5,7 @@
 [Ll]ib/
 *.sln
 *.pdb
+*.user
 
 # JetBrains Rider
 .idea/

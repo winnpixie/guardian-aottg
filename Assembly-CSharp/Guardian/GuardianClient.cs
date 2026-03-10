@@ -28,14 +28,14 @@ namespace Guardian
         public static readonly Logger Logger = new Logger();
         public static GuiController GuiController;
         public static bool ProgramExiting;
-        
+
         private static bool _firstInit = true;
 
         private void Start()
         {
             GuiController = base.gameObject.AddComponent<GuiController>();
             base.gameObject.AddComponent<MicEF>();
-            
+
             base.gameObject.AddComponent<CustomResourceProcessor>();
             base.gameObject.AddComponent<PhotonEventHandler>();
             base.gameObject.AddComponent<GamemodeNetworkHandler>();
@@ -44,7 +44,7 @@ namespace Guardian
             {
                 return;
             }
-            
+
             _firstInit = false;
 
             string cli = Environment.CommandLine;
@@ -65,7 +65,7 @@ namespace Guardian
             {
                 LoginFengKAI.Player.Name = playerName;
             }
-            
+
             string playerGuild = PlayerPrefs.GetString("guildname", string.Empty);
             LoginFengKAI.Player.Guild = playerGuild;
 
@@ -125,7 +125,7 @@ namespace Guardian
                     State = $"{FengGameManagerMKII.Level.DisplayName} / {difficulty}"
                 });
             }
-            
+
             if (PhotonNetwork.isMasterClient) Gamemodes.CurrentMode.OnReset();
         }
 
