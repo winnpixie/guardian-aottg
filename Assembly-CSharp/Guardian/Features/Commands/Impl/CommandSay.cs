@@ -9,7 +9,7 @@
             if (args.Length < 1) return;
 
             string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity();
-            if (name.StripNGUI().Length < 1)
+            if (string.IsNullOrEmpty(name.StripNGUI()))
             {
                 name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
             }

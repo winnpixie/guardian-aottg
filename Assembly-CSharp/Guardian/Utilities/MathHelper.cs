@@ -4,27 +4,7 @@ namespace Guardian.Utilities
 {
     public static class MathHelper
     {
-        private static readonly Random RandomInst = new Random();
-
-        public static int AbsInt(int val)
-        {
-            return val < 0 ? -val : val;
-        }
-
-        public static int MaxInt(int val, int max)
-        {
-            return val > max ? val : max;
-        }
-
-        public static int MinInt(int val, int min)
-        {
-            return val < min ? val : min;
-        }
-
-        public static float AbsFloat(float val)
-        {
-            return val < 0 ? -val : val;
-        }
+        private static readonly Random Rand = new Random();
 
         public static int Floor(float val)
         {
@@ -54,12 +34,12 @@ namespace Guardian.Utilities
                 min -= max;
             }
 
-            return RandomInst.Next(min, max);
+            return Rand.Next(min, max);
         }
 
         public static double Random()
         {
-            return RandomInst.NextDouble();
+            return Rand.NextDouble();
         }
 
         // Thank you, https://stackoverflow.com/a/45859570

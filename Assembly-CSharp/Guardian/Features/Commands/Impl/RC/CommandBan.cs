@@ -16,7 +16,7 @@ namespace Guardian.Features.Commands.Impl.RC
             if (!PhotonNetwork.isMasterClient && !FengGameManagerMKII.OnPrivateServer)
             {
                 string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]).NGUIToUnity();
-                if (name.Length == 0)
+                if (string.IsNullOrEmpty(name))
                 {
                     name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
                 }

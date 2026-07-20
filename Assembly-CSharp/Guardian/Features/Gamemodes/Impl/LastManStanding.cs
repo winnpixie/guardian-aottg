@@ -35,7 +35,10 @@ namespace Guardian.Features.Gamemodes.Impl
 
         public override void OnUpdate()
         {
-            if (GameHelper.CurrentTimeMillis() - LastPollTime < 1000) return;
+            if (GameHelper.CurrentTimeMillis() - LastPollTime < 1000)
+            {
+                return;
+            }
 
             LastPollTime = GameHelper.CurrentTimeMillis();
 

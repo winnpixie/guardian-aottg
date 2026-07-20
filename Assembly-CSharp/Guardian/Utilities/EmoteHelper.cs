@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -20,7 +19,7 @@ namespace Guardian.Utilities
                 StringBuilder builder = new StringBuilder();
                 foreach (KeyValuePair<string, string> emote in Emotes)
                 {
-                    builder.Append(emote.Key).Append("=").Append(emote.Value).Append(Environment.NewLine);
+                    builder.Append(emote.Key).Append("=").Append(emote.Value).AppendLine();
                 }
 
                 File.WriteAllText(EmoteListPath, builder.ToString());
@@ -31,7 +30,7 @@ namespace Guardian.Utilities
                 string[] data = line.Split(new char[] { '=' }, 2);
                 if (data[0].IndexOf(':') > -1)
                 {
-                    GuardianClient.Logger.Debug($"Unable to register emote '{data[0]}', names can not contain ':'!");
+                    GuardianClient.Logger.Debug($"Unable to register emote '{data[0]}', names cannot contain ':'!");
                     continue;
                 }
 
@@ -70,7 +69,7 @@ namespace Guardian.Utilities
                 text = text.Replace($":{emote.Key}:", emote.Value);
             }
 
-            return text.Replace("<3", "\u2665".AsColor("B00B1E")); // Hardcoded emote :P
+            return text.Replace("<3", "\u2665".AsColor("B00B1E")); // Hardcoded emote <3
         }
     }
 }

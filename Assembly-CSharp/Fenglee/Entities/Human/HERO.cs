@@ -2203,7 +2203,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 nametagContent += "[" + ColorSet.AHSS + "]AHSS\n[FFFFFF]";
             }
             string playerGuild = GExtensions.AsString(base.photonView.owner.customProperties[PhotonPlayerProperty.Guild]);
-            if (playerGuild.Length > 0)
+            if (!string.IsNullOrEmpty(playerGuild))
             {
                 nametagContent += "[FFFF00]" + playerGuild + "\n[FFFFFF]";
             }
@@ -2282,7 +2282,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer || base.photonView.isMine)
         {
-            base.rigidbody.interpolation = Guardian.GuardianClient.Properties.Interpolation.Value ?
+            base.rigidbody.interpolation = Guardian.GuardianClient.Properties.Interpolate.Value ?
                 RigidbodyInterpolation.Interpolate : RigidbodyInterpolation.None;
         }
 
@@ -3163,7 +3163,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             else
             {
-                text += "\n[AAFF00]Skill![-]";
+                text += "bomb".Equals(skillId) ? "\n[AAFF00]Bomb![-]" : "\n[AAFF00]Skill![-]";
             }
         }
 
@@ -5065,7 +5065,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             }
             else
             {
-                FengGameManagerMKII.Instance.SendKillInfo(titanName.Length > 0, "[FFCC00][" + info.sender.Id + "][-] " + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
+                FengGameManagerMKII.Instance.SendKillInfo(!string.IsNullOrEmpty(titanName), "[FFCC00][" + info.sender.Id + "][-] " + titanName, isVictimTitan: false, GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]));
             }
         }
         if (base.photonView.isMine)
@@ -5567,7 +5567,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
             {
                 myBomb.Explode(bombRadius);
                 detonate = false;
-                
+
                 // Guardian
                 if (isMounted)
                 {
@@ -6496,7 +6496,7 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                     }
                 }
             }
-            // END: ThunderSpear Skins
+            // END ThunderSpear Skins
 
             if (strArray.Length > 18)
             {

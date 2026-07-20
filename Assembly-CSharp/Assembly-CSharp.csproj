@@ -5,6 +5,7 @@
     <TargetFramework>net35</TargetFramework>
     <Platforms>x64;x86</Platforms>
     <IsPackable>false</IsPackable>
+    <Configurations>Release</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <LangVersion>8.0</LangVersion>

@@ -127,7 +127,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         get
         {
             return (PhotonNetwork.isMasterClient && Guardian.GuardianClient.Properties.InfiniteRoom.Value)
-                ? time - Guardian.Utilities.MathHelper.AbsInt(time)
+                ? time - Math.Abs(time)
                 : _timeTotalServer;
         }
         set { _timeTotalServer = value; }
@@ -206,7 +206,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     private readonly Guardian.Utilities.MsTimer g_waveTimer = new Guardian.Utilities.MsTimer();
 
     private Dictionary<int, VoteKick> VoteKicks = new Dictionary<int, VoteKick>();
-    // END: Guardian
+    // END Guardian
 
     // BEGIN TLW/RRC
     [Guardian.Networking.RPC]
@@ -214,7 +214,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         info.sender.Ping = ping;
     }
-    // END: TLW/RRC
+    // END TLW/RRC
 
     public void AddHero(HERO hero)
     {
@@ -689,17 +689,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
     public GameObject SpawnTitanRandom(string place, int rate, bool punk = false)
     {
-        GameObject[] array = GameObject.FindGameObjectsWithTag(place);
-        int num = UnityEngine.Random.Range(0, array.Length);
-        GameObject gameObject = array[num];
-        while (array[num] == null)
+        GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag(place);
+        GameObject spawnPoint;
+        do
         {
-            num = UnityEngine.Random.Range(0, array.Length);
-            gameObject = array[num];
-        }
+            spawnPoint = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)];
+        } while (spawnPoint == null);
 
-        array[num] = null;
-        return SpawnTitan(rate, gameObject.transform.position, gameObject.transform.rotation, punk);
+        return SpawnTitan(rate, spawnPoint.transform.position, spawnPoint.transform.rotation, punk);
     }
 
     public GameObject SpawnTitanRaw(Vector3 position, Quaternion rotation)
@@ -876,7 +873,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
                     g_waveTimer.Update();
                 }
-                // END: Guardian
+                // END Guardian
 
                 if (++wave > RCSettings.GetMaxWave())
                 {
@@ -1149,7 +1146,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         Anarchy.Custom.Level.CustomAnarchyLevel anarchyLevel =
             gameObject.AddComponent<Anarchy.Custom.Level.CustomAnarchyLevel>();
         anarchyLevel.GameManager = this;
-        // END: Anarchy
+        // END Anarchy
     }
 
     private void Start()
@@ -1253,7 +1250,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         return CustomLevelLoaded;
     }
-    // END: Anarchy
+    // END Anarchy
 
     [Guardian.Networking.RPC]
     private void Chat(string message, string sender, PhotonMessageInfo info)
@@ -2658,7 +2655,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
 
                 if (!PhotonNetwork.room.visible)
                 {
-                    topRightText += " [ff6600](hidden)[-]";
+                    topRightText += " [FF6600](hidden)[-]";
                 }
 
                 AddTextTopRight(topRightText);
@@ -2669,15 +2666,20 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
             }
 
-            // Display rigidbody interpolation status
-            if (Guardian.GuardianClient.Properties.Interpolation.Value)
+            string extraText = "\n";
+
+            // Display Rigidbody Interpolation status
+            extraText += "RI ";
+            if (Guardian.GuardianClient.Properties.Interpolate.Value)
             {
-                AddTextTopCenter("\nInterpolation is [00FF00]ON[-]");
+                extraText += "[00FF00]ON[-]";
             }
             else
             {
-                AddTextTopCenter("\nInterpolation is [FF0000]OFF[-]");
+                extraText += "[FF0000]OFF[-]";
             }
+
+            AddTextTopCenter(extraText);
         }
 
         if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer && killInfoGO.Count > 0 && killInfoGO[0] == null)
@@ -3002,7 +3004,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             Guardian.Utilities.GameHelper.Broadcast(
                 $"This round lasted for <b>{g_roundTimer.GetElapsed() / 1000f}</b> second(s)!");
         }
-        // END: Guardian
+        // END Guardian
 
         if (isLoss)
         {
@@ -3493,29 +3495,29 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         switch (team)
                         {
                             case 1:
-                            {
-                                int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
-                                if (_magentaKills + kills + 7 < _cyanKills - kills)
                                 {
-                                    rcTeam = 2;
-                                    _magentaKills += kills;
-                                    _cyanKills -= kills;
-                                }
+                                    int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
+                                    if (_magentaKills + kills + 7 < _cyanKills - kills)
+                                    {
+                                        rcTeam = 2;
+                                        _magentaKills += kills;
+                                        _cyanKills -= kills;
+                                    }
 
-                                break;
-                            }
+                                    break;
+                                }
                             case 2:
-                            {
-                                int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
-                                if (_cyanKills + kills + 7 < _magentaKills - kills)
                                 {
-                                    rcTeam = 1;
-                                    _cyanKills += kills;
-                                    _magentaKills -= kills;
-                                }
+                                    int kills = GExtensions.AsInt(player.customProperties[PhotonPlayerProperty.Kills]);
+                                    if (_cyanKills + kills + 7 < _magentaKills - kills)
+                                    {
+                                        rcTeam = 1;
+                                        _cyanKills += kills;
+                                        _magentaKills -= kills;
+                                    }
 
-                                break;
-                            }
+                                    break;
+                                }
                         }
 
                         if (rcTeam > 0)
@@ -8628,7 +8630,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 // Ko-fi
                 if (ResourceLoader.TryGetAsset("Textures/ko-fi.png", out Texture2D kofi))
                 {
-                    if (GUI.Button(new Rect(10, 185, 220, 75), kofi))
+                    if (GUI.Button(new Rect(10, 185, 220, 100), kofi))
                     {
                         Application.OpenURL("https://www.ko-fi.com/winnpixie");
                     }
@@ -8637,9 +8639,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 // AoTTG-2 Patreon
                 if (ResourceLoader.TryGetAsset("Textures/patreon.png", out Texture2D aot2Patreon))
                 {
-                    if (GUI.Button(new Rect(10, 265, 220, 150), aot2Patreon))
+                    if (GUI.Button(new Rect(10, 290, 220, 150), aot2Patreon))
                     {
-                        Application.OpenURL("https://www.patreon.com/aottg2");
+                        Application.OpenURL("https://www.patreon.com/cw/aottg2");
                     }
                 }
 
@@ -9543,9 +9545,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                         GUI.EndScrollView();
                         break;
                     case 102:
-                    {
-                        string[] array7 = new string[12]
                         {
+                            string[] array7 = new string[12]
+                            {
                             "cuboid",
                             "plane",
                             "sphere",
@@ -9558,35 +9560,35 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             "arc180",
                             "torus",
                             "tube"
-                        };
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            int num21 = j % 4;
-                            int num20 = j / 4;
-                            GUI.DrawTexture(
-                                new Rect(num11 + 7.8f + 71.8f * (float)num21, 90f + 114f * (float)num20, 64f, 64f),
-                                LoadTextureRC("p" + array7[j]));
-                            if (GUI.Button(
-                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, 159f + 114f * (float)num20, 64f, 30f),
-                                    array7[j]))
+                            };
+                            for (int j = 0; j < array7.Length; j++)
                             {
-                                flag = true;
-                                GameObject original2 = (GameObject)RCAssets.Load(array7[j]);
-                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original2);
-                                selectedObj.name = "custom," + array7[j];
+                                int num21 = j % 4;
+                                int num20 = j / 4;
+                                GUI.DrawTexture(
+                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, 90f + 114f * (float)num20, 64f, 64f),
+                                    LoadTextureRC("p" + array7[j]));
+                                if (GUI.Button(
+                                        new Rect(num11 + 7.8f + 71.8f * (float)num21, 159f + 114f * (float)num20, 64f, 30f),
+                                        array7[j]))
+                                {
+                                    flag = true;
+                                    GameObject original2 = (GameObject)RCAssets.Load(array7[j]);
+                                    selectedObj = (GameObject)UnityEngine.Object.Instantiate(original2);
+                                    selectedObj.name = "custom," + array7[j];
+                                }
                             }
                         }
-                    }
                         break;
                     case 103:
-                    {
-                        List<string> list3 = new List<string>()
+                        {
+                            List<string> list3 = new List<string>()
                         {
                             "arch1", "house1"
                         };
-                        List<string> list4 = list3;
-                        string[] array7 = new string[44]
-                        {
+                            List<string> list4 = list3;
+                            string[] array7 = new string[44]
+                            {
                             "tower1",
                             "tower2",
                             "tower3",
@@ -9631,44 +9633,44 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             "arena2",
                             "arena3",
                             "arena4"
-                        };
-                        float val = 110f + 114f * (float)((array7.Length - 1) / 4);
-                        scroll = GUI.BeginScrollView(new Rect(num11, 90f, 303f, 350f), scroll,
-                            new Rect(num11, 90f, 300f, val));
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            int num21 = j % 4;
-                            int num20 = j / 4;
-                            GUI.DrawTexture(
-                                new Rect(num11 + 7.8f + 71.8f * (float)num21, 90f + 114f * (float)num20, 64f, 64f),
-                                LoadTextureRC("p" + array7[j]));
-                            if (GUI.Button(
-                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, 159f + 114f * (float)num20, 64f, 30f),
-                                    array7[j]))
+                            };
+                            float val = 110f + 114f * (float)((array7.Length - 1) / 4);
+                            scroll = GUI.BeginScrollView(new Rect(num11, 90f, 303f, 350f), scroll,
+                                new Rect(num11, 90f, 300f, val));
+                            for (int j = 0; j < array7.Length; j++)
                             {
-                                flag = true;
-                                GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
-                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
-                                if (list4.Contains(array7[j]))
+                                int num21 = j % 4;
+                                int num20 = j / 4;
+                                GUI.DrawTexture(
+                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, 90f + 114f * (float)num20, 64f, 64f),
+                                    LoadTextureRC("p" + array7[j]));
+                                if (GUI.Button(
+                                        new Rect(num11 + 7.8f + 71.8f * (float)num21, 159f + 114f * (float)num20, 64f, 30f),
+                                        array7[j]))
                                 {
-                                    selectedObj.name = "customb," + array7[j];
-                                }
-                                else
-                                {
-                                    selectedObj.name = "custom," + array7[j];
+                                    flag = true;
+                                    GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
+                                    selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
+                                    if (list4.Contains(array7[j]))
+                                    {
+                                        selectedObj.name = "customb," + array7[j];
+                                    }
+                                    else
+                                    {
+                                        selectedObj.name = "custom," + array7[j];
+                                    }
                                 }
                             }
-                        }
 
-                        GUI.EndScrollView();
-                    }
+                            GUI.EndScrollView();
+                        }
                         break;
                     case 104:
-                    {
-                        List<string> list5 = new List<string>() { "tree0" };
-                        List<string> list4 = list5;
-                        string[] array7 = new string[23]
                         {
+                            List<string> list5 = new List<string>() { "tree0" };
+                            List<string> list4 = list5;
+                            string[] array7 = new string[23]
+                            {
                             "leaf0",
                             "leaf1",
                             "leaf2",
@@ -9692,158 +9694,158 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             "boulder5",
                             "cave1",
                             "cave2"
-                        };
-                        float val = 110f + 114f * (float)((array7.Length - 1) / 4);
-                        scroll = GUI.BeginScrollView(new Rect(num11, 90f, 303f, 350f), scroll,
-                            new Rect(num11, 90f, 300f, val));
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            int num21 = j % 4;
-                            int num20 = j / 4;
-                            GUI.DrawTexture(
-                                new Rect(num11 + 7.8f + 71.8f * (float)num21, 90f + 114f * (float)num20, 64f, 64f),
-                                LoadTextureRC("p" + array7[j]));
-                            if (GUI.Button(
-                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, 159f + 114f * (float)num20, 64f, 30f),
-                                    array7[j]))
+                            };
+                            float val = 110f + 114f * (float)((array7.Length - 1) / 4);
+                            scroll = GUI.BeginScrollView(new Rect(num11, 90f, 303f, 350f), scroll,
+                                new Rect(num11, 90f, 300f, val));
+                            for (int j = 0; j < array7.Length; j++)
                             {
-                                flag = true;
-                                GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
-                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
-                                if (list4.Contains(array7[j]))
+                                int num21 = j % 4;
+                                int num20 = j / 4;
+                                GUI.DrawTexture(
+                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, 90f + 114f * (float)num20, 64f, 64f),
+                                    LoadTextureRC("p" + array7[j]));
+                                if (GUI.Button(
+                                        new Rect(num11 + 7.8f + 71.8f * (float)num21, 159f + 114f * (float)num20, 64f, 30f),
+                                        array7[j]))
                                 {
-                                    selectedObj.name = "customb," + array7[j];
+                                    flag = true;
+                                    GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
+                                    selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
+                                    if (list4.Contains(array7[j]))
+                                    {
+                                        selectedObj.name = "customb," + array7[j];
+                                    }
+                                    else
+                                    {
+                                        selectedObj.name = "custom," + array7[j];
+                                    }
+                                }
+                            }
+
+                            GUI.EndScrollView();
+                        }
+                        break;
+                    case 105:
+                        {
+                            GUI.Label(new Rect(num11 + 95f, 85f, 130f, 20f), "Custom Spawners:", "Label");
+                            GUI.DrawTexture(new Rect(num11 + 7.8f, 110f, 64f, 64f), LoadTextureRC("ptitan"));
+                            GUI.DrawTexture(new Rect(num11 + 79.6f, 110f, 64f, 64f), LoadTextureRC("pabnormal"));
+                            GUI.DrawTexture(new Rect(num11 + 151.4f, 110f, 64f, 64f), LoadTextureRC("pjumper"));
+                            GUI.DrawTexture(new Rect(num11 + 223.2f, 110f, 64f, 64f), LoadTextureRC("pcrawler"));
+                            GUI.DrawTexture(new Rect(num11 + 7.8f, 224f, 64f, 64f), LoadTextureRC("ppunk"));
+                            GUI.DrawTexture(new Rect(num11 + 79.6f, 224f, 64f, 64f), LoadTextureRC("pannie"));
+                            float result2;
+                            if (GUI.Button(new Rect(num11 + 7.8f, 179f, 64f, 30f), "Titan"))
+                            {
+                                if (!float.TryParse((string)Settings[83], out result2))
+                                {
+                                    Settings[83] = "30";
+                                }
+
+                                flag = true;
+                                flag2 = true;
+                                GameObject original3 = (GameObject)RCAssets.Load("spawnTitan");
+                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
+                                selectedObj.name = "photon,spawnTitan," + (string)Settings[83] + "," +
+                                                   ((int)Settings[84]).ToString();
+                            }
+                            else if (GUI.Button(new Rect(num11 + 79.6f, 179f, 64f, 30f), "Aberrant"))
+                            {
+                                if (!float.TryParse((string)Settings[83], out result2))
+                                {
+                                    Settings[83] = "30";
+                                }
+
+                                flag = true;
+                                flag2 = true;
+                                GameObject original3 = (GameObject)RCAssets.Load("spawnAbnormal");
+                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
+                                selectedObj.name = "photon,spawnAbnormal," + (string)Settings[83] + "," +
+                                                   ((int)Settings[84]).ToString();
+                            }
+                            else if (GUI.Button(new Rect(num11 + 151.4f, 179f, 64f, 30f), "Jumper"))
+                            {
+                                if (!float.TryParse((string)Settings[83], out result2))
+                                {
+                                    Settings[83] = "30";
+                                }
+
+                                flag = true;
+                                flag2 = true;
+                                GameObject original3 = (GameObject)RCAssets.Load("spawnJumper");
+                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
+                                selectedObj.name = "photon,spawnJumper," + (string)Settings[83] + "," +
+                                                   ((int)Settings[84]).ToString();
+                            }
+                            else if (GUI.Button(new Rect(num11 + 223.2f, 179f, 64f, 30f), "Crawler"))
+                            {
+                                if (!float.TryParse((string)Settings[83], out result2))
+                                {
+                                    Settings[83] = "30";
+                                }
+
+                                flag = true;
+                                flag2 = true;
+                                GameObject original3 = (GameObject)RCAssets.Load("spawnCrawler");
+                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
+                                selectedObj.name = "photon,spawnCrawler," + (string)Settings[83] + "," +
+                                                   ((int)Settings[84]).ToString();
+                            }
+                            else if (GUI.Button(new Rect(num11 + 7.8f, 293f, 64f, 30f), "Punk"))
+                            {
+                                if (!float.TryParse((string)Settings[83], out result2))
+                                {
+                                    Settings[83] = "30";
+                                }
+
+                                flag = true;
+                                flag2 = true;
+                                GameObject original3 = (GameObject)RCAssets.Load("spawnPunk");
+                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
+                                selectedObj.name = "photon,spawnPunk," + (string)Settings[83] + "," +
+                                                   ((int)Settings[84]).ToString();
+                            }
+                            else if (GUI.Button(new Rect(num11 + 79.6f, 293f, 64f, 30f), "Annie"))
+                            {
+                                if (!float.TryParse((string)Settings[83], out result2))
+                                {
+                                    Settings[83] = "30";
+                                }
+
+                                flag = true;
+                                flag2 = true;
+                                GameObject original3 = (GameObject)RCAssets.Load("spawnAnnie");
+                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
+                                selectedObj.name = "photon,spawnAnnie," + (string)Settings[83] + "," +
+                                                   ((int)Settings[84]).ToString();
+                            }
+
+                            GUI.Label(new Rect(num11 + 7f, 379f, 140f, 22f), "Spawn Timer:", "Label");
+                            Settings[83] = GUI.TextField(new Rect(num11 + 100f, 379f, 50f, 20f), (string)Settings[83]);
+                            GUI.Label(new Rect(num11 + 7f, 356f, 140f, 22f), "Endless spawn:", "Label");
+                            GUI.Label(new Rect(num11 + 7f, 405f, 290f, 80f),
+                                "* The above settings apply only to the next placed spawner. You can have unique spawn times and settings for each individual titan spawner.",
+                                "Label");
+                            bool flag8 = false;
+                            if ((int)Settings[84] == 1)
+                            {
+                                flag8 = true;
+                            }
+
+                            bool flag9 = GUI.Toggle(new Rect(num11 + 100f, 356f, 40f, 20f), flag8, "On");
+                            if (flag8 != flag9)
+                            {
+                                if (flag9)
+                                {
+                                    Settings[84] = 1;
                                 }
                                 else
                                 {
-                                    selectedObj.name = "custom," + array7[j];
+                                    Settings[84] = 0;
                                 }
                             }
                         }
-
-                        GUI.EndScrollView();
-                    }
-                        break;
-                    case 105:
-                    {
-                        GUI.Label(new Rect(num11 + 95f, 85f, 130f, 20f), "Custom Spawners:", "Label");
-                        GUI.DrawTexture(new Rect(num11 + 7.8f, 110f, 64f, 64f), LoadTextureRC("ptitan"));
-                        GUI.DrawTexture(new Rect(num11 + 79.6f, 110f, 64f, 64f), LoadTextureRC("pabnormal"));
-                        GUI.DrawTexture(new Rect(num11 + 151.4f, 110f, 64f, 64f), LoadTextureRC("pjumper"));
-                        GUI.DrawTexture(new Rect(num11 + 223.2f, 110f, 64f, 64f), LoadTextureRC("pcrawler"));
-                        GUI.DrawTexture(new Rect(num11 + 7.8f, 224f, 64f, 64f), LoadTextureRC("ppunk"));
-                        GUI.DrawTexture(new Rect(num11 + 79.6f, 224f, 64f, 64f), LoadTextureRC("pannie"));
-                        float result2;
-                        if (GUI.Button(new Rect(num11 + 7.8f, 179f, 64f, 30f), "Titan"))
-                        {
-                            if (!float.TryParse((string)Settings[83], out result2))
-                            {
-                                Settings[83] = "30";
-                            }
-
-                            flag = true;
-                            flag2 = true;
-                            GameObject original3 = (GameObject)RCAssets.Load("spawnTitan");
-                            selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
-                            selectedObj.name = "photon,spawnTitan," + (string)Settings[83] + "," +
-                                               ((int)Settings[84]).ToString();
-                        }
-                        else if (GUI.Button(new Rect(num11 + 79.6f, 179f, 64f, 30f), "Aberrant"))
-                        {
-                            if (!float.TryParse((string)Settings[83], out result2))
-                            {
-                                Settings[83] = "30";
-                            }
-
-                            flag = true;
-                            flag2 = true;
-                            GameObject original3 = (GameObject)RCAssets.Load("spawnAbnormal");
-                            selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
-                            selectedObj.name = "photon,spawnAbnormal," + (string)Settings[83] + "," +
-                                               ((int)Settings[84]).ToString();
-                        }
-                        else if (GUI.Button(new Rect(num11 + 151.4f, 179f, 64f, 30f), "Jumper"))
-                        {
-                            if (!float.TryParse((string)Settings[83], out result2))
-                            {
-                                Settings[83] = "30";
-                            }
-
-                            flag = true;
-                            flag2 = true;
-                            GameObject original3 = (GameObject)RCAssets.Load("spawnJumper");
-                            selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
-                            selectedObj.name = "photon,spawnJumper," + (string)Settings[83] + "," +
-                                               ((int)Settings[84]).ToString();
-                        }
-                        else if (GUI.Button(new Rect(num11 + 223.2f, 179f, 64f, 30f), "Crawler"))
-                        {
-                            if (!float.TryParse((string)Settings[83], out result2))
-                            {
-                                Settings[83] = "30";
-                            }
-
-                            flag = true;
-                            flag2 = true;
-                            GameObject original3 = (GameObject)RCAssets.Load("spawnCrawler");
-                            selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
-                            selectedObj.name = "photon,spawnCrawler," + (string)Settings[83] + "," +
-                                               ((int)Settings[84]).ToString();
-                        }
-                        else if (GUI.Button(new Rect(num11 + 7.8f, 293f, 64f, 30f), "Punk"))
-                        {
-                            if (!float.TryParse((string)Settings[83], out result2))
-                            {
-                                Settings[83] = "30";
-                            }
-
-                            flag = true;
-                            flag2 = true;
-                            GameObject original3 = (GameObject)RCAssets.Load("spawnPunk");
-                            selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
-                            selectedObj.name = "photon,spawnPunk," + (string)Settings[83] + "," +
-                                               ((int)Settings[84]).ToString();
-                        }
-                        else if (GUI.Button(new Rect(num11 + 79.6f, 293f, 64f, 30f), "Annie"))
-                        {
-                            if (!float.TryParse((string)Settings[83], out result2))
-                            {
-                                Settings[83] = "30";
-                            }
-
-                            flag = true;
-                            flag2 = true;
-                            GameObject original3 = (GameObject)RCAssets.Load("spawnAnnie");
-                            selectedObj = (GameObject)UnityEngine.Object.Instantiate(original3);
-                            selectedObj.name = "photon,spawnAnnie," + (string)Settings[83] + "," +
-                                               ((int)Settings[84]).ToString();
-                        }
-
-                        GUI.Label(new Rect(num11 + 7f, 379f, 140f, 22f), "Spawn Timer:", "Label");
-                        Settings[83] = GUI.TextField(new Rect(num11 + 100f, 379f, 50f, 20f), (string)Settings[83]);
-                        GUI.Label(new Rect(num11 + 7f, 356f, 140f, 22f), "Endless spawn:", "Label");
-                        GUI.Label(new Rect(num11 + 7f, 405f, 290f, 80f),
-                            "* The above settings apply only to the next placed spawner. You can have unique spawn times and settings for each individual titan spawner.",
-                            "Label");
-                        bool flag8 = false;
-                        if ((int)Settings[84] == 1)
-                        {
-                            flag8 = true;
-                        }
-
-                        bool flag9 = GUI.Toggle(new Rect(num11 + 100f, 356f, 40f, 20f), flag8, "On");
-                        if (flag8 != flag9)
-                        {
-                            if (flag9)
-                            {
-                                Settings[84] = 1;
-                            }
-                            else
-                            {
-                                Settings[84] = 0;
-                            }
-                        }
-                    }
                         break;
                     case 106:
                         GUI.Label(new Rect(num11 + 10f, 80f, 200f, 22f), "- Tree 2 designed by Ken P.", "Label");
@@ -9858,102 +9860,102 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             "Label");
                         break;
                     case 107:
-                    {
-                        GUI.DrawTexture(new Rect(num11 + 30f, 90f, 64f, 64f), LoadTextureRC("pbarrier"));
-                        GUI.DrawTexture(new Rect(num11 + 30f, 199f, 64f, 64f), LoadTextureRC("pregion"));
-                        GUI.Label(new Rect(num11 + 110f, 243f, 200f, 22f), "Region Name:", "Label");
-                        GUI.Label(new Rect(num11 + 110f, 179f, 200f, 22f), "Disable Map Bounds:", "Label");
-                        bool flag6 = false;
-                        if ((int)Settings[186] == 1)
                         {
-                            flag6 = true;
-                            if (!LinkHash[3].ContainsKey("mapbounds"))
+                            GUI.DrawTexture(new Rect(num11 + 30f, 90f, 64f, 64f), LoadTextureRC("pbarrier"));
+                            GUI.DrawTexture(new Rect(num11 + 30f, 199f, 64f, 64f), LoadTextureRC("pregion"));
+                            GUI.Label(new Rect(num11 + 110f, 243f, 200f, 22f), "Region Name:", "Label");
+                            GUI.Label(new Rect(num11 + 110f, 179f, 200f, 22f), "Disable Map Bounds:", "Label");
+                            bool flag6 = false;
+                            if ((int)Settings[186] == 1)
                             {
-                                LinkHash[3].Add("mapbounds", "map,disablebounds");
+                                flag6 = true;
+                                if (!LinkHash[3].ContainsKey("mapbounds"))
+                                {
+                                    LinkHash[3].Add("mapbounds", "map,disablebounds");
+                                }
+                            }
+                            else if (LinkHash[3].ContainsKey("mapbounds"))
+                            {
+                                LinkHash[3].Remove("mapbounds");
+                            }
+
+                            if (GUI.Button(new Rect(num11 + 30f, 159f, 64f, 30f), "Barrier"))
+                            {
+                                flag = true;
+                                flag2 = true;
+                                GameObject original2 = (GameObject)RCAssets.Load("barrierEditor");
+                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original2);
+                                selectedObj.name = "misc,barrier";
+                            }
+                            else if (GUI.Button(new Rect(num11 + 30f, 268f, 64f, 30f), "Region"))
+                            {
+                                if ((string)Settings[191] == string.Empty)
+                                {
+                                    Settings[191] = "Region" + UnityEngine.Random.Range(10000, 99999).ToString();
+                                }
+
+                                flag = true;
+                                flag2 = true;
+                                GameObject original2 = (GameObject)RCAssets.Load("regionEditor");
+                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original2);
+                                GameObject gameObject3 =
+                                    (GameObject)UnityEngine.Object.Instantiate(Resources.Load("UI/LabelNameOverHead"));
+                                gameObject3.name = "RegionLabel";
+                                if (!float.TryParse((string)Settings[71], out result))
+                                {
+                                    Settings[71] = "1";
+                                }
+
+                                if (!float.TryParse((string)Settings[70], out result))
+                                {
+                                    Settings[70] = "1";
+                                }
+
+                                if (!float.TryParse((string)Settings[72], out result))
+                                {
+                                    Settings[72] = "1";
+                                }
+
+                                gameObject3.transform.parent = selectedObj.transform;
+                                float y = 1f;
+                                if (Convert.ToSingle((string)Settings[71]) > 100f)
+                                {
+                                    y = 0.8f;
+                                }
+                                else if (Convert.ToSingle((string)Settings[71]) > 1000f)
+                                {
+                                    y = 0.5f;
+                                }
+
+                                gameObject3.transform.localPosition = new Vector3(0f, y, 0f);
+                                gameObject3.transform.localScale = new Vector3(5f / Convert.ToSingle((string)Settings[70]),
+                                    5f / Convert.ToSingle((string)Settings[71]),
+                                    5f / Convert.ToSingle((string)Settings[72]));
+                                gameObject3.GetComponent<UILabel>().text = (string)Settings[191];
+                                selectedObj.AddComponent<RCRegionLabel>();
+                                selectedObj.GetComponent<RCRegionLabel>().myLabel = gameObject3;
+                                selectedObj.name = "misc,region," + (string)Settings[191];
+                            }
+
+                            Settings[191] = GUI.TextField(new Rect(num11 + 200f, 243f, 75f, 20f), (string)Settings[191]);
+                            bool flag7 = GUI.Toggle(new Rect(num11 + 240f, 179f, 40f, 20f), flag6, "On");
+                            if (flag7 != flag6)
+                            {
+                                if (flag7)
+                                {
+                                    Settings[186] = 1;
+                                }
+                                else
+                                {
+                                    Settings[186] = 0;
+                                }
                             }
                         }
-                        else if (LinkHash[3].ContainsKey("mapbounds"))
-                        {
-                            LinkHash[3].Remove("mapbounds");
-                        }
-
-                        if (GUI.Button(new Rect(num11 + 30f, 159f, 64f, 30f), "Barrier"))
-                        {
-                            flag = true;
-                            flag2 = true;
-                            GameObject original2 = (GameObject)RCAssets.Load("barrierEditor");
-                            selectedObj = (GameObject)UnityEngine.Object.Instantiate(original2);
-                            selectedObj.name = "misc,barrier";
-                        }
-                        else if (GUI.Button(new Rect(num11 + 30f, 268f, 64f, 30f), "Region"))
-                        {
-                            if ((string)Settings[191] == string.Empty)
-                            {
-                                Settings[191] = "Region" + UnityEngine.Random.Range(10000, 99999).ToString();
-                            }
-
-                            flag = true;
-                            flag2 = true;
-                            GameObject original2 = (GameObject)RCAssets.Load("regionEditor");
-                            selectedObj = (GameObject)UnityEngine.Object.Instantiate(original2);
-                            GameObject gameObject3 =
-                                (GameObject)UnityEngine.Object.Instantiate(Resources.Load("UI/LabelNameOverHead"));
-                            gameObject3.name = "RegionLabel";
-                            if (!float.TryParse((string)Settings[71], out result))
-                            {
-                                Settings[71] = "1";
-                            }
-
-                            if (!float.TryParse((string)Settings[70], out result))
-                            {
-                                Settings[70] = "1";
-                            }
-
-                            if (!float.TryParse((string)Settings[72], out result))
-                            {
-                                Settings[72] = "1";
-                            }
-
-                            gameObject3.transform.parent = selectedObj.transform;
-                            float y = 1f;
-                            if (Convert.ToSingle((string)Settings[71]) > 100f)
-                            {
-                                y = 0.8f;
-                            }
-                            else if (Convert.ToSingle((string)Settings[71]) > 1000f)
-                            {
-                                y = 0.5f;
-                            }
-
-                            gameObject3.transform.localPosition = new Vector3(0f, y, 0f);
-                            gameObject3.transform.localScale = new Vector3(5f / Convert.ToSingle((string)Settings[70]),
-                                5f / Convert.ToSingle((string)Settings[71]),
-                                5f / Convert.ToSingle((string)Settings[72]));
-                            gameObject3.GetComponent<UILabel>().text = (string)Settings[191];
-                            selectedObj.AddComponent<RCRegionLabel>();
-                            selectedObj.GetComponent<RCRegionLabel>().myLabel = gameObject3;
-                            selectedObj.name = "misc,region," + (string)Settings[191];
-                        }
-
-                        Settings[191] = GUI.TextField(new Rect(num11 + 200f, 243f, 75f, 20f), (string)Settings[191]);
-                        bool flag7 = GUI.Toggle(new Rect(num11 + 240f, 179f, 40f, 20f), flag6, "On");
-                        if (flag7 != flag6)
-                        {
-                            if (flag7)
-                            {
-                                Settings[186] = 1;
-                            }
-                            else
-                            {
-                                Settings[186] = 0;
-                            }
-                        }
-                    }
                         break;
                     case 108:
-                    {
-                        string[] array8 = new string[12]
                         {
+                            string[] array8 = new string[12]
+                            {
                             "Cuboid",
                             "Plane",
                             "Sphere",
@@ -9966,122 +9968,122 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             "Arc180",
                             "Torus",
                             "Tube"
-                        };
-                        string[] array7 = new string[12];
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            array7[j] = "start" + array8[j];
-                        }
-
-                        float val = 110f + 114f * (float)((array7.Length - 1) / 4);
-                        val *= 4f;
-                        val += 200f;
-                        scroll = GUI.BeginScrollView(new Rect(num11, 90f, 303f, 350f), scroll,
-                            new Rect(num11, 90f, 300f, val));
-                        GUI.Label(new Rect(num11 + 90f, 90f, 200f, 22f), "Racing Start Barrier");
-                        int num22 = 125;
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            int num21 = j % 4;
-                            int num20 = j / 4;
-                            GUI.DrawTexture(
-                                new Rect(num11 + 7.8f + 71.8f * (float)num21, (float)num22 + 114f * (float)num20, 64f,
-                                    64f), LoadTextureRC("p" + array7[j]));
-                            if (GUI.Button(
-                                    new Rect(num11 + 7.8f + 71.8f * (float)num21,
-                                        (float)num22 + 69f + 114f * (float)num20, 64f, 30f), array8[j]))
+                            };
+                            string[] array7 = new string[12];
+                            for (int j = 0; j < array7.Length; j++)
                             {
-                                flag = true;
-                                flag2 = true;
-                                GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
-                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
-                                selectedObj.name = "racing," + array7[j];
+                                array7[j] = "start" + array8[j];
                             }
-                        }
 
-                        num22 += 114 * (array7.Length / 4) + 10;
-                        GUI.Label(new Rect(num11 + 93f, num22, 200f, 22f), "Racing End Trigger");
-                        num22 += 35;
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            array7[j] = "end" + array8[j];
-                        }
-
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            int num21 = j % 4;
-                            int num20 = j / 4;
-                            GUI.DrawTexture(
-                                new Rect(num11 + 7.8f + 71.8f * (float)num21, (float)num22 + 114f * (float)num20, 64f,
-                                    64f), LoadTextureRC("p" + array7[j]));
-                            if (GUI.Button(
-                                    new Rect(num11 + 7.8f + 71.8f * (float)num21,
-                                        (float)num22 + 69f + 114f * (float)num20, 64f, 30f), array8[j]))
+                            float val = 110f + 114f * (float)((array7.Length - 1) / 4);
+                            val *= 4f;
+                            val += 200f;
+                            scroll = GUI.BeginScrollView(new Rect(num11, 90f, 303f, 350f), scroll,
+                                new Rect(num11, 90f, 300f, val));
+                            GUI.Label(new Rect(num11 + 90f, 90f, 200f, 22f), "Racing Start Barrier");
+                            int num22 = 125;
+                            for (int j = 0; j < array7.Length; j++)
                             {
-                                flag = true;
-                                flag2 = true;
-                                GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
-                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
-                                selectedObj.name = "racing," + array7[j];
+                                int num21 = j % 4;
+                                int num20 = j / 4;
+                                GUI.DrawTexture(
+                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, (float)num22 + 114f * (float)num20, 64f,
+                                        64f), LoadTextureRC("p" + array7[j]));
+                                if (GUI.Button(
+                                        new Rect(num11 + 7.8f + 71.8f * (float)num21,
+                                            (float)num22 + 69f + 114f * (float)num20, 64f, 30f), array8[j]))
+                                {
+                                    flag = true;
+                                    flag2 = true;
+                                    GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
+                                    selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
+                                    selectedObj.name = "racing," + array7[j];
+                                }
                             }
-                        }
 
-                        num22 += 114 * (array7.Length / 4) + 10;
-                        GUI.Label(new Rect(num11 + 113f, num22, 200f, 22f), "Kill Trigger");
-                        num22 += 35;
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            array7[j] = "kill" + array8[j];
-                        }
-
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            int num21 = j % 4;
-                            int num20 = j / 4;
-                            GUI.DrawTexture(
-                                new Rect(num11 + 7.8f + 71.8f * (float)num21, (float)num22 + 114f * (float)num20, 64f,
-                                    64f), LoadTextureRC("p" + array7[j]));
-                            if (GUI.Button(
-                                    new Rect(num11 + 7.8f + 71.8f * (float)num21,
-                                        (float)num22 + 69f + 114f * (float)num20, 64f, 30f), array8[j]))
+                            num22 += 114 * (array7.Length / 4) + 10;
+                            GUI.Label(new Rect(num11 + 93f, num22, 200f, 22f), "Racing End Trigger");
+                            num22 += 35;
+                            for (int j = 0; j < array7.Length; j++)
                             {
-                                flag = true;
-                                flag2 = true;
-                                GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
-                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
-                                selectedObj.name = "racing," + array7[j];
+                                array7[j] = "end" + array8[j];
                             }
-                        }
 
-                        num22 += 114 * (array7.Length / 4) + 10;
-                        GUI.Label(new Rect(num11 + 95f, num22, 200f, 22f), "Checkpoint Trigger");
-                        num22 += 35;
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            array7[j] = "checkpoint" + array8[j];
-                        }
-
-                        for (int j = 0; j < array7.Length; j++)
-                        {
-                            int num21 = j % 4;
-                            int num20 = j / 4;
-                            GUI.DrawTexture(
-                                new Rect(num11 + 7.8f + 71.8f * (float)num21, (float)num22 + 114f * (float)num20, 64f,
-                                    64f), LoadTextureRC("p" + array7[j]));
-                            if (GUI.Button(
-                                    new Rect(num11 + 7.8f + 71.8f * (float)num21,
-                                        (float)num22 + 69f + 114f * (float)num20, 64f, 30f), array8[j]))
+                            for (int j = 0; j < array7.Length; j++)
                             {
-                                flag = true;
-                                flag2 = true;
-                                GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
-                                selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
-                                selectedObj.name = "racing," + array7[j];
+                                int num21 = j % 4;
+                                int num20 = j / 4;
+                                GUI.DrawTexture(
+                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, (float)num22 + 114f * (float)num20, 64f,
+                                        64f), LoadTextureRC("p" + array7[j]));
+                                if (GUI.Button(
+                                        new Rect(num11 + 7.8f + 71.8f * (float)num21,
+                                            (float)num22 + 69f + 114f * (float)num20, 64f, 30f), array8[j]))
+                                {
+                                    flag = true;
+                                    flag2 = true;
+                                    GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
+                                    selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
+                                    selectedObj.name = "racing," + array7[j];
+                                }
                             }
-                        }
 
-                        GUI.EndScrollView();
-                    }
+                            num22 += 114 * (array7.Length / 4) + 10;
+                            GUI.Label(new Rect(num11 + 113f, num22, 200f, 22f), "Kill Trigger");
+                            num22 += 35;
+                            for (int j = 0; j < array7.Length; j++)
+                            {
+                                array7[j] = "kill" + array8[j];
+                            }
+
+                            for (int j = 0; j < array7.Length; j++)
+                            {
+                                int num21 = j % 4;
+                                int num20 = j / 4;
+                                GUI.DrawTexture(
+                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, (float)num22 + 114f * (float)num20, 64f,
+                                        64f), LoadTextureRC("p" + array7[j]));
+                                if (GUI.Button(
+                                        new Rect(num11 + 7.8f + 71.8f * (float)num21,
+                                            (float)num22 + 69f + 114f * (float)num20, 64f, 30f), array8[j]))
+                                {
+                                    flag = true;
+                                    flag2 = true;
+                                    GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
+                                    selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
+                                    selectedObj.name = "racing," + array7[j];
+                                }
+                            }
+
+                            num22 += 114 * (array7.Length / 4) + 10;
+                            GUI.Label(new Rect(num11 + 95f, num22, 200f, 22f), "Checkpoint Trigger");
+                            num22 += 35;
+                            for (int j = 0; j < array7.Length; j++)
+                            {
+                                array7[j] = "checkpoint" + array8[j];
+                            }
+
+                            for (int j = 0; j < array7.Length; j++)
+                            {
+                                int num21 = j % 4;
+                                int num20 = j / 4;
+                                GUI.DrawTexture(
+                                    new Rect(num11 + 7.8f + 71.8f * (float)num21, (float)num22 + 114f * (float)num20, 64f,
+                                        64f), LoadTextureRC("p" + array7[j]));
+                                if (GUI.Button(
+                                        new Rect(num11 + 7.8f + 71.8f * (float)num21,
+                                            (float)num22 + 69f + 114f * (float)num20, 64f, 30f), array8[j]))
+                                {
+                                    flag = true;
+                                    flag2 = true;
+                                    GameObject original4 = (GameObject)RCAssets.Load(array7[j]);
+                                    selectedObj = (GameObject)UnityEngine.Object.Instantiate(original4);
+                                    selectedObj.name = "racing," + array7[j];
+                                }
+                            }
+
+                            GUI.EndScrollView();
+                        }
                         break;
                 }
 
@@ -10516,10 +10518,9 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
     }
 
-    public void SpawnTitanAction(int type, float size, int health, int number)
+    public void SpawnTitanAction(int type, float size, int health, int count)
     {
-        Vector3 position =
-            new Vector3(UnityEngine.Random.Range(-400f, 400f), 0f, UnityEngine.Random.Range(-400f, 400f));
+        Vector3 position = new Vector3(UnityEngine.Random.Range(-400f, 400f), 0f, UnityEngine.Random.Range(-400f, 400f));
         Quaternion rotation = new Quaternion(0f, 0f, 0f, 1f);
         if (titanSpawns.Count > 0)
         {
@@ -10527,24 +10528,21 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
         else
         {
-            GameObject[] array = GameObject.FindGameObjectsWithTag("titanRespawn");
-            if (array.Length > 0)
+            GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("titanRespawn");
+            if (spawnPoints.Length > 0)
             {
-                int num = UnityEngine.Random.Range(0, array.Length);
-                GameObject gameObject = array[num];
-                while (array[num] == null)
+                GameObject spawnPoint;
+                do
                 {
-                    num = UnityEngine.Random.Range(0, array.Length);
-                    gameObject = array[num];
-                }
+                    spawnPoint = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)];
+                } while (spawnPoint == null);
 
-                array[num] = null;
-                position = gameObject.transform.position;
-                rotation = gameObject.transform.rotation;
+                position = spawnPoint.transform.position;
+                rotation = spawnPoint.transform.rotation;
             }
         }
 
-        for (int i = 0; i < number; i++)
+        for (int i = 0; i < count; i++)
         {
             GameObject titan = SpawnTitanRaw(position, rotation);
             titan.GetComponent<TITAN>().SetLevel(size);
@@ -10643,61 +10641,61 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         switch (newTeam)
         {
             case 0: // Individual
-            {
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                {
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                 {
                     { RCPlayerProperty.RCTeam, 0 },
                     { PhotonPlayerProperty.Name, LoginFengKAI.Player.Name }
                 };
-                PhotonNetwork.player.SetCustomProperties(hashtable);
-                break;
-            }
+                    PhotonNetwork.player.SetCustomProperties(hashtable);
+                    break;
+                }
             case 1: // Cyan
-            {
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                {
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                 {
                     { RCPlayerProperty.RCTeam, 1 },
                     { PhotonPlayerProperty.Name, "[00FFFF]" + LoginFengKAI.Player.Name.StripNGUI() },
                 };
-                PhotonNetwork.player.SetCustomProperties(hashtable);
-                break;
-            }
+                    PhotonNetwork.player.SetCustomProperties(hashtable);
+                    break;
+                }
             case 2: // Magenta
-            {
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
+                {
+                    ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable()
                 {
                     { RCPlayerProperty.RCTeam, 2 },
                     { PhotonPlayerProperty.Name, "[FF00FF]" + LoginFengKAI.Player.Name.StripNGUI() }
                 };
-                PhotonNetwork.player.SetCustomProperties(hashtable);
-                break;
-            }
+                    PhotonNetwork.player.SetCustomProperties(hashtable);
+                    break;
+                }
             case 3: // Auto
-            {
-                int cyanCount = 0;
-                int magentaCount = 0;
-                int team = 1;
-                foreach (PhotonPlayer photonPlayer in PhotonNetwork.playerList)
                 {
-                    switch (GExtensions.AsInt(photonPlayer.customProperties[RCPlayerProperty.RCTeam]))
+                    int cyanCount = 0;
+                    int magentaCount = 0;
+                    int team = 1;
+                    foreach (PhotonPlayer photonPlayer in PhotonNetwork.playerList)
                     {
-                        case 1:
-                            cyanCount++;
-                            break;
-                        case 2:
-                            magentaCount++;
-                            break;
+                        switch (GExtensions.AsInt(photonPlayer.customProperties[RCPlayerProperty.RCTeam]))
+                        {
+                            case 1:
+                                cyanCount++;
+                                break;
+                            case 2:
+                                magentaCount++;
+                                break;
+                        }
                     }
-                }
 
-                if (cyanCount > magentaCount)
-                {
-                    team = 2;
-                }
+                    if (cyanCount > magentaCount)
+                    {
+                        team = 2;
+                    }
 
-                SetTeam(team);
-                break;
-            }
+                    SetTeam(team);
+                    break;
+                }
         }
 
         foreach (HERO hero in GameObject.FindObjectsOfType<HERO>())

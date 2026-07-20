@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using Guardian.Utilities;
 using UnityEngine;
@@ -9,38 +10,40 @@ public static class GExtensions
     private static readonly Regex HexColorPattern = new Regex("\\[([a-f0-9]{6}|-)\\]", RegexOptions.IgnoreCase);
     private static readonly Regex ColorTagPattern = new Regex("<\\/?color(=#?\\w+)?>", RegexOptions.IgnoreCase);
 
-    public static T[] CopyOfRange<T>(this T[] arrIn, int startIndex, int endIndex)
+    public static T[] CopyOfRange<T>(this T[] src, int startIndex, int endIndex)
     {
-        // Decrement endIndex until it is arrIn.Length - 1
-        while (endIndex >= arrIn.Length)
+        int maxIndex = src.Length - 1;
+        if (endIndex > maxIndex)
         {
-            endIndex--;
+            endIndex = maxIndex;
         }
 
         int len = endIndex - startIndex + 1;
-        T[] arrOut = new T[len];
+        T[] dst = new T[len];
 
-        Array.Copy(arrIn, startIndex, arrOut, 0, len);
+        Array.Copy(src, startIndex, dst, 0, len);
 
-        return arrOut;
+        return dst;
     }
 
-    public static T[] Sorted<T>(this T[] arrIn, Comparison<T> comparator)
+    public static T[] Sorted<T>(this T[] src, Comparison<T> comparator)
     {
-        T[] sorted = new T[arrIn.Length];
-        arrIn.CopyTo(sorted, 0);
-        Array.Sort(sorted, comparator);
+        int len = src.Length;
+        T[] dst = new T[len];
+        Array.Copy(src, 0, dst, 0, len);
 
-        return sorted;
+        Array.Sort(dst, comparator);
+
+        return dst;
     }
 
     // Converts a NGUI formatted string to Unity Rich Text
     public static string NGUIToUnity(this string str)
     {
-        string output = string.Empty;
-        Stack<string> colorHistory = new Stack<string>(); // Kudos to Kevin, using a Stack makes this a helluva lot simpler
-        bool isTagOpen = false;
+        StringBuilder output = new StringBuilder(str.Length);
+        Stack<string> colors = new Stack<string>(); // Kudos to Kevin, using a Stack makes this a helluva lot simpler
 
+        bool open = false;
         for (int i = 0; i < str.Length; i++)
         {
             char c = str[i];
@@ -49,35 +52,43 @@ public static class GExtensions
             {
                 if (str[i + 1].Equals('-') && str[i + 2].Equals(']')) // [-], aka return to previous color in the stack
                 {
-                    if (colorHistory.Count > 0)
+                    if (colors.Count > 0)
                     {
-                        colorHistory.Pop();
-                    }
-                    if (colorHistory.Count < 1)
-                    {
-                        colorHistory.Push("FFFFFF"); // No color history, add FFFFFF as the default
+                        colors.Pop();
                     }
 
-                    output += isTagOpen ? $"</color><color=#{colorHistory.Peek()}>" : $"<color=#{colorHistory.Peek()}>";
-                    isTagOpen = true;
+                    if (colors.Count == 0)
+                    {
+                        colors.Push("FFFFFF"); // No color history, add FFFFFF as the default
+                    }
+
+                    output.Append(open ? $"</color><color=#{colors.Peek()}>" : $"<color=#{colors.Peek()}>");
+                    open = true;
+
                     i += 2;
                     continue;
                 }
                 else if (i + 7 < str.Length && str[i + 7].Equals(']') && ColorHelper.IsHex(str.Substring(i + 1, 6))) // [RRGGBB], aka use the color supplied by RRGGBB
                 {
                     string color = str.Substring(i + 1, 6).ToUpper();
-                    colorHistory.Push(color);
-                    output += isTagOpen ? $"</color><color=#{color}>" : $"<color=#{color}>";
-                    isTagOpen = true;
+                    colors.Push(color);
+                    output.Append(open ? $"</color><color=#{color}>" : $"<color=#{color}>");
+                    open = true;
+
                     i += 7;
                     continue;
                 }
             }
 
-            output += c;
+            output.Append(c);
         }
 
-        return output + (isTagOpen ? "</color>" : string.Empty);
+        if (open)
+        {
+            output.Append("</color>");
+        }
+
+        return output.ToString();
     }
 
     public static string StripNGUI(this string str)
@@ -150,10 +161,10 @@ public static class GExtensions
 
     public static string Substr(this string str, int startIndex, int endIndex)
     {
-        // Decrement endIndex until it is str.Length - 1
-        while (endIndex >= str.Length)
+        int maxIndex = str.Length - 1;
+        while (endIndex > maxIndex)
         {
-            endIndex--;
+            endIndex = maxIndex;
         }
 
         int len = endIndex - startIndex + 1;

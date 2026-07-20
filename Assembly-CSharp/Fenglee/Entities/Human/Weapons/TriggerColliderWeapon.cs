@@ -158,10 +158,7 @@ public class TriggerColliderWeapon : MonoBehaviour
                             }
                             titan.photonView.RPC("titanGetHit", titan.photonView.owner, base.transform.root.gameObject.GetPhotonView().viewID, damage);
 
-                            if (Guardian.GuardianClient.Properties.MultiplayerNapeMeat.Value)
-                            {
-                                SpawnNapeMeat(currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity, hitbox.transform.root);
-                            }
+                            SpawnNapeMeat(currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().main_object.rigidbody.velocity, hitbox.transform.root);
                         }
                     }
                     else if ((bool)hitbox.transform.root.GetComponent<FEMALE_TITAN>())
@@ -310,6 +307,11 @@ public class TriggerColliderWeapon : MonoBehaviour
 
     private void SpawnNapeMeat(Vector3 vkill, Transform titan)
     {
+        if (!Guardian.GuardianClient.Properties.NapeMeat.Value)
+        {
+            return;
+        }
+
         Transform transform = titan.transform.Find("Amarture/Core/Controller_Body/hip/spine/chest/neck");
         GameObject gameObject = (GameObject)Object.Instantiate(Resources.Load("titanNapeMeat"), transform.position, transform.rotation);
         gameObject.transform.localScale = titan.localScale;

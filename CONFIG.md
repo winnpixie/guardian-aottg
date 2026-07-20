@@ -13,11 +13,13 @@ This file contains information regarding all options added by Guardian
 - EndlessTitans - Lets the game never have to restart by spawning new titans when one dies.
 - InfiniteRoom - Stops your room from expiring, thus allowing you to host forever.
 - OGPunkHair - Lets you play like its 2015 again when they still had brightly colored hair.
+- InfiniteGas - Enables an infinite supply of gas for the room.
+- InfiniteAmmo - Enables an infinite supply of blades and bullets for the room.
 - DeadlyHooks - Spice up gameplay by making hooks more 'realistic' by KILLING players instead of grappling to them.
 - FatalCollisions - Adds death by impact for those who can't control their ODMG.
 - FatalSpeedDelta - The minimum speed a player must lose in one physics update to die by impact.
 - HideNames - Turns off player nametags for everyone in the room with a compatible mod.
-- ClearStatsOnReset - Wipes K/D/MD/TD on every match restart.
+- ClearStatsOnReset - Wipes scoreboard statistics on every match restart.
 
 ## Assets
 - ThunderSpearSkin - ThunderSpear left/right skin url.
@@ -29,6 +31,7 @@ This file contains information regarding all options added by Guardian
 ## Player
 - UseRawInput - Enables the use of 'Raw' mouse input from Unity for TPS and WOW.
 - DoubleTapBurst - Change whether or not double-tapping a movement key will perform a gas burst.
+- SmoothMovement - ("Rigidbody Interpolation") Enables visually smoother movement of the player.
 - ReelOutScrollSmoothing - Makes scroll-wheel reel-out a viable option, it's literally magic and I don't understand how RiceCake did it.
 - ShowSkillTimer - Toggles the crosshair timer for when your Skill is ready to use.
 - AHSSIdle - Makes blade users look about 10x cooler when standing.
@@ -52,7 +55,7 @@ This file contains information regarding all options added by Guardian
     - *Languages must be in the **two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.***
     - TranslateIncoming - Allow incoming messages to be translated.
     - IncomingLanguage - The language all messages received are written in.
-        - Use '`auto`' to tell Google to try and figure it out.
+        - Use '`auto`' to let Google to figure it out.
     - TranslateOutgoing - Allow outgoing messages to be translated.
     - OutgoingLanguage - The language all messages sent are to be translated to.
 - JoinMessage - Send a message whenever you join a room.
@@ -67,9 +70,9 @@ This file contains information regarding all options added by Guardian
 
 ## Visual
 - *Render Settings*
-    - Lerp - Enables visually smoother movement of the player (Rigidbody *Linear* Interpolation).
+    - SmoothCamera - Enables smoother movement of the camera (can cause moderate de-sync from player position).
     - DrawDistance - See more or less of the map at once.
-    - FieldOfView - Change field of view. (***DISABLED**/NEEDS RE-IMPLEMENTATION*)
+    - FieldOfView - Change camera field of view. (*DISABLED*: *NEEDS RE-IMPLEMENTATION*)
     - Blur - Toggle camera blurring effects/depth of field.
     - CustomMainLightColor - Toggle between custom lighting or map-set lighting.
     - MainLightColor - Set HEX color for custom lighting.
@@ -83,12 +86,11 @@ This file contains information regarding all options added by Guardian
 - ShowPlayerMods - Toggles visibility of player mods in playerlist.
 - ShowPlayerPings - Toggles visibility of player pings in playerlist.
 - FPSCamera - Allows you to play AoTTG from a First-Person View (EXPERIMENTAL).
-- MultiplayerNapeMeat - Adds nape meat slices into multiplayer (BUGGY).
+- NapeMeat - Set whether slices of nape meat spawn on titan kills.
 
 ## Miscellaneous
 - LimitUnfocusedFPS - Toggles an FPS limiter to save system resources when you're not tabbed into the game.
 - MaxUnfocusedFPS - The maximum FPS goal for the game when you're not tabbed in (I recommend no less than **30** if you're the MasterClient)
-- DiscordPresence - Toggle Rich Presence to show as your status in [Discord](https://discord.com/) (requires a game/app restart).
 - PhotonAppId - Use a custom [Photon](https://photonengine.com/) Application Id for multiplayer servers.
 - PhotonUserId - Set your Photonian friend-name for user discovery services.
 

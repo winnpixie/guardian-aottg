@@ -20,7 +20,8 @@ public class BTN_save_snapshot : MonoBehaviour
             }
 
             base.transform.position -= Vector3.up * 10000f;
-        } catch
+        }
+        catch
         {
             info.GetComponent<UILabel>().text = "Error preparing Snapshot.";
         }
@@ -44,7 +45,7 @@ public class BTN_save_snapshot : MonoBehaviour
             DateTime now = DateTime.Now;
             string imageName = "SnapShot-" + now.Day + "_" + now.Month + "_" + now.Year + "-" + now.Hour + "_" + now.Minute + "_" + now.Second + ".jpg";
 
-            Guardian.Utilities.GameHelper.TryCreateFile(SaveDir, true);
+            Guardian.Utilities.GameHelper.TryCreateDirectory(SaveDir);
             File.WriteAllBytes($"{SaveDir}\\{imageName}", texture.EncodeToJPG(100));
 
             // ExternalCall is legacy code, used to execute JavaScript on http://fenglee.com/game/aog/

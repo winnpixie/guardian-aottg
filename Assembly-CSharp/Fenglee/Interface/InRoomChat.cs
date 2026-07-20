@@ -326,17 +326,13 @@ public class InRoomChat : Photon.MonoBehaviour
     {
         public string Sender;
         public string Content;
-        public long Time;
         public string Timestamp;
 
         public Message(string sender, string content)
         {
             this.Sender = sender;
             this.Content = content;
-            this.Time = Guardian.Utilities.GameHelper.CurrentTimeMillis();
-
-            DateTime date = Guardian.Utilities.GameHelper.Epoch.AddMilliseconds(this.Time).ToLocalTime();
-            this.Timestamp = date.ToString("HH:mm:ss");
+            this.Timestamp = DateTime.Now.ToString("HH:mm:ss");
         }
 
         public override string ToString()

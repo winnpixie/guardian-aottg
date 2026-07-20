@@ -12,7 +12,7 @@ public class Horse : Photon.MonoBehaviour
     private float timeElapsed;
 
     // TODO: Implement "whistling" / calling horse to your location
-    public bool g_shouldFollow = true; // True = standard behavior
+    public bool FollowRider = true; // True = standard behavior
 
     private void Start()
     {
@@ -35,7 +35,7 @@ public class Horse : Photon.MonoBehaviour
         State = "idle";
         base.gameObject.GetComponent<TITAN_CONTROLLER>().enabled = false;
 
-        if (myHero != null && myHero.GetPhotonView().isMine && Guardian.GuardianClient.Properties.Interpolation.Value)
+        if (myHero != null && myHero.GetPhotonView().isMine && Guardian.GuardianClient.Properties.Interpolate.Value)
         {
             myHero.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         }
@@ -44,7 +44,7 @@ public class Horse : Photon.MonoBehaviour
     private void Follow()
     {
         // Guardian
-        if (myHero != null && g_shouldFollow)
+        if (myHero != null && FollowRider)
         {
             State = "follow";
             setPoint = myHero.transform.position + Vector3.right * Random.Range(-6, 6) + Vector3.forward * Random.Range(-6, 6);
@@ -237,7 +237,7 @@ public class Horse : Photon.MonoBehaviour
                 }
 
                 // Guardian
-                if (g_shouldFollow && Vector3.Distance(myHero.transform.position, base.transform.position) < 5f)
+                if (FollowRider && Vector3.Distance(myHero.transform.position, base.transform.position) < 5f)
                 {
                     Unmount();
                 }

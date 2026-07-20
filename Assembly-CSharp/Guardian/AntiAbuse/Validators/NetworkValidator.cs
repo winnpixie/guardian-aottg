@@ -7,10 +7,10 @@ namespace Guardian.AntiAbuse.Validators
 {
     class NetworkValidator
     {
-        public static readonly List<object> PropertyWhitelist = new List<object>(new object[] {
+        public static readonly List<object> KnownPlayerProperties = new List<object>(new object[] {
             (byte)255, "sender"
         });
-        private static readonly List<object> RoomPropertyWhitelist = new List<object>(new object[] {
+        private static readonly List<object> KnownRoomProperties = new List<object>(new object[] {
             (byte)255, (byte)254, (byte)253, (byte)250, (byte)249, (byte)248, "sender"
         });
 
@@ -19,7 +19,7 @@ namespace Guardian.AntiAbuse.Validators
             // Property whitelist
             foreach (FieldInfo field in typeof(PhotonPlayerProperty).GetFields(BindingFlags.Public | BindingFlags.Static))
             {
-                PropertyWhitelist.Add((string)field.GetValue(null));
+                KnownPlayerProperties.Add((string)field.GetValue(null));
             }
         }
 
@@ -135,7 +135,7 @@ namespace Guardian.AntiAbuse.Validators
             // Remove invalid properties
             properties.StripKeysWithNullValues();
             List<object> keys = properties.Keys.ToList();
-            PropertyWhitelist.ForEach(k => keys.Remove(k));
+            KnownPlayerProperties.ForEach(k => keys.Remove(k));
 
             if (keys.Count < 1) return;
 
@@ -164,7 +164,7 @@ namespace Guardian.AntiAbuse.Validators
 
             propertiesThatChanged.StripKeysWithNullValues();
             List<object> keys = propertiesThatChanged.Keys.ToList();
-            RoomPropertyWhitelist.ForEach(k => keys.Remove(k));
+            KnownRoomProperties.ForEach(k => keys.Remove(k));
 
             if (keys.Count > 0)
             {

@@ -253,7 +253,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         if (hero == null || hero.HasDied()) return;
 
         string killer = GExtensions.AsString(base.photonView.owner.customProperties[PhotonPlayerProperty.Name]);
-        if (killer.StripNGUI().Length < 1)
+        if (string.IsNullOrEmpty(killer.StripNGUI()))
         {
             killer = "Player";
         }

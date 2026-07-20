@@ -5,7 +5,7 @@ namespace Guardian.Utilities.Resources
 {
     public class CustomResourceProcessor : MonoBehaviour
     {
-        private void Start()
+        void Start()
         {
             // Load custom textures and audio clips
             {

@@ -12,7 +12,10 @@
         {
             _frameCount++;
 
-            if (!_timer.HasPassed(1000)) return;
+            if (!_timer.HasPassed(1000))
+            {
+                return;
+            }
 
             FrameCount = _frameCount;
             _frameCount = 0;

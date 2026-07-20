@@ -14,11 +14,11 @@ namespace Guardian.Utilities
         private const string ApiUrl =
             "https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl={0}&tl={1}&dt=t&q={2}";
 
-        public static IEnumerator TranslateRoutine(string text, string langFrom, string langTo,
+        public static IEnumerator TranslateRoutine(string text, string sourceLanguage, string targetLanguage,
             Action<string[]> onSuccess, Action<string> onFailure)
         {
             string query = WWW.EscapeURL(text);
-            string url = string.Format(ApiUrl, langFrom, langTo, query);
+            string url = string.Format(ApiUrl, sourceLanguage, targetLanguage, query);
 
             using WWW www = new WWW(url);
             yield return www;
@@ -39,14 +39,15 @@ namespace Guardian.Utilities
             }
         }
 
-        public static string[] Translate(string text, string langFrom, string langTo)
+        public static string[] Translate(string text, string sourceLanguage, string targetLanguage)
         {
             string query = WWW.EscapeURL(text);
-            string url = string.Format(ApiUrl, langFrom, langTo, query);
+            string url = string.Format(ApiUrl, sourceLanguage, targetLanguage, query);
 
             using WWW www = new WWW(url);
             while (!www.isDone)
             {
+                // wait...
             }
 
             if (www.error != null)

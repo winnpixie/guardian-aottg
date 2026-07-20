@@ -12,7 +12,7 @@ namespace Guardian.UI.Impl.Debug
         private void Log(string message)
         {
             message = GameHelper.DangerousTagsPattern.Replace(message, string.Empty);
-            if (message.Length < 1) return;
+            if (string.IsNullOrEmpty(message)) return;
 
             Entries.Add(new Entry(message));
 
@@ -44,16 +44,12 @@ namespace Guardian.UI.Impl.Debug
         public class Entry
         {
             public string Text;
-            public long Time;
             public string Timestamp;
 
             public Entry(string text)
             {
                 Text = text;
-                Time = GameHelper.CurrentTimeMillis();
-
-                DateTime date = GameHelper.Epoch.AddMilliseconds(Time).ToLocalTime();
-                Timestamp = date.ToString("HH:mm:ss");
+                Timestamp = DateTime.Now.ToString("HH:mm:ss");
             }
 
             public override string ToString()

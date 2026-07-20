@@ -77,8 +77,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
     public float justHit;
     public RenderTexture snapshotRT;
 
-    public float FieldOfView = 50f;
-
     private void Start()
     {
         GameObject.Find("MultiplayerManager").GetComponent<FengGameManagerMKII>().SetCamera(this);

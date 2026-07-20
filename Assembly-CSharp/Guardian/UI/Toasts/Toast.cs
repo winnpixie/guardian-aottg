@@ -18,8 +18,7 @@ namespace Guardian.UI.Toasts
             this.TimeToLive = timeToLive;
             this.Time = GameHelper.CurrentTimeMillis();
 
-            DateTime date = GameHelper.Epoch.AddMilliseconds(this.Time).ToLocalTime();
-            this.Timestamp = date.ToString("HH:mm:ss");
+            this.Timestamp = DateTime.Now.ToString("HH:mm:ss");
         }
     }
 }

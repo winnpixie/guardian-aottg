@@ -939,7 +939,7 @@ public class HeroCostume
                 body_mesh = "character_body_casual_MB";
             }
         }
-        if (hairInfo.Hair.Length > 0)
+        if (!string.IsNullOrEmpty(hairInfo.Hair))
         {
             hair_mesh = hairInfo.Hair;
         }

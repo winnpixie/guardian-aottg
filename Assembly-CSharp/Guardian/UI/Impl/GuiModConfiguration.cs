@@ -14,8 +14,8 @@ namespace Guardian.UI.Impl
         private readonly Dictionary<Property, string> _tempInts = new Dictionary<Property, string>();
         private readonly Dictionary<Property, string> _tempFloats = new Dictionary<Property, string>();
         private readonly Dictionary<Property, string> _tempStrings = new Dictionary<Property, string>();
-        private readonly  List<string> _sections = new List<string>();
-        
+        private readonly List<string> _sections = new List<string>();
+
         private bool _shouldSave;
         private string _currentSection = "MC";
         private Vector2 _scrollPosition = new Vector2(0, 0);
@@ -24,7 +24,7 @@ namespace Guardian.UI.Impl
         {
             foreach (Property property in GuardianClient.Properties.Elements)
             {
-                string section = property.Name.Substr(0, property.Name.IndexOf("_") - 1);
+                string section = property.Name.Substring(0, property.Name.IndexOf("_"));
                 if (!_sections.Contains(section))
                 {
                     _sections.Add(section);
@@ -74,7 +74,7 @@ namespace Guardian.UI.Impl
                 if (!property.Name.StartsWith(_currentSection)) continue;
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(property.Name.Substr(_currentSection.Length + 1, property.Name.Length), GUILayout.MaxWidth(_width / 2f));
+                GUILayout.Label(property.Name.Substring(_currentSection.Length + 1), GUILayout.MaxWidth(_width / 2f));
 
                 GUI.SetNextControlName(property.Name);
                 if (property.Value is bool)

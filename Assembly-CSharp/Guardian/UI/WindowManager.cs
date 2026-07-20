@@ -158,9 +158,9 @@ namespace Guardian.UI
             else if (GuardianClient.Properties.LimitUnfocusedFPS.Value &&
                      GuardianClient.Properties.MaxUnfocusedFPS.Value > 0)
             {
-                // FPS under 51 could potentially affect Physics-related logic, ensure the MasterClient does not attempt to go below that.
+                // Ensure maximum FPS does not dip below 50 so as to prevent potential Physics-related issues.
                 Application.targetFrameRate =
-                    MathHelper.MaxInt(GuardianClient.Properties.MaxUnfocusedFPS.Value,
+                    Math.Max(GuardianClient.Properties.MaxUnfocusedFPS.Value,
                         PhotonNetwork.isMasterClient ? 51 : 1);
             }
         }

@@ -56,7 +56,7 @@ namespace Guardian.AntiAbuse.Validators
                 return new WWW(url);
             }
 
-            if (textureHost.Length > 0)
+            if (!string.IsNullOrEmpty(textureHost))
             {
                 GuardianClient.Logger.Warn($"Denied skin host: {textureHost}");
             }

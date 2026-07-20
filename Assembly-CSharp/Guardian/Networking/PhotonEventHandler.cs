@@ -1,8 +1,6 @@
 using System.Collections;
-using Discord;
 using Guardian.AntiAbuse;
 using Guardian.AntiAbuse.Validators;
-using Guardian.Utilities;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using MonoBehaviour = Photon.MonoBehaviour;
@@ -13,7 +11,7 @@ namespace Guardian.Networking
     {
         private static bool _loadedLevelOnce;
 
-        private void OnLevelWasLoaded(int level)
+        void OnLevelWasLoaded(int level)
         {
             if (_loadedLevelOnce)
             {
@@ -23,12 +21,12 @@ namespace Guardian.Networking
             _loadedLevelOnce = true;
 
             string joinMessage = GuardianClient.Properties.JoinMessage.Value;
-            if (joinMessage.Length < 1)
+            if (string.IsNullOrEmpty(joinMessage))
             {
                 return;
             }
 
-            if (joinMessage.StripNGUI().Length > 0)
+            if (!string.IsNullOrEmpty(joinMessage.StripNGUI()))
             {
                 joinMessage = joinMessage.NGUIToUnity();
             }
@@ -36,26 +34,26 @@ namespace Guardian.Networking
             GuardianClient.Commands.Find("say").Execute(InRoomChat.Instance, joinMessage.Split(' '));
         }
 
-        private void OnPhotonPlayerConnected(PhotonPlayer player)
+        void OnPhotonPlayerConnected(PhotonPlayer player)
         {
             GuardianClient.Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() +
                                        " connected.".AsColor("00FF00"));
         }
 
-        private void OnPhotonPlayerDisconnected(PhotonPlayer player)
+        void OnPhotonPlayerDisconnected(PhotonPlayer player)
         {
             GuardianClient.Logger.Info($"({player.Id}) " + player.Username.NGUIToUnity() +
                                        " disconnected.".AsColor("FF0000"));
         }
 
-        private void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
+        void OnPhotonPlayerPropertiesChanged(object[] playerAndUpdatedProps)
         {
             NetworkValidator.OnPlayerPropertyModified(playerAndUpdatedProps);
 
             ModDetector.OnPlayerPropertyModified(playerAndUpdatedProps);
         }
 
-        private void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged)
+        void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged)
         {
             NetworkValidator.OnRoomPropertyModified(propertiesThatChanged);
 
@@ -84,13 +82,13 @@ namespace Guardian.Networking
             }
         }
 
-        private void OnJoinedLobby()
+        void OnJoinedLobby()
         {
             // TODO: Begin working on Friend system with Photon Friend API
             PhotonNetwork.playerName = GuardianClient.Properties.PhotonUserId.Value;
         }
 
-        private void OnJoinedRoom()
+        void OnJoinedRoom()
         {
             _loadedLevelOnce = false;
 
@@ -110,15 +108,6 @@ namespace Guardian.Networking
             });
 
             StartCoroutine(UpdateMyPing());
-
-            string[] roomInfo = PhotonNetwork.room.name.Split('`');
-            if (roomInfo.Length < 7) return;
-
-            DiscordHelper.SetPresence(new Activity
-            {
-                Details = $"Playing in {(roomInfo[5].Length < 1 ? string.Empty : "[PWD]")} {roomInfo[0].StripNGUI()}",
-                State = $"({NetworkHelper.GetRegionCode().ToUpper()}) {roomInfo[1]} / {roomInfo[2].ToUpper()}"
-            });
         }
 
         private IEnumerator UpdateMyPing()
@@ -140,7 +129,7 @@ namespace Guardian.Networking
             }
         }
 
-        private void OnLeftRoom()
+        void OnLeftRoom()
         {
             PhotonNetwork.SetPlayerCustomProperties(null);
 
@@ -150,19 +139,14 @@ namespace Guardian.Networking
 
             SyncedSettings.InfiniteGas = false;
             SyncedSettings.InfiniteAmmo = false;
-
-            DiscordHelper.SetPresence(new Activity
-            {
-                Details = "Idle..."
-            });
         }
 
-        private void OnConnectionFail(DisconnectCause cause)
+        void OnConnectionFail(DisconnectCause cause)
         {
             GuardianClient.Logger.Warn($"OnConnectionFail ({cause})");
         }
 
-        private void OnPhotonRoomJoinFailed(object[] codeAndMsg)
+        void OnPhotonRoomJoinFailed(object[] codeAndMsg)
         {
             GuardianClient.Logger.Error("OnPhotonRoomJoinFailed");
 
@@ -172,7 +156,7 @@ namespace Guardian.Networking
             }
         }
 
-        private void OnPhotonCreateRoomFailed(object[] codeAndMsg)
+        void OnPhotonCreateRoomFailed(object[] codeAndMsg)
         {
             GuardianClient.Logger.Error("OnPhotonCreateRoomFailed");
 

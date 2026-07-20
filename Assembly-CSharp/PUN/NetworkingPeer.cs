@@ -1419,7 +1419,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         }
 
         if (photonView == null) return;
-        if (rpcName.Length < 1) return;
+        if (string.IsNullOrEmpty(rpcName)) return;
         if (photonView.prefix != viewPrefix) return;
 
         bool isKnown = false;
@@ -1507,6 +1507,12 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             case "DeleteFireRPC":
             case "ResetAllSupplierGearRPC":
             case "throwBladesRPC":
+            case "SetFireBoolRPC":
+            case "AttachFireProlonpoRPC":
+            case "SyncCustomTitanSize":
+            case "ResetBladesRPC":
+            case "PutTSOnBackRPC":
+            case "EquipBackTSRPC":
                 sender.IsProlonpoRC = true;
                 break;
             case "FlareColour":
@@ -1595,7 +1601,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         foreach (Attribute attr in method.GetCustomAttributes(false))
         {
             if (!(attr is Guardian.Networking.RPC rpc)) continue;
-            if (rpc.Name.Length < 1) continue;
+            if (string.IsNullOrEmpty(rpc.Name)) continue;
 
             return rpc.Name;
         }

@@ -21,14 +21,14 @@ namespace Guardian.Features.Commands.Impl.Debug
             string output = $"RoomName={PhotonNetwork.room.name}\n\n";
             foreach (DictionaryEntry entry in player.customProperties)
             {
-                if (!NetworkValidator.PropertyWhitelist.Contains(entry.Key))
+                if (!NetworkValidator.KnownPlayerProperties.Contains(entry.Key))
                 {
                     output += "!!! THE FOLLOWING KEY IS NOT A STANDARD PROPERTY !!!\n";
                 }
                 output += $"Type={entry.Value.GetType().Name}\n\tKey={entry.Key}\n\tValue={entry.Value}\n";
             }
 
-            GameHelper.TryCreateFile(SaveDir, true);
+            GameHelper.TryCreateDirectory(SaveDir);
 
             long time = GameHelper.CurrentTimeMillis();
             File.WriteAllText($"{SaveDir}\\ID{id}_T{time}.txt", output);

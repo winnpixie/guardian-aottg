@@ -178,7 +178,7 @@
             }
 
             // MOTD
-            if (RCSettings.Motd.Length > 0)
+            if (!string.IsNullOrEmpty(RCSettings.Motd))
             {
                 irc.AddLine("MOTD: ".AsColor("FFCC00") + RCSettings.Motd);
             }

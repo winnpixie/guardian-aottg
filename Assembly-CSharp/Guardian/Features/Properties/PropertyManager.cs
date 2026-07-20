@@ -42,6 +42,7 @@ namespace Guardian.Features.Properties
         // Player
         public Property<bool> UseRawInput = new Property<bool>("Player_RawMouseInput", new string[0], false);
         public Property<bool> DoubleTapBurst = new Property<bool>("Player_DoubleTapBurst", new string[0], true);
+        public Property<bool> Interpolate = new Property<bool>("Player_Interpolate", new string[0], false);
         public Property<float> ReelOutScrollSmoothing = new Property<float>("Player_ReelOutScrollSmoothing", new string[0], 0.2f);
         public Property<bool> ShowSkillTimer = new Property<bool>("Player_ShowSkillTimer", new string[0], true);
         public Property<bool> AlternateIdle = new Property<bool>("Player_AHSSIdle", new string[0], false);
@@ -76,7 +77,6 @@ namespace Guardian.Features.Properties
         public Property<bool> ItalicText = new Property<bool>("Chat_ItalicText", new string[0], false);
 
         // Visual [Render]
-        public Property<bool> Interpolation = new Property<bool>("Visual_Lerp", new string[0], true);
         public Property<int> DrawDistance = new Property<int>("Visual_DrawDistance", new string[0], 1500);
         public Property<int> FieldOfView = new Property<int>("Visual_FieldOfView", new string[0], 50); // TODO: Re-work
         public Property<bool> Blur = new Property<bool>("Visual_Blur", new string[0], false);
@@ -95,13 +95,12 @@ namespace Guardian.Features.Properties
         public Property<bool> ShowPlayerMods = new Property<bool>("Visual_ShowPlayerMods", new string[0], true);
         public Property<bool> ShowPlayerPings = new Property<bool>("Visual_ShowPlayerPings", new string[0], true);
         public Property<bool> FPSCamera = new Property<bool>("Visual_FPSCamera", new string[0], false);
-        public Property<bool> MultiplayerNapeMeat = new Property<bool>("Visual_MultiplayerNapeMeat", new string[0], false);
+        public Property<bool> NapeMeat = new Property<bool>("Visual_NapeMeat", new string[0], true);
 
         // Misc
         public Property<bool> RestrainCursor = new Property<bool>("Misc_RestrainCursor", new string[0], true);
         public Property<bool> LimitUnfocusedFPS = new Property<bool>("Misc_LimitUnfocusedFPS", new string[0], true);
         public Property<int> MaxUnfocusedFPS = new Property<int>("Misc_MaxUnfocusedFPS", new string[0], 1);
-        public Property<bool> UseRichPresence = new Property<bool>("Misc_DiscordPresence", new string[0], true);
         public Property<string> PhotonAppId = new Property<string>("Misc_PhotonAppId", new string[0], string.Empty);
         public Property<string> PhotonUserId = new Property<string>("Misc_PhotonUserId", new string[0], string.Empty);
 
@@ -146,6 +145,20 @@ namespace Guardian.Features.Properties
             // Player
             base.Add(UseRawInput);
             base.Add(DoubleTapBurst);
+
+            Interpolate.OnValueChanged = () =>
+            {
+                HERO myHero = IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer ?
+                    FengGameManagerMKII.Instance.Heroes[0] : PhotonNetwork.player.GetHero();
+
+                if (myHero != null)
+                {
+                    myHero.rigidbody.interpolation = Interpolate.Value ? RigidbodyInterpolation.Interpolate
+                        : RigidbodyInterpolation.None;
+                }
+            };
+            base.Add(Interpolate);
+
             base.Add(ReelOutScrollSmoothing);
             base.Add(ShowSkillTimer);
             base.Add(AlternateIdle);
@@ -209,19 +222,6 @@ namespace Guardian.Features.Properties
             base.Add(ItalicText);
 
             // Visual [Render]
-            Interpolation.OnValueChanged = () =>
-            {
-                HERO myHero = IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer ?
-                    FengGameManagerMKII.Instance.Heroes[0] : PhotonNetwork.player.GetHero();
-
-                if (myHero != null)
-                {
-                    myHero.rigidbody.interpolation = Interpolation.Value ? RigidbodyInterpolation.Interpolate
-                        : RigidbodyInterpolation.None;
-                }
-            };
-            base.Add(Interpolation);
-
             DrawDistance.OnValueChanged = () =>
             {
                 if (Camera.main != null)
@@ -321,7 +321,7 @@ namespace Guardian.Features.Properties
             base.Add(ShowPlayerMods);
             base.Add(ShowPlayerPings);
             base.Add(FPSCamera);
-            base.Add(MultiplayerNapeMeat);
+            base.Add(NapeMeat);
 
             // Misc
             RestrainCursor.OnValueChanged = () =>
@@ -332,7 +332,6 @@ namespace Guardian.Features.Properties
 
             base.Add(LimitUnfocusedFPS);
             base.Add(MaxUnfocusedFPS);
-            base.Add(UseRichPresence);
 
             PhotonAppId.OnValueChanged = () =>
             {
@@ -357,7 +356,7 @@ namespace Guardian.Features.Properties
 
         public void LoadFromFile()
         {
-            GameHelper.TryCreateFile(DataPath, false);
+            GameHelper.TryCreateFile(DataPath);
 
             foreach (string line in File.ReadAllLines(DataPath))
             {
@@ -395,7 +394,7 @@ namespace Guardian.Features.Properties
 
         public override void Save()
         {
-            GameHelper.TryCreateFile(DataPath, false);
+            GameHelper.TryCreateFile(DataPath);
 
             StringBuilder builder = new StringBuilder();
             base.Elements.ForEach(property => builder.AppendLine($"{property.Name}={property.Value}"));

@@ -10,13 +10,12 @@ namespace Guardian.Utilities
         public static readonly Regex DangerousTagsPattern =
             new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
 
-        public static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static readonly Vector2 ScrollBottom = new Vector2(0, float.MaxValue);
 
         public static void Broadcast(string message)
         {
             FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, message,
-                "[MC]".AsColor("AAFF00").AsBold());
+                "<b><color=#AAFF00>[MC]</color></b>");
         }
 
         public static object[] GetRandomTitanRespawnPoint()
@@ -35,16 +34,13 @@ namespace Guardian.Utilities
 
                 if (spawnPoints.Length > 0)
                 {
-                    int index = MathHelper.RandInt(0, spawnPoints.Length);
-                    GameObject spawnPoint = spawnPoints[index];
+                    GameObject spawnPoint;
 
-                    while (spawnPoints[index] == null)
+                    do
                     {
-                        index = MathHelper.RandInt(0, spawnPoints.Length);
-                        spawnPoint = spawnPoints[index];
-                    }
+                        spawnPoint = spawnPoints[MathHelper.RandInt(0, spawnPoints.Length)];
+                    } while (spawnPoint == null);
 
-                    spawnPoints[index] = null;
                     position = spawnPoint.transform.position;
                     rotation = spawnPoint.transform.rotation;
                 }
@@ -53,15 +49,14 @@ namespace Guardian.Utilities
             return new object[] { position, rotation };
         }
 
-        public static bool TryCreateFile(string path, bool directory)
+        public static bool TryCreateFile(string path)
         {
             try
             {
-                if (!directory)
+                if (!File.Exists(path))
                 {
-                    if (!File.Exists(path)) File.Create(path).Close();
+                    File.Create(path).Close();
                 }
-                else if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             }
             catch
             {
@@ -71,10 +66,27 @@ namespace Guardian.Utilities
             return true;
         }
 
-        // C# equivalent of java.lang.System#currentTimeMillis()
+        public static bool TryCreateDirectory(string path)
+        {
+            try
+            {
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // C# "good enough" equivalent of java.lang.System#currentTimeMillis()
         public static long CurrentTimeMillis()
         {
-            return (long)DateTime.UtcNow.Subtract(Epoch).TotalMilliseconds;
+            return DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond;
         }
     }
 }

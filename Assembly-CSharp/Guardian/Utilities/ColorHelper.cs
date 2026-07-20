@@ -23,7 +23,7 @@ namespace Guardian.Utilities
             return r.ToString("X2") + g.ToString("X2") + b.ToString("X2") + a.ToString("X2");
         }
 
-        public static Color FromHex(string rgba)
+        public static Color FromHex(string str)
         {
             float red = 0;
             float green = 0;
@@ -31,25 +31,25 @@ namespace Guardian.Utilities
             float alpha = 1f;
 
             // Red
-            if (int.TryParse(rgba.Substr(0, 1), NumberStyles.AllowHexSpecifier, null, out int r))
+            if (int.TryParse(str.Substring(0, 2), NumberStyles.AllowHexSpecifier, null, out int r))
             {
                 red = r / 255f;
             }
 
             // Green
-            if (int.TryParse(rgba.Substr(2, 3), NumberStyles.AllowHexSpecifier, null, out int g))
+            if (int.TryParse(str.Substring(2, 2), NumberStyles.AllowHexSpecifier, null, out int g))
             {
                 green = g / 255f;
             }
 
             // Blue
-            if (int.TryParse(rgba.Substr(4, 5), NumberStyles.AllowHexSpecifier, null, out int b))
+            if (int.TryParse(str.Substring(4, 2), NumberStyles.AllowHexSpecifier, null, out int b))
             {
                 blue = b / 255f;
             }
 
             // Alpha
-            if (rgba.Length == 8 && int.TryParse(rgba.Substr(6, 7), NumberStyles.AllowHexSpecifier, null, out int a))
+            if (str.Length == 8 && int.TryParse(str.Substring(6, 2), NumberStyles.AllowHexSpecifier, null, out int a))
             {
                 alpha = a / 255f;
             }

@@ -52,7 +52,7 @@ namespace Guardian.Features.Commands.Impl
             DateTime now = DateTime.Now;
             string imageName = "SnapShot-" + now.Day + "_" + now.Month + "_" + now.Year + "-" + now.Hour + "_" + now.Minute + "_" + now.Second + ".jpg";
 
-            Utilities.GameHelper.TryCreateFile(SaveDir, true);
+            Utilities.GameHelper.TryCreateDirectory(SaveDir);
             File.WriteAllBytes($"{SaveDir}\\{imageName}", capture.EncodeToJPG(100));
 
             UnityEngine.Object.DestroyImmediate(capture);

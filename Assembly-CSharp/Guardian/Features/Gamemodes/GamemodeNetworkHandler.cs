@@ -4,7 +4,7 @@ namespace Guardian.Features.Gamemodes
 {
     public class GamemodeNetworkHandler : MonoBehaviour
     {
-        private void OnPhotonPlayerConnected(PhotonPlayer player)
+        void OnPhotonPlayerConnected(PhotonPlayer player)
         {
             if (PhotonNetwork.isMasterClient)
             {
@@ -12,7 +12,7 @@ namespace Guardian.Features.Gamemodes
             }
         }
 
-        private void OnPhotonPlayerDisconnected(PhotonPlayer player)
+        void OnPhotonPlayerDisconnected(PhotonPlayer player)
         {
             if (PhotonNetwork.isMasterClient)
             {
@@ -20,7 +20,7 @@ namespace Guardian.Features.Gamemodes
             }
         }
 
-        private void OnLeftRoom()
+        void OnLeftRoom()
         {
             GuardianClient.Gamemodes.CurrentMode.CleanUp();
         }

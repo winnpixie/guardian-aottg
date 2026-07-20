@@ -137,14 +137,15 @@ namespace RC.UI.Impl
             }
             if (GUI.Button(new Rect(halfMenuWidth + 199f, halfMenuHeight + 212f, 115f, 20f), MasterTextureType(QualitySettings.masterTextureLimit)))
             {
-                if (QualitySettings.masterTextureLimit <= 0)
+                int limit = QualitySettings.masterTextureLimit;
+                limit--;
+                if (limit < 0)
                 {
-                    QualitySettings.masterTextureLimit = 8;
+                    limit = 7;
                 }
-                else
-                {
-                    QualitySettings.masterTextureLimit--;
-                }
+
+                QualitySettings.masterTextureLimit = limit;
+
                 FengGameManagerMKII.LinkHash[0].Clear();
                 FengGameManagerMKII.LinkHash[1].Clear();
                 FengGameManagerMKII.LinkHash[2].Clear();
@@ -308,14 +309,13 @@ namespace RC.UI.Impl
             return type switch
             {
                 0 => "Highest",
-                1 => "Medium",
-                2 => "Low",
-                3 => "Lower",
-                4 => "Lowest",
-                5 => "Ultra-Low",
-                6 => "Ultra-Lower",
-                7 => "Ultra-Lowest",
-                8 => "NVIDIA GT 520",
+                1 => "Higher",
+                2 => "High",
+                3 => "Medium",
+                4 => "Low",
+                5 => "Lower",
+                6 => "Lowest",
+                7 => "Potato",
                 _ => type.ToString()
             };
         }

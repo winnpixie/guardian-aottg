@@ -12,7 +12,7 @@ namespace Guardian.Utilities
             GuardianClient.Logger.Info($"Installed: {GuardianClient.Build}");
 
             using WWW www = new WWW("http://aottg.winnpixie.com/clients/guardian/version.txt?t=" +
-                                    GameHelper.CurrentTimeMillis()); // Hopefully this avoids caching...
+                                    GameHelper.CurrentTimeMillis()); // Force no-cache
             yield return www;
 
             if (www.error != null)
@@ -20,14 +20,14 @@ namespace Guardian.Utilities
                 GuardianClient.Logger.Error(www.error);
                 GuardianClient.Toasts.Add(new Toast("UPDATE CHECK FAILED", www.error, 10));
 
-                GuardianClient.Logger.Error($"\nIf errors persist, PLEASE contact me!");
+                GuardianClient.Logger.Error($"\nIf errors persist, PLEASE contact support!");
                 GuardianClient.Logger.Info("Discord:");
                 GuardianClient.Logger.Info($"\t- {"https://discord.gg/JGzTdWm".AsColor("0099FF")}");
 
                 try
                 {
                     GameObject.Find("VERSION").GetComponent<UILabel>().text =
-                        "[FF0000]COULD NOT VERIFY BUILD.[-] If this persists, PLEASE contact me @ [0099FF]https://discord.gg/JGzTdWm[-]!";
+                        "[FF0000]COULD NOT VERIFY BUILD.[-] If this persists, PLEASE contact support @ [0099FF]https://discord.gg/JGzTdWm[-]!";
                 }
                 catch
                 {
@@ -38,12 +38,18 @@ namespace Guardian.Utilities
                 foreach (string buildData in www.text.Split('\n'))
                 {
                     string[] buildInfo = buildData.Split(new char[] { '=' }, 2);
-                    if (!buildInfo[0].Equals("MOD")) continue;
+                    if (!buildInfo[0].Equals("MOD"))
+                    {
+                        continue;
+                    }
 
                     string latestBuild = buildInfo[1].Trim();
                     GuardianClient.Logger.Info("Latest: " + latestBuild);
 
-                    if (latestBuild.Equals(GuardianClient.Build)) break;
+                    if (latestBuild.Equals(GuardianClient.Build))
+                    {
+                        break;
+                    }
 
                     GuardianClient.Logger.Warn(
                         $"Your copy of Guardian is {"OUT OF DATE".AsBold().AsItalic().AsColor("FF0000")}!");

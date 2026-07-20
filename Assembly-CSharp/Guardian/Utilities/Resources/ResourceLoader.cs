@@ -42,6 +42,7 @@ namespace Guardian.Utilities.Resources
             using WWW www = new WWW(path);
             while (!www.isDone)
             {
+                // wait...
             }
 
             if (www.error != null) return false;

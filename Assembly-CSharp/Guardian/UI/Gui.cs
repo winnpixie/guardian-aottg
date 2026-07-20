@@ -9,7 +9,10 @@ namespace Guardian.UI
 
         public virtual void Draw()
         {
-            Components.ForEach(c => c.Tick());
+            foreach (GComponent component in Components)
+            {
+                component.Tick();
+            }
         }
 
         public virtual void OnOpen()
