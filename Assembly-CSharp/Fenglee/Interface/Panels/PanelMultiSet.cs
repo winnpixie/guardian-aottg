@@ -33,7 +33,9 @@ public class PanelMultiSet : MonoBehaviour
         bool shouldResize = false;
         foreach (LevelInfo levelInfo in LevelInfo.Levels)
         {
-            if (!list.items.Contains(levelInfo.DisplayName) && !levelInfo.DisplayName.StartsWith("[S]") && levelInfo.IsSelectable)
+            if (!list.items.Contains(levelInfo.DisplayName)
+                && !levelInfo.DisplayName.StartsWith("[S]")
+                && levelInfo.IsSelectable)
             {
                 list.items.Add(levelInfo.DisplayName);
                 shouldResize = true;

@@ -18,10 +18,12 @@ This file contains information regarding all options added by Guardian
 - DeadlyHooks - Spice up gameplay by making hooks more 'realistic' by KILLING players instead of grappling to them.
 - FatalCollisions - Adds death by impact for those who can't control their ODMG.
 - FatalSpeedDelta - The minimum speed a player must lose in one physics update to die by impact.
+- CollisionDeathMessage - The text displayed in the kill feed when a player dies by impact.
 - HideNames - Turns off player nametags for everyone in the room with a compatible mod.
 - ClearStatsOnReset - Wipes scoreboard statistics on every match restart.
 
 ## Assets
+- LimitSkinSizes - Toggles enforcing arbitrary skin file size limits.
 - ThunderSpearSkin - ThunderSpear left/right skin url.
 - LeftRopeSkin - Left ODMG rope/wire skin url.
 - LeftRopeTileScale - Left ODMG rope/wire skin tile scale.
@@ -31,7 +33,7 @@ This file contains information regarding all options added by Guardian
 ## Player
 - UseRawInput - Enables the use of 'Raw' mouse input from Unity for TPS and WOW.
 - DoubleTapBurst - Change whether or not double-tapping a movement key will perform a gas burst.
-- SmoothMovement - ("Rigidbody Interpolation") Enables visually smoother movement of the player.
+- Interpolate - ("Rigidbody Interpolation") Enables visually smoother movement of the player.
 - ReelOutScrollSmoothing - Makes scroll-wheel reel-out a viable option, it's literally magic and I don't understand how RiceCake did it.
 - ShowSkillTimer - Toggles the crosshair timer for when your Skill is ready to use.
 - AHSSIdle - Makes blade users look about 10x cooler when standing.
@@ -70,16 +72,20 @@ This file contains information regarding all options added by Guardian
 
 ## Visual
 - *Render Settings*
-    - SmoothCamera - Enables smoother movement of the camera (can cause moderate de-sync from player position).
     - DrawDistance - See more or less of the map at once.
+    - CameraClipping - Toggles whether the camera will clip into objects or not.
     - FieldOfView - Change camera field of view. (*DISABLED*: *NEEDS RE-IMPLEMENTATION*)
     - Blur - Toggle camera blurring effects/depth of field.
-    - CustomMainLightColor - Toggle between custom lighting or map-set lighting.
+    - CustomMainLightColor - Toggle between custom or default lighting.
     - MainLightColor - Set HEX color for custom lighting.
+    - CustomAmbientLightColor - Toggle between custom or default ambient lighting.
+    - AmbientLightColor - Set HEX color for ambient lighting.
     - Fog - Toggle fog visibility, this can make some maps like City pretty terrifying, or really bad, it's up to interpretation.
         - FogColor - Set custom fog HEX color.
         - FogDensity - Set density of map fog.
     - SoftShadows - Toggle between soft/hard shadows (EXPERIMENTAL).
+- TimeCycle - Toggles a local day-night cycle.
+- TimeCycleLength - Set how long each cycle should take in Seconds.
 - CameraTiltStrength - Change how far the camera tilt should lean when hooked to objects.
 - Flare1/2/3Color - Break free from the original green, red, and black flare colors (HEX colors).
 - EmissiveFlares - Toggle flares emitting light.
@@ -89,12 +95,15 @@ This file contains information regarding all options added by Guardian
 - NapeMeat - Set whether slices of nape meat spawn on titan kills.
 
 ## Miscellaneous
+- RestrainCursor - Toggles whether the mouse cursor can leave the window or not.
 - LimitUnfocusedFPS - Toggles an FPS limiter to save system resources when you're not tabbed into the game.
 - MaxUnfocusedFPS - The maximum FPS goal for the game when you're not tabbed in (I recommend no less than **30** if you're the MasterClient)
 - PhotonAppId - Use a custom [Photon](https://photonengine.com/) Application Id for multiplayer servers.
 - PhotonUserId - Set your Photonian friend-name for user discovery services.
+- BroadcastIdentity - Toggles setting player properties that are used to identify Guardian users.
 
 ## Debug
+- MaxFrameQueue - Set the [Max Queued Frames](https://docs.unity3d.com/462/Documentation/ScriptReference/QualitySettings-maxQueuedFrames.html), can help boost FPS or reduce latency.
 - ShowFramerate - Toggles displaying the game's framerate in the debug menu.
 - ShowCoordinates - Toggles displaying the player's X/Y/Z in the debug menu.
 - MaxLogEntries - Change the max amount of log entries saved in history.

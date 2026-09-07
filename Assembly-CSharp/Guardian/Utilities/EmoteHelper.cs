@@ -30,20 +30,20 @@ namespace Guardian.Utilities
                 string[] data = line.Split(new char[] { '=' }, 2);
                 if (data[0].IndexOf(':') > -1)
                 {
-                    GuardianClient.Logger.Debug($"Unable to register emote '{data[0]}', names cannot contain ':'!");
+                    GuardianClient.Logger.Warn($"Unable to register emote '{data[0]}', names cannot contain ':'!");
                     continue;
                 }
 
                 if (data.Length < 2)
                 {
-                    GuardianClient.Logger.Debug(
+                    GuardianClient.Logger.Warn(
                         $"Unable to register emote '{data[0]}', replacement text MUST be present!");
                     continue;
                 }
 
                 if (Emotes.ContainsKey(data[0]))
                 {
-                    GuardianClient.Logger.Debug($"Duplicate entry for emote '{data[0]}', is it a default?");
+                    GuardianClient.Logger.Warn($"Unable to register emote '{data[0]}', entry already exists (default emote?)!");
                     continue;
                 }
 

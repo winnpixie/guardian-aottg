@@ -133,7 +133,10 @@ namespace Guardian.UI.Impl
 
         public override void OnClose()
         {
-            if (!_shouldSave) return;
+            if (!_shouldSave)
+            {
+                return;
+            }
 
             foreach (KeyValuePair<Property, bool> pair in _tempBools)
             {

@@ -39,6 +39,7 @@ public static class RCSettings
     public static int RacingStatic;
 
     public static bool BombCeiling;
+    public static bool BombInfiniteGas;
     public static bool HideNames;
 
     public static int GetMaxWave()

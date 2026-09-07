@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Guardian.Utilities.Resources;
 using UnityEngine;
 
 public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IGameManager
@@ -126,9 +125,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
     {
         get
         {
-            return (PhotonNetwork.isMasterClient && Guardian.GuardianClient.Properties.InfiniteRoom.Value)
-                ? time - Math.Abs(time)
-                : _timeTotalServer;
+            if (!PhotonNetwork.isMasterClient || !Guardian.GuardianClient.Properties.InfiniteRoom.Value)
+            {
+                return _timeTotalServer;
+            }
+
+            return 0f;
         }
         set { _timeTotalServer = value; }
     }
@@ -871,7 +873,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                             $"This wave lasted for <b>{g_waveTimer.GetElapsed() / 1000f}</b> second(s)!");
                     }
 
-                    g_waveTimer.Update();
+                    g_waveTimer.Reset();
                 }
                 // END Guardian
 
@@ -1327,7 +1329,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         string[] roomInfo = PhotonNetwork.room.name.Split('`');
         LevelInfo levelInfo = LevelInfo.GetInfo(roomInfo[1]);
         playerList = string.Empty;
-        UnityEngine.MonoBehaviour.print("OnJoinedRoom " + PhotonNetwork.room.name + " >>>> " + levelInfo.MapName);
+        UnityEngine.MonoBehaviour.print("OnJoinedRoom " + PhotonNetwork.room.name + " hosting " + levelInfo.MapName);
         gameTimesUp = false;
 
         difficulty = roomInfo[2].ToLower() switch
@@ -1700,8 +1702,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
             }
 
             // Guardian
-            g_roundTimer.Update();
-            g_waveTimer.Update();
+            g_roundTimer.Reset();
+            g_waveTimer.Reset();
         }
         else
         {
@@ -1762,10 +1764,21 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 ExitGames.Client.Photon.Hashtable gameSettings = new ExitGames.Client.Photon.Hashtable();
                 // Guardian
                 Guardian.Networking.SyncedSettings.ApplySettings(gameSettings);
+
                 if (RCSettings.BombMode == 1)
                 {
                     gameSettings.Add("bomb", 1);
                 }
+
+                // BEGIN Guardian
+                gameSettings.Add("bombCeiling", Guardian.GuardianClient.Properties.UseSkyBarrier.Value ? 1 : 0);
+                gameSettings.Add("bombInfiniteGas", Guardian.GuardianClient.Properties.InfiniteGas.Value ? 1 : 0);
+
+                if (Guardian.GuardianClient.Properties.HideNames.Value)
+                {
+                    gameSettings.Add("globalHideNames", 1);
+                }
+                // END Guardian
 
                 if (RCSettings.GlobalDisableMinimap == 1)
                 {
@@ -3914,14 +3927,8 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         }
 
         // BEGIN Guardian
-        if (Guardian.GuardianClient.Properties.UseSkyBarrier.Value)
-        {
-            gameSettings.Add("bombCeiling", 1);
-        }
-        else
-        {
-            gameSettings.Add("bombCeiling", 0);
-        }
+        gameSettings.Add("bombCeiling", Guardian.GuardianClient.Properties.UseSkyBarrier.Value ? 1 : 0);
+        gameSettings.Add("bombInfiniteGas", Guardian.GuardianClient.Properties.InfiniteGas.Value ? 1 : 0);
 
         if (Guardian.GuardianClient.Properties.HideNames.Value)
         {
@@ -8628,7 +8635,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
 
                 // Ko-fi
-                if (ResourceLoader.TryGetAsset("Textures/ko-fi.png", out Texture2D kofi))
+                if (Guardian.Utilities.Resources.ResourceLoader.TryGetAsset("Textures/ko-fi.png", out Texture2D kofi))
                 {
                     if (GUI.Button(new Rect(10, 185, 220, 100), kofi))
                     {
@@ -8637,7 +8644,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
                 }
 
                 // AoTTG-2 Patreon
-                if (ResourceLoader.TryGetAsset("Textures/patreon.png", out Texture2D aot2Patreon))
+                if (Guardian.Utilities.Resources.ResourceLoader.TryGetAsset("Textures/patreon.png", out Texture2D aot2Patreon))
                 {
                     if (GUI.Button(new Rect(10, 290, 220, 150), aot2Patreon))
                     {
@@ -10752,6 +10759,18 @@ public class FengGameManagerMKII : Photon.MonoBehaviour, Anarchy.Custom.Interfac
         {
             RCSettings.BombCeiling = true;
             InRoomChat.Instance.AddLine("Sky Barrier/Bomb Ceiling is enabled. Don't fly too high!".AsColor("FFCC00"));
+        }
+
+        // Bomb Infinite Gas
+        if (!gameSettings.ContainsKey("bombInfiniteGas") || (int)gameSettings["bombInfiniteGas"] == 1)
+        {
+            RCSettings.BombInfiniteGas = true;
+            InRoomChat.Instance.AddLine("Infinite Gas for Bomb PvP is enabled.".AsColor("FFCC00"));
+        }
+        else
+        {
+            RCSettings.BombInfiniteGas = false;
+            InRoomChat.Instance.AddLine("Infinite Gas for Bomb PvP is disabled.".AsColor("FFCC00"));
         }
 
         // Global Hide Names

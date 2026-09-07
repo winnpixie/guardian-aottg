@@ -26,14 +26,20 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <Authors>winnpixie</Authors>
     <RootNamespace></RootNamespace>
+    <Version>1.7.0</Version>
+    <Copyright>2026</Copyright>
+    <PackageProjectUrl>https://aottg.winnpixie.com/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/winnpixie/guardian-aottg</RepositoryUrl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win-x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win-x86'" />
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>..\Guardian_Win64\Guardian_Data\Managed\</OutputPath>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>..\Guardian_Win32\Guardian_Data\Managed\</OutputPath>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Anarchy.Custom">
@@ -85,13 +91,5 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

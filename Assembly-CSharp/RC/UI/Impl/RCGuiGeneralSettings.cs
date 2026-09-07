@@ -7,15 +7,15 @@ namespace RC.UI.Impl
         public override void Draw(FengGameManagerMKII fgm, float halfMenuWidth, float halfMenuHeight)
         {
             GUI.Label(new Rect(halfMenuWidth + 150f, halfMenuHeight + 51f, 185f, 22f), "Graphics", "Label");
-            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 81f, 185f, 22f), "Disable custom gas textures:", "Label");
-            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 106f, 185f, 22f), "Disable weapon trail:", "Label");
-            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 131f, 185f, 22f), "Disable wind effect:", "Label");
-            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 156f, 185f, 22f), "Enable vSync:", "Label");
-            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 184f, 227f, 20f), "FPS Cap (0 for disabled):", "Label");
+            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 81f, 185f, 22f), "Disable Custom Gas Textures:", "Label");
+            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 106f, 185f, 22f), "Disable Weapon Trail:", "Label");
+            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 131f, 185f, 22f), "Disable Wind Effect:", "Label");
+            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 156f, 185f, 22f), "Enable V-Sync:", "Label");
+            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 184f, 227f, 20f), "FPS Limit (0 for Unlimited):", "Label");
             GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 212f, 150f, 22f), "Texture Quality:", "Label");
             GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 242f, 150f, 22f), "Overall Quality:", "Label");
             GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 272f, 185f, 22f), "Disable Mipmapping:", "Label");
-            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 297f, 185f, 65f), "*Disabling mipmapping will increase custom texture quality at the cost of performance.", "Label");
+            GUI.Label(new Rect(halfMenuWidth + 72f, halfMenuHeight + 297f, 185f, 65f), "*Disabling Mipmapping can increase Custom Texture quality, but may degrade performance.", "Label");
             fgm.qualitySlider = GUI.HorizontalSlider(new Rect(halfMenuWidth + 199f, halfMenuHeight + 247f, 115f, 20f), fgm.qualitySlider, 0f, 1f);
             PlayerPrefs.SetFloat("GameQuality", fgm.qualitySlider);
             if (fgm.qualitySlider < 0.167f)

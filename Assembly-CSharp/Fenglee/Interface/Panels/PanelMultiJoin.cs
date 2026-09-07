@@ -12,8 +12,8 @@ public class PanelMultiJoin : MonoBehaviour
     private UILabel pageLabel;
 
     // BEGIN Guardian
-    public bool g_hideFullRooms;
-    public bool g_hideLockedRooms;
+    public bool HideFullRooms;
+    public bool HideLockedRooms;
     // END Guardian
 
     private void Start()
@@ -242,9 +242,9 @@ public class PanelMultiJoin : MonoBehaviour
     // Guardian
     private bool ShouldListRoom(RoomInfo info)
     {
-        if (g_hideFullRooms && info.playerCount >= info.maxPlayers && info.maxPlayers > 0) return false;
+        if (HideFullRooms && info.playerCount >= info.maxPlayers && info.maxPlayers > 0) return false;
 
-        if (g_hideLockedRooms)
+        if (HideLockedRooms)
         {
             string[] data = info.name.Split('`');
             if (data.Length < 7) return true;

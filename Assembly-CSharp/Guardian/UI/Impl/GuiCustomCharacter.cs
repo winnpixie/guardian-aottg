@@ -69,7 +69,10 @@ namespace Guardian.UI.Impl
         {
             if (_characterManagerInst != null)
             {
-                if (_characterManagerInst.setup == null) return;
+                if (_characterManagerInst.setup == null)
+                {
+                    return;
+                }
 
                 GUILayout.BeginArea(new Rect((Screen.width / 2) + (Screen.width / 4) - 150, (Screen.height / 2) + (Screen.height / 4) - 150, 300, 300), GuiSkins.Box);
                 GUILayout.Label("Extended Configuration");

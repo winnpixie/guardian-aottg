@@ -8,20 +8,20 @@ using UnityEngine;
 public static class GExtensions
 {
     private static readonly Regex HexColorPattern = new Regex("\\[([a-f0-9]{6}|-)\\]", RegexOptions.IgnoreCase);
-    private static readonly Regex ColorTagPattern = new Regex("<\\/?color(=#?\\w+)?>", RegexOptions.IgnoreCase);
+    private static readonly Regex ColorTagPattern = new Regex("<\\/?color.*?>", RegexOptions.IgnoreCase);
 
-    public static T[] CopyOfRange<T>(this T[] src, int startIndex, int endIndex)
+    public static T[] CopyOfRange<T>(this T[] src, int start, int end)
     {
-        int maxIndex = src.Length - 1;
-        if (endIndex > maxIndex)
+        int max = src.Length - 1;
+        if (end > max)
         {
-            endIndex = maxIndex;
+            end = max;
         }
 
-        int len = endIndex - startIndex + 1;
+        int len = end - start + 1;
         T[] dst = new T[len];
 
-        Array.Copy(src, startIndex, dst, 0, len);
+        Array.Copy(src, start, dst, 0, len);
 
         return dst;
     }
@@ -157,19 +157,6 @@ public static class GExtensions
         catch { }
 
         return false;
-    }
-
-    public static string Substr(this string str, int startIndex, int endIndex)
-    {
-        int maxIndex = str.Length - 1;
-        while (endIndex > maxIndex)
-        {
-            endIndex = maxIndex;
-        }
-
-        int len = endIndex - startIndex + 1;
-
-        return str.Substring(startIndex, len);
     }
 
     public static bool IsKeyDown(this KeyCode keyCode)

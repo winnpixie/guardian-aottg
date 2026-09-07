@@ -1069,9 +1069,12 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
         if (!(dashTime > 0f) && !(currentGas <= 0f) && !isMounted)
         {
             // Guardian
-            if (!g_burstTimer.HasPassed(300)) return;
+            if (!g_burstTimer.HasPassed(300))
+            {
+                return;
+            }
 
-            g_burstTimer.Update();
+            g_burstTimer.Reset();
 
             UseGas(totalGas * 0.04f);
             facingDirection = GetGlobalFacingDirection(horizontal, vertical);
@@ -1177,7 +1180,16 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
     private void UseGas(float amount = 0f)
     {
         // Guardian
-        if (Guardian.Networking.SyncedSettings.InfiniteGas) return;
+        if (Guardian.Networking.SyncedSettings.InfiniteGas)
+        {
+            return;
+        }
+
+        // RC
+        if (RCSettings.BombMode == 1 && RCSettings.BombInfiniteGas)
+        {
+            return;
+        }
 
         if (amount == 0f)
         {
@@ -2248,29 +2260,32 @@ public class HERO : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchyScri
                 {
                     tlw_skyBarrier = (GameObject)UnityEngine.Object.Instantiate(FengGameManagerMKII.RCAssets.Load("killCuboid"), new Vector3(0, y, 0), Quaternion.identity);
                     tlw_skyBarrier.gameObject.AddComponent<RacingKillTrigger>();
-                    tlw_skyBarrier.transform.localScale = new Vector3(1600, 20, 1600);
+                    tlw_skyBarrier.transform.localScale = new Vector3(1600f, 20f, 1600f);
                 }
             }
         }
 
-        if (IN_GAME_MAIN_CAMERA.Lighting == DayLight.Night)
-        {
-            myFlashlight = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("flashlight"));
+        myFlashlight = (GameObject)UnityEngine.Object.Instantiate(Resources.Load("flashlight"));
 
-            if (base.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
-            {
-                myFlashlight.GetComponent<Light>().renderMode = LightRenderMode.ForcePixel;
-                myFlashlight.transform.parent = currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform;
-                myFlashlight.transform.position = IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer ?
-                    currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform.position
-                    : (currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform.position + (Vector3.down * 5));
-            }
-            else
-            {
-                myFlashlight.transform.parent = baseTransform;
-                myFlashlight.transform.position = baseTransform.position + Vector3.up;
-            }
-            myFlashlight.transform.rotation = Quaternion.Euler(353f, 0f, 0f);
+        if (base.photonView.isMine || IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer)
+        {
+            myFlashlight.GetComponent<Light>().renderMode = LightRenderMode.ForcePixel;
+            myFlashlight.transform.parent = currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform;
+            myFlashlight.transform.position = IN_GAME_MAIN_CAMERA.Gametype == GameType.Singleplayer ?
+                currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform.position
+                : (currentCamera.GetComponent<IN_GAME_MAIN_CAMERA>().transform.position + (Vector3.down * 5));
+        }
+        else
+        {
+            myFlashlight.transform.parent = baseTransform;
+            myFlashlight.transform.position = baseTransform.position + Vector3.up;
+        }
+
+        myFlashlight.transform.rotation = Quaternion.Euler(353f, 0f, 0f);
+
+        if (IN_GAME_MAIN_CAMERA.Lighting != DayLight.Night)
+        {
+            myFlashlight.SetActive(false);
         }
 
         bombImmune = false;

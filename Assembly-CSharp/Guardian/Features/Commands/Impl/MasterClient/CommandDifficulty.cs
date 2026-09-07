@@ -8,7 +8,10 @@ namespace Guardian.Features.Commands.Impl.MasterClient
 
         public override void Execute(InRoomChat irc, string[] args)
         {
-            if (args.Length < 1) return;
+            if (args.Length == 0)
+            {
+                return;
+            }
 
             int difficulty = args[0].ToLower() switch
             {
@@ -16,10 +19,13 @@ namespace Guardian.Features.Commands.Impl.MasterClient
                 "normal" => 0,
                 "hard" => 1,
                 "abnormal" => 2,
-                _ => -2
+                _ => -69
             };
 
-            if (difficulty < -1) return;
+            if (difficulty == -69)
+            {
+                return;
+            }
 
             FengGameManagerMKII.Instance.difficulty = difficulty;
             IN_GAME_MAIN_CAMERA.Difficulty = difficulty;

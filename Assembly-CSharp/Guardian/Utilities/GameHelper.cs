@@ -7,8 +7,7 @@ namespace Guardian.Utilities
 {
     public static class GameHelper
     {
-        public static readonly Regex DangerousTagsPattern =
-            new Regex("<\\/?(size|material|quad)[^>]*>", RegexOptions.IgnoreCase);
+        public static readonly Regex DangerousTagsPattern = new Regex("<\\/?(size|material|quad).*?>", RegexOptions.IgnoreCase);
 
         public static readonly Vector2 ScrollBottom = new Vector2(0, float.MaxValue);
 

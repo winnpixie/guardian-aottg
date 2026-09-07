@@ -15,7 +15,7 @@ namespace Guardian.Features.Commands.Impl.Debug
             switch (args[0].ToLower())
             {
                 case "start":
-                    Watch.Update();
+                    Watch.Reset();
                     irc.AddLine("Timer started! Type <b>/stopwatch end</b> to see how long you waited.");
                     break;
                 case "end":

@@ -13,20 +13,24 @@ public class supplyCheck : MonoBehaviour
         {
             Minimap.Instance.TrackGameObjectOnMinimap(base.gameObject, Color.white, trackOrientation: false, depthAboveAll: true, Minimap.IconStyle.SUPPLY);
         }
-
-        stepTime = 15f / 1000f; // Check 15 times a second for players instead of once per second
     }
 
     private void Update()
     {
         elapsedTime += Time.deltaTime;
-        if (elapsedTime < stepTime) return;
+        if (elapsedTime < stepTime)
+        {
+            return;
+        }
 
         elapsedTime = 0;
 
         foreach (HERO hero in FengGameManagerMKII.Instance.Heroes)
         {
-            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !hero.photonView.isMine) continue;
+            if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Singleplayer && !hero.photonView.isMine)
+            {
+                continue;
+            }
 
             if ((hero.transform.position - base.transform.position).sqrMagnitude < maxDistanceSq)
             {

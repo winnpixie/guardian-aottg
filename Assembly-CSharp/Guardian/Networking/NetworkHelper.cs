@@ -24,11 +24,13 @@
 
         public static string GetRegionCode()
         {
-            string masterAddress = PhotonNetwork.networkingPeer.MasterServerAddress.ToUpper();
+            string regionAddress = PhotonNetwork.networkingPeer.MasterServerAddress.ToUpper();
 
-            if (masterAddress.StartsWith("APP-") || masterAddress.StartsWith("MP-"))
+            if (regionAddress.StartsWith("APP-") || regionAddress.StartsWith("MP-"))
             {
-                return masterAddress.Substr(masterAddress.IndexOf('-') + 1, masterAddress.IndexOf('.') - 1);
+                int hyphenIdx = regionAddress.IndexOf('-');
+                int dotIdx = regionAddress.IndexOf('.');
+                return regionAddress.Substring(hyphenIdx, dotIdx - hyphenIdx - 1);
             }
 
             return "??";

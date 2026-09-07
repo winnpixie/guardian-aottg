@@ -8,9 +8,16 @@ namespace Guardian.UI.Impl.Debug
     {
         public override void Draw()
         {
-            if (!GuardianClient.Properties.ShowLog.Value) return;
-            if (Application.loadedLevelName.Equals("SnapShot")) return;
-            if (Application.loadedLevelName.Equals("characterCreation")) return;
+            if (!GuardianClient.Properties.ShowLog.Value)
+            {
+                return;
+            }
+
+            if (Application.loadedLevelName.Equals("SnapShot")
+                || Application.loadedLevelName.Equals("characterCreation"))
+            {
+                return;
+            }
 
             if (GuardianClient.Properties.DrawDebugBackground.Value)
             {
@@ -52,7 +59,7 @@ namespace Guardian.UI.Impl.Debug
             // XYZ
             if (GuardianClient.Properties.ShowCoordinates.Value)
             {
-                string coords = "X n/a Y n/a Z n/a";
+                string coords = "X ? Y ? Z ?";
                 if (IN_GAME_MAIN_CAMERA.Gametype != GameType.Stop)
                 {
                     Photon.MonoBehaviour myObj = null;

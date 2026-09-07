@@ -122,7 +122,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 break;
             case DayLight.Dawn:
                 RenderSettings.ambientLight = FengColor.AmbientDawn;
-                GameObject.Find("mainLight").GetComponent<Light>().color = FengColor.AmbientDawn;
+                GameObject.Find("mainLight").GetComponent<Light>().color = FengColor.Dawn;
                 base.gameObject.GetComponent<Skybox>().material = skyBoxDAWN;
                 break;
             case DayLight.Night:
@@ -134,6 +134,16 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
         // Guardian
         Guardian.GuardianClient.Properties.UseMainLightColor.OnValueChanged();
+        Guardian.GuardianClient.Properties.UseAmbientLightColor.OnValueChanged();
+
+        if (main_object != null)
+        {
+            HERO hero = main_object.GetComponent<HERO>();
+            if (hero != null && hero.myFlashlight != null)
+            {
+                hero.myFlashlight.SetActive(val == DayLight.Night);
+            }
+        }
 
         if (FengGameManagerMKII.SkyMaterial != null && FengGameManagerMKII.SkyMaterial != base.gameObject.GetComponent<Skybox>().material)
         {
@@ -149,7 +159,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
         GameObject gameObject = GameObject.Find("LabelInfoBottomRight");
         gameObject.transform.localPosition = new Vector3((int)((float)Screen.width * 0.5f), (int)((float)(-Screen.height) * 0.5f), 0f);
-        gameObject.GetComponent<UILabel>().text = "Pause: " + GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().inputString[InputCode.Pause] + " ";
+        gameObject.GetComponent<UILabel>().text += "Pause: " + GameObject.Find("InputManagerController").GetComponent<FengCustomInputs>().inputString[InputCode.Pause] + " ";
 
         GameObject.Find("LabelInfoTopCenter").transform.localPosition = new Vector3(0f, (int)((float)Screen.height * 0.5f), 0f);
         GameObject.Find("LabelInfoTopRight").transform.localPosition = new Vector3((int)((float)Screen.width * 0.5f), (int)((float)Screen.height * 0.5f), 0f);
@@ -243,12 +253,29 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         mainCam.GetComponent<MouseLook>().disable = !val;
     }
 
+    private void FollowTrackedObject()
+    {
+        Vector3 pos;
+        if (head == null)
+        {
+            pos = main_object.transform.position;
+        }
+        else
+        {
+            pos = head.transform.position;
+        }
+
+        pos += Vector3.up * heightMulti;
+        pos -= Vector3.up * (0.6f - CameraDistance) * 2f;
+
+        base.transform.position = pos;
+    }
+
     private void MoveCamera()
     {
+        FollowTrackedObject();
+
         distanceOffsetMulti = CameraDistance * (200f - base.camera.fieldOfView) / 150f;
-        base.transform.position = head == null ? main_object.transform.position : head.transform.position;
-        base.transform.position += Vector3.up * heightMulti;
-        base.transform.position -= Vector3.up * (0.6f - CameraDistance) * 2f;
 
         float mouseYaw = Input.GetAxisRaw("Mouse X");
         float mousePitch = Input.GetAxisRaw("Mouse Y");
@@ -329,6 +356,11 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                 }
         }
 
+        TrailTrackedObject();
+    }
+
+    private void TrailTrackedObject()
+    {
         // God awful FPS camera
         if (Guardian.GuardianClient.Properties.FPSCamera.Value)
         {
@@ -649,7 +681,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
 
     public void Update2()
     {
-        // Colossal Titan flash
         if (flashDuration > 0f)
         {
             flashDuration -= UnityEngine.Time.deltaTime;
@@ -730,10 +761,10 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             {
                 if (main_object != null)
                 {
-                    Vector3 position = ((head == null) ? main_object.transform.position : head.transform.position);
-                    position += Vector3.up * heightMulti;
-                    base.transform.position = Vector3.Lerp(base.transform.position, position - base.transform.forward * 5f, 0.2f);
+                    FollowTrackedObject();
+                    TrailTrackedObject();
                 }
+
                 return;
             }
 
@@ -836,6 +867,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
                     FengGameManagerMKII.Settings[263] = 0;
                 }
             }
+
             HERO component = main_object.GetComponent<HERO>();
             if (component != null && (int)FengGameManagerMKII.Settings[263] == 1 && component.GetComponent<SmoothSyncMovement>().enabled && component.isPhotonCamera)
             {
@@ -887,6 +919,16 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
             locker.transform.localPosition = new Vector3(0f, (float)(-Screen.height) * 0.5f - 50f, 0f);
         }
 
+        if (!Guardian.GuardianClient.Properties.CameraClipping.Value)
+        {
+            ClipCameraDistance();
+        }
+
+        UpdateShake();
+    }
+
+    private void ClipCameraDistance()
+    {
         Vector3 end = (head == null) ? main_object.transform.position : head.transform.position;
         Vector3 normalized = (((head == null) ? main_object.transform.position : head.transform.position) - base.transform.position).normalized;
         end -= distance * normalized * distanceMulti;
@@ -894,6 +936,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         LayerMask mask2 = 1 << LayerMask.NameToLayer("EnemyBox");
         LayerMask mask3 = (int)mask | (int)mask2;
         RaycastHit hitInfo;
+
         if (head != null)
         {
             if (Physics.Linecast(head.transform.position, end, out hitInfo, mask))
@@ -909,7 +952,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             base.transform.position = hitInfo.point;
         }
-        UpdateShake();
     }
 
     private void CreateMinimap()
@@ -956,6 +998,7 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, 50f, 0.1f);
         }
+
         float d = hero.CameraMultiplier * (200f - Camera.main.fieldOfView) / 150f;
         base.transform.position = head.transform.position + Vector3.up * heightMulti - Vector3.up * (0.6f - CameraDistance) * 2f;
         base.transform.position -= base.transform.forward * distance * distanceMulti * d;
@@ -963,6 +1006,6 @@ public class IN_GAME_MAIN_CAMERA : MonoBehaviour
         {
             base.transform.position += base.transform.right * Mathf.Max((0.6f - hero.CameraMultiplier) * 2f, 0.65f);
         }
-        base.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, hero.GetComponent<SmoothSyncMovement>().correctCameraRot, UnityEngine.Time.deltaTime * 5f);
+        base.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, hero.GetComponent<SmoothSyncMovement>().correctCameraRot, Time.deltaTime * 5f);
     }
 }

@@ -15,7 +15,7 @@ namespace Guardian
 {
     class GuardianClient : MonoBehaviour
     {
-        public static readonly string Build = "1.6.1";
+        public static readonly string Build = "1.7.0";
         public static readonly string RootDir = Application.dataPath + "\\..";
 
         public static readonly CommandManager Commands = new CommandManager();
@@ -38,6 +38,7 @@ namespace Guardian
             base.gameObject.AddComponent<CustomResourceProcessor>();
             base.gameObject.AddComponent<PhotonEventHandler>();
             base.gameObject.AddComponent<GamemodeNetworkHandler>();
+            base.gameObject.AddComponent<TimeCycle>();
 
             if (!_firstInit)
             {
@@ -83,7 +84,7 @@ namespace Guardian
             StartCoroutine(UpdateChecker.CheckForUpdate());
         }
 
-        public void ApplyCustomRenderSettings()
+        public void ApplyRenderSettings()
         {
             Properties.DrawDistance.OnValueChanged();
             Properties.Blur.OnValueChanged();
@@ -92,6 +93,7 @@ namespace Guardian
             Properties.FogColor.OnValueChanged();
             Properties.FogDensity.OnValueChanged();
             Properties.SoftShadows.OnValueChanged();
+            Properties.MaxFrameQueue.OnValueChanged();
         }
 
         void Update()
@@ -106,7 +108,7 @@ namespace Guardian
 
         void OnLevelWasLoaded(int level)
         {
-            ApplyCustomRenderSettings();
+            ApplyRenderSettings();
 
             if (PhotonNetwork.isMasterClient)
             {

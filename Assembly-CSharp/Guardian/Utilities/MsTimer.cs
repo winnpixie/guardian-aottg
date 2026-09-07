@@ -6,10 +6,10 @@
 
         public MsTimer()
         {
-            Update();
+            Reset();
         }
 
-        public void Update()
+        public void Reset()
         {
             _marker = GetNow();
         }

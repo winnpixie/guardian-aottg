@@ -12,33 +12,39 @@ namespace Guardian.UI.Impl.Debug
         private void Log(string message)
         {
             message = GameHelper.DangerousTagsPattern.Replace(message, string.Empty);
-            if (string.IsNullOrEmpty(message)) return;
+            if (string.IsNullOrEmpty(message))
+            {
+                return;
+            }
 
             Entries.Add(new Entry(message));
 
-            if (Entries.Count > GuardianClient.Properties.MaxLogLines.Value) Entries.RemoveAt(0);
+            if (Entries.Count > GuardianClient.Properties.MaxLogEntries.Value)
+            {
+                Entries.RemoveAt(0);
+            }
 
             ScrollPosition = GameHelper.ScrollBottom;
         }
 
         public void Info(string message)
         {
-            Log("* ".AsColor("AAAAAA") + message);
+            Log("I ".AsColor("AAAAAA") + message);
         }
 
         public void Warn(string message)
         {
-            Log("* ".AsColor("FFCC00") + message);
+            Log("W ".AsColor("FFCC00") + message);
         }
 
         public void Error(string message)
         {
-            Log("* ".AsColor("FF0000") + message);
+            Log("E ".AsColor("FF0000") + message);
         }
 
         public void Debug(string message)
         {
-            Log("* ".AsColor("00FFFF") + message);
+            Log("D ".AsColor("00FFFF") + message);
         }
 
         public class Entry

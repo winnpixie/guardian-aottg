@@ -9,7 +9,7 @@ public class InRoomChat : Photon.MonoBehaviour
     public static Rect MessagesRect = new Rect(1f, 0f, 329f, 225f);
     public static Rect ChatBoxRect = new Rect(30f, 575f, 300f, 25f);
     public static List<Message> Messages = new List<Message>();
-    private static readonly Regex Detagger = new Regex("<\\/?(color|size|b|i|material|quad)[^>]*>", RegexOptions.IgnoreCase);
+    private static readonly Regex Detagger = new Regex("<\\/?(color|size|b|i|material|quad).*?>", RegexOptions.IgnoreCase);
 
     public string inputLine = string.Empty;
     public bool IsVisible = true;
@@ -181,7 +181,10 @@ public class InRoomChat : Photon.MonoBehaviour
                 if (!inputLine.StartsWith("/"))
                 {
                     string name = GExtensions.AsString(PhotonNetwork.player.customProperties[PhotonPlayerProperty.Name]);
-                    if (name.StripNGUI().Length > 0) name = name.NGUIToUnity();
+                    if (!string.IsNullOrEmpty(name.StripNGUI()))
+                    {
+                        name = name.NGUIToUnity();
+                    }
 
                     FengGameManagerMKII.Instance.photonView.RPC("Chat", PhotonTargets.All, FormatMessage(inputLine, name));
                 }

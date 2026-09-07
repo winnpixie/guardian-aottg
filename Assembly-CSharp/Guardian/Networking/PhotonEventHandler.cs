@@ -71,7 +71,11 @@ namespace Guardian.Networking
             if (propertiesThatChanged.ContainsKey("Map") && propertiesThatChanged["Map"] is string mapName)
             {
                 LevelInfo levelInfo = LevelInfo.GetInfo(mapName);
-                if (levelInfo != null) FengGameManagerMKII.Level = levelInfo;
+                if (levelInfo != null)
+                {
+                    FengGameManagerMKII.Level = levelInfo;
+                    IN_GAME_MAIN_CAMERA.Gamemode = levelInfo.Mode;
+                }
             }
 
             if (propertiesThatChanged.ContainsKey("Lighting") && propertiesThatChanged["Lighting"] is string lightLevel
@@ -102,10 +106,13 @@ namespace Guardian.Networking
             PhotonNetwork.SetReceivingEnabled(groups, null);
             PhotonNetwork.SetSendingEnabled(groups, null);
 
-            PhotonNetwork.player.SetCustomProperties(new Hashtable
+            if (GuardianClient.Properties.BroadcastIdentity.Value)
             {
-                { GuardianPlayerProperty.GuardianMod, GuardianClient.Build }
-            });
+                PhotonNetwork.player.SetCustomProperties(new Hashtable
+                {
+                    { GuardianPlayerProperty.GuardianMod, GuardianClient.Build }
+                });
+            }
 
             StartCoroutine(UpdateMyPing());
         }
@@ -135,6 +142,7 @@ namespace Guardian.Networking
 
             // FIXME: Why don't these properly reset?
             RCSettings.BombCeiling = false;
+            RCSettings.BombInfiniteGas = false;
             RCSettings.HideNames = false;
 
             SyncedSettings.InfiniteGas = false;

@@ -100,6 +100,7 @@ public class SimpleAES
         {
             cryptoStream.Write(buffer, 0, buffer.Length);
         }
+
         return memoryStream.ToArray();
     }
 }

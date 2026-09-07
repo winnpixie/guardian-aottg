@@ -19,7 +19,7 @@
 
             FrameCount = _frameCount;
             _frameCount = 0;
-            _timer.Update();
+            _timer.Reset();
         }
     }
 }

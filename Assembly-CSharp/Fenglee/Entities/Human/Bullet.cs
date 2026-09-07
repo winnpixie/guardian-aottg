@@ -480,45 +480,52 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
             bool flag = false;
             if ((nodes.Count <= 1) ? Physics.Linecast((Vector3)nodes[nodes.Count - 1], base.gameObject.transform.position, out RaycastHit hitInfo, layerMask.value) : Physics.Linecast((Vector3)nodes[nodes.Count - 2], base.gameObject.transform.position, out hitInfo, layerMask.value))
             {
-                bool flag3 = true;
-                if (hitInfo.collider.transform.gameObject.layer == LayerMask.NameToLayer("EnemyBox"))
+                Collider hitCollider = hitInfo.collider;
+                UnityEngine.Transform hitTransform = hitCollider.transform;
+                GameObject transformRootGo = hitTransform.root.gameObject;
+                GameObject transformGo = hitTransform.gameObject;
+
+                bool hookedSomething = true;
+                if (transformGo.layer == LayerMask.NameToLayer("EnemyBox"))
                 {
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                     {
-                        base.photonView.RPC("tieMeToOBJ", PhotonTargets.Others, hitInfo.collider.transform.root.gameObject.GetPhotonView().viewID);
+                        base.photonView.RPC("tieMeToOBJ", PhotonTargets.Others, transformRootGo.GetPhotonView().viewID);
                     }
-                    master.GetComponent<HERO>().lastHook = hitInfo.collider.transform.root;
-                    base.transform.parent = hitInfo.collider.transform;
+                    master.GetComponent<HERO>().lastHook = hitTransform.root;
+                    base.transform.parent = hitTransform;
                 }
-                else if (hitInfo.collider.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
+                else if (transformGo.layer == LayerMask.NameToLayer("Ground"))
                 {
                     master.GetComponent<HERO>().lastHook = null;
 
                     // Anarchy
-                    Anarchy.Custom.Level.CustomAnarchyLevel.Instance.OnHookAttachedToGround(this, hitInfo.collider.gameObject);
+                    Anarchy.Custom.Level.CustomAnarchyLevel.Instance.OnHookAttachedToGround(this, hitCollider.gameObject);
                 }
-                else if (hitInfo.collider.transform.gameObject.layer == LayerMask.NameToLayer("NetworkObject") && hitInfo.collider.transform.gameObject.tag == "Player" && !leviMode)
+                else if (transformGo.layer == LayerMask.NameToLayer("NetworkObject") && transformGo.tag == "Player" && !leviMode)
                 {
                     if (IN_GAME_MAIN_CAMERA.Gametype == GameType.Multiplayer)
                     {
-                        int viewId = hitInfo.collider.transform.root.gameObject.GetPhotonView().viewID;
+                        int viewId = transformRootGo.GetPhotonView().viewID;
                         base.photonView.RPC("tieMeToOBJ", PhotonTargets.Others, viewId);
 
                         HandleHookToObj(viewId);
                     }
-                    master.GetComponent<HERO>().HookToHuman(hitInfo.collider.transform.root.gameObject, base.transform.position);
-                    base.transform.parent = hitInfo.collider.transform;
+                    master.GetComponent<HERO>().HookToHuman(transformRootGo, base.transform.position);
+                    base.transform.parent = hitTransform;
                     master.GetComponent<HERO>().lastHook = null;
                 }
                 else
                 {
-                    flag3 = false;
+                    hookedSomething = false;
                 }
+
                 if (phase == 2)
                 {
-                    flag3 = false;
+                    hookedSomething = false;
                 }
-                if (flag3)
+
+                if (hookedSomething)
                 {
                     master.GetComponent<HERO>().Launch(hitInfo.point, left, leviMode);
                     base.transform.position = hitInfo.point;
@@ -530,10 +537,12 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
                             base.photonView.RPC("setPhase", PhotonTargets.Others, 1);
                             base.photonView.RPC("tieMeTo", PhotonTargets.Others, base.transform.position);
                         }
+
                         if (leviMode)
                         {
                             GetSpiral(master.transform.position, master.transform.rotation.eulerAngles);
                         }
+
                         flag = true;
                     }
                 }
@@ -543,6 +552,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
             {
                 return;
             }
+
             killTime2 += Time.deltaTime;
             if (killTime2 > 0.8f)
             {
@@ -567,6 +577,7 @@ public class Bullet : Photon.MonoBehaviour, Anarchy.Custom.Interfaces.IAnarchySc
         {
             return;
         }
+
         TITAN component = collider.transform.root.gameObject.GetComponent<TITAN>();
         if (component != null)
         {

@@ -56,13 +56,13 @@ namespace Guardian.Utilities
                     GuardianClient.Toasts.Add(new Toast("UPDATE AVAILABLE",
                         "Your copy of Guardian is OUT OF DATE, please update!", 15));
 
-                    GuardianClient.Logger.Info("If you don't have the launcher, download it here:");
+                    GuardianClient.Logger.Info("If you do not have the launcher, download it at:");
                     GuardianClient.Logger.Info($"\t- {"https://aottg.winnpixie.com".AsColor("0099FF")}");
 
                     try
                     {
                         GameObject.Find("VERSION").GetComponent<UILabel>().text =
-                            "[FF0000]OUT OF DATE![-] Please update with the Launcher (DL @ [0099FF]https://aottg.winnpixie.com[-])!";
+                            "[FF0000]OUT OF DATE![-] Please update via the Launcher (DL @ [0099FF]https://aottg.winnpixie.com[-])!";
                     }
                     catch
                     {

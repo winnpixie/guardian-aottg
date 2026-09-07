@@ -78,11 +78,20 @@ namespace Guardian.UI
             string[] cliArgs = Environment.GetCommandLineArgs();
             for (int i = 1; i < cliArgs.Length; i++)
             {
-                if (!cliArgs[i].Equals("-screen-fullscreen")) continue;
-                if (i + 1 == cliArgs.Length) continue;
+                if (!cliArgs[i].Equals("-screen-fullscreen"))
+                {
+                    continue;
+                }
+                if (i + 1 == cliArgs.Length)
+                {
+                    continue;
+                }
 
                 bool fullScreen = cliArgs[i + 1].Equals("1");
-                if (Screen.fullScreen != fullScreen) ToggleFullscreen();
+                if (Screen.fullScreen != fullScreen)
+                {
+                    ToggleFullscreen();
+                }
             }
         }
 

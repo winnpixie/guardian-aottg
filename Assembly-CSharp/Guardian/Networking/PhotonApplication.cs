@@ -15,17 +15,17 @@
         public static PhotonApplication RankedCommunity =
             new PhotonApplication("Ranked Community", "5bef7456-a8c0-41cb-976a-b4c71a3d33fa", 4);
 
-        public static PhotonApplication Fenglee2016 =
-            new PhotonApplication("Fenglee [2016 BETA]", "3a6f1e7b-f270-44ce-9017-345c5aa8e246", 5);
+        public static PhotonApplication Fenglee2016Beta =
+            new PhotonApplication("Fenglee [2016-B]", "3a6f1e7b-f270-44ce-9017-345c5aa8e246", 5);
 
         public static PhotonApplication ProjectVoltage =
             new PhotonApplication("Project Voltage", "55ab2405-6c80-4bf9-aff8-3e53f64c36cf", 6);
 
-        public static PhotonApplication AoTTG2Legacy =
-            new PhotonApplication("AoTTG-2 [DEAD]", "5578b046-8264-438c-99c5-fb15c71b6744", 7);
+        public static PhotonApplication AoTTG2Old =
+            new PhotonApplication("AoTTG-2 [OLD]", "5578b046-8264-438c-99c5-fb15c71b6744", 7);
 
         public static PhotonApplication Fenglee =
-            new PhotonApplication("Fenglee [DEAD]", "f1f6195c-df4a-40f9-bae5-4744c32901ef", 8);
+            new PhotonApplication("Fenglee", "f1f6195c-df4a-40f9-bae5-4744c32901ef", 8);
 
         public readonly string Name;
         public string Id;
@@ -47,9 +47,9 @@
                 1 => Custom,
                 2 => AoTSkins,
                 3 => RankedCommunity,
-                4 => Fenglee2016,
+                4 => Fenglee2016Beta,
                 5 => ProjectVoltage,
-                6 => AoTTG2Legacy,
+                6 => AoTTG2Old,
                 7 => Fenglee,
                 8 => AoTTG2,
                 _ => Custom

@@ -78,15 +78,20 @@ namespace Guardian.Features.Properties
 
         // Visual [Render]
         public Property<int> DrawDistance = new Property<int>("Visual_DrawDistance", new string[0], 1500);
+        public Property<bool> CameraClipping = new Property<bool>("Visual_CameraClipping", new string[0], false);
         public Property<int> FieldOfView = new Property<int>("Visual_FieldOfView", new string[0], 50); // TODO: Re-work
         public Property<bool> Blur = new Property<bool>("Visual_Blur", new string[0], false);
-        public Property<bool> UseMainLightColor = new Property<bool>("Visual_CustomMainLightColor", new string[0], true);
+        public Property<bool> UseMainLightColor = new Property<bool>("Visual_CustomMainLightColor", new string[0], false);
         public Property<string> MainLightColor = new Property<string>("Visual_MainLightColor", new string[0], "FFFFFFFF");
+        public Property<bool> UseAmbientLightColor = new Property<bool>("Visual_CustomAmbientLightColor", new string[0], false);
+        public Property<string> AmbientLightColor = new Property<string>("Visual_AmbientLightColor", new string[0], "FFFFFFFF");
         public Property<bool> Fog = new Property<bool>("Visual_Fog", new string[0], true);
         public Property<string> FogColor = new Property<string>("Visual_FogColor", new string[0], "18181865");
         public Property<float> FogDensity = new Property<float>("Visual_FogDensity", new string[0], 0.01f);
         public Property<bool> SoftShadows = new Property<bool>("Visual_SoftShadows", new string[0], false);
         // Visual [Misc]
+        public Property<bool> TimeCycle = new Property<bool>("Visual_TimeCycle", new string[0], true);
+        public Property<int> TimeCycleLength = new Property<int>("Visual_TimeCycleLength", new string[0], 90);
         public Property<float> CameraTiltStrength = new Property<float>("Visual_CameraTiltStrength", new string[0], 1);
         public Property<string> Flare1Color = new Property<string>("Visual_Flare1Color", new string[0], "00FF007B");
         public Property<string> Flare2Color = new Property<string>("Visual_Flare2Color", new string[0], "FF00007B");
@@ -103,11 +108,13 @@ namespace Guardian.Features.Properties
         public Property<int> MaxUnfocusedFPS = new Property<int>("Misc_MaxUnfocusedFPS", new string[0], 1);
         public Property<string> PhotonAppId = new Property<string>("Misc_PhotonAppId", new string[0], string.Empty);
         public Property<string> PhotonUserId = new Property<string>("Misc_PhotonUserId", new string[0], string.Empty);
+        public Property<bool> BroadcastIdentity = new Property<bool>("Misc_BroadcastIdentity", new string[0], true);
 
         // Debug
+        public Property<int> MaxFrameQueue = new Property<int>("Debug_MaxFrameQueue", new string[0], 0); // This is "1" by default in AoTTG.
         public Property<bool> ShowFramerate = new Property<bool>("Debug_ShowFramerate", new string[0], true);
         public Property<bool> ShowCoordinates = new Property<bool>("Debug_ShowCoordinates", new string[0], true);
-        public Property<int> MaxLogLines = new Property<int>("Debug_MaxLogEntries", new string[0], 100);
+        public Property<int> MaxLogEntries = new Property<int>("Debug_MaxLogEntries", new string[0], 100);
         public Property<bool> ShowLog = new Property<bool>("Debug_ShowDebug", new string[0], true);
         public Property<bool> DrawDebugBackground = new Property<bool>("Debug_DrawBackground", new string[0], true);
 
@@ -231,6 +238,8 @@ namespace Guardian.Features.Properties
             };
             base.Add(DrawDistance);
 
+            base.Add(CameraClipping);
+
             Blur.OnValueChanged = () =>
             {
                 if (Camera.main != null)
@@ -267,6 +276,21 @@ namespace Guardian.Features.Properties
             };
             base.Add(MainLightColor);
 
+            UseAmbientLightColor.OnValueChanged = () =>
+            {
+                AmbientLightColor.OnValueChanged();
+            };
+            base.Add(UseAmbientLightColor);
+
+            AmbientLightColor.OnValueChanged = () =>
+            {
+                if (UseAmbientLightColor.Value)
+                {
+                    RenderSettings.ambientLight = ColorHelper.FromHex(AmbientLightColor.Value);
+                }
+            };
+            base.Add(AmbientLightColor);
+
             Fog.OnValueChanged = () =>
             {
                 RenderSettings.fog = Fog.Value;
@@ -297,15 +321,13 @@ namespace Guardian.Features.Properties
                     {
                         if (SoftShadows.Value)
                         {
-                            QualitySettings.shadowCascades = 5;
-                            light.shadowBias = 0.04f;
-                            light.shadowSoftness = 32f;
+                            light.shadowSoftness = 8f;
+                            light.shadowSoftnessFade = 2f;
                         }
                         else
                         {
-                            QualitySettings.shadowCascades = 4;
-                            light.shadowBias = 0.15f;
                             light.shadowSoftness = 4f;
+                            light.shadowSoftnessFade = 1f;
                         }
                     }
                 }
@@ -313,6 +335,8 @@ namespace Guardian.Features.Properties
             base.Add(SoftShadows);
 
             // Visual [Misc]
+            base.Add(TimeCycle);
+            base.Add(TimeCycleLength);
             base.Add(CameraTiltStrength);
             base.Add(Flare1Color);
             base.Add(Flare2Color);
@@ -324,6 +348,12 @@ namespace Guardian.Features.Properties
             base.Add(NapeMeat);
 
             // Misc
+            MaxFrameQueue.OnValueChanged = () =>
+            {
+                QualitySettings.maxQueuedFrames = MaxFrameQueue.Value;
+            };
+            base.Add(MaxFrameQueue);
+
             RestrainCursor.OnValueChanged = () =>
             {
                 WindowManager.HackCursor(RestrainCursor.Value);
@@ -344,7 +374,7 @@ namespace Guardian.Features.Properties
             // Debug
             base.Add(ShowFramerate);
             base.Add(ShowCoordinates);
-            base.Add(MaxLogLines);
+            base.Add(MaxLogEntries);
             base.Add(ShowLog);
             base.Add(DrawDebugBackground);
 
