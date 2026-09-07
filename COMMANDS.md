@@ -1,13 +1,17 @@
 # Commands
-This file contains information regarding all commands added by Guardian
+
+A list of all chat commands added by Guardian.
 
 ## (Imperfect) Guide:
+
 - `<text>` means `text` is a *required* field.
 - `[text]` means `text` is an *optional* field.
 - `one|two` means either `one` or `two` is expected.
 
-## MasterClient
-These commands can only be ran if you are the MasterClient.
+## Host
+
+These commands can only be ran when you are the host (a.k.a. "Master Client").
+
 - `/difficulty <level>` - Sets the difficulty to **level**.
     - Arguments:
         1. `<level>` - type: `text`, expects: `training|normal|hard|abnormal`
